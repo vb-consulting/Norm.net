@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -70,6 +71,5 @@ namespace SqlServerUnitTests
                 Assert.Equal(new DateTime(1977, 5, 19), results[0]["day"]);
             }
         }
-
     }
 }

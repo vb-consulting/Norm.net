@@ -17,7 +17,7 @@ namespace NoOrm
         INoOrm As(CommandType type);
         INoOrm Timeout(int? timeout);
     }
-
+    
     public interface INoOrmExecute
     {
         INoOrm Execute(string command);
