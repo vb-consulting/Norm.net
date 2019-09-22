@@ -10,7 +10,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace PostgreSqlUnitTests
-{
+{     /*
     [Collection("PostgreSqlDatabase")]
     public class DapperSpeedTest
     {
@@ -51,16 +51,39 @@ namespace PostgreSqlUnitTests
                 var dapper = connection.Query<TestClass>(TestQuery);
                 sw.Stop();
 
-                // Dapper count 1000000 in 00:00:02.7984192
+                //  Dapper count 1000000 in 00:00:02.0442267
                 output.WriteLine("Dapper count {0} in {1}", dapper.ToList().Count, sw.Elapsed);
 
                 sw.Reset();
                 sw.Start();
-                var noorm = connection.Read(TestQuery);
+                var noorm1 = connection.Read(TestQuery);
                 sw.Stop();
 
-                // NoOrm dictionary dict count 1000000 in 00:00:00.0007977
-                output.WriteLine("NoOrm dictionary dict count {0} in {1}", noorm.ToList().Count, sw.Elapsed);
+                // NoOrm tuples count 1000000 in 00:00:00.0005807
+                output.WriteLine("NoOrm tuples count {0} in {1}", noorm1.ToList().Count, sw.Elapsed);
+
+                sw.Reset();
+                sw.Start();
+                var noorm2 = connection.Read(TestQuery).ToDictionaries();
+                sw.Stop();
+
+                // NoOrm dictionary count 1000000 in 00:00:00.0004038
+                output.WriteLine("NoOrm dictionary count {0} in {1}", noorm2.ToList().Count, sw.Elapsed);
+
+
+                sw.Reset();
+                sw.Start();
+                var noormSerialized = connection.Read(TestQuery).ToDictionaries().Select(d => new TestClass
+                {
+                    Id = (int)d["id"],
+                    Foo = (string)d["foo"],
+                    Bar = (string)d["bar"],
+                    Datetime = (DateTime)d["datetime"]
+                });
+                sw.Stop();
+
+                // NoOrm objects count 1000000 in 00:00:00.0002275
+                output.WriteLine("NoOrm objects count {0} in {1}", noormSerialized.ToList().Count, sw.Elapsed);
             }
         }
 
@@ -78,33 +101,25 @@ namespace PostgreSqlUnitTests
 
                 output.WriteLine("Dapper count {0} in {1}", dapper.ToList().Count, sw.Elapsed);
 
-
-                // NoOrm dict count 1000000 in 00:00:03.5419549
-                var noorm = new List<IDictionary<string, object>>();
-                sw.Reset();
-                sw.Start();
-                await connection.ReadAsync(TestQuery, r => noorm.Add(r));
-                sw.Stop();
-
-                output.WriteLine("NoOrm dict count {0} in {1}", noorm.ToList().Count, sw.Elapsed);
-
-
-                // NoOrm objects count 1000000 in 00:00:02.8857702
+                // 
                 var noormSerialized = new List<TestClass>();
                 sw.Reset();
                 sw.Start();
-                await connection.ReadAsync(TestQuery, r =>
+                await connection.ReadAsync(TestQuery, row =>
+                {
                     noormSerialized.Add(new TestClass
                     {
-                        Id = (int)r["id"],
-                        Foo = (string)r["foo"],
-                        Bar = (string)r["bar"],
-                        Datetime = (DateTime)r["datetime"]
-                    }));
+                        Id = (int) row[0],
+                        Foo = (string) row[1],
+                        Bar = (string) row[2],
+                        Datetime = (DateTime) row[3]
+                    });
+                });
                 sw.Stop();
 
                 output.WriteLine("NoOrm objects count {0} in {1}", noormSerialized.ToList().Count, sw.Elapsed);
             }
         }
     }
+    */
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Data.Common;
-
-
-namespace NoOrm
+﻿namespace NoOrm
 {
     public partial class NoOrmAccess
     {

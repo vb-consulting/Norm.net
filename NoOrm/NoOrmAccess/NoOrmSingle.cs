@@ -1,54 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace NoOrm
 {
     public partial class NoOrmAccess
     {
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command)
+        public IEnumerable<(string name, object value)> Single(string command)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                EnsureConnectionIsOpen();
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return await reader.ReadAsync()
+                    return reader.Read()
                         ? reader.GetTuplesFromReader().ToList()
                         : new List<(string name, object value)>();
                 }
             }
         }
 
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params object[] parameters)
+        public IEnumerable<(string name, object value)> Single(string command, params object[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                EnsureConnectionIsOpen();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return await reader.ReadAsync() 
+                    return reader.Read() 
                         ? reader.GetTuplesFromReader().ToList()
-                        : new List<(string name, object value)>();
+                        : new List<(string name, object value)>(); ;
                 }
             }
         }
 
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters)
+        public IEnumerable<(string name, object value)> Single(string command, params (string name, object value)[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                EnsureConnectionIsOpen();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return await reader.ReadAsync()
+                    return reader.Read()
                         ? reader.GetTuplesFromReader().ToList()
-                        : new List<(string name, object value)>();
+                        : new List<(string name, object value)>(); ;
                 }
             }
         }

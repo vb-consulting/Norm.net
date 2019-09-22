@@ -63,6 +63,7 @@ namespace SqlServerUnitTests
                     ")
                     .As(CommandType.StoredProcedure)
                     .Read("TestStoredProcedure", ("id", 1))
+                    .ToDictionaries()
                     .ToList();
 
                 Assert.Single(results);

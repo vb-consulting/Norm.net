@@ -2,16 +2,25 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace NoOrm
 {
+    public delegate void RowCallback(object[] rows);
+    //public delegate bool RowCallback<T1>(T1 value1);
+    //public delegate bool RowCallback<T1, T2>(T1 value1, T2 value2);
+    //public delegate bool RowCallback<T1, T2, T3>(T1 value1, T2 value2, T3 value3);
+    public delegate Task RowCallbackAsync(params object[] rows);
+
     public interface INoOrm :
-        INoOrmExecute, INoOrmExecuteAsync,
-        INoOrmSingle, INoOrmSingleAsync,
-        INoOrmRead, INoOrmReadResults, INoOrmReadResultsConditional,
-        INoOrmReadResultsAsync, INoOrmReadAsyncResultsAsync,
-        INoOrmReadResultsConditionalAsync, INoOrmReadAsyncResultsConditionalAsync
+        INoOrmExecute, 
+        INoOrmExecuteAsync,
+        INoOrmSingle, 
+        INoOrmSingleAsync,
+        INoOrmRead, 
+        INoOrmReadRows,
+        INoOrmReadRowsAsync
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
@@ -34,66 +43,39 @@ namespace NoOrm
 
     public interface INoOrmSingle
     {
-        IDictionary<string, object> Single(string command);
-        IDictionary<string, object> Single(string command, params object[] parameters);
-        IDictionary<string, object> Single(string command, params (string name, object value)[] parameters);
+        IEnumerable<(string name, object value)> Single(string command);
+        IEnumerable<(string name, object value)> Single(string command, params object[] parameters);
+        IEnumerable<(string name, object value)> Single(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmSingleAsync
     {
-        Task<IDictionary<string, object>> SingleAsync(string command);
-        Task<IDictionary<string, object>> SingleAsync(string command, params object[] parameters);
-        Task<IDictionary<string, object>> SingleAsync(string command, params (string name, object value)[] parameters);
+        Task<IEnumerable<(string name, object value)>> SingleAsync(string command);
+        Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params object[] parameters);
+        Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmRead
     {
-        IEnumerable<IDictionary<string, object>> Read(string command);
-        IEnumerable<IDictionary<string, object>> Read(string command, params object[] parameters);
-        IEnumerable<IDictionary<string, object>> Read(string command, params (string name, object value)[] parameters);
+        IEnumerable<IEnumerable<(string name, object value)>> Read(string command);
+        IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params object[] parameters);
+        IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters);
     }
 
-    public interface INoOrmReadResults
+    public interface INoOrmReadRows
     {
-        INoOrm Read(string command, Action<IDictionary<string, object>> results);
-        INoOrm Read(string command, Action<IDictionary<string, object>> results, params object[] parameters);
-        INoOrm Read(string command, Action<IDictionary<string, object>> results, params (string name, object value)[] parameters);
+        INoOrm Read(string command, RowCallback results);
+        INoOrm Read(string command, RowCallback results, params object[] parameters);
+        INoOrm Read(string command, RowCallback results, params (string name, object value)[] parameters);
     }
 
-    public interface INoOrmReadResultsConditional
+    public interface INoOrmReadRowsAsync
     {
-        INoOrm Read(string command, Func<IDictionary<string, object>, bool> results);
-        INoOrm Read(string command, Func<IDictionary<string, object>, bool> results, params object[] parameters);
-        INoOrm Read(string command, Func<IDictionary<string, object>, bool> results, params (string name, object value)[] parameters);
-    }
-
-    public interface INoOrmReadResultsAsync
-    {
-        Task<INoOrm> ReadAsync(string command, Action<IDictionary<string, object>> results);
-        Task<INoOrm> ReadAsync(string command, Action<IDictionary<string, object>> results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, Action<IDictionary<string, object>> results, params (string name, object value)[] parameters);
-    }
-
-    public interface INoOrmReadAsyncResultsAsync
-    {
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task> results);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task> results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task> results, params (string name, object value)[] parameters);
-    }
-
-
-    public interface INoOrmReadResultsConditionalAsync
-    {
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, bool> results);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, bool> results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, bool> results, params (string name, object value)[] parameters);
-
-    }
-
-    public interface INoOrmReadAsyncResultsConditionalAsync
-    {
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task<bool>> results);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task<bool>> results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, Func<IDictionary<string, object>, Task<bool>> results, params (string name, object value)[] parameters);
+        Task<INoOrm> ReadAsync(string command, RowCallback results);
+        Task<INoOrm> ReadAsync(string command, RowCallback results, params object[] parameters);
+        Task<INoOrm> ReadAsync(string command, RowCallback results, params (string name, object value)[] parameters);
+        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results);
+        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results, params object[] parameters);
+        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results, params (string name, object value)[] parameters);
     }
 }

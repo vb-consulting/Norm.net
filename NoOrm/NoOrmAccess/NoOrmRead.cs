@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
+﻿using System.Collections.Generic;
+
 
 namespace NoOrm
 {
     public partial class NoOrmAccess
     {
-        public INoOrm Read(string command, Action<IDictionary<string, object>> results)
+        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -17,14 +15,13 @@ namespace NoOrm
                 {
                     while (reader.Read())
                     {
-                        results(Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue));
+                        yield return reader.GetTuplesFromReader();
                     }
-                    return this;
                 }
             }
         }
 
-        public INoOrm Read(string command, Action<IDictionary<string, object>> results, params object[] parameters)
+        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params object[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -35,15 +32,13 @@ namespace NoOrm
                 {
                     while (reader.Read())
                     {
-                        results(Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue));
+                        yield return reader.GetTuplesFromReader();
                     }
-
-                    return this;
                 }
             }
         }
 
-        public INoOrm Read(string command, Action<IDictionary<string, object>> results, params (string name, object value)[] parameters)
+        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -54,10 +49,8 @@ namespace NoOrm
                 {
                     while (reader.Read())
                     {
-                        results(Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue));
+                        yield return reader.GetTuplesFromReader();
                     }
-
-                    return this;
                 }
             }
         }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
+﻿using System.Linq;
 
 namespace NoOrm
 {
     public partial class NoOrmAccess
     {
-        public IDictionary<string, object> Single(string command)
+        public INoOrm Read(string command, RowCallback results)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -15,14 +12,16 @@ namespace NoOrm
                 EnsureConnectionIsOpen();
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return reader.Read()
-                        ? Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue)
-                        : new Dictionary<string, object>();
+                    while (reader.Read())
+                    {
+                        results(reader.GetValuesFromReader().ToArray());
+                    }
+                    return this;
                 }
             }
         }
 
-        public IDictionary<string, object> Single(string command, params object[] parameters)
+        public INoOrm Read(string command, RowCallback results, params object[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -31,14 +30,17 @@ namespace NoOrm
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return reader.Read() 
-                        ? Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue) 
-                        : new Dictionary<string, object>();
+                    while (reader.Read())
+                    {
+                        results(reader.GetValuesFromReader().ToArray());
+                    }
+
+                    return this;
                 }
             }
         }
 
-        public IDictionary<string, object> Single(string command, params (string name, object value)[] parameters)
+        public INoOrm Read(string command, RowCallback results, params (string name, object value)[] parameters)
         {
             using (var cmd = Connection.CreateCommand())
             {
@@ -47,9 +49,12 @@ namespace NoOrm
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
-                    return reader.Read()
-                        ? Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue)
-                        : new Dictionary<string, object>();
+                    while (reader.Read())
+                    {
+                        results(reader.GetValuesFromReader().ToArray());
+                    }
+
+                    return this;
                 }
             }
         }

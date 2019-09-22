@@ -7,13 +7,13 @@ namespace NoOrm
 {
     public static partial class ConnectionExtensions
     {
-        public static IEnumerable<IDictionary<string, object>> Read(this DbConnection connection, string command) =>
+        public static IEnumerable<IEnumerable<(string name, object value)>> Read(this DbConnection connection, string command) =>
             connection.GetNoOrmInstance().Read(command);
 
-        public static IEnumerable<IDictionary<string, object>> Read(this DbConnection connection, string command, params object[] parameters) =>
+        public static IEnumerable<IEnumerable<(string name, object value)>> Read(this DbConnection connection, string command, params object[] parameters) =>
             connection.GetNoOrmInstance().Read(command, parameters);
 
-        public static IEnumerable<IDictionary<string, object>> Read(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+        public static IEnumerable<IEnumerable<(string name, object value)>> Read(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             connection.GetNoOrmInstance().Read(command, parameters);
     }
 }
