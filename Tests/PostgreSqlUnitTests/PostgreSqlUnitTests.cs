@@ -11,9 +11,12 @@ namespace PostgreSqlUnitTests
     {
         private const string Default =
             "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;";
+
+        private const string TestDatabase = "no_orm_unit_tests";
+
         public PostgreSqlFixture()
         {
-            ConnectionString = "Server=localhost;Database=no_orm_unit_tests;Port=5432;User Id=postgres;Password=postgres;";
+            ConnectionString = $"Server=localhost;Database={TestDatabase};Port=5432;User Id=postgres;Password=postgres;";
             CreateTestDatabase();
         }
 
@@ -26,7 +29,7 @@ namespace PostgreSqlUnitTests
 
         private void CreateTestDatabase()
         {
-            void DoCreate() => Execute("create database no_orm_unit_tests;");
+            void DoCreate() => Execute($"create database {TestDatabase}");
             try
             {
                 DoCreate();
@@ -48,13 +51,13 @@ namespace PostgreSqlUnitTests
 
         private void DropTestDatabase()
         {
-            Execute(@"
-            revoke connect on database no_orm_unit_tests from public;
+            Execute($@"
+            revoke connect on database {TestDatabase} from public;
             
             select pid, pg_terminate_backend(pid) from pg_stat_activity 
-            where datname = 'no_orm_unit_tests' and pid <> pg_backend_pid();
+            where datname = '{TestDatabase}' and pid <> pg_backend_pid();
 
-            drop database no_orm_unit_tests;");
+            drop database {TestDatabase};");
         }
 
 

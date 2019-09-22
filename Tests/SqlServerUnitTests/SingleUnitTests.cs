@@ -1,18 +1,18 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using NoOrm;
-using Npgsql;
 using Xunit;
 
-namespace PostgreSqlUnitTests
+namespace SqlServerUnitTests
 {
-    [Collection("PostgreSqlDatabase")]
+    [Collection("SqlClientDatabase")]
     public class SingleUnitTests
     {
-        private readonly PostgreSqlFixture fixture;
+        private readonly SqlClientFixture fixture;
 
-        public SingleUnitTests(PostgreSqlFixture fixture)
+        public SingleUnitTests(SqlClientFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -20,10 +20,10 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void Single_Without_Parameters_Test()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = connection.Single(
-                    "select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\""
+                    "select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\""
                     );
 
                 Assert.Equal(1, result.Values.First());
@@ -36,13 +36,13 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void Single_With_Positional_Parameters_Test()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = connection.Single(
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -58,13 +58,13 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void Single_With_Named_Parameters_Test()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = connection.Single(
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -80,10 +80,10 @@ namespace PostgreSqlUnitTests
         [Fact]
         public async Task Single_Without_Parameters_Test_Async()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = await connection.SingleAsync(
-                    "select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\""
+                    "select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\""
                 );
 
                 Assert.Equal(1, result.Values.First());
@@ -96,13 +96,13 @@ namespace PostgreSqlUnitTests
         [Fact]
         public async Task Single_With_Positional_Parameters_Test_Async()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = await connection.SingleAsync(
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -118,13 +118,13 @@ namespace PostgreSqlUnitTests
         [Fact]
         public async Task Single_With_Named_Parameters_Test_Async()
         {
-            using (var connection = new NpgsqlConnection(fixture.ConnectionString))
+            using (var connection = new SqlConnection(fixture.ConnectionString))
             {
                 var result = await connection.SingleAsync(
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",

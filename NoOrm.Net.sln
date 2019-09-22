@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSqlUnitTests", "Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoOrm", "NoOrm\NoOrm.csproj", "{62991A1A-B0F5-439B-8B08-ED61571AE9E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServerUnitTests", "Tests\SqlServerUnitTests\SqlServerUnitTests.csproj", "{2322AE7F-4ABA-4C7C-8C91-CED576A9F714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{62991A1A-B0F5-439B-8B08-ED61571AE9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62991A1A-B0F5-439B-8B08-ED61571AE9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62991A1A-B0F5-439B-8B08-ED61571AE9E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2322AE7F-4ABA-4C7C-8C91-CED576A9F714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2322AE7F-4ABA-4C7C-8C91-CED576A9F714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2322AE7F-4ABA-4C7C-8C91-CED576A9F714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2322AE7F-4ABA-4C7C-8C91-CED576A9F714}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
