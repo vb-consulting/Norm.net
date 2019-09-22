@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -9,19 +10,19 @@ namespace NoOrm
     {
         public static async Task<DbConnection> ExecuteAsync(this DbConnection connection, string command)
         {
-            await new NoOrmAccess(connection).ExecuteAsync(command);
+            await connection.GetNoOrmInstance().ExecuteAsync(command);
             return connection;
         }
 
         public static async Task<DbConnection> ExecuteAsync(this DbConnection connection, string command, params object[] parameters)
         {
-            await new NoOrmAccess(connection).ExecuteAsync(command, parameters);
+            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
 
         public static async Task<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
-            await new NoOrmAccess(connection).ExecuteAsync(command, parameters);
+            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
     }

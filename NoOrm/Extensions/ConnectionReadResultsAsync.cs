@@ -9,19 +9,19 @@ namespace NoOrm
     {
         public static async Task<DbConnection> ReadAsync(this DbConnection connection, string command, Action<IDictionary<string, object>> results)
         {
-            await new NoOrmAccess(connection).ReadAsync(command, results);
+            await connection.GetNoOrmInstance().ReadAsync(command, results);
             return connection;
         }
 
         public static async Task<DbConnection> ReadAsync(this DbConnection connection, string command, Action<IDictionary<string, object>> results, params object[] parameters)
         {
-            await new NoOrmAccess(connection).ReadAsync(command, results, parameters);
+            await connection.GetNoOrmInstance().ReadAsync(command, results, parameters);
             return connection;
         }
 
         public static async Task<DbConnection> ReadAsync(this DbConnection connection, string command, Action<IDictionary<string, object>> results, params (string name, object value)[] parameters)
         {
-            await new NoOrmAccess(connection).ReadAsync(command, results, parameters);
+            await connection.GetNoOrmInstance().ReadAsync(command, results, parameters);
             return connection;
         }
     }

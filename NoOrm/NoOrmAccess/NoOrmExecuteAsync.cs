@@ -10,7 +10,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 await EnsureConnectionIsOpenAsync();
                 await cmd.ExecuteNonQueryAsync();
                 return this;
@@ -21,7 +21,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 await EnsureConnectionIsOpenAsync();
                 await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
                 return this;
@@ -32,7 +32,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 await EnsureConnectionIsOpenAsync();
                 await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
                 return this;

@@ -8,12 +8,12 @@ namespace NoOrm
     public static partial class ConnectionExtensions
     {
         public static async Task<IDictionary<string, object>> SingleAsync(this DbConnection connection, string command) =>
-            await new NoOrmAccess(connection).SingleAsync(command);
+            await connection.GetNoOrmInstance().SingleAsync(command);
 
         public static async Task<IDictionary<string, object>> SingleAsync(this DbConnection connection, string command, params object[] parameters) =>
-            await new NoOrmAccess(connection).SingleAsync(command, parameters);
+            await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
         public static async Task<IDictionary<string, object>> SingleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
-            await new NoOrmAccess(connection).SingleAsync(command, parameters);
+            await connection.GetNoOrmInstance().SingleAsync(command, parameters);
     }
 }

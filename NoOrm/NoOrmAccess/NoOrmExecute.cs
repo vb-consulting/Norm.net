@@ -10,7 +10,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 EnsureConnectionIsOpen();
                 cmd.ExecuteNonQuery();
                 return this;
@@ -21,7 +21,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 EnsureConnectionIsOpen();
                 cmd.AddParameters(parameters).ExecuteNonQuery();
                 return this;
@@ -32,7 +32,7 @@ namespace NoOrm
         {
             using (var cmd = Connection.CreateCommand())
             {
-                cmd.CommandText = command;
+                SetCommand(cmd, command);
                 EnsureConnectionIsOpen();
                 cmd.AddParameters(parameters).ExecuteNonQuery();
                 return this;

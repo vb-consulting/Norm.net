@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 
 namespace NoOrm
@@ -8,19 +10,19 @@ namespace NoOrm
     {
         public static DbConnection Execute(this DbConnection connection, string command)
         {
-            new NoOrmAccess(connection).Execute(command);
+            connection.GetNoOrmInstance().Execute(command);
             return connection;
         }
 
         public static DbConnection Execute(this DbConnection connection, string command, params object[] parameters)
         {
-            new NoOrmAccess(connection).Execute(command, parameters);
+            connection.GetNoOrmInstance().Execute(command, parameters);
             return connection;
         }
 
         public static DbConnection Execute(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
-            new NoOrmAccess(connection).Execute(command, parameters);
+            connection.GetNoOrmInstance().Execute(command, parameters);
             return connection;
         }
     }

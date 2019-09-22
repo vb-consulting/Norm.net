@@ -42,7 +42,7 @@ namespace PostgreSqlUnitTests
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -64,7 +64,7 @@ namespace PostgreSqlUnitTests
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -102,7 +102,7 @@ namespace PostgreSqlUnitTests
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
@@ -124,7 +124,7 @@ namespace PostgreSqlUnitTests
                     @"
                     select *
                     from (
-                        select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
+                        select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",

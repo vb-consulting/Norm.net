@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -22,6 +23,10 @@ namespace NoOrm
 
         public static DbCommand AddParameters(this DbCommand cmd, params object[] parameters)
         {
+            if (cmd.CommandType == CommandType.StoredProcedure)
+            {
+                throw new ArgumentException("Cannot use positional parameters with command type StoredProcedure. Use named parameters instead.");
+            }
             var command = cmd.CommandText;
             var paramIndex = 0;
             for (var index = 0; ; index += ParamPrefix.Length)

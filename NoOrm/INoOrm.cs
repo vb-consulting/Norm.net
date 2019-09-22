@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace NoOrm
 {
-    public interface INoOrm : INoOrmConnection,
+    public interface INoOrm :
         INoOrmExecute, INoOrmExecuteAsync,
         INoOrmSingle, INoOrmSingleAsync,
         INoOrmRead, INoOrmReadResults, INoOrmReadResultsConditional,
         INoOrmReadResultsAsync, INoOrmReadAsyncResultsAsync,
         INoOrmReadResultsConditionalAsync, INoOrmReadAsyncResultsConditionalAsync
-    { }
-
-    public interface INoOrmConnection
     {
         DbConnection Connection { get; }
+        INoOrm As(CommandType type);
+        INoOrm Timeout(int? timeout);
     }
 
     public interface INoOrmExecute
