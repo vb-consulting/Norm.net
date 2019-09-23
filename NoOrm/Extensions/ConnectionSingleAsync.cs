@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace NoOrm
+namespace NoOrm.Extensions
 {
     public static partial class ConnectionExtensions
     {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
-using System.Runtime.CompilerServices;
+﻿using System.Data.Common;
 
-
-namespace NoOrm
+namespace NoOrm.Extensions
 {
     public static partial class ConnectionExtensions
     {

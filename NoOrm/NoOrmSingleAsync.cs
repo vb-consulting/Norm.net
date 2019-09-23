@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NoOrm.Extensions;
 
 namespace NoOrm
 {
-    public partial class NoOrmAccess
+    public partial class NoOrm
     {
         public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 using (var reader = cmd.ExecuteReader())
                 {
                     return await reader.ReadAsync()
@@ -26,7 +27,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -42,7 +43,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {

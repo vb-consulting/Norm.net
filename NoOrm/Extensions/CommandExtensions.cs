@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace NoOrm
+namespace NoOrm.Extensions
 {
     public static class CommandExtensions
     {
@@ -11,6 +11,18 @@ namespace NoOrm
             {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.'};
 
         private const string ParamPrefix = "@";
+
+        public static DbCommand SetCommandParameters(this DbCommand cmd, string command, CommandType type, int? timeout)
+        {
+            cmd.CommandText = command;
+            cmd.CommandType = type;
+            if (timeout != null)
+            {
+                cmd.CommandTimeout = timeout.Value;
+            }
+
+            return cmd;
+        }
 
         public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value)
         {

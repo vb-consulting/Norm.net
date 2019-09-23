@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
+using NoOrm.Extensions;
+
 
 namespace NoOrm
 {
-    public partial class NoOrmAccess : IDisposable, INoOrm
+    public partial class NoOrm : IDisposable, INoOrm
     {
         private CommandType commandType;
         private int? commandTimeout;
 
         public DbConnection Connection { get; }
 
-        public NoOrmAccess(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null)
+        public NoOrm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null)
         {
             Connection = connection;
             this.commandType = commandType;
@@ -42,30 +41,7 @@ namespace NoOrm
             Connection?.Dispose();
         }
 
-        private void EnsureConnectionIsOpen()
-        {
-            if (Connection.State != ConnectionState.Open)
-            {
-                Connection.Open();
-            }
-        }
-
-        private async Task EnsureConnectionIsOpenAsync()
-        {
-            if (Connection.State != ConnectionState.Open)
-            {
-                await Connection.OpenAsync();
-            }
-        }
-
         private void SetCommand(DbCommand cmd, string command)
-        {
-            cmd.CommandText = command;
-            cmd.CommandType = commandType;
-            if (commandTimeout != null)
-            {
-                cmd.CommandTimeout = commandTimeout.Value;
-            }
-        }
+            => cmd.SetCommandParameters(command, commandType, commandTimeout);
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NoOrm;
+using NoOrm.Extensions;
 using Npgsql;
 using Xunit;
 

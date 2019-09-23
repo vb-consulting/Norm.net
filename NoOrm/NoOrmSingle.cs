@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NoOrm.Extensions;
 
 
 namespace NoOrm
 {
-    public partial class NoOrmAccess
+    public partial class NoOrm
     {
         public IEnumerable<(string name, object value)> Single(string command)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 using (var reader = cmd.ExecuteReader())
                 {
                     return reader.Read()
@@ -26,7 +27,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -42,7 +43,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 cmd.AddParameters(parameters);
                 using (var reader = cmd.ExecuteReader())
                 {

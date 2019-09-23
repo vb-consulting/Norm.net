@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using NoOrm;
 using Xunit;
+using ConnectionExtensions = NoOrm.Extensions.ConnectionExtensions;
+using NoOrmExtensions = NoOrm.Extensions.NoOrmExtensions;
 
 namespace SqlServerUnitTests
 {
@@ -24,17 +26,12 @@ namespace SqlServerUnitTests
         {
             using (var connection = new SqlConnection(fixture.ConnectionString))
             {
-                connection
-                    .Execute("create procedure EmptyStoreProc as /* empty */")
-                    .As(CommandType.StoredProcedure)
-                    .Execute("EmptyStoreProc")
-                    .As(CommandType.Text)
-                    .Execute("drop procedure EmptyStoreProc");
+                ConnectionExtensions.Execute(ConnectionExtensions.As(ConnectionExtensions.Execute(ConnectionExtensions.As(ConnectionExtensions.Execute(connection, "create procedure EmptyStoreProc as /* empty */"), CommandType.StoredProcedure), "EmptyStoreProc"), CommandType.Text), "drop procedure EmptyStoreProc");
 
                 var procMissing = false;
                 try
                 {
-                    connection.As(CommandType.StoredProcedure).Execute("EmptyStoreProc");
+                    ConnectionExtensions.Execute(ConnectionExtensions.As(connection, CommandType.StoredProcedure), "EmptyStoreProc");
                 }
                 catch (SqlException)
                 {
@@ -49,8 +46,7 @@ namespace SqlServerUnitTests
         {
             using (var connection = new SqlConnection(fixture.ConnectionString))
             {
-                var results = connection
-                    .Execute(@"
+                var results = NoOrmExtensions.ToDictionaries(ConnectionExtensions.Read(ConnectionExtensions.As(ConnectionExtensions.Execute(connection, @"
                         create procedure TestStoredProcedure(@id int)
                         as
                         select * from (
@@ -60,10 +56,7 @@ namespace SqlServerUnitTests
                             (3, 'foo3', cast('1979-05-19' as date))
                         ) t(first, bar, day)
                         where first = @id
-                    ")
-                    .As(CommandType.StoredProcedure)
-                    .Read("TestStoredProcedure", ("id", 1))
-                    .ToDictionaries()
+                    "), CommandType.StoredProcedure), "TestStoredProcedure", ("id", 1)))
                     .ToList();
 
                 Assert.Single(results);

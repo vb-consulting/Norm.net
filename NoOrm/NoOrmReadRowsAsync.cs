@@ -1,16 +1,17 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using NoOrm.Extensions;
 
 namespace NoOrm
 {
-    public partial class NoOrmAccess
+    public partial class NoOrm
     {
         public async Task<INoOrm> ReadAsync(string command, RowCallback results)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
@@ -27,7 +28,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -45,7 +46,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -63,7 +64,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
@@ -81,7 +82,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -100,7 +101,7 @@ namespace NoOrm
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                await EnsureConnectionIsOpenAsync();
+                await Connection.EnsureIsOpenAsync();
                 cmd.AddParameters(parameters);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {

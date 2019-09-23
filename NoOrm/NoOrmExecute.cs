@@ -1,13 +1,15 @@
-﻿namespace NoOrm
+﻿using NoOrm.Extensions;
+
+namespace NoOrm
 {
-    public partial class NoOrmAccess
+    public partial class NoOrm
     {
         public INoOrm Execute(string command)
         {
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 cmd.ExecuteNonQuery();
                 return this;
             }
@@ -18,7 +20,7 @@
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 cmd.AddParameters(parameters).ExecuteNonQuery();
                 return this;
             }
@@ -29,7 +31,7 @@
             using (var cmd = Connection.CreateCommand())
             {
                 SetCommand(cmd, command);
-                EnsureConnectionIsOpen();
+                Connection.EnsureIsOpen();
                 cmd.AddParameters(parameters).ExecuteNonQuery();
                 return this;
             }

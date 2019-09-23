@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace NoOrm
+namespace NoOrm.Extensions
 {
     public static class ReaderExtensions
     {
@@ -24,11 +20,5 @@ namespace NoOrm
                 yield return reader.GetValue(index);
             }
         }
-
-        public static IDictionary<string, object> ToDictionary(this IEnumerable<(string name, object value)> tuples) =>
-            tuples.ToDictionary(t => t.name, t => t.value);
-
-        public static IEnumerable<IDictionary<string, object>> ToDictionaries(this IEnumerable<IEnumerable<(string name, object value)>> tuples) => 
-            tuples.Select(t => t.ToDictionary());
     }
 }

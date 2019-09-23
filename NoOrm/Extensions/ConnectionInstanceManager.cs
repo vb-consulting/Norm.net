@@ -1,26 +1,24 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 
-
-namespace NoOrm
+namespace NoOrm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        private static readonly ConditionalWeakTable<DbConnection, NoOrmAccess> Table;
+        private static readonly ConditionalWeakTable<DbConnection, NoOrm> Table;
         static ConnectionExtensions()
         {
-            Table = new ConditionalWeakTable<DbConnection, NoOrmAccess>();
+            Table = new ConditionalWeakTable<DbConnection, NoOrm>();
         }
 
-        internal static NoOrmAccess GetNoOrmInstance(this DbConnection connection)
+        internal static NoOrm GetNoOrmInstance(this DbConnection connection)
         {
             if (Table.TryGetValue(connection, out var instance))
             {
                 return instance;
             }
-            instance = new NoOrmAccess(connection);
+            instance = new NoOrm(connection);
             Table.Add(connection, instance);
             return instance;
         }
