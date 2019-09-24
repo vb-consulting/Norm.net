@@ -2,25 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace NoOrm
 {
-    public delegate void RowCallback(object[] rows);
-    //public delegate bool RowCallback<T1>(T1 value1);
-    //public delegate bool RowCallback<T1, T2>(T1 value1, T2 value2);
-    //public delegate bool RowCallback<T1, T2, T3>(T1 value1, T2 value2, T3 value3);
-    public delegate Task RowCallbackAsync(params object[] rows);
-
     public interface INoOrm :
         INoOrmExecute, 
         INoOrmExecuteAsync,
         INoOrmSingle, 
         INoOrmSingleAsync,
-        INoOrmRead, 
-        INoOrmReadRows,
-        INoOrmReadRowsAsync
+        INoOrmRead,
+        INoOrmReadAsync
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
@@ -62,20 +54,10 @@ namespace NoOrm
         IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters);
     }
 
-    public interface INoOrmReadRows
+    public interface INoOrmReadAsync
     {
-        INoOrm Read(string command, RowCallback results);
-        INoOrm Read(string command, RowCallback results, params object[] parameters);
-        INoOrm Read(string command, RowCallback results, params (string name, object value)[] parameters);
-    }
-
-    public interface INoOrmReadRowsAsync
-    {
-        Task<INoOrm> ReadAsync(string command, RowCallback results);
-        Task<INoOrm> ReadAsync(string command, RowCallback results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, RowCallback results, params (string name, object value)[] parameters);
-        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results);
-        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results, params object[] parameters);
-        Task<INoOrm> ReadAsync(string command, RowCallbackAsync results, params (string name, object value)[] parameters);
+        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command);
+        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters);
+        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters);
     }
 }

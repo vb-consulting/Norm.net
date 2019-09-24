@@ -63,15 +63,11 @@ namespace PostgreSqlUnitTests
 
         private void Execute(string command)
         {
-            using (var conn = new NpgsqlConnection(Default))
-            {
-                using (var cmd = new NpgsqlCommand(command, conn))
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
-            }
+            using var conn = new NpgsqlConnection(Default);
+            using var cmd = new NpgsqlCommand(command, conn);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
     }
 }

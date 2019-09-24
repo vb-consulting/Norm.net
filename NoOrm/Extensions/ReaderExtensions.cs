@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 
+
 namespace NoOrm.Extensions
 {
     public static class ReaderExtensions
     {
-        public static IEnumerable<(string name, object value)> GetTuplesFromReader(this DbDataReader reader)
+        public static IEnumerable<(string name, object value)> ToTuples(this DbDataReader reader)
         {
             for (var index = 0; index < reader.FieldCount; index++)
             {
@@ -13,11 +14,11 @@ namespace NoOrm.Extensions
             }
         }
 
-        public static IEnumerable<object> GetValuesFromReader(this DbDataReader reader)
+        public static async IAsyncEnumerable<(string, object)> ToTuplesAsync(this DbDataReader reader)
         {
             for (var index = 0; index < reader.FieldCount; index++)
             {
-                yield return reader.GetValue(index);
+                yield return (reader.GetName(index), await reader.GetFieldValueAsync<object>(index));
             }
         }
     }

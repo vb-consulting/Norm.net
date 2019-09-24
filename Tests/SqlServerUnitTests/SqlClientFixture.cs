@@ -57,15 +57,11 @@ namespace SqlServerUnitTests
 
         private void Execute(string command)
         {
-            using (var conn = new SqlConnection(Default))
-            {
-                using (var cmd = new SqlCommand(command, conn))
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
-            }
+            using var conn = new SqlConnection(Default);
+            using var cmd = new SqlCommand(command, conn);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
     }
 }

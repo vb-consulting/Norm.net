@@ -7,39 +7,42 @@ namespace NoOrm
 {
     public partial class NoOrm
     {
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command)
+        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             await using var reader = await cmd.ExecuteReaderAsync();
-            return await reader.ReadAsync()
-                ? reader.ToTuples().ToList()
-                : new List<(string name, object value)>();
+            while (await reader.ReadAsync())
+            {
+                yield return reader.ToTuplesAsync();
+            }
         }
 
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params object[] parameters)
+        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             cmd.AddParameters(parameters);
             await using var reader = await cmd.ExecuteReaderAsync();
-            return await reader.ReadAsync() 
-                ? reader.ToTuples().ToList()
-                : new List<(string name, object value)>();
+            while (await reader.ReadAsync())
+            {
+                yield return reader.ToTuplesAsync();
+            }
         }
 
-        public async Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters)
+        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             cmd.AddParameters(parameters);
             await using var reader = await cmd.ExecuteReaderAsync();
-            return await reader.ReadAsync()
-                ? reader.ToTuples().ToList()
-                : new List<(string name, object value)>();
+            while (await reader.ReadAsync())
+            {
+                yield return reader.ToTuplesAsync();
+            }
         }
     }
 }
