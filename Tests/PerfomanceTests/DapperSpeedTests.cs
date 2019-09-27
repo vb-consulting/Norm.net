@@ -69,20 +69,35 @@ namespace PerfomanceTests
                 Bar = (string)d["bar"],
                 Datetime = (DateTime)d["datetime"]
             }));
+
+
+            var (e5, r5) = Measure(() => connection.Read<int, string, string, DateTime>(TestQuery).Select(d => new TestClass
+            {
+                Id = d.Item1,
+                Foo = d.Item2,
+                Bar = d.Item3,
+                Datetime = d.Item4
+            }));
+
+
             var (e1Count, c1) = Measure(() => r1.ToList().Count);
             var (e2Count, c2) = Measure(() => r2.ToList().Count);
             var (e3Count, c3) = Measure(() => r3.ToList().Count);
             var (e4Count, c4) = Measure(() => r4.ToList().Count);
 
+            var (e5Count, c5) = Measure(() => r4.ToList().Count);
+
             output.WriteLine("Dapper objects query in {0}", e1);
             output.WriteLine("NoOrm tuples query in {0}", e2);
             output.WriteLine("NoOrm dictionary query in {0}", e3);
             output.WriteLine("NoOrm objects query in {0}", e4);
+            output.WriteLine("NoOrm objects query in {0}", e5);
 
             output.WriteLine("Dapper objects count {0} in {1}", c1, e1Count);
             output.WriteLine("NoOrm tuples count {0} in {1}", c2, e2Count);
             output.WriteLine("NoOrm dictionary count {0} in {1}", c3, e3Count);
             output.WriteLine("NoOrm objects count {0} in {1}", c4, e4Count);
+            output.WriteLine("NoOrm objects count {0} in {1}", c5, e5Count);
             /*
             Dapper objects query in 00:00:02.2823730
             NoOrm tuples query in 00:00:00.0008002
@@ -94,6 +109,8 @@ namespace PerfomanceTests
             NoOrm dictionary count 1000000 in 00:00:03.5499609
             NoOrm objects count 1000000 in 00:00:02.6214033
 
+
+
             Dapper objects query in 00:00:02.4485043
             NoOrm tuples query in 00:00:00.0011741
             NoOrm dictionary query in 00:00:00.0003935
@@ -103,6 +120,19 @@ namespace PerfomanceTests
             NoOrm tuples count 1000000 in 00:00:01.8909399
             NoOrm dictionary count 1000000 in 00:00:04.9397652
             NoOrm objects count 1000000 in 00:00:02.8572146
+
+
+            Dapper objects query in 00:00:02.5984330
+            NoOrm tuples query in 00:00:00.0015112
+            NoOrm dictionary query in 00:00:00.0004711
+            NoOrm objects query in 00:00:00.0003554
+            NoOrm objects query in 00:00:00.0020094
+
+            Dapper objects count 1000000 in 00:00:00.0024681
+            NoOrm tuples count 1000000 in 00:00:01.7962095
+            NoOrm dictionary count 1000000 in 00:00:03.3971400
+            NoOrm objects count 1000000 in 00:00:02.5874588
+            NoOrm objects count 1000000 in 00:00:03.2018552
              */
         }
 

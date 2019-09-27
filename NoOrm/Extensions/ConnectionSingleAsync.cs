@@ -32,5 +32,32 @@ namespace NoOrm.Extensions
 
         public static async Task<(T1, T2)> SingleAsync<T1, T2>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             await connection.GetNoOrmInstance().SingleAsync<T1, T2>(command, parameters);
+
+        public static async Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(this DbConnection connection, string command) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3>(command);
+
+        public static async Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(this DbConnection connection, string command, params object[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3>(command, parameters);
+
+        public static async Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3>(command, parameters);
+
+        public static async Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(this DbConnection connection, string command) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4>(command);
+
+        public static async Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(this DbConnection connection, string command, params object[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4>(command, parameters);
+
+        public static async Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4>(command, parameters);
+
+        public static async Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4, T5>(command);
+
+        public static async Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command, params object[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4, T5>(command, parameters);
+
+        public static async Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync<T1, T2, T3, T4, T5>(command, parameters);
     }
 }

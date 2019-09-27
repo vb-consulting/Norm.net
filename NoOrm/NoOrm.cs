@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using NoOrm.Extensions;
 
@@ -16,7 +14,8 @@ namespace NoOrm
         private CommandType commandType;
         private int? commandTimeout;
         private readonly bool convertsDbNull;
-        private readonly DbType type;
+        private readonly DbType dbType;
+        private static readonly Type StringType = typeof(string);
 
         public DbConnection Connection { get; }
 
@@ -26,8 +25,8 @@ namespace NoOrm
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
             var name = connection.GetType().Name;
-            type = name switch { "SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other };
-            convertsDbNull = type != DbType.Ms;
+            dbType = name switch { "SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other };
+            convertsDbNull = dbType != DbType.Ms;
         }
 
         public INoOrm As(CommandType type)
@@ -54,9 +53,11 @@ namespace NoOrm
         private void SetCommand(DbCommand cmd, string command)
             => cmd.SetCommandParameters(command, commandType, commandTimeout);
 
+        private bool CheckDbNull<T>() => (!convertsDbNull || typeof(T) == StringType);
+
         private T GetFieldValue<T>(DbDataReader reader, int ordinal)
         {
-            if (!convertsDbNull)
+            if (CheckDbNull<T>())
             {
                 return reader.IsDBNull(ordinal) ? default : reader.GetFieldValue<T>(ordinal);
             }
@@ -65,7 +66,7 @@ namespace NoOrm
 
         private async Task<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal)
         {
-            if (!convertsDbNull)
+            if (CheckDbNull<T>())
             {
                 return await reader.IsDBNullAsync(ordinal) ? default : await reader.GetFieldValueAsync<T>(ordinal);
             }

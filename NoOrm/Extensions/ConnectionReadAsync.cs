@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
-using System.Threading.Tasks;
+
 
 namespace NoOrm.Extensions
 {
@@ -31,5 +31,29 @@ namespace NoOrm.Extensions
 
         public static IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(this DbConnection connection, string command, params (string name, object value)[] parameters)
             => connection.GetNoOrmInstance().ReadAsync<T1, T2>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(this DbConnection connection, string command)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3>(command);
+        public static IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(this DbConnection connection, string command, params object[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(this DbConnection connection, string command, params (string name, object value)[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(this DbConnection connection, string command)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4>(command);
+        public static IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(this DbConnection connection, string command, params object[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(this DbConnection connection, string command, params (string name, object value)[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5>(command);
+        public static IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command, params object[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5>(command, parameters);
+
+        public static IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(this DbConnection connection, string command, params (string name, object value)[] parameters)
+            => connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5>(command, parameters);
     }
 }

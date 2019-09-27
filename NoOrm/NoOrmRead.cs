@@ -40,6 +40,50 @@ namespace NoOrm
                 r => (GetFieldValue<T1>(r,0), GetFieldValue<T2>(r,1)),
                 cmd => cmd.AddParameters(parameters));
 
+        public IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(string command) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2)));
+
+        public IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(string command, params object[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(string command, params (string name, object value)[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IEnumerable<(T1, T2, T3, T4)> Read<T1, T2, T3, T4>(string command) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3)));
+
+        public IEnumerable<(T1, T2, T3, T4)> Read<T1, T2, T3, T4>(string command, params object[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IEnumerable<(T1, T2, T3, T4)> Read<T1, T2, T3, T4>(string command, params (string name, object value)[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4)));
+
+        public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command, params object[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command, params (string name, object value)[] parameters) =>
+            ReadInternal(command,
+                r => (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4)),
+                cmd => cmd.AddParameters(parameters));
+
+
+
         private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, Action<DbCommand> commandAction = null)
         {
             using var cmd = Connection.CreateCommand();
