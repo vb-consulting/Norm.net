@@ -93,6 +93,16 @@ namespace PerfomanceTests
             NoOrm tuples count 1000000 in 00:00:01.6170625
             NoOrm dictionary count 1000000 in 00:00:03.5499609
             NoOrm objects count 1000000 in 00:00:02.6214033
+
+            Dapper objects query in 00:00:02.4485043
+            NoOrm tuples query in 00:00:00.0011741
+            NoOrm dictionary query in 00:00:00.0003935
+            NoOrm objects query in 00:00:00.0003090
+
+            Dapper objects count 1000000 in 00:00:00.0010914
+            NoOrm tuples count 1000000 in 00:00:01.8909399
+            NoOrm dictionary count 1000000 in 00:00:04.9397652
+            NoOrm objects count 1000000 in 00:00:02.8572146
              */
         }
 

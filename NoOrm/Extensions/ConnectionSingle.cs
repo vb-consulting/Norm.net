@@ -13,5 +13,23 @@ namespace NoOrm.Extensions
 
         public static IEnumerable<(string name, object value)> Single(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             connection.GetNoOrmInstance().Single(command, parameters);
+
+        public static T Single<T>(this DbConnection connection, string command) =>
+            connection.GetNoOrmInstance().Single<T>(command);
+
+        public static T Single<T>(this DbConnection connection, string command, params object[] parameters) =>
+            connection.GetNoOrmInstance().Single<T>(command, parameters);
+
+        public static T Single<T>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            connection.GetNoOrmInstance().Single<T>(command, parameters);
+
+        public static (T1, T2) Single<T1, T2>(this DbConnection connection, string command) =>
+            connection.GetNoOrmInstance().Single<T1, T2>(command);
+
+        public static (T1, T2) Single<T1, T2>(this DbConnection connection, string command, params object[] parameters) =>
+            connection.GetNoOrmInstance().Single<T1, T2>(command, parameters);
+
+        public static (T1, T2) Single<T1, T2>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            connection.GetNoOrmInstance().Single<T1, T2>(command, parameters);
     }
 }

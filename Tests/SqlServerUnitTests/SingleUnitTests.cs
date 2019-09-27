@@ -19,6 +19,22 @@ namespace SqlServerUnitTests
         }
 
         [Fact]
+        public void Null_Value_Test_Sync()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            var (name, value) = connection.Single("select null").ToList().First();
+            Assert.Equal(DBNull.Value, value);
+        }
+
+        [Fact]
+        public async Task Null_Value_Test_Async()
+        {
+            await using var connection = new SqlConnection(fixture.ConnectionString);
+            var (name, value) = (await connection.SingleAsync("select null")).ToList().First();
+            Assert.Equal(DBNull.Value, value);
+        }
+
+        [Fact]
         public void Single_Without_Parameters_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);

@@ -33,6 +33,22 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public void Null_Value_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (name, value) = connection.Single("values (null)").ToList().First();
+            Assert.Equal(DBNull.Value, value);
+        }
+
+        [Fact]
+        public async Task Null_Value_Test_Async()
+        {
+            await using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (name, value) = (await connection.SingleAsync("values (null)")).ToList().First();
+            Assert.Equal(DBNull.Value, value);
+        }
+
+        [Fact]
         public void Single_With_Positional_Parameters_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace NoOrm
@@ -38,6 +39,12 @@ namespace NoOrm
         IEnumerable<(string name, object value)> Single(string command);
         IEnumerable<(string name, object value)> Single(string command, params object[] parameters);
         IEnumerable<(string name, object value)> Single(string command, params (string name, object value)[] parameters);
+        T Single<T>(string command);
+        T Single<T>(string command, params object[] parameters);
+        T Single<T>(string command, params (string name, object value)[] parameters);
+        (T1, T2) Single<T1, T2>(string command);
+        (T1, T2) Single<T1, T2>(string command, params object[] parameters);
+        (T1, T2) Single<T1, T2>(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmSingleAsync
@@ -45,6 +52,12 @@ namespace NoOrm
         Task<IEnumerable<(string name, object value)>> SingleAsync(string command);
         Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params object[] parameters);
         Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters);
+        Task<T> SingleAsync<T>(string command);
+        Task<T> SingleAsync<T>(string command, params object[] parameters);
+        Task<T> SingleAsync<T>(string command, params (string name, object value)[] parameters);
+        Task<(T1, T2)> SingleAsync<T1, T2>(string command);
+        Task<(T1, T2)> SingleAsync<T1, T2>(string command, params object[] parameters);
+        Task<(T1, T2)> SingleAsync<T1, T2>(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmRead
@@ -52,6 +65,12 @@ namespace NoOrm
         IEnumerable<IEnumerable<(string name, object value)>> Read(string command);
         IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params object[] parameters);
         IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters);
+        IEnumerable<T> Read<T>(string command);
+        IEnumerable<T> Read<T>(string command, params object[] parameters);
+        IEnumerable<T> Read<T>(string command, params (string name, object value)[] parameters);
+        IEnumerable<(T1, T2)> Read<T1, T2>(string command);
+        IEnumerable<(T1, T2)> Read<T1, T2>(string command, params object[] parameters);
+        IEnumerable<(T1, T2)> Read<T1, T2>(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmReadAsync
@@ -59,5 +78,11 @@ namespace NoOrm
         IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command);
         IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters);
         IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters);
+        IAsyncEnumerable<T> ReadAsync<T>(string command);
+        IAsyncEnumerable<T> ReadAsync<T>(string command, params object[] parameters);
+        IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters);
+        IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command);
+        IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params object[] parameters);
+        IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params (string name, object value)[] parameters);
     }
 }

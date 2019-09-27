@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading.Tasks;
 using NoOrm.Extensions;
 
@@ -7,41 +8,71 @@ namespace NoOrm
 {
     public partial class NoOrm
     {
-        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command)
+        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command) =>
+            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
+                r => r.ToTuplesAsync());
+
+        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters) =>
+            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
+                r => r.ToTuplesAsync(),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
+                r => r.ToTuplesAsync(),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<T> ReadAsync<T>(string command) =>
+            ReadInternalAsync(command,
+                async r => await GetFieldValueAsync<T>(r,0));
+
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params object[] parameters) =>
+            ReadInternalAsync(command,
+                async r => await GetFieldValueAsync<T>(r,0),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => await GetFieldValueAsync<T>(r,0),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r,0), await GetFieldValueAsync<T2>(r,1)));
+
+        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params object[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r,0), await GetFieldValueAsync<T2>(r,1)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r,0), await GetFieldValueAsync<T2>(r,1)),
+                cmd => cmd.AddParameters(parameters));
+
+        private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, T> readerAction, Action<DbCommand> commandAction = null)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
+            commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                yield return reader.ToTuplesAsync();
+                yield return readerAction(reader);
             }
         }
 
-        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters)
+        private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, Action<DbCommand> commandAction = null)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
-            cmd.AddParameters(parameters);
+            commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                yield return reader.ToTuplesAsync();
-            }
-        }
-
-        public async IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters)
-        {
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            cmd.AddParameters(parameters);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                yield return reader.ToTuplesAsync();
+                yield return await readerAction(reader);
             }
         }
     }
