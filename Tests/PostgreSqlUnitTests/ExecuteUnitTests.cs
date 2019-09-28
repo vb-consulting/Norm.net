@@ -109,7 +109,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("create table test (t text)");
             await connection.ExecuteAsync("insert into test values ('foo')");
 
-            var result = (await connection.SingleAsync("select * from test")).ToDictionary();
+            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
 
             Assert.Equal("foo", result.Values.First());
 
@@ -117,7 +117,7 @@ namespace PostgreSqlUnitTests
             var tableMissing = false;
             try
             {
-                await connection.SingleAsync("select * from test");
+                await connection.SingleAsync("select * from test").ToListAsync();
             }
             catch (PostgresException)
             {
@@ -134,7 +134,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1));
-            var result = (await connection.SingleAsync("select * from test")).ToDictionary();
+            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -144,7 +144,7 @@ namespace PostgreSqlUnitTests
             var tableMissing = false;
             try
             {
-                await connection.SingleAsync("select * from test");
+                await connection.SingleAsync("select * from test").ToListAsync();
             }
             catch (PostgresException)
             {
@@ -162,7 +162,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 1, "foo", new DateTime(1977, 5, 19));
 
-            var result = (await connection.SingleAsync("select * from test")).ToDictionary();
+            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -172,7 +172,7 @@ namespace PostgreSqlUnitTests
             var tableMissing = false;
             try
             {
-                await connection.SingleAsync("select * from test");
+                await connection.SingleAsync("select * from test").ToListAsync();
             }
             catch (PostgresException)
             {

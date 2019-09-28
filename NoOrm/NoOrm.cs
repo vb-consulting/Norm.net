@@ -85,7 +85,7 @@ namespace NoOrm
             return reader.GetFieldValue<T>(ordinal);
         }
 
-        private async Task<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal)
+        private async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal)
         {
             if (CheckDbNull<T>())
             {

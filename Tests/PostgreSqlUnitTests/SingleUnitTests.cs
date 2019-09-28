@@ -44,7 +44,7 @@ namespace PostgreSqlUnitTests
         public async Task Null_Value_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (name, value) = (await connection.SingleAsync("values (null)")).ToList().First();
+            var (name, value) = (await connection.SingleAsync("values (null)").ToListAsync()).First();
             Assert.Equal(DBNull.Value, value);
         }
 
@@ -92,9 +92,8 @@ namespace PostgreSqlUnitTests
         public async Task Single_Without_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = (await connection.SingleAsync(
-                "select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\""
-            )).ToDictionary();
+            var result = await connection.SingleAsync(
+                "select 1, 'foo' as bar, cast('1977-05-19' as date) as day, null as \"null\"").ToDictionaryAsync();
 
             Assert.Equal(1, result.Values.First());
             Assert.Equal("foo", result["bar"]);
@@ -106,7 +105,7 @@ namespace PostgreSqlUnitTests
         public async Task Single_With_Positional_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = (await connection.SingleAsync(
+            var result = await connection.SingleAsync(
                 @"
                     select *
                     from (
@@ -114,7 +113,7 @@ namespace PostgreSqlUnitTests
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
-                1, "foo", new DateTime(1977, 5, 19))).ToDictionary();
+                1, "foo", new DateTime(1977, 5, 19)).ToDictionaryAsync();
 
             Assert.Equal(1, result.Values.First());
             Assert.Equal("foo", result["bar"]);
@@ -126,7 +125,7 @@ namespace PostgreSqlUnitTests
         public async Task Single_With_Named_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = (await connection.SingleAsync(
+            var result = await connection.SingleAsync(
                 @"
                     select *
                     from (
@@ -134,7 +133,7 @@ namespace PostgreSqlUnitTests
                     ) as sub
                     where first = @1 and bar = @2 and day = @3
                     ",
-                ("3", new DateTime(1977, 5, 19)), ("2", "foo"), ("1", 1))).ToDictionary();
+                ("3", new DateTime(1977, 5, 19)), ("2", "foo"), ("1", 1)).ToDictionaryAsync();
 
             Assert.Equal(1, result.Values.First());
             Assert.Equal("foo", result["bar"]);

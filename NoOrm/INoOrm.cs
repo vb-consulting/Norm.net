@@ -59,24 +59,24 @@ namespace NoOrm
 
     public interface INoOrmSingleAsync
     {
-        Task<IEnumerable<(string name, object value)>> SingleAsync(string command);
-        Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params object[] parameters);
-        Task<IEnumerable<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters);
-        Task<T> SingleAsync<T>(string command);
-        Task<T> SingleAsync<T>(string command, params object[] parameters);
-        Task<T> SingleAsync<T>(string command, params (string name, object value)[] parameters);
-        Task<(T1, T2)> SingleAsync<T1, T2>(string command);
-        Task<(T1, T2)> SingleAsync<T1, T2>(string command, params object[] parameters);
-        Task<(T1, T2)> SingleAsync<T1, T2>(string command, params (string name, object value)[] parameters);
-        Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command);
-        Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command, params object[] parameters);
-        Task<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command, params (string name, object value)[] parameters);
-        Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command);
-        Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command, params object[] parameters);
-        Task<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command, params (string name, object value)[] parameters);
-        Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command);
-        Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command, params object[] parameters);
-        Task<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command, params (string name, object value)[] parameters);
+        IAsyncEnumerable<(string name, object value)> SingleAsync(string command);
+        IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params object[] parameters);
+        IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params (string name, object value)[] parameters);
+        ValueTask<T> SingleAsync<T>(string command);
+        ValueTask<T> SingleAsync<T>(string command, params object[] parameters);
+        ValueTask<T> SingleAsync<T>(string command, params (string name, object value)[] parameters);
+        ValueTask<(T1, T2)> SingleAsync<T1, T2>(string command);
+        ValueTask<(T1, T2)> SingleAsync<T1, T2>(string command, params object[] parameters);
+        ValueTask<(T1, T2)> SingleAsync<T1, T2>(string command, params (string name, object value)[] parameters);
+        ValueTask<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command);
+        ValueTask<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command, params object[] parameters);
+        ValueTask<(T1, T2, T3)> SingleAsync<T1, T2, T3>(string command, params (string name, object value)[] parameters);
+        ValueTask<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command);
+        ValueTask<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command, params object[] parameters);
+        ValueTask<(T1, T2, T3, T4)> SingleAsync<T1, T2, T3, T4>(string command, params (string name, object value)[] parameters);
+        ValueTask<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command);
+        ValueTask<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command, params object[] parameters);
+        ValueTask<(T1, T2, T3, T4, T5)> SingleAsync<T1, T2, T3, T4, T5>(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmRead
