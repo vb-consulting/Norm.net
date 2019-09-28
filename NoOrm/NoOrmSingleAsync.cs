@@ -128,10 +128,7 @@ namespace NoOrm
             await Connection.EnsureIsOpenAsync();
             commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
-            if (!await reader.ReadAsync())
-            {
-                yield return default;
-            }
+            if (!await reader.ReadAsync()) yield break;
             for (var index = 0; index < reader.FieldCount; index++)
             {
                 yield return (reader.GetName(index), await reader.GetFieldValueAsync<object>(index));
