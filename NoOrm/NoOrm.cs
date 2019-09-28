@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Text.Json;
 using System.Threading.Tasks;
 using NoOrm.Extensions;
 
@@ -13,17 +14,19 @@ namespace NoOrm
     
         private CommandType commandType;
         private int? commandTimeout;
+        private JsonSerializerOptions jsonOptions;
         private readonly bool convertsDbNull;
         private readonly DbType dbType;
         private static readonly Type StringType = typeof(string);
 
         public DbConnection Connection { get; }
 
-        public NoOrm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null)
+        public NoOrm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null, JsonSerializerOptions jsonOptions = null)
         {
             Connection = connection;
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
+            this.jsonOptions = jsonOptions;
             var name = connection.GetType().Name;
             dbType = name switch { "SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other };
             convertsDbNull = dbType != DbType.Ms;
@@ -41,6 +44,12 @@ namespace NoOrm
             return this;
         }
 
+        public INoOrm WithJsonOptions(JsonSerializerOptions jsonOptions)
+        {
+            this.jsonOptions = jsonOptions;
+            return this;
+        }
+
         public void Dispose()
         {
             if (Connection.State == ConnectionState.Open)
@@ -48,6 +57,18 @@ namespace NoOrm
                 Connection.Close();
             }
             Connection?.Dispose();
+        }
+
+        private JsonSerializerOptions JsonOptions
+        {
+            get
+            {
+                if (this.jsonOptions != null)
+                {
+                    return this.jsonOptions;
+                }
+                return GlobalJsonSerializerOptions.Options;
+            }
         }
 
         private void SetCommand(DbCommand cmd, string command)

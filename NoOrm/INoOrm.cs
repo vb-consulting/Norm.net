@@ -13,7 +13,8 @@ namespace NoOrm
         INoOrmSingle, 
         INoOrmSingleAsync,
         INoOrmRead,
-        INoOrmReadAsync
+        INoOrmReadAsync,
+        IDeserializeSingleJson
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
@@ -112,21 +113,43 @@ namespace NoOrm
         IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command);
         IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params object[] parameters);
         IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params (string name, object value)[] parameters);
-
-
         IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command);
         IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command, params object[] parameters);
         IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command, params (string name, object value)[] parameters);
-
-
         IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(string command);
         IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(string command, params object[] parameters);
         IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(string command, params (string name, object value)[] parameters);
-
-
         IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command);
         IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command, params object[] parameters);
         IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command, params (string name, object value)[] parameters);
 
+    }
+
+    public interface IDeserializeSingleJson
+    {
+        T DeserializeSingleJson<T>(string command);
+        T DeserializeSingleJson<T>(string command, params object[] parameters);
+        T DeserializeSingleJson<T>(string command, params (string name, object value)[] parameters);
+    }
+
+    public interface IDeserializeSingleJsonAsync
+    {
+        ValueTask<T> DeserializeSingleJsonAsync<T>(string command);
+        ValueTask<T> DeserializeSingleJsonAsync<T>(string command, params object[] parameters);
+        ValueTask<T> DeserializeSingleJsonAsync<T>(string command, params (string name, object value)[] parameters);
+    }
+
+    public interface IDeserializeJson
+    {
+        IEnumerable<T> DeserializeJson<T>(string command);
+        IEnumerable<T> DeserializeJson<T>(string command, params object[] parameters);
+        IEnumerable<T> DeserializeJson<T>(string command, params (string name, object value)[] parameters);
+    }
+
+    public interface IDeserializeJsonAsync
+    {
+        IAsyncEnumerable<T> DeserializeJsonAsync<T>(string command);
+        IAsyncEnumerable<T> DeserializeJsonAsync<T>(string command, params object[] parameters);
+        IAsyncEnumerable<T> DeserializeJsonAsync<T>(string command, params (string name, object value)[] parameters);
     }
 }

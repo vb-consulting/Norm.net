@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace NoOrm.Extensions
 {
@@ -34,6 +35,13 @@ namespace NoOrm.Extensions
         {
             var instance = connection.GetNoOrmInstance();
             instance.Timeout(timeout);
+            return connection;
+        }
+
+        public static DbConnection WithJsonOptions(this DbConnection connection, JsonSerializerOptions jsonOptions)
+        {
+            var instance = connection.GetNoOrmInstance();
+            instance.WithJsonOptions(jsonOptions);
             return connection;
         }
     }

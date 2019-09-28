@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Linq.Async" Version="4.0.0-preview.8.build.9" />
+    <PackageReference Include="System.Linq.Async" Version="4.0.0" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
 
 </Project>
