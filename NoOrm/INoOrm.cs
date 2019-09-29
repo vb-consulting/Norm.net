@@ -21,6 +21,8 @@ namespace NoOrm
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
+        INoOrm AsProcedure();
+        INoOrm AsText();
         INoOrm Timeout(int? timeout);
         INoOrm WithJsonOptions(JsonSerializerOptions options);
     }

@@ -1,47 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using NoOrm.Extensions;
+using Npgsql;
+using PostgreSqlUnitTests;
 using Xunit;
 
 namespace SqlServerUnitTests
 {
-    [Collection("SqlClientDatabase")]
-    public class StoredProcedureUnitTests
+    [Collection("PostgreSqlDatabase")]
+    public class FunctionsUnitTests
     {
-        private readonly SqlClientFixture fixture;
+        private readonly PostgreSqlFixture fixture;
 
-        public StoredProcedureUnitTests(SqlClientFixture fixture)
+        public FunctionsUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public void Execute_Create_Empty_Proc_Execute_And_Drop_Procedure()
+        public void Execute_And_Drop_Text_Function_Test_Procedure()
         {
-            using var connection = new SqlConnection(fixture.ConnectionString);
-            connection
-                .Execute("create procedure EmptyStoreProc as /* empty */")
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Execute(@"
+                    create function test_func() returns text as
+                    $$
+                    begin
+                        return 'I am function result!';
+                    end
+                    $$
+                    language plpgsql")
                 .AsProcedure()
-                .Execute("EmptyStoreProc")
-                .AsText()
-                .Execute("drop procedure EmptyStoreProc");
+                .Single<string>("test_func");
+
+            Assert.Equal("I am function result!", result);
+
+            connection.AsText().Execute("drop function test_func()");
 
             var procMissing = false;
             try
             {
-                connection.As(CommandType.StoredProcedure).Execute("EmptyStoreProc");
+                connection.AsProcedure().Execute("test_func");
             }
-            catch (SqlException)
+            catch (NpgsqlException)
             {
                 procMissing = true;
             }
             Assert.True(procMissing);
         }
 
+        /*
         [Fact]
         public void Execute_Create_Procedure_And_Read_Results()
         {
@@ -58,7 +67,7 @@ namespace SqlServerUnitTests
                         ) t(first, bar, day)
                         where first = @id
                     ")
-                .AsProcedure()
+                .As(CommandType.StoredProcedure)
                 .Read("TestStoredProcedure", ("id", 1))
                 .ToDictionaries()
                 .ToList();
@@ -68,5 +77,6 @@ namespace SqlServerUnitTests
             Assert.Equal("foo1", results[0]["bar"]);
             Assert.Equal(new DateTime(1977, 5, 19), results[0]["day"]);
         }
+        */
     }
 }

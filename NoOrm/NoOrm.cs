@@ -38,6 +38,10 @@ namespace NoOrm
             return this;
         }
 
+        public INoOrm AsProcedure() => As(CommandType.StoredProcedure);
+
+        public INoOrm AsText() => As(CommandType.Text);
+
         public INoOrm Timeout(int? timeout)
         {
             commandTimeout = timeout;

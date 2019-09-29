@@ -31,6 +31,10 @@ namespace NoOrm.Extensions
             return connection;
         }
 
+        public static DbConnection AsProcedure(this DbConnection connection) => connection.As(CommandType.StoredProcedure);
+
+        public static DbConnection AsText(this DbConnection connection) => connection.As(CommandType.Text);
+
         public static DbConnection Timeout(this DbConnection connection, int? timeout)
         {
             var instance = connection.GetNoOrmInstance();
