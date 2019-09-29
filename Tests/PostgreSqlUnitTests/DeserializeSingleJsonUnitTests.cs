@@ -82,7 +82,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void DeserializeSingle_TestEnumareable_Sync()
+        public void DeserializeSingle_TestEnumerable_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.DeserializeSingleJson<IEnumerable<TestClass>>(UpperCaseQuery).ToList();
@@ -111,7 +111,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public async Task DeserializeSingle_TestEnumareable_Async()
+        public async Task DeserializeSingle_TestEnumerable_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = (await connection.DeserializeSingleJsonAsync<IEnumerable<TestClass>>(UpperCaseQuery)).ToList();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Runtime.InteropServices.ComTypes;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace NoOrm
@@ -14,11 +14,15 @@ namespace NoOrm
         INoOrmSingleAsync,
         INoOrmRead,
         INoOrmReadAsync,
-        IDeserializeSingleJson
+        IDeserializeSingleJson,
+        IDeserializeSingleJsonAsync,
+        IDeserializeJson,
+        IDeserializeJsonAsync
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
         INoOrm Timeout(int? timeout);
+        INoOrm WithJsonOptions(JsonSerializerOptions options);
     }
     
     public interface INoOrmExecute

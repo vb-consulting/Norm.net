@@ -44,9 +44,9 @@ namespace NoOrm
             return this;
         }
 
-        public INoOrm WithJsonOptions(JsonSerializerOptions jsonOptions)
+        public INoOrm WithJsonOptions(JsonSerializerOptions options)
         {
-            this.jsonOptions = jsonOptions;
+            this.jsonOptions = options;
             return this;
         }
 
