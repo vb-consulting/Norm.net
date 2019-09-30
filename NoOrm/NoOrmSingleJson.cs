@@ -7,13 +7,13 @@ namespace NoOrm
 {
     public partial class NoOrm
     {
-        public T DeserializeSingleJson<T>(string command) => 
+        public T SingleJson<T>(string command) => 
             JsonSerializer.Deserialize<T>(Single<string>(command), JsonOptions);
 
-        public T DeserializeSingleJson<T>(string command, params object[] parameters) => 
+        public T SingleJson<T>(string command, params object[] parameters) => 
             JsonSerializer.Deserialize<T>(Single<string>(command, parameters), JsonOptions);
 
-        public T DeserializeSingleJson<T>(string command, params (string name, object value)[] parameters) => 
+        public T SingleJson<T>(string command, params (string name, object value)[] parameters) => 
             JsonSerializer.Deserialize<T>(Single<string>(command, parameters), JsonOptions);
     }
 }

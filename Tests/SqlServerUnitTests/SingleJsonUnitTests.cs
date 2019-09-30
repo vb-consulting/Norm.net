@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using NoOrm;
 using NoOrm.Extensions;
 using Xunit;
 
 namespace SqlServerUnitTests
 {
     [Collection("SqlClientDatabase")]
-    public class DeserializeJsonUnitTests
+    public class SingleJsonUnitTests
     {
         private readonly SqlClientFixture fixture;
 
@@ -23,13 +25,16 @@ namespace SqlServerUnitTests
         }
 
         private const string Query = @"
-                            select (select t.* for json path, without_array_wrapper)
-                            from (values
-                              (1, 'foo1', cast('1977-05-19' as date), cast(1 as bit) , null),
-                              (2, 'foo2', cast('1978-05-19' as date), cast(0 as bit), 'bar2'),
-                              (3, 'foo3', cast('1979-05-19' as date), null, 'bar3')
-                            ) t (Id, Foo, Day, Bool, Bar)";
-        public DeserializeJsonUnitTests(SqlClientFixture fixture)
+                            select *
+                            from (
+                            values 
+                                (1, 'foo1', cast('1977-05-19' as date), cast(1 as bit) , null),
+                                (2, 'foo2', cast('1978-05-19' as date), cast(0 as bit), 'bar2'),
+                                (3, 'foo3', cast('1979-05-19' as date), null, 'bar3')
+                            ) t(Id, Foo, Day, Bool, Bar)
+                            for json auto";
+
+        public SingleJsonUnitTests(SqlClientFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -60,20 +65,37 @@ namespace SqlServerUnitTests
         }
 
         [Fact]
-        public void DeserializeResult_Sync()
+        public void DeserializeSingle_TestList_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.DeserializeJson<TestClass>(Query).ToList();
+            var result = connection.SingleJson<IList<TestClass>>(Query);
 
             AssertTestClass(result);
         }
 
-       
         [Fact]
-        public async Task DeserializeResult_Async()
+        public void DeserializeSingle_TestEnumerable_Sync()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            var result = connection.SingleJson<IEnumerable<TestClass>>(Query).ToList();
+
+            AssertTestClass(result);
+        }
+
+        [Fact]
+        public async Task DeserializeSingle_TestList_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = await connection.DeserializeJsonAsync<TestClass>(Query).ToListAsync();
+            var result = await connection.SingleJsonAsync<IList<TestClass>>(Query);
+
+            AssertTestClass(result);
+        }
+
+        [Fact]
+        public async Task DeserializeSingle_TestEnumerable_Async()
+        {
+            await using var connection = new SqlConnection(fixture.ConnectionString);
+            var result = (await connection.SingleJsonAsync<IEnumerable<TestClass>>(Query)).ToList();
 
             AssertTestClass(result);
         }

@@ -11,7 +11,7 @@ using Xunit;
 namespace PostgreSqlUnitTests
 {
     [Collection("PostgreSqlDatabase")]
-    public class DeserializeJsonUnitTests
+    public class JsonUnitTests
     {
         private readonly PostgreSqlFixture fixture;
 
@@ -33,7 +33,7 @@ namespace PostgreSqlUnitTests
                                 (3, 'foo3', '1979-05-19'::date, null, 'bar3')
                             ) t(""Id"", ""Foo"", ""Day"", ""Bool"", ""Bar"")";
 
-        public DeserializeJsonUnitTests(PostgreSqlFixture fixture)
+        public JsonUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -67,7 +67,7 @@ namespace PostgreSqlUnitTests
         public void DeserializeResult_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.DeserializeJson<TestClass>(Query).ToList();
+            var result = connection.Json<TestClass>(Query).ToList();
 
             AssertTestClass(result);
         }
@@ -77,7 +77,7 @@ namespace PostgreSqlUnitTests
         public async Task DeserializeResult_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.DeserializeJsonAsync<TestClass>(Query).ToListAsync();
+            var result = await connection.JsonAsync<TestClass>(Query).ToListAsync();
 
             AssertTestClass(result);
         }

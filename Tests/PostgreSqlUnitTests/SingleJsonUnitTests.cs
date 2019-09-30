@@ -11,7 +11,7 @@ using Xunit;
 namespace PostgreSqlUnitTests
 {
     [Collection("PostgreSqlDatabase")]
-    public class DeserializeSingleJsonUnitTests
+    public class SingleJsonUnitTests
     {
         private readonly PostgreSqlFixture fixture;
 
@@ -42,7 +42,7 @@ namespace PostgreSqlUnitTests
                                 (3, 'foo3', '1979-05-19'::date, null, 'bar3')
                             ) t(id, foo, day, bool, bar)";
 
-        public DeserializeSingleJsonUnitTests(PostgreSqlFixture fixture)
+        public SingleJsonUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -76,7 +76,7 @@ namespace PostgreSqlUnitTests
         public void DeserializeSingle_TestList_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.DeserializeSingleJson<IList<TestClass>>(UpperCaseQuery);
+            var result = connection.SingleJson<IList<TestClass>>(UpperCaseQuery);
 
             AssertTestClass(result);
         }
@@ -85,7 +85,7 @@ namespace PostgreSqlUnitTests
         public void DeserializeSingle_TestEnumerable_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.DeserializeSingleJson<IEnumerable<TestClass>>(UpperCaseQuery).ToList();
+            var result = connection.SingleJson<IEnumerable<TestClass>>(UpperCaseQuery).ToList();
 
             AssertTestClass(result);
         }
@@ -96,7 +96,7 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection
                 .WithJsonOptions(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                .DeserializeSingleJson<IList<TestClass>>(LowerCaseQuery);
+                .SingleJson<IList<TestClass>>(LowerCaseQuery);
 
             AssertTestClass(result);
         }
@@ -105,7 +105,7 @@ namespace PostgreSqlUnitTests
         public async Task DeserializeSingle_TestList_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.DeserializeSingleJsonAsync<IList<TestClass>>(UpperCaseQuery);
+            var result = await connection.SingleJsonAsync<IList<TestClass>>(UpperCaseQuery);
 
             AssertTestClass(result);
         }
@@ -114,7 +114,7 @@ namespace PostgreSqlUnitTests
         public async Task DeserializeSingle_TestEnumerable_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = (await connection.DeserializeSingleJsonAsync<IEnumerable<TestClass>>(UpperCaseQuery)).ToList();
+            var result = (await connection.SingleJsonAsync<IEnumerable<TestClass>>(UpperCaseQuery)).ToList();
 
             AssertTestClass(result);
         }
@@ -125,7 +125,7 @@ namespace PostgreSqlUnitTests
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = await connection
                 .WithJsonOptions(new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                .DeserializeSingleJsonAsync<IList<TestClass>>(LowerCaseQuery);
+                .SingleJsonAsync<IList<TestClass>>(LowerCaseQuery);
 
             AssertTestClass(result);
         }

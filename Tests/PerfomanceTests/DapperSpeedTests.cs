@@ -98,7 +98,7 @@ namespace PerfomanceTests
             
             var (e5, r5) = Measure(() => connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple)));
 
-            var (e6, r6) = Measure(() => connection.DeserializeJson<TestClass>(JsonTestQuery));
+            var (e6, r6) = Measure(() => connection.Json<TestClass>(JsonTestQuery));
 
 
             var (e1Count, c1) = Measure(() => r1.ToList().Count);
