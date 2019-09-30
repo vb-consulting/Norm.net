@@ -6,35 +6,35 @@ Fast and extendible **`C# 8`** alternative to Dapper data access built for **.NE
 
 And hence, the name - **`NoOrm`**.
 
-## How It Works - Why **`NoOrm`** - And - Similarities With `Dapper`
+## How It Works - Why **NoOrm** - And - Similarities With Dapper
 
-Both libraries are implementation of set of various extensions over `System.Data.Common.DbConnection` system object to work efficiently with different databases.
+Both libraries are implementation of set of various extensions over **`System.Data.Common.DbConnection`** system object to work efficiently with different databases.
 
-They work quite differently. For example:
+They work quite differently. For example, query that returns **one million records** from database:
 
 - Dapper
 
 ```csharp
-string query = "< one million records database query >";
 var results = connection.Query<TestClass>(query);
-// results is IEnumerable<TestClass> in 00:00:02.0330651
 ```
+
+Resulting in `IEnumerable<TestClass>` in **`00:00:02.0330651`** seconds.
 
 - NoOrm
 
 ```csharp
-string query = "< one million records database query >";
 var results = connection.Read(query).Select(t => new TestClass(t));
-// results is IEnumerable<TestClass> in 00:00:00.0003062
 ```
 
-`NoOrm` creates results of same type `IEnumerable<TestClass>` in fraction of time (`00.0003062` seconds to Dapper `02.0330651` seconds in example).
+Resulting in `IEnumerable<TestClass>` in **`00:00:00.0003062`** seconds.
 
-Reason is simple:
+That is a fraction of time and reason is simple:
 
 - *Dapper* triggers iteration and objects serialization immediately when called.
 
-- *NoOrm* builds internal iterator over database results. This allows delaying any results iteration (and potential serialization) - so that expression tree can be built (using `Linq` and `AsyncLinq` libraries or custom `IEnumerable` extensions) for view models or service responses - before any actual results iteration.
+- *NoOrm* builds internal iterator over database results. 
+
+- This allows delaying any results iteration (and potential serialization) - so that expression tree can be built (using `Linq` and/or `AsyncLinq` libraries or custom `IEnumerable` extensions) for view models or service responses - before any actual results iteration.
 
 This approach can save unnecessary database result iterations to improve system performances.
 
