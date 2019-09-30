@@ -108,7 +108,94 @@ connection.Execute("select @p1, p2", value1, value2);
 connection.Execute("select @p1, p2", ("p1", value1), ("p2", value2));
 ```
 
-### Working with results and Object/Relational mapping
+## Working with results and Object/Relational mapping
+
+Results are always tuples by default.
+
+- Non generic version will return enumerable iterator of tuples with `string name` and `object value`.
+
+- Generic version will return tuples of type indicated by generic parameters, Up to 5 generic parameters are currently supported, there will be more in future.
+
+> There is no automatic O/R mapping out-of-the-box, as name suggest, this is not ORM.
+
+- Tuple enumerations (generic and non-generic) can be easily extended (with c# extension) to transform to any structure required or selected for something else **without triggering iteration.** There are already basic extensions to transform to dictionaries and lists [here](https://github.com/vbilopav/NoOrm.Net/blob/master/NoOrm/Extensions/NoOrmExtensions.cs). New ones are easily added.
+
+- Generic tuples are not complicated to map to objects. For example following `PostgreSQL` query:
+
+```sql
+select 
+    i as id, 
+    'foo' || i::text as foo, 
+    'bar' || i::text as bar, 
+    ('2000-01-01'::date) + (i::text || ' days')::interval as datetime
+from generate_series(1, 1000000) as i -- return a million
+```
+
+We want to map to instances of following corresponding class:
+
+```csharp
+class TestClass
+{
+    public int Id { get; set; }
+    public string Foo { get; set; }
+    public string Bar { get; set; }
+    public DateTime Datetime { get; set; }
+}
+```
+
+This requires two steps:
+
+1. Add following constructor to this class:
+
+```csharp
+public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
+{
+    Id = tuple.id;
+    Foo = tuple.foo;
+    Bar = tuple.bar;
+    Datetime = tuple.dateTime;
+}
+```
+
+2. Serialize with following expression:
+
+```csharp
+var results = connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple));
+```
+
+This will not trigger iteration and serialization until we start to actually iterate with `foreach` or `ToList`, thus allows us to continue building expression tree as we see fit.
+
+Initial tests are showing that this approach will yield mapping and serialization around 15-20% faster then Dapper, and even without even using async streaming feature.
+
+However, for some scenarios, this might be too much typing. For simple solutions it might be better to use JSON:
+
+`PostgreSQL` should look like this:
+
+```sql
+select to_json(t) -- return json rows:
+from (
+    select 
+        i as id, 
+        'foo' || i::text as foo, 
+        'bar' || i::text as bar, 
+        ('2000-01-01'::date) + (i::text || ' days')::interval as datetime
+    from generate_series(1, 1000000) as i
+) t -- return a million
+```
+
+And after that it is enough to say:
+
+```csharp
+var results = connection.Json<TestClass>(TestQuery);
+```
+
+That is it. Note that this, again, will not yield iteration and mapping (unlike Dapper), until it is required.
+
+Real O/R mapping extension might be possible in future.
 
 
+## Licence
+
+Copyright (c) Vedran Bilopavlović - VB Software 2019
+This source code is licensed under the [MIT license](https://github.com/vbilopav/NoOrm.Net/blob/master/LICENSE).
 

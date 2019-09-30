@@ -13,6 +13,7 @@
     <Description>Fast and extendible C# 8 alternative to Dapper data access built for .NET Core 3 era.</Description>
     <Copyright>Vedran Bilopavlović</Copyright>
     <PackageTags>orm, micro-orm, fast, async c# 8, .net core 3</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
