@@ -118,6 +118,7 @@ namespace NoOrm
             await Connection.EnsureIsOpenAsync();
             commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
+            OnCommandExecuted(cmd);
             return await readerAction(reader);
         }
 
@@ -128,6 +129,7 @@ namespace NoOrm
             await Connection.EnsureIsOpenAsync();
             commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
+            OnCommandExecuted(cmd);
             if (!await reader.ReadAsync()) yield break;
             for (var index = 0; index < reader.FieldCount; index++)
             {

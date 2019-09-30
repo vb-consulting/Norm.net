@@ -11,6 +11,7 @@ namespace NoOrm
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             await cmd.ExecuteNonQueryAsync();
+            OnCommandExecuted(cmd);
             return this;
         }
 
@@ -20,6 +21,7 @@ namespace NoOrm
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
+            OnCommandExecuted(cmd);
             return this;
         }
 
@@ -29,6 +31,7 @@ namespace NoOrm
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync();
             await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
+            OnCommandExecuted(cmd);
             return this;
         }
     }

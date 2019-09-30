@@ -68,5 +68,39 @@ namespace SqlServerUnitTests
             Assert.Equal("foo1", results[0]["bar"]);
             Assert.Equal(new DateTime(1977, 5, 19), results[0]["day"]);
         }
+
+        [Fact]
+        public void Output_Parameters_Function_Test()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            connection
+                .Execute(@"
+                    create procedure TestOutParamProc(@TestParam nvarchar(30) output)
+                    as
+                    set @TestParam = 'I am output value!';
+                    ")
+                .AsProcedure()
+                .WithOutParameter("TestParam")
+                .Execute("TestOutParamProc");
+
+            Assert.Equal("I am output value!", connection.GetOutParameterValue("TestParam"));
+        }
+
+        [Fact]
+        public void InputOutput_Parameters_Function_Test()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            connection
+                .Execute(@"
+                    create procedure TestInOutParamProc(@TestParam nvarchar(max) output)
+                    as
+                    set @TestParam = concat(@TestParam, ' returned from procedure');
+                    ")
+                .AsProcedure()
+                .WithOutParameter("TestParam", "I am output value")
+                .Execute("TestInOutParamProc");
+
+            Assert.Equal("I am output value returned from procedure", connection.GetOutParameterValue("TestParam"));
+        }
     }
 }

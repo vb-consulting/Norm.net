@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text.Json;
@@ -10,26 +11,36 @@ namespace NoOrm
 {
     public partial class NoOrm : IDisposable, INoOrm
     {
-        private enum DbType { Ms, Pg, Other }
-    
+        private enum DbType
+        {
+            Ms,
+            Pg,
+            Other
+        }
+
         private CommandType commandType;
         private int? commandTimeout;
         private JsonSerializerOptions jsonOptions;
         private readonly bool convertsDbNull;
         private readonly DbType dbType;
         private static readonly Type StringType = typeof(string);
+        private readonly IList<(string name, ParameterDirection direction, object value)> outputParams;
+        private readonly IDictionary<string, object> outputParamValues;
 
         public DbConnection Connection { get; }
 
-        public NoOrm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null, JsonSerializerOptions jsonOptions = null)
+        public NoOrm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null,
+            JsonSerializerOptions jsonOptions = null)
         {
             Connection = connection;
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
             this.jsonOptions = jsonOptions;
             var name = connection.GetType().Name;
-            dbType = name switch { "SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other };
+            dbType = name switch {"SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other};
             convertsDbNull = dbType != DbType.Ms;
+            outputParams = new List<(string name, ParameterDirection direction, object value)>();
+            outputParamValues = new Dictionary<string, object>();
         }
 
         public INoOrm As(CommandType type)
@@ -54,6 +65,20 @@ namespace NoOrm
             return this;
         }
 
+        public INoOrm WithOutParameter(string name)
+        {
+            outputParams.Add((name, ParameterDirection.Output, null));
+            return this;
+        }
+
+        public INoOrm WithOutParameter(string name, object value)
+        {
+            outputParams.Add((name, ParameterDirection.InputOutput, value));
+            return this;
+        }
+
+        public object GetOutParameterValue(string name) => outputParamValues[name];
+
         public void Dispose()
         {
             if (Connection.State == ConnectionState.Open)
@@ -63,20 +88,39 @@ namespace NoOrm
             Connection?.Dispose();
         }
 
-        private JsonSerializerOptions JsonOptions
+        private JsonSerializerOptions JsonOptions => 
+            this.jsonOptions ?? GlobalJsonSerializerOptions.Options;
+
+        private void SetCommand(DbCommand cmd, string command)
         {
-            get
+            cmd.SetCommandParameters(command, commandType, commandTimeout);
+            outputParamValues.Clear();
+            foreach (var (name, direction, value) in outputParams)
             {
-                if (this.jsonOptions != null)
+                var param = cmd.CreateParameter();
+                param.ParameterName = name;
+                param.Direction = direction;
+                if (dbType == DbType.Ms && (value == null || value.GetType() == StringType))
                 {
-                    return this.jsonOptions;
+                    param.DbType = System.Data.DbType.AnsiString;
+                    param.Size = int.MaxValue;
                 }
-                return GlobalJsonSerializerOptions.Options;
+                if (direction == ParameterDirection.InputOutput)
+                {
+                    param.Value = value;
+                }
+                cmd.Parameters.Add(param);
             }
         }
 
-        private void SetCommand(DbCommand cmd, string command)
-            => cmd.SetCommandParameters(command, commandType, commandTimeout);
+        private void OnCommandExecuted(DbCommand cmd)
+        {
+            foreach (var (name, _, _) in outputParams)
+            {
+                outputParamValues.Add(name, cmd.Parameters[name].Value); 
+            }
+            outputParams.Clear();
+        }
 
         private bool CheckDbNull<T>() => (!convertsDbNull || typeof(T) == StringType);
 

@@ -25,8 +25,11 @@ namespace NoOrm
         INoOrm AsText();
         INoOrm Timeout(int? timeout);
         INoOrm WithJsonOptions(JsonSerializerOptions options);
+        INoOrm WithOutParameter(string name);
+        INoOrm WithOutParameter(string name, object value);
+        object GetOutParameterValue(string name);
     }
-    
+
     public interface INoOrmExecute
     {
         INoOrm Execute(string command);

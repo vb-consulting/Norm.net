@@ -6,7 +6,7 @@ using Npgsql;
 using PostgreSqlUnitTests;
 using Xunit;
 
-namespace SqlServerUnitTests
+namespace PostgreSqlUnitTests
 {
     [Collection("PostgreSqlDatabase")]
     public class FunctionsUnitTests
@@ -19,7 +19,7 @@ namespace SqlServerUnitTests
         }
 
         [Fact]
-        public void Execute_And_Drop_Text_Function_Test_Procedure()
+        public void Execute_And_Drop_Text_Function_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection
@@ -50,33 +50,44 @@ namespace SqlServerUnitTests
             Assert.True(procMissing);
         }
 
-        /*
         [Fact]
-        public void Execute_Create_Procedure_And_Read_Results()
+        public void Output_Parameters_Function_Test()
         {
-            using var connection = new SqlConnection(fixture.ConnectionString);
-            var results = connection
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection
                 .Execute(@"
-                        create procedure TestStoredProcedure(@id int)
-                        as
-                        select * from (
-                        values 
-                            (1, 'foo1', cast('1977-05-19' as date)),
-                            (2, 'foo2', cast('1978-05-19' as date)),
-                            (3, 'foo3', cast('1979-05-19' as date))
-                        ) t(first, bar, day)
-                        where first = @id
-                    ")
-                .As(CommandType.StoredProcedure)
-                .Read("TestStoredProcedure", ("id", 1))
-                .ToDictionaries()
-                .ToList();
+                    create function test_out_param_func(out test_param text) returns text as
+                    $$
+                    begin
+                        test_param := 'I am output value!';
+                    end
+                    $$
+                    language plpgsql")
+                .AsProcedure()
+                .WithOutParameter("test_param")
+                .Execute("test_out_param_func");
 
-            Assert.Single(results);
-            Assert.Equal(1, results[0].Values.First());
-            Assert.Equal("foo1", results[0]["bar"]);
-            Assert.Equal(new DateTime(1977, 5, 19), results[0]["day"]);
+            Assert.Equal("I am output value!", connection.GetOutParameterValue("test_param"));
         }
-        */
+
+        [Fact]
+        public void InputOutput_Parameters_Function_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection
+                .Execute(@"
+                    create function test_inout_param_func(inout test_param text) returns text as
+                    $$
+                    begin
+                        test_param := test_param || ' returned from function';
+                    end
+                    $$
+                    language plpgsql")
+                .AsProcedure()
+                .WithOutParameter("test_param", "I am output value")
+                .Execute("test_inout_param_func");
+
+            Assert.Equal("I am output value returned from function", connection.GetOutParameterValue("test_param"));
+        }
     }
 }
