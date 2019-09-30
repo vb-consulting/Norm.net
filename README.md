@@ -70,3 +70,16 @@ NoOrm utilizes new `IAsyncEnumerable` interface which doesn't need to wait until
 
 Instead, result item is processed as it appears, effectively doing the asynchronous streaming directly from database.
 
+## Test coverage and usage examples
+
+Usage examples can be found in [unit tests](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/)
+
+Around 99% of API is covered with tests only for [`PostgreSQL`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/PostgreSqlUnitTest) and [`Microsoft SQL Server`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/SqlServerUnitTests).
+
+Other types of databases should work theoretically but they are not currently tested.
+
+## API
+
+Entire API that is implemented as **`System.Data.Common.DbConnection`** extension can be found [on this interface](https://github.com/vbilopav/NoOrm.Net/blob/master/NoOrm/INoOrm.cs)
+
+

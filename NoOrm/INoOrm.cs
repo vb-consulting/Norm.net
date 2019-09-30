@@ -39,9 +39,9 @@ namespace NoOrm
 
     public interface INoOrmExecuteAsync
     {
-        Task<INoOrm> ExecuteAsync(string command);
-        Task<INoOrm> ExecuteAsync(string command, params object[] parameters);
-        Task<INoOrm> ExecuteAsync(string command, params (string name, object value)[] parameters);
+        ValueTask<INoOrm> ExecuteAsync(string command);
+        ValueTask<INoOrm> ExecuteAsync(string command, params object[] parameters);
+        ValueTask<INoOrm> ExecuteAsync(string command, params (string name, object value)[] parameters);
     }
 
     public interface INoOrmSingle

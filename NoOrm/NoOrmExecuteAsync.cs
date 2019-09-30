@@ -5,7 +5,7 @@ namespace NoOrm
 {
     public partial class NoOrm
     {
-        public async Task<INoOrm> ExecuteAsync(string command)
+        public async ValueTask<INoOrm> ExecuteAsync(string command)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
@@ -15,7 +15,7 @@ namespace NoOrm
             return this;
         }
 
-        public async Task<INoOrm> ExecuteAsync(string command, params object[] parameters)
+        public async ValueTask<INoOrm> ExecuteAsync(string command, params object[] parameters)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
@@ -25,7 +25,7 @@ namespace NoOrm
             return this;
         }
 
-        public async Task<INoOrm> ExecuteAsync(string command, params (string name, object value)[] parameters)
+        public async ValueTask<INoOrm> ExecuteAsync(string command, params (string name, object value)[] parameters)
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
