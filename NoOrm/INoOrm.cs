@@ -17,7 +17,7 @@ namespace NoOrm
         ISingleJson,
         ISingleJsonAsync,
         IJson,
-        IDeserializeJsonAsync
+        IJsonAsync
     {
         DbConnection Connection { get; }
         INoOrm As(CommandType type);
@@ -155,7 +155,7 @@ namespace NoOrm
         IEnumerable<T> Json<T>(string command, params (string name, object value)[] parameters);
     }
 
-    public interface IDeserializeJsonAsync
+    public interface IJsonAsync
     {
         IAsyncEnumerable<T> JsonAsync<T>(string command);
         IAsyncEnumerable<T> JsonAsync<T>(string command, params object[] parameters);
