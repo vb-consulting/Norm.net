@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Xunit;
 
 namespace SqlServerUnitTests
@@ -73,7 +72,7 @@ namespace SqlServerUnitTests
                             (2, 'foo2', cast('1978-05-19' as date)),
                             (3, 'foo3', cast('1979-05-19' as date))
                           ) t(first, bar, day)")
-                .ToDictionaries(); 
+                .SelectDictionaries(); 
 
             AssertResult(result);
         }
@@ -94,7 +93,7 @@ namespace SqlServerUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            AssertResult(result.ToDictionaries());
+            AssertResult(result.SelectDictionaries());
         }
 
         [Fact]
@@ -118,7 +117,7 @@ namespace SqlServerUnitTests
                     ("3", 3),
                     ("t3", "foo3"),
                     ("d3", new DateTime(1979, 5, 19)))
-                .ToDictionaries();
+                .SelectDictionaries();
 
             AssertResult(result);
         }
@@ -136,7 +135,7 @@ namespace SqlServerUnitTests
                             (3, 'foo3', cast('1979-05-19' as date))
                           ) t(first, bar, day)");
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
 
         [Fact]
@@ -155,7 +154,7 @@ namespace SqlServerUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
 
         [Fact]
@@ -180,7 +179,7 @@ namespace SqlServerUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
     }
 }

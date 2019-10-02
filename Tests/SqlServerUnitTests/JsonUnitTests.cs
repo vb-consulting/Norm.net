@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Xunit;
 
 namespace SqlServerUnitTests

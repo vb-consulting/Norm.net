@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Npgsql;
 using Xunit;
 

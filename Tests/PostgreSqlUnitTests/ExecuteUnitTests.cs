@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Npgsql;
 using Xunit;
 
@@ -27,7 +26,7 @@ namespace PostgreSqlUnitTests
                 .Execute("create table test (t text)")
                 .Execute("insert into test values ('foo')")
                 .Single("select * from test")
-                .ToDictionary();
+                .SelectDictionary();
 
             Assert.Equal("foo", result.Values.First());
 
@@ -54,7 +53,7 @@ namespace PostgreSqlUnitTests
                 .Execute("insert into test values (@i, @t, @d)",
                     1, "foo", new DateTime(1977, 5, 19))
                 .Single("select * from test")
-                .ToDictionary();
+                .SelectDictionary();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -82,7 +81,7 @@ namespace PostgreSqlUnitTests
                 .Execute("create table test (i int, t text, d date)")
                 .Execute("insert into test values (@i, @t, @d)", ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1))
                 .Single("select * from test")
-                .ToDictionary();
+                .SelectDictionary();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -109,7 +108,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("create table test (t text)");
             await connection.ExecuteAsync("insert into test values ('foo')");
 
-            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
+            var result = await connection.SingleAsync("select * from test").SelectDictionaryAsync();
 
             Assert.Equal("foo", result.Values.First());
 
@@ -134,7 +133,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1));
-            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
+            var result = await connection.SingleAsync("select * from test").SelectDictionaryAsync();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -162,7 +161,7 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 1, "foo", new DateTime(1977, 5, 19));
 
-            var result = await connection.SingleAsync("select * from test").ToDictionaryAsync();
+            var result = await connection.SingleAsync("select * from test").SelectDictionaryAsync();
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);

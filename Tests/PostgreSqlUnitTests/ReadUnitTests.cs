@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Npgsql;
 using Xunit;
 
@@ -73,7 +72,7 @@ namespace PostgreSqlUnitTests
                             (2, 'foo2', '1978-05-19'::date),
                             (3, 'foo3', '1979-05-19'::date)
                           ) t(first, bar, day)")
-                .ToDictionaries();
+                .SelectDictionaries();
 
             AssertResult(result);
         }
@@ -94,7 +93,7 @@ namespace PostgreSqlUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            AssertResult(result.ToDictionaries());
+            AssertResult(result.SelectDictionaries());
         }
 
         [Fact]
@@ -119,7 +118,7 @@ namespace PostgreSqlUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            AssertResult(result.ToDictionaries());
+            AssertResult(result.SelectDictionaries());
         }
 
         [Fact]
@@ -135,7 +134,7 @@ namespace PostgreSqlUnitTests
                             (3, 'foo3', '1979-05-19'::date)
                           ) t(first, bar, day)");
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
 
         [Fact]
@@ -154,7 +153,7 @@ namespace PostgreSqlUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
 
         [Fact]
@@ -179,7 +178,7 @@ namespace PostgreSqlUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            await AssertResultAsync(result.ToDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionariesAsync());
         }
     }
 }

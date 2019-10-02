@@ -1,18 +1,24 @@
-# `NoOrm.Net`
+# `Norm.Net`
 
-Fast and extendible **`C# 8`** alternative to Dapper data access built for **.NET Core 3** era.
+Fast, modern and extendible **`C# 8`** data access built for **.NET Core 3** era.
 
->**THIS IS NOT ORM**
+> **THIS IS NOT ORM**
 
-And hence, the name - **`NoOrm`**.
+`Norm` is `NoORM`, or not an `ORM`.
 
-## How It Works - Why **NoOrm** - And - Similarities With Dapper
+`Norm` will postpone any reads from database until they are needed, allowing you to build expression trees and transformation before it started fetching any data.
+
+This allows you to avoid unneccessary iterations.
+
+By default - it will return iterator over tuples and not serialized instances. Those iterator over tuples can be then further extended with expressions (such as dictioanires or O/R mappings). See "How it works section bellow.
+
+## How It Works - Why **Norm** - And - Similarities With Dapper
 
 Both libraries are implementation of set of various extensions over **`System.Data.Common.DbConnection`** system object to work efficiently with different databases.
 
 They work quite differently. For example, query that returns **one million records** from database:
 
-- Dapper
+- Dapper:
 
 ```csharp
 var results = connection.Query<TestClass>(query);
@@ -20,7 +26,7 @@ var results = connection.Query<TestClass>(query);
 
 Resulting in `IEnumerable<TestClass>` in **`00:00:02.0330651`** seconds.
 
-- NoOrm
+- Norm:
 
 ```csharp
 var results = connection.Read(query).Select(t => new TestClass(t));
@@ -32,7 +38,7 @@ That is a fraction of time and reason is simple:
 
 - *Dapper* triggers iteration and objects serialization immediately when called.
 
-- *NoOrm* builds internal iterator over database results.
+- *Norm* builds internal iterator over database results.
 
 - This allows delaying any results iteration (and potential serialization) - so that expression tree can be built (using `System.Linq` and/or `System.Linq.Async` libraries or custom `IEnumerable` extensions) for our view models or service responses - **before any actual results iteration.**
 
@@ -54,11 +60,11 @@ This is typical application scenario with Dapper:
 
 So this scenario requires at least two iteration over data.
 
-With NoOrm approach it would look something like this:
+With `Norm` approach it would look something like this:
 
 1. Build iterator over tuples that will be returned from database
 
-2. Build expression tree over enumerable iterator (`System.Linq`, `System.Linq.Async`, custom, etc)
+2. Build expression tree over enumerable iterator - sync or async - (`System.Linq`, `System.Linq.Async`, custom, etc)
 
 3. Execute everything to create results (view-models and service responses)
 
@@ -66,7 +72,7 @@ This allows to keep current design with separation of concerns and to have only 
 
 Also, when working asynchronously in first scenario - typically we have to wait until all results are retrieved from database and then start building the response or view asynchronously.
 
-NoOrm utilizes new `IAsyncEnumerable` interface which doesn't need to wait until all records are fetched and retrieved from database to start building the results.
+Norm utilizes new `IAsyncEnumerable` interface which doesn't need to wait until all records are fetched and retrieved from database to start building the results.
 
 Instead, result item is processed as it appears, effectively doing the asynchronous streaming directly from database.
 
@@ -94,6 +100,42 @@ Recap:
 | `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, `WithOutParameter`, `GetOutParameterValue` | Provide general functionality like changing command type from procedure to test, setting the timeout, and output parameters...|
 | Extensions | Set of `IEnumerable` and `IAsyncEnumerable` extensions to convert database tuples to lists and dictionaries. New extensions can be added on will (for object mapping for example). |
 
+### Available extensions
+
+- By convention any extension that Start with `Select` will build up expression tree and not trigger any iteration. Available extensions are:
+
+#### SelectDictionary
+
+Add expression to build a dictionary from (name, value) tuple
+
+#### SelectDictionaries
+
+Add expression to build a enumerator of dictionaries from enumerator of (name, value) tuples
+
+#### SelectToLists
+
+Add expression to build a enumerator of lists of (name, value) tuples
+
+#### ToListOfLists
+
+Builds a list of lists of (name, value) tuples
+
+#### SelectDictionaryAsync
+
+Add expression to build a dictionary from (name, value) tuple asynchronously
+
+#### SelectDictionariesAsync
+
+Add expression to build a asynchronous enumerator of dictionaries from enumerator of (name, value) tuples
+
+#### SelectToListsAsync
+
+Add expression to build a asynchronous enumerator of lists of of (name, value) tuples
+
+#### ToListOfListsAsync
+
+Builds a list of lists of (name, value) tuples asynchronously
+
 ### Working with parameters
 
 #### Positional parameters
@@ -118,7 +160,7 @@ Results are always tuples by default.
 
 > There is no automatic O/R mapping out-of-the-box, as name suggest, this is not ORM.
 
-- Tuple enumerations (generic and non-generic) can be easily extended (with c# extension) to transform to any structure required or selected for something else **without triggering iteration.** There are already basic extensions to transform to dictionaries and lists [here](https://github.com/vbilopav/NoOrm.Net/blob/master/NoOrm/Extensions/NoOrmExtensions.cs). New ones are easily added.
+- Tuple enumerations (generic and non-generic) can be easily extended (with c# extension) to transform to any structure required or selected for something else **without triggering iteration.** There are already basic extensions to transform to dictionaries and lists [here](https://github.com/vbilopav/NoOrm.Net/blob/master/Norm/Extensions/NormExtensions.cs). New ones are easily added.
 
 - Generic tuples are not complicated to map to objects. For example following `PostgreSQL` query:
 
@@ -191,7 +233,7 @@ var results = connection.Json<TestClass>(TestQuery);
 
 That is it. Note that this, again, will not yield iteration and mapping (unlike Dapper), until it is required.
 
-Real O/R mapping extension might be possible in future.
+Real O/R mapping extension is coming in next version which will extend default enumerator with `Select<Type>` statement.
 
 
 ## Licence

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NoOrm\NoOrm.csproj" />
+    <ProjectReference Include="..\..\Norm\Norm.csproj" />
   </ItemGroup>
 
 </Project>

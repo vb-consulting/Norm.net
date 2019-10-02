@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Npgsql;
 using PostgreSqlUnitTests;
 using Xunit;
@@ -93,8 +92,8 @@ namespace PerfomanceTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (e1, r1) = Measure(() => connection.Query<TestClass>(TestQuery));
             var (e2, r2) = Measure(() => connection.Read(TestQuery));
-            var (e3, r3) = Measure(() => connection.Read(TestQuery).ToDictionaries());
-            var (e4, r4) = Measure(() => connection.Read(TestQuery).ToDictionaries().Select(d => new TestClass(d)));
+            var (e3, r3) = Measure(() => connection.Read(TestQuery).SelectDictionaries());
+            var (e4, r4) = Measure(() => connection.Read(TestQuery).SelectDictionaries().Select(d => new TestClass(d)));
             
             var (e5, r5) = Measure(() => connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple)));
 

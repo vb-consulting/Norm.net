@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Npgsql;
 using PostgreSqlUnitTests;
 using Xunit;

@@ -4,8 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using NoOrm;
-using NoOrm.Extensions;
+using Norm.Extensions;
 using Xunit;
 
 namespace SqlServerUnitTests
