@@ -2,15 +2,24 @@
 
 Fast, modern and extendible **`C# 8`** data access built for **.NET Core 3** era.
 
-> **THIS IS NOT ORM**
+> **THIS IS NOT ORM** `Norm` is `NoORM`, or not an `ORM` (but there is O/R mapping extension).
 
-`Norm` is `NoORM`, or not an `ORM`.
+`Norm` will postpone any reads from database until they are needed - allowing you to build expression trees and transformations - before it started fetching any data.
 
-`Norm` will postpone any reads from database until they are needed, allowing you to build expression trees and transformation before it started fetching any data.
+This allows avoiding unneccessary iterations and as well greater flexibility.
 
-This allows you to avoid unneccessary iterations.
+By default - it will return iterator over tuples and not serialized instances. Because that's what databases do return - tuples.
 
-By default - it will return iterator over tuples and not serialized instances. Those iterator over tuples can be then further extended with expressions (such as dictioanires or O/R mappings). See "How it works section bellow.
+Those iterator over tuples can be then further extended with expressions (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping) section bellow). 
+
+See [How it works](https://github.com/vbilopav/NoOrm.Net#how-it-works---why-norm---and---similarities-with-dapper) section bellow.
+
+## Changes in version 1.1.0
+
+- All result types `IEnumerable<(string name, object value)>` replaced with`IList<(string name, object value)>`.
+- Consequently name/value tuple results are generating lists structure and do not deffer serialization.
+- This allowed simplification of extensions and to remoev some of them.
+- Added proper extension for O/R Mapping  by using `FastMember` library
 
 ## How It Works - Why **Norm** - And - Similarities With Dapper
 
@@ -106,43 +115,19 @@ Recap:
 
 #### SelectDictionary
 
-Add expression to build a dictionary from (name, value) tuple
+Add expression to build a dictionary from name, value tuples
 
-#### SelectDictionaries
+#### SelectDictionaries and SelectDictionariesAsync
 
-Add expression to build a enumerator of dictionaries from enumerator of (name, value) tuples
+Add expression to build a enumerator (sync or async) - of dictionaries from collection of name, value tuples
 
-#### SelectToLists
+#### SelectValues
 
-Add expression to build a enumerator of lists of (name, value) tuples
+Select only valeus fron name value tuples
 
-#### ToListOfLists
+#### Select`T` and SelectAsync`T`
 
-Builds a list of lists of (name, value) tuples
-
-#### SelectDictionaryAsync
-
-Add expression to build a dictionary from (name, value) tuple asynchronously
-
-#### SelectDictionariesAsync
-
-Add expression to build a asynchronous enumerator of dictionaries from enumerator of (name, value) tuples
-
-#### SelectToListsAsync
-
-Add expression to build a asynchronous enumerator of lists of of (name, value) tuples
-
-#### ToListOfListsAsync
-
-Builds a list of lists of (name, value) tuples asynchronously
-
-### Working with parameters
-
-#### Positional parameters
-
-```csharp
-connection.Execute("select @p1, p2", value1, value2);
-```
+Select results mapped to a class instance (O/R mapping, case sensitive).
 
 #### Named parameters
 
@@ -156,13 +141,19 @@ Results are always tuples by default.
 
 - Non generic version will return enumerable iterator of tuples with `string name` and `object value`.
 
-- Generic version will return tuples of type indicated by generic parameters, Up to 5 generic parameters are currently supported, there will be more in future.
+- Generic version will return tuples of type indicated by generic parameters, up to 5 generic parameters are currently supported, there will be more in future.
 
 > There is no automatic O/R mapping out-of-the-box, as name suggest, this is not ORM.
 
-- Tuple enumerations (generic and non-generic) can be easily extended (with c# extension) to transform to any structure required or selected for something else **without triggering iteration.** There are already basic extensions to transform to dictionaries and lists [here](https://github.com/vbilopav/NoOrm.Net/blob/master/Norm/Extensions/NormExtensions.cs). New ones are easily added.
+There are couple ways to achive this:
 
-- Generic tuples are not complicated to map to objects. For example following `PostgreSQL` query:
+1. Simplest way: use default extension that maps (selects) to generic parameter object instance. For example:
+
+```csharp
+connection.Read(sql).Select<TestClass>();
+```
+
+2.  Map generic tuples to objects. This is fastest and most flexible method. For example following `PostgreSQL` query:
 
 ```sql
 select 
@@ -185,9 +176,8 @@ class TestClass
 }
 ```
 
-This requires two steps:
 
-1. Add following constructor to this class:
+First add constructor that have tuple parameter and map data manually:
 
 ```csharp
 public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
@@ -199,17 +189,13 @@ public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
 }
 ```
 
-2. Serialize with following expression:
+Second, Serialize with following expression:
 
 ```csharp
 var results = connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple));
 ```
 
-This will not trigger iteration and serialization until we start to actually iterate with `foreach` or `ToList`, thus allows us to continue building expression tree as we see fit.
-
-Initial tests are showing that this approach will yield mapping and serialization around 15-20% faster then Dapper, and even without even using async streaming feature.
-
-However, for some scenarios, this might be too much typing. For simple solutions it might be better to use JSON:
+3. Map JSON results directly. This requires query to return either JSON blob or single row with JSON object
 
 `PostgreSQL` should look like this:
 
@@ -225,15 +211,121 @@ from (
 ) t -- return a million
 ```
 
-And after that it is enough to say:
+Code:
 
 ```csharp
 var results = connection.Json<TestClass>(TestQuery);
 ```
 
-That is it. Note that this, again, will not yield iteration and mapping (unlike Dapper), until it is required.
+## Performance tests
 
-Real O/R mapping extension is coming in next version which will extend default enumerator with `Select<Type>` statement.
+Following table shows some performance metrics. 
+
+All tests are executed over one million tuples returned from database and all values are in seconds.
+
+| | dapper read (1) | norm read (2) | norm read (3)  | norm read (4) | norm read (5) | norm read (6) | norm read (7) |
+| - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
+| 1 | 3,0415078 | 0,0024166 | 0,0007101 | 0,0005985 | 0,0031619 | 0,0007754 | 0,0012049 |
+| 2 | 3,245256 | 0,0032193 | 0,0006805 | 0,000583 | 0,002197 | 0,000882 | 0,0010584 |
+| 3 | 2,9803222 | 0,0026597 | 0,0006636 | 0,0005223 | 0,0021911 | 0,0007316 | 0,0008133 |
+| 4 | 4,2485572 | 0,0026039 | 0,0007918 | 0,0007257 | 0,0035843 | 0,0008177 | 0,0008636 |
+| 5 | 3,4473896 | 0,0024689 | 0,0009009 | 0,0005666 | 0,0034545 | 0,0007081 | 0,0008028 |
+| 6 | 3,9070679 | 0,002534 | 0,0007605 | 0,0008123 | 0,0023278 | 0,0007847 | 0,0009933 |
+| 7 | 3,3050129 | 0,0025335 | 0,0008778 | 0,0005671 | 0,0034135 | 0,0008028 | 0,0008808 |
+| 8 | 3,058142 | 0,0022742 | 0,0006804 | 0,0005627 | 0,0022258 | 0,001048 | 0,0008435 |
+| 9 | 3,0750567 | 0,0028665 | 0,0009022 | 0,0008439 | 0,0044506 | 0,0008151 | 0,0009868 |
+| AVG | **3,367590256** | **0,002619622** | **0,0007742** | **0,000642456** | **0,003000722** | **0,000818378** | **0,0009386** |
+
+| | dapper count (1)  | norm count (2) | norm count (3)  | norm count (4) | norm count (5) | norm count (6) | norm count (7) |
+| - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
+| 1 | 0,0026828 | 2,8800147 | 3,9677773 | 4,044749 | 3,5522813 | 4,29726 | 2,9316158 |
+| 2 | 0,0017753 | 2,5111109 | 3,5520368 | 3,0283845 | 2,5383521 | 4,4486203 | 3,4632417 |
+| 3 | 0,0019028 | 2,4975842 | 3,6029344 | 2,9978021 | 2,6323984 | 4,1697686 | 3,108879 |
+| 4 | 0,0014821 | 2,7933007 | 3,7870573 | 3,8797356 | 3,126549 | 5,0243688 | 3,8503477 |
+| 5 | 0,0018032 | 2,609527 | 4,2870604 | 3,2902466 | 2,4776056 | 4,9150692 | 3,296226 |
+| 6 | 0,0018624 | 3,1660909 | 3,7884559 | 3,3306854 | 3,1666028 | 5,5989298 | 3,2163334 |
+| 7 | 0,0019943 | 3,0209209 | 5,7025867 | 4,995924 | 2,4584816 | 4,424112 | 2,6890962 |
+| 8 | 0,001791 | 2,3538676 | 4,1760797 | 3,173455 | 2,4060259 | 4,0451822 | 3,1164555 |
+| 9 | 0,0032063 | 3,3263054 | 4,8390286 | 3,2985729 | 2,9437614 | 4,7721182 | 3,1037891 |
+| AVG | **0,002055578** | **2,795413589** | **4,189224122** | **3,559950567** | **2,811339789** | **4,632825456** | **3,1973316** |
+
+### 1. Dapper query - read and serializes one million rows from SQL query. Averages in **3,367590256** seconds
+
+```csharp
+IEnumerable<TestClass> results1 = connection.Query<TestClass>(sql);
+```
+
+### 2. Norm read operation - builds iterator over list of name and value tuples. Averages in **0,002619622** seconds
+
+```csharp
+IEnumerable<IList<(string name, string value)>> results2 = connection.Read(sql);
+```
+
+### 3. Norm read operation, builds iterator over name/value dictionaries. Averages in **0,0007742** seconds
+
+```csharp
+IEnumerable<IDictionary<string, object>> results3 = connection.Read(sql).SelectDictionaries();
+```
+
+### 4. Norm read operation - builds iterator over name/value dictionaries and use it to build iterator over `TestClass` instances. Averages in **0,0007742** seconds
+
+```csharp
+IEnumerable<TestClass> results4 = connection.Read(sql).SelectDictionaries().Select(dict => new TestClass(dict));
+```
+
+This approach requires class constructor that receives dictionary as parameter:
+
+```csharp
+public TestClass(IDictionary<string, object> dictionary)
+{
+    Id = (int) dictionary["Id"];
+    Foo = (string) dictionary["Foo"];
+    Bar = (string) dictionary["Bar"];
+    Datetime = (DateTime) dictionary["Datetime"];
+}
+```
+
+### 5. Norm read operation - builds iterator over generic, typed tuples and use nd use it to build iterator over `TestClass` instances. Averages in **0,003000722**
+
+```csharp
+IEnumerable<TestClass> results5 = connection.Read<int, string, string, DateTime>(sql).Select(tuple => new TestClass(tuple));
+```
+
+This approach requires class constructor that receives row tuple as parameter:
+
+```csharp
+public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
+{
+    Id = tuple.id;
+    Foo = tuple.foo;
+    Bar = tuple.bar;
+    Datetime = tuple.dateTime;
+}
+```
+
+### 6. Norm read operation - 
+
+```csharp
+IEnumerable<TestClass> results6 = connection.Json<TestClass>(JsonTestQuery))
+```
+
+### 7. Norm read operation - 
+
+```csharp
+IEnumerable<TestClass> results7 = connection.Read(TestQuery).Select<TestClass>());
+```
+
+(8) Dapper
+
+```csharp
+```
+
+(9) Dapper
+(10) Dapper
+(11) Dapper
+(12) Dapper
+(13) Dapper
+
 
 
 ## Licence

@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace Norm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        public static IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(this DbConnection connection, string command) 
+        public static IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(this DbConnection connection, string command) 
             => connection.GetNoOrmInstance().ReadAsync(command);
 
-        public static IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(this DbConnection connection, string command, params object[] parameters) 
+        public static IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(this DbConnection connection, string command, params object[] parameters) 
             => connection.GetNoOrmInstance().ReadAsync(command, parameters);
 
-        public static IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        public static IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
             => connection.GetNoOrmInstance().ReadAsync(command, parameters);
 
         public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, string command)

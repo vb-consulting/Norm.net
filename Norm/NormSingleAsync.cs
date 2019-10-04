@@ -8,14 +8,14 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IAsyncEnumerable<(string name, object value)> SingleAsync(string command) =>
-            SingleInternalAsyncEnumerable(command);
+        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command) =>
+            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default);
 
-        public IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params object[] parameters) =>
-            SingleInternalAsyncEnumerable(command, cmd => cmd.AddParameters(parameters));
+        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command, params object[] parameters) =>
+            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default, cmd => cmd.AddParameters(parameters));
 
-        public IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params (string name, object value)[] parameters) =>
-            SingleInternalAsyncEnumerable(command, cmd => cmd.AddParameters(parameters));
+        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters) =>
+            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default, cmd => cmd.AddParameters(parameters));
 
         public async ValueTask<T> SingleAsync<T>(string command) =>
             await SingleInternalAsync<T>(command,
@@ -121,6 +121,7 @@ namespace Norm
             return await readerAction(reader);
         }
 
+        /*
         private async IAsyncEnumerable<(string name, object value)> SingleInternalAsyncEnumerable(string command, Action<DbCommand> commandAction = null)
         {
             await using var cmd = Connection.CreateCommand();
@@ -135,6 +136,7 @@ namespace Norm
                 yield return (reader.GetName(index), await reader.GetFieldValueAsync<object>(index));
             }
         }
+        */
         
     }
 }

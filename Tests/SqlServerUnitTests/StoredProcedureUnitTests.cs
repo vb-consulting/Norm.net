@@ -23,13 +23,15 @@ namespace SqlServerUnitTests
         [Fact]
         public void Execute_Create_Empty_Proc_Execute_And_Drop_Procedure()
         {
-            using var connection = new SqlConnection(fixture.ConnectionString);
-            ConnectionExtensions.Execute(ConnectionExtensions.AsText(ConnectionExtensions.Execute(ConnectionExtensions.AsProcedure(ConnectionExtensions.Execute(connection, "create procedure EmptyStoreProc as /* empty */")), "EmptyStoreProc")), "drop procedure EmptyStoreProc");
+            using var connection = new SqlConnection(fixture.ConnectionString)
+                .Execute("create procedure EmptyStoreProc as /* empty */")
+                .Execute("EmptyStoreProc")
+                .Execute("drop procedure EmptyStoreProc");
 
             var procMissing = false;
             try
             {
-                ConnectionExtensions.Execute(ConnectionExtensions.As(connection, CommandType.StoredProcedure), "EmptyStoreProc");
+                connection.Execute("EmptyStoreProc");
             }
             catch (SqlException)
             {
@@ -41,8 +43,8 @@ namespace SqlServerUnitTests
         [Fact]
         public void Execute_Create_Procedure_And_Read_Results()
         {
-            using var connection = new SqlConnection(fixture.ConnectionString);
-            var results = NormExtensions.SelectDictionaries(ConnectionExtensions.Read(ConnectionExtensions.AsProcedure(ConnectionExtensions.Execute(connection, @"
+            using var connection = new SqlConnection(fixture.ConnectionString)
+                .Execute(@"
                         create procedure TestStoredProcedure(@id int)
                         as
                         select * from (
@@ -52,7 +54,12 @@ namespace SqlServerUnitTests
                             (3, 'foo3', cast('1979-05-19' as date))
                         ) t(first, bar, day)
                         where first = @id
-                    ")), "TestStoredProcedure", ("id", 1)))
+                    ");
+
+            var results = connection
+                .AsProcedure()
+                .Read("TestStoredProcedure", ("id", 1))
+                .SelectDictionaries()
                 .ToList();
 
             Assert.Single(results);

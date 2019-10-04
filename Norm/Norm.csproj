@@ -13,14 +13,17 @@
     <Description>Fast, modern and extendible C# 8  Data Access built for .NET Core 3 era (previously known as NoOrm).</Description>
     <Copyright>Vedran Bilopavlović</Copyright>
     <PackageTags>NoOrm;noorm;data acceess;orm;no-orm;micro-orm;sql;c# 8;.net core 3</PackageTags>
-    <Version>1.0.2</Version>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <PackageReleaseNotes>- Breaking change: Package and library have new name now: Norm, instead of NoOrm
-- Breaking change: Rename all extensions to complay to following convnention: Prefix "Select" indicates build up of expression tree and does not triggers iteration</PackageReleaseNotes>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <PackageReleaseNotes>- IEnumerable of name-value tuples replaced with List
+- Extensions updated accordingly
+- Added extension for O/R mapping to class instance</PackageReleaseNotes>
     <PackageId>Norm.net</PackageId>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastMember" Version="1.5.0" />
     <PackageReference Include="System.Linq.Async" Version="4.0.0" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>

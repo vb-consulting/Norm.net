@@ -7,14 +7,14 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command) => 
-            ReadInternal(command, r => r.ToTuples());
+        public IEnumerable<IList<(string name, object value)>> Read(string command) => 
+            ReadInternal(command, r => r.ToList());
 
-        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params object[] parameters) => 
-            ReadInternal(command, r => r.ToTuples(), cmd => cmd.AddParameters(parameters));
+        public IEnumerable<IList<(string name, object value)>> Read(string command, params object[] parameters) => 
+            ReadInternal(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
 
-        public IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters) => 
-            ReadInternal(command, r => r.ToTuples(), cmd => cmd.AddParameters(parameters));
+        public IEnumerable<IList<(string name, object value)>> Read(string command, params (string name, object value)[] parameters) => 
+            ReadInternal(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
 
         public IEnumerable<T> Read<T>(string command) => 
             ReadInternal(command, r => GetFieldValue<T>(r,0));

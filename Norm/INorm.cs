@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text.Json;
@@ -45,9 +46,9 @@ namespace Norm
 
     public interface INormSingle
     {
-        IEnumerable<(string name, object value)> Single(string command);
-        IEnumerable<(string name, object value)> Single(string command, params object[] parameters);
-        IEnumerable<(string name, object value)> Single(string command, params (string name, object value)[] parameters);
+        IList<(string name, object value)> Single(string command);
+        IList<(string name, object value)> Single(string command, params object[] parameters);
+        IList<(string name, object value)> Single(string command, params (string name, object value)[] parameters);
         T Single<T>(string command);
         T Single<T>(string command, params object[] parameters);
         T Single<T>(string command, params (string name, object value)[] parameters);
@@ -67,9 +68,9 @@ namespace Norm
 
     public interface INormSingleAsync
     {
-        IAsyncEnumerable<(string name, object value)> SingleAsync(string command);
-        IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params object[] parameters);
-        IAsyncEnumerable<(string name, object value)> SingleAsync(string command, params (string name, object value)[] parameters);
+        ValueTask<IList<(string name, object value)>> SingleAsync(string command);
+        ValueTask<IList<(string name, object value)>> SingleAsync(string command, params object[] parameters);
+        ValueTask<IList<(string name, object value)>> SingleAsync(string command, params (string name, object value)[] parameters);
         ValueTask<T> SingleAsync<T>(string command);
         ValueTask<T> SingleAsync<T>(string command, params object[] parameters);
         ValueTask<T> SingleAsync<T>(string command, params (string name, object value)[] parameters);
@@ -89,9 +90,9 @@ namespace Norm
 
     public interface INormRead
     {
-        IEnumerable<IEnumerable<(string name, object value)>> Read(string command);
-        IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params object[] parameters);
-        IEnumerable<IEnumerable<(string name, object value)>> Read(string command, params (string name, object value)[] parameters);
+        IEnumerable<IList<(string name, object value)>> Read(string command);
+        IEnumerable<IList<(string name, object value)>> Read(string command, params object[] parameters);
+        IEnumerable<IList<(string name, object value)>> Read(string command, params (string name, object value)[] parameters);
         IEnumerable<T> Read<T>(string command);
         IEnumerable<T> Read<T>(string command, params object[] parameters);
         IEnumerable<T> Read<T>(string command, params (string name, object value)[] parameters);
@@ -112,9 +113,9 @@ namespace Norm
 
     public interface INormReadAsync
     {
-        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command);
-        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters);
-        IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters);
+        IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command);
+        IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command, params object[] parameters);
+        IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters);
         IAsyncEnumerable<T> ReadAsync<T>(string command);
         IAsyncEnumerable<T> ReadAsync<T>(string command, params object[] parameters);
         IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters);

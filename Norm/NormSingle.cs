@@ -8,31 +8,21 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IEnumerable<(string name, object value)> Single(string command) =>
-            SingleInternal<IEnumerable<(string name, object value)>>(command,
-                r => r.Read()
-                    ? r.ToTuples().ToList()
-                    : new List<(string name, object value)>());
+        public IList<(string name, object value)> Single(string command) =>
+            SingleInternal(command, r => r.Read() ? r.ToList() : new List<(string name, object value)>());
 
-        public IEnumerable<(string name, object value)> Single(string command, params object[] parameters) =>
-            SingleInternal<IEnumerable<(string name, object value)>>(command,
-                r => r.Read()
-                    ? r.ToTuples().ToList()
-                    : new List<(string name, object value)>(),
+        public IList<(string name, object value)> Single(string command, params object[] parameters) =>
+            SingleInternal(command, 
+                r => r.Read() ? r.ToList() : new List<(string name, object value)>(), 
                 cmd => cmd.AddParameters(parameters));
 
-        public IEnumerable<(string name, object value)> Single(string command, params (string name, object value)[] parameters) =>
-            SingleInternal<IEnumerable<(string name, object value)>>(command,
-                r => r.Read()
-                    ? r.ToTuples().ToList()
-                    : new List<(string name, object value)>(),
+        public IList<(string name, object value)> Single(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
                 cmd => cmd.AddParameters(parameters));
 
         public T Single<T>(string command) =>
-            SingleInternal(command,
-                r => r.Read()
-                    ? GetFieldValue<T>(r,0)
-                    : default);
+            SingleInternal(command, r => r.Read() ? GetFieldValue<T>(r,0) : default);
 
         public T Single<T>(string command, params object[] parameters) =>
             SingleInternal(command,

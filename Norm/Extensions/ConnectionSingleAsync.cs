@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -6,14 +7,14 @@ namespace Norm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        public static IAsyncEnumerable<(string name, object value)> SingleAsync(this DbConnection connection, string command) =>
-            connection.GetNoOrmInstance().SingleAsync(command);
+        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command) =>
+            await connection.GetNoOrmInstance().SingleAsync(command);
 
-        public static IAsyncEnumerable<(string name, object value)> SingleAsync(this DbConnection connection, string command, params object[] parameters) =>
-            connection.GetNoOrmInstance().SingleAsync(command, parameters);
+        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params object[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
-        public static IAsyncEnumerable<(string name, object value)> SingleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
-            connection.GetNoOrmInstance().SingleAsync(command, parameters);
+        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
         public static async ValueTask<T> SingleAsync<T>(this DbConnection connection, string command) =>
             await connection.GetNoOrmInstance().SingleAsync<T>(command);

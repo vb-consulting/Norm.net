@@ -46,8 +46,8 @@ namespace SqlServerUnitTests
         public void Null_Value_Test_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var list = connection.Read("select null").ToListOfLists();
-            var (name, value) = list.First().First();
+            var list = connection.Read("select null").SelectValues().ToList();
+            var value = list.First().First();
             Assert.Equal(DBNull.Value, value);
         }
 
@@ -55,8 +55,8 @@ namespace SqlServerUnitTests
         public async Task Null_Value_Test_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
-            var list = await connection.ReadAsync("select null").ToListOfListsAsync();
-            var (name, value) = list.First().First();
+            var list = (await connection.ReadAsync("select null").ToListAsync()).SelectValues();
+            var value = list.First().First();
             Assert.Equal(DBNull.Value, value);
         }
 

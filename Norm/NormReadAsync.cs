@@ -8,19 +8,14 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command) =>
-            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
-                r => r.ToTuplesAsync());
+        public IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command) =>
+            ReadInternalAsync(command, r => r.ToList());
 
-        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params object[] parameters) =>
-            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
-                r => r.ToTuplesAsync(),
-                cmd => cmd.AddParameters(parameters));
+        public IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command, params object[] parameters) =>
+            ReadInternalAsync(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
 
-        public IAsyncEnumerable<IAsyncEnumerable<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters) =>
-            ReadInternalAsync<IAsyncEnumerable<(string name, object value)>>(command,
-                r => r.ToTuplesAsync(),
-                cmd => cmd.AddParameters(parameters));
+        public IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
 
         public IAsyncEnumerable<T> ReadAsync<T>(string command) =>
             ReadInternalAsync(command,
