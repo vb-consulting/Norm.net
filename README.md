@@ -83,23 +83,31 @@ By convention any extension that Start with `Select` will build up expression tr
 
 Results are always tuples by default.
 
+> There is no automatic O/R mapping out-of-the-box, - as name suggest - **this is not ORM**
+
 - Non generic version will return enumerable iterator of tuples with `string name` and `object value`.
 
-- Generic version will return tuples of type indicated by generic parameters, up to 5 generic parameters are currently supported, there will be more in future.
-
-> There is no automatic O/R mapping out-of-the-box, as name suggest, this is not ORM.
-
-There are couple ways to achieve this:
-
-1. Simplest way: use default extension that maps (selects) to generic parameter object instance. For example:
+- Generic version return tuples of the type indicated by generic type parameters. For example:
 
 ```csharp
-connection.Read(sql).Select<TestClass>();
+IEnumerable<(int, string, string, DateTime)> results = connection.Read<int, string, string, DateTime>(sql);
+// use result to Select or map to required structures for your program.
 ```
 
-2. Map generic tuples to objects. This is fastest and most flexible method. For example following `PostgreSQL` query:
+Common usage scenario would be to use `Select` or `SelectMany` `Linq` extensions to map those tuples to, for example:
+
+- Dictionary where dictionary key is returned from database
+- Multiple class instances by using `SelectMany` `Linq` extensions
+- etc
+
+And later in program actual iteration will be executed when we call `ToList` or `foreach`.
+
+However, if we would wanted to map to class instances - there are **couple of ways to do this.**
+
+For example, let's take test query:
 
 ```sql
+-- PostgreSQL syntax
 select
     i as id,
     'foo' || i::text as foo,
@@ -108,7 +116,7 @@ select
 from generate_series(1, 1000000) as i -- return a million
 ```
 
-We want to map to instances of following corresponding class:
+and test class which instances we wish serialize from this query:
 
 ```csharp
 class TestClass
@@ -120,30 +128,29 @@ class TestClass
 }
 ```
 
+### 1. Use `Select<T>` extension
 
-First add constructor that have tuple parameter and map data manually:
-
-```csharp
-public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
-{
-    Id = tuple.id;
-    Foo = tuple.foo;
-    Bar = tuple.bar;
-    Datetime = tuple.dateTime;
-}
-```
-
-Second, Serialize with following expression:
+Example:
 
 ```csharp
-var results = connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple));
+IEnumerable<TestClass> results = connection.Read(sql).Select<TestClass>();
 ```
 
-3. Map JSON results directly. This requires query to return either JSON blob or single row with JSON object
+Note:
+This extension relies on `FastMember` library. `FastMember` emits IL code during the runtime so it is not suitable for Ahead of Time compilation scenarios and members access are case sensitive.
 
-`PostgreSQL` should look like this:
+However, anybody can easily write their own mapping extension and use it internally.
+
+Also, note that this, again will not trigger iteration nor serialization until we call `ToList` or `foreach`.
+
+### 2. Use `Json` methods to read the data
+
+Query can return JSON values. Either entire JSON blob (use `SingleJson` method for this) or single row containing Json objects (use `Single` method for this)
+
+We need to modify query to return JSON:
 
 ```sql
+-- PostgreSQL syntax
 select to_json(t) -- return json rows:
 from (
     select 
@@ -155,15 +162,53 @@ from (
 ) t -- return a million
 ```
 
-Code:
+```csharp
+IEnumerable<TestClass> results = connection.Json(sql);
+```
+
+Again, note that this, again will not trigger iteration nor serialization until we call `ToList` or `foreach`.
+
+### 3. Add mapping constructors to your class
+
+This the method I'd personally recommend (because flexibility and speed) although it might require little bit of typing. We must add specialized constructor to our class first.
+
+If we would map from dictionary, then we need this constructor:
 
 ```csharp
-var results = connection.Json<TestClass>(TestQuery);
+public TestClass(IDictionary<string, object> dictionary)
+{
+    Id = (int) dictionary["Id"];
+    Foo = (string) dictionary["Foo"];
+    Bar = (string) dictionary["Bar"];
+    Datetime = (DateTime) dictionary["Datetime"];
+}
+```
+
+Or, if we map from tuples we need this dictionary:
+
+```csharp
+public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
+{
+    Id = tuple.id;
+    Foo = tuple.foo;
+    Bar = tuple.bar;
+    Datetime = tuple.dateTime;
+}
+```
+
+And now, to serialize class instances - we can use these following expressions:
+
+```csharp
+
+IEnumerable<TestClass> results1 = connection.Read(sql).SelectDictionaries().Select(dict => new TestClass(dict));
+
+IEnumerable<TestClass> results2 = connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple));
+
 ```
 
 ## Performance tests
 
-Following table shows some performance metrics. 
+Following table shows some performance metrics.
 
 All tests are executed over one million tuples returned from database and all values are in seconds.
 
@@ -229,7 +274,7 @@ public TestClass(IDictionary<string, object> dictionary)
 }
 ```
 
-### 5. Norm read operation - builds iterator over generic, typed tuples and use nd use it to build iterator over `TestClass` instances. Averages in **0,003000722**
+### 5. Norm read operation - builds iterator over generic, typed tuples and use use it to build iterator over `TestClass` instances. Averages in **0,003000722**
 
 ```csharp
 IEnumerable<TestClass> results5 = connection.Read<int, string, string, DateTime>(sql).Select(tuple => new TestClass(tuple));
