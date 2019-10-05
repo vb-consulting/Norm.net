@@ -118,6 +118,169 @@ namespace Norm
                     : (default, default, default, default, default),
                 cmd => cmd.AddParameters(parameters));
 
+        public (T1, T2, T3, T4, T5, T6) Single<T1, T2, T3, T4, T5, T6>(string command) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), 
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5)
+                        )
+                    : (default, default, default, default, default, default));
+
+        public (T1, T2, T3, T4, T5, T6) Single<T1, T2, T3, T4, T5, T6>(string command, params object[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5)
+                    )
+                    : (default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6) Single<T1, T2, T3, T4, T5, T6>(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5)
+                    )
+                    : (default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5), 
+                        GetFieldValue<T7>(r, 6)
+                    )
+                    : (default, default, default, default, default, default, default));
+
+        public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command, params object[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6)
+                    )
+                    : (default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6)
+                    )
+                    : (default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8) Single<T1, T2, T3, T4, T5, T6, T7, T8>(string command) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7)
+                    )
+                    : (default, default, default, default, default, default, default, default));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8) Single<T1, T2, T3, T4, T5, T6, T7, T8>(string command, params object[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7)
+                    )
+                    : (default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8) Single<T1, T2, T3, T4, T5, T6, T7, T8>(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7)
+                    )
+                    : (default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8)
+                    )
+                    : (default, default, default, default, default, default, default, default, default));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command, params object[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8)
+                    )
+                    : (default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8)
+                    )
+                    : (default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string command) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8), 
+                        GetFieldValue<T10>(r, 9)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string command, params object[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8),
+                        GetFieldValue<T10>(r, 9)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string command, params (string name, object value)[] parameters) =>
+            SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8),
+                        GetFieldValue<T10>(r, 9)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
 
 
 
