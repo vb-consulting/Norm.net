@@ -8,20 +8,15 @@ Fast, modern and extendible **`C# 8`** data access built for **.NET Core 3** era
 
 This allows avoiding unneccessary iterations and as well greater flexibility.
 
-By default - it will return iterator over tuples and not serialized instances. Because that's what databases do return - tuples.
+By default - it will return iterator over tuples and not serialized instances. 
 
-Those iterator over tuples can be then further extended with expressions (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping) section bellow). 
+Because that's what databases do returns - **tuples.**
 
-See [How it works](https://github.com/vbilopav/NoOrm.Net/HOW-IT-WORKS.md) section bellow.
+This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping). 
 
-## Changes in version 1.1.0
+## [Change log](https://github.com/vbilopav/NoOrm.Net/blob/master/CHANGES.md)
 
-- All result types `IEnumerable<(string name, object value)>` replaced with`IList<(string name, object value)>`.
-- Consequently name/value tuple results are generating lists structure and do not deffer serialization.
-- This allowed simplification of extensions and to remoev some of them.
-- Added proper extension for O/R Mapping  by using `FastMember` library
-
-## [How It Works - Why **Norm** - And - Similarities With Dapper](https://github.com/vbilopav/NoOrm.Net/HOW-IT-WORKS.md)
+## [How It Works - Why **Norm** - And - Similarities With Dapper](https://github.com/vbilopav/NoOrm.Net/blob/master/HOW-IT-WORKS.md)
 
 ## Test coverage and usage examples
 
@@ -47,31 +42,42 @@ Recap:
 | `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, `WithOutParameter`, `GetOutParameterValue` | Provide general functionality like changing command type from procedure to test, setting the timeout, and output parameters...|
 | Extensions | Set of `IEnumerable` and `IAsyncEnumerable` extensions to convert database tuples to lists and dictionaries. New extensions can be added on will (for object mapping for example). |
 
+### Working with database parameters
+
+Each database operation can receive params array (a variable number of arguments) that will be mapped top appropriate `DbParameter` type instance to avoid SQL injection.
+
+There are two ovrloads that receive parameters:
+
+#### Positional parameters
+
+Map parameter by position (name is not important, but it must start with `@` by convention)
+
+```csharp
+connection.Execute("select @p1, @p2", value1, value2);
+connection.Execute("select @p1, @p2, @third", value1, value2, value3);
+// etc...
+```
+
+#### Named parameters parameters
+
+Map parameter by exact name, postion is not important:
+
+```csharp
+connection.Execute("select @p1, @p2", ("p1", value1), ("p2", value2));
+connection.Execute("select @p1, @p2, @third", ("p1", value1), ("p2", value2), ("third", value3));
+// etc...
+```
+
 ### Available extensions
 
 By convention any extension that Start with `Select` will build up expression tree and not trigger any iteration. Available extensions are:
 
-#### SelectDictionary
-
-Add expression to build a dictionary from name, value tuples
-
-#### SelectDictionaries and SelectDictionariesAsync
-
-Add expression to build a enumerator (sync or async) - of dictionaries from collection of name, value tuples
-
-#### SelectValues
-
-Select only values from name value tuples
-
-#### Select`T` and SelectAsync`T`
-
-Select results mapped to a class instance (O/R mapping, case sensitive).
-
-#### Named parameters
-
-```csharp
-connection.Execute("select @p1, p2", ("p1", value1), ("p2", value2));
-```
+| Extension | Extends | Description |
+| ------------- |-------------|-------------|
+| `SelectDictionary` | name and value tuple pairs | adds expression to build a dictionary from name, value tuples |
+| `SelectDictionaries`, `SelectDictionariesAsync` | enumerator over name and value tuple pairs | add expression to build a enumerator (sync or async) - of dictionaries from collection of name, value tuples |
+| `SelectValues` |  name and value tuple pairs or enumerator over name and value tuple pairs | Select only values from name value tuples |
+| `Select<T>`, `SelectAsync<T>` | name and value tuple pairs or enumerator over name and value tuple pairs | Map to an instance of provided generic type using `FastMember` (O/R mapping)
 
 ## Working with results and Object/Relational mapping
 
