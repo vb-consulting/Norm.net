@@ -23,7 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastMember" Version="1.5.0" />
     <PackageReference Include="System.Linq.Async" Version="4.0.0" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>

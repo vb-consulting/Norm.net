@@ -29,10 +29,10 @@ namespace PerfomanceTests
 
         public TestClass(IDictionary<string, object> dictionary)
         {
-            Id = (int) dictionary["Id"];
-            Foo = (string) dictionary["Foo"];
-            Bar = (string) dictionary["Bar"];
-            Datetime = (DateTime) dictionary["Datetime"];
+            Id = (int) dictionary["id"];
+            Foo = (string) dictionary["foo"];
+            Bar = (string) dictionary["bar"];
+            Datetime = (DateTime) dictionary["datetime"];
         }
             
         public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
@@ -53,10 +53,10 @@ namespace PerfomanceTests
 
         private const string TestQuery = @"
             select 
-                i as ""Id"", 
-                'foo' || i::text as ""Foo"", 
-                'bar' || i::text as ""Bar"", 
-                ('2000-01-01'::date) + (i::text || ' days')::interval as ""Datetime""
+                i as id, 
+                'foo' || i::text as foo, 
+                'bar' || i::text as bar, 
+                ('2000-01-01'::date) + (i::text || ' days')::interval as datetime
             from generate_series(1, 1000000) as i
         ";
 
@@ -111,7 +111,7 @@ namespace PerfomanceTests
             var (e7Count, c7) = Measure(() => r7.ToList().Count);
 
 
-            output.WriteLine($"{e1},{e2},{e3},{e4},{e5},{e6},{e7},{e1Count},{e2Count},{e3Count},{e4Count},{e5Count},{e6Count},{e7Count}");
+            //output.WriteLine($"{e1},{e2},{e3},{e4},{e5},{e6},{e7},{e1Count},{e2Count},{e3Count},{e4Count},{e5Count},{e6Count},{e7Count}");
             /**
 
 00:00:03.3752950,00:00:00.0025598,00:00:00.0006772,00:00:00.0006989,00:00:00.0022935,00:00:00.0007031,00:00:00.0008550,00:00:00.0018595,00:00:02.8637453,00:00:03.7792868,00:00:03.6100517,00:00:04.5741329,00:00:05.1103832,00:00:03.2302929
@@ -124,7 +124,7 @@ namespace PerfomanceTests
 00:00:03.3050129,00:00:00.0025335,00:00:00.0008778,00:00:00.0005671,00:00:00.0034135,00:00:00.0008028,00:00:00.0008808,00:00:00.0019943,00:00:03.0209209,00:00:05.7025867,00:00:04.9959240,00:00:02.4584816,00:00:04.4241120,00:00:02.6890962
 00:00:03.0581420,00:00:00.0022742,00:00:00.0006804,00:00:00.0005627,00:00:00.0022258,00:00:00.0010480,00:00:00.0008435,00:00:00.0017910,00:00:02.3538676,00:00:04.1760797,00:00:03.1734550,00:00:02.4060259,00:00:04.0451822,00:00:03.1164555
 00:00:03.0750567,00:00:00.0028665,00:00:00.0009022,00:00:00.0008439,00:00:00.0044506,00:00:00.0008151,00:00:00.0009868,00:00:00.0032063,00:00:03.3263054,00:00:04.8390286,00:00:03.2985729,00:00:02.9437614,00:00:04.7721182,00:00:03.1037891
-
+            */
 output.WriteLine("Dapper objects query in {0}", e1);
 output.WriteLine("NoOrm tuples query in {0}", e2);
 output.WriteLine("NoOrm dictionary query in {0}", e3);

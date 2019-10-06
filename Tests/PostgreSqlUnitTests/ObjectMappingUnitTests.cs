@@ -16,11 +16,11 @@ namespace PostgreSqlUnitTests
 
         class TestClass
         {
-            public int Id { get; set; }
-            public string Foo { get; set; }
-            public DateTime Day { get; set; }
-            public bool? Bool { get; set; }
-            public string Bar { get; set; }
+            public int Id { get; private set; }
+            public string Foo { get; private set; }
+            public DateTime Day { get; private set; }
+            public bool? Bool { get; private set; }
+            public string Bar { get; private set; }
         }
 
         private const string Query = @"
@@ -30,7 +30,7 @@ namespace PostgreSqlUnitTests
                                 (1, 'foo1', '1977-05-19'::date, true, null),
                                 (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
                                 (3, 'foo3', '1979-05-19'::date, null, 'bar3')
-                            ) t(""Id"", ""Foo"", ""Day"", ""Bool"", ""Bar"")";
+                            ) t(id, foo, day, bool, bar)";
 
         public ObjectMappingUnitTests(PostgreSqlFixture fixture)
         {

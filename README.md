@@ -225,7 +225,7 @@ All tests are executed over one million tuples returned from database and all va
 | 9 | 3,0750567 | 0,0028665 | 0,0009022 | 0,0008439 | 0,0044506 | 0,0008151 | 0,0009868 |
 | AVG | **3,367590256** | **0,002619622** | **0,0007742** | **0,000642456** | **0,003000722** | **0,000818378** | **0,0009386** |
 
-| | dapper count (1)  | norm count (2) | norm count (3)  | norm count (4) | norm count (5) | norm count (6) | norm count (7) |
+| | dapper count (8)  | norm count (9) | norm count (10)  | norm count (11) | norm count (12) | norm count (13) | norm count (14) |
 | - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
 | 1 | 0,0026828 | 2,8800147 | 3,9677773 | 4,044749 | 3,5522813 | 4,29726 | 2,9316158 |
 | 2 | 0,0017753 | 2,5111109 | 3,5520368 | 3,0283845 | 2,5383521 | 4,4486203 | 3,4632417 |
@@ -292,19 +292,19 @@ public TestClass((int id, string foo, string bar, DateTime dateTime) tuple)
 }
 ```
 
-### 6. Norm read operation - 
+### 6. Norm read operation - builds iterator over de-serialized JSON to class instance. Averages in **0,000818378**
 
 ```csharp
 IEnumerable<TestClass> results6 = connection.Json<TestClass>(JsonTestQuery))
 ```
 
-### 7. Norm read operation - 
+### 7. Norm read operation - builds iterator over class instances mapped with `Select<T>` O/R mapping extension. Averages in **0,0009386**
 
 ```csharp
 IEnumerable<TestClass> results7 = connection.Read(TestQuery).Select<TestClass>());
 ```
 
-(8) Dapper
+### 8. Dapper query - count the results 
 
 ```csharp
 ```
@@ -314,7 +314,6 @@ IEnumerable<TestClass> results7 = connection.Read(TestQuery).Select<TestClass>()
 (11) Dapper
 (12) Dapper
 (13) Dapper
-
 
 
 ## Licence

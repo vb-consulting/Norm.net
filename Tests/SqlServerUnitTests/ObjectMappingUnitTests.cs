@@ -28,7 +28,7 @@ namespace SqlServerUnitTests
                               (1, 'foo1', cast('1977-05-19' as date), cast(1 as bit) , null),
                               (2, 'foo2', cast('1978-05-19' as date), cast(0 as bit), 'bar2'),
                               (3, 'foo3', cast('1979-05-19' as date), null, 'bar3')
-                            ) t (Id, Foo, Day, Bool, Bar)";
+                            ) t (id, foo, day, bool, bar)";
         public ObjectMappingUnitTests(SqlClientFixture fixture)
         {
             this.fixture = fixture;

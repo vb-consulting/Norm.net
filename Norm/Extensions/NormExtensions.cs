@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FastMember;
+
 
 namespace Norm.Extensions
 {
@@ -42,33 +42,5 @@ namespace Norm.Extensions
         /// </summary>
         public static IEnumerable<IEnumerable<object>> SelectValues(this IEnumerable<IEnumerable<(string name, object value)>> tuples) =>
             tuples.Select(t => t.SelectValues());
-
-
-        /// <summary>
-        /// Select results mapped to a class instance (O/R mapping, case sensitive). 
-        /// </summary>
-        public static T Select<T>(this IEnumerable<(string name, object value)> tuples) where T : new()
-        {
-            var instance = new T();
-            var acc = ObjectAccessor.Create(instance);
-            foreach (var (name, value) in tuples)
-            {
-
-                acc[name] = value == DBNull.Value ? null : value;
-            }
-            return instance;
-        }
-
-        /// <summary>
-        /// Select results mapped to a class instance (O/R mapping, case sensitive). 
-        /// </summary>
-        public static IEnumerable<T> Select<T>(this IEnumerable<IEnumerable<(string name, object value)>> tuples) where T : new() =>
-            tuples.Select(t => t.Select<T>());
-
-        /// <summary>
-        /// Select results mapped to a class instance (O/R mapping, case sensitive). 
-        /// </summary>
-        public static IAsyncEnumerable<T> SelectAsync<T>(this IAsyncEnumerable<IEnumerable<(string name, object value)>> tuples) where T : new() =>
-            tuples.Select(t => t.Select<T>());
     }
 }
