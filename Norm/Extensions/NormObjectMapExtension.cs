@@ -9,39 +9,28 @@ namespace Norm.Extensions
 {
     public static partial class NormExtensions
     {
-        private struct MapCacheItem
-        {
-            public bool Nullable { get; }
-            public Delegate Setter { get; }
-
-            public MapCacheItem(bool nullable, Delegate setter)
-            {
-                Nullable = nullable;
-                Setter = setter;
-            }
-        }
-
-        private static readonly ConcurrentDictionary<int, IDictionary<int, MapCacheItem>> MapCache = 
-            new ConcurrentDictionary<int, IDictionary<int, MapCacheItem>>();
+        private static readonly ConcurrentDictionary<int, IDictionary<int, Delegate>> TypeCache = new ConcurrentDictionary<int, IDictionary<int, Delegate>>();
+        private static readonly ConcurrentDictionary<int, HashSet<int>> NullableCache = new ConcurrentDictionary<int, HashSet<int>>();
 
         private static void SetNullableValue<TInst, TProp>(
             TInst instance,
             string propertyName,
             TProp value, 
-            Type instanceType, 
-            IDictionary<int, MapCacheItem> dict,
+            IReflect instanceType, 
+            IDictionary<int, Delegate> typeDict,
+            HashSet<int> nullableHash,
             int index)
             where TProp : struct
         {
-            if (dict.TryGetValue(index, out var item))
+            if (typeDict.TryGetValue(index, out var cachedSetter))
             {
-                if (!item.Nullable)
+                if (!nullableHash.Contains(index))
                 {
-                    ((Action<TInst, TProp>)item.Setter).Invoke(instance, value);
+                    ((Action<TInst, TProp>)cachedSetter).Invoke(instance, value);
                 }
                 else
                 {
-                    ((Action<TInst, TProp?>)item.Setter).Invoke(instance, value);
+                    ((Action<TInst, TProp?>)cachedSetter).Invoke(instance, value);
                 }
                 return;
             }
@@ -55,13 +44,14 @@ namespace Norm.Extensions
             if (!nullable)
             {
                 var setter = Delegate.CreateDelegate(typeof(Action<TInst, TProp>), reflectionSetter);
-                dict.TryAdd(index, new MapCacheItem(false, setter));
+                typeDict.Add(index, setter);
                 ((Action<TInst, TProp>)setter).Invoke(instance, value);
             }
             else
             {
                 var setter = Delegate.CreateDelegate(typeof(Action<TInst, TProp?>), reflectionSetter);
-                dict.TryAdd(index, new MapCacheItem(true, setter));
+                typeDict.Add(index, setter);
+                nullableHash.Add(index);
                 ((Action<TInst, TProp?>)setter).Invoke(instance, value);
             }
         }
@@ -70,13 +60,13 @@ namespace Norm.Extensions
             TInst instance,
             string propertyName,
             TProp value,
-            Type instanceType,
-            IDictionary<int, MapCacheItem> dict,
+            IReflect instanceType,
+            IDictionary<int, Delegate> dict,
             int index)
         {
-            if (dict.TryGetValue(index, out var item))
+            if (dict.TryGetValue(index, out var cachedSetter))
             {
-                ((Action<TInst, TProp>)item.Setter).Invoke(instance, value);
+                ((Action<TInst, TProp>)cachedSetter).Invoke(instance, value);
                 return;
             }
             var propertyInfo = instanceType.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -86,7 +76,7 @@ namespace Norm.Extensions
             }
             var reflectionSetter = propertyInfo.GetSetMethod(true);
             var setter = Delegate.CreateDelegate(typeof(Action<TInst, TProp>), reflectionSetter);
-            dict.TryAdd(index, new MapCacheItem(false, setter));
+            dict.Add(index, setter);
             ((Action<TInst, TProp>) setter).Invoke(instance, value);
         }
 
@@ -95,7 +85,8 @@ namespace Norm.Extensions
             T instance,
             int instanceHashCode,
             Type instanceType, 
-            IDictionary<int, MapCacheItem> dict,
+            IDictionary<int, Delegate> typeDict,
+            HashSet<int> nullableHash,
             bool isNewEntry)
         {
             foreach (var ((name, value), index) in tuples.Select((item, index) => (item, index)))
@@ -104,61 +95,59 @@ namespace Norm.Extensions
                 switch (code)
                 {
                     case TypeCode.Boolean:
-                        SetNullableValue(instance, name, (bool)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (bool)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Byte:
-                        SetNullableValue(instance, name, (byte)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (byte)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Char:
-                        SetNullableValue(instance, name, (char)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (char)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.DateTime:
-                        SetNullableValue(instance, name, (DateTime)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (DateTime)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Decimal:
-                        SetNullableValue(instance, name, (decimal)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (decimal)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Double:
-                        SetNullableValue(instance, name, (double)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (double)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Int16:
-                        SetNullableValue(instance, name, (short)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (short)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Int32:
-                        SetNullableValue(instance, name, (int)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (int)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Int64:
-                        SetNullableValue(instance, name, (long)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (long)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Object:
-                        SetValue(instance, name, (object)value, instanceType, dict, index);
-                        break;
+                        SetValue(instance, name, value, instanceType, typeDict, index);
+                        continue;
                     case TypeCode.SByte:
-                        SetNullableValue(instance, name, (sbyte)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (sbyte)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.Single:
-                        SetNullableValue(instance, name, (float)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (float)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.String:
-                        SetValue(instance, name, (string)value, instanceType, dict, index);
-                        break;
+                        SetValue(instance, name, (string)value, instanceType, typeDict, index);
+                        continue;
                     case TypeCode.UInt16:
-                        SetNullableValue(instance, name, (ushort)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (ushort)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.UInt32:
-                        SetNullableValue(instance, name, (uint)value, instanceType, dict, index);
-                        break;
+                        SetNullableValue(instance, name, (uint)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                     case TypeCode.UInt64:
-                        SetNullableValue(instance, name, (ulong)value, instanceType, dict, index);
-                        break;
-                    default:
-                        break;
+                        SetNullableValue(instance, name, (ulong)value, instanceType, typeDict, nullableHash, index);
+                        continue;
                 }
             }
-            if (isNewEntry)
-            {
-               MapCache.TryAdd(instanceHashCode, dict);
-            }
+
+            if (!isNewEntry) return instance;
+            TypeCache.TryAdd(instanceHashCode, typeDict);
+            NullableCache.TryAdd(instanceHashCode, nullableHash);
             return instance;
         }
 
@@ -169,10 +158,14 @@ namespace Norm.Extensions
             var instanceHashCode = instanceType.GetHashCode();
             var instance = new T();
 
-            if (MapCache.TryGetValue(instanceHashCode, out var dict))
-                return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, false);
-            dict = new Dictionary<int, MapCacheItem>();
-            return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, true);
+            if (TypeCache.TryGetValue(instanceHashCode, out var dict))
+            {
+                return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
+            }
+
+            dict = new Dictionary<int, Delegate>();
+            var nullableHash = new HashSet<int>();
+            return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
         }
         
         public static IEnumerable<T> Select<T>(this IEnumerable<IList<(string name, object value)>> tuples) where T : new()
@@ -183,10 +176,15 @@ namespace Norm.Extensions
             return tuples.Select(t =>
             {
                 var instance = new T();
-                if (MapCache.TryGetValue(instanceHashCode, out var dict))
-                    return t.SelectInternal(instance, instanceHashCode, instanceType, dict, false);
-                dict = new Dictionary<int, MapCacheItem>();
-                return t.SelectInternal(instance, instanceHashCode, instanceType, dict, true);
+
+                if (TypeCache.TryGetValue(instanceHashCode, out var dict))
+                {
+                    return t.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
+                }
+
+                dict = new Dictionary<int, Delegate>();
+                var nullableHash = new HashSet<int>();
+                return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
             });
         }
 
@@ -198,10 +196,15 @@ namespace Norm.Extensions
             return tuples.Select(t =>
             {
                 var instance = new T();
-                if (MapCache.TryGetValue(instanceHashCode, out var dict))
-                    return t.SelectInternal(instance, instanceHashCode, instanceType, dict, false);
-                dict = new Dictionary<int, MapCacheItem>();
-                return t.SelectInternal(instance, instanceHashCode, instanceType, dict, true);
+
+                if (TypeCache.TryGetValue(instanceHashCode, out var dict))
+                {
+                    return t.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
+                }
+
+                dict = new Dictionary<int, Delegate>();
+                var nullableHash = new HashSet<int>();
+                return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
             });
         }
     }
