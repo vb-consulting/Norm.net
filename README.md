@@ -1,18 +1,19 @@
 # `Norm.Net`
 
-Fast, modern and extendible **`C# 8`** data access built for **.NET Core 3** era.
+Modern and extendible **`C# 8`** data access built for **.NET Core 3** era.
 
-> **THIS IS NOT ORM** `Norm` is `NoORM`, or not an `ORM` (but there is O/R mapping extension).
+> Warning
+>**THIS IS NOT ORM** `Norm` is `NoORM`, or not an `ORM` (although, there is O/R mapping extension).
 
 `Norm` will postpone any reads from database until they are needed - allowing you to build expression trees and transformations - before it started fetching any data.
 
-This allows avoiding unneccessary iterations and as well greater flexibility.
+This allows avoiding unneccessary iterations and much greater flexibility.
 
-By default - it will return iterator over tuples and not serialized instances. 
+By default it will return iterator over tuples and not serialized instances.
 
 Because that's what databases do returns - **tuples.**
 
-This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping). 
+This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping).
 
 ## [Change log](https://github.com/vbilopav/NoOrm.Net/blob/master/CHANGES.md)
 
@@ -46,7 +47,7 @@ Recap:
 
 Each database operation can receive params array (a variable number of arguments) that will be mapped top appropriate `DbParameter` type instance to avoid SQL injection.
 
-There are two ovrloads that receive parameters:
+There are two overloads that receive parameters:
 
 #### Positional parameters
 
@@ -60,7 +61,7 @@ connection.Execute("select @p1, @p2, @third", value1, value2, value3);
 
 #### Named parameters parameters
 
-Map parameter by exact name, postion is not important:
+Map parameter by exact name, position is not important:
 
 ```csharp
 connection.Execute("select @p1, @p2", ("p1", value1), ("p2", value2));
@@ -214,29 +215,31 @@ All tests are executed over one million tuples returned from database and all va
 
 | | dapper read (1) | norm read (2) | norm read (3)  | norm read (4) | norm read (5) | norm read (6) | norm read (7) |
 | - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
-| 1 | 3,0415078 | 0,0024166 | 0,0007101 | 0,0005985 | 0,0031619 | 0,0007754 | 0,0012049 |
-| 2 | 3,245256 | 0,0032193 | 0,0006805 | 0,000583 | 0,002197 | 0,000882 | 0,0010584 |
-| 3 | 2,9803222 | 0,0026597 | 0,0006636 | 0,0005223 | 0,0021911 | 0,0007316 | 0,0008133 |
-| 4 | 4,2485572 | 0,0026039 | 0,0007918 | 0,0007257 | 0,0035843 | 0,0008177 | 0,0008636 |
-| 5 | 3,4473896 | 0,0024689 | 0,0009009 | 0,0005666 | 0,0034545 | 0,0007081 | 0,0008028 |
-| 6 | 3,9070679 | 0,002534 | 0,0007605 | 0,0008123 | 0,0023278 | 0,0007847 | 0,0009933 |
-| 7 | 3,3050129 | 0,0025335 | 0,0008778 | 0,0005671 | 0,0034135 | 0,0008028 | 0,0008808 |
-| 8 | 3,058142 | 0,0022742 | 0,0006804 | 0,0005627 | 0,0022258 | 0,001048 | 0,0008435 |
-| 9 | 3,0750567 | 0,0028665 | 0,0009022 | 0,0008439 | 0,0044506 | 0,0008151 | 0,0009868 |
-| AVG | **3,367590256** | **0,002619622** | **0,0007742** | **0,000642456** | **0,003000722** | **0,000818378** | **0,0009386** |
+| 1 | 0:00:04.100 | 0:00:00.006 | 0:00:00.001 | 0:00:00.001 | 0:00:00.004 | 0:00:00.001 | 0:00:00.001 |
+| 2 | 0:00:03.187 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 |
+| 3 | 0:00:03.051 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 |
+| 4 | 0:00:03.395 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 |
+| 5 | 0:00:04.039 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 |
+| 6 | 0:00:03.097 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 |
+| 7 | 0:00:04.561 | 0:00:00.003 | 0:00:00.001 | 0:00:00.005 | 0:00:00.004 | 0:00:00.001 | 0:00:00.002 |
+| 8 | 0:00:03.610 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 | 0:00:00.005 | 0:00:00.001 | 0:00:00.001 |
+| 9 | 0:00:03.217 | 0:00:00.002 | 0:00:00.001 | 0:00:00.001 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 |
+| 10 | 0:00:02.916 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 |
+| AVG | **0:00:03.517** | **0:00:00.003** | **0:00:00.001** | **0:00:00.001** | **0:00:00.003** | **0:00:00.001** | **0:00:00.001** |
 
 | | dapper count (8)  | norm count (9) | norm count (10)  | norm count (11) | norm count (12) | norm count (13) | norm count (14) |
 | - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
-| 1 | 0,0026828 | 2,8800147 | 3,9677773 | 4,044749 | 3,5522813 | 4,29726 | 2,9316158 |
-| 2 | 0,0017753 | 2,5111109 | 3,5520368 | 3,0283845 | 2,5383521 | 4,4486203 | 3,4632417 |
-| 3 | 0,0019028 | 2,4975842 | 3,6029344 | 2,9978021 | 2,6323984 | 4,1697686 | 3,108879 |
-| 4 | 0,0014821 | 2,7933007 | 3,7870573 | 3,8797356 | 3,126549 | 5,0243688 | 3,8503477 |
-| 5 | 0,0018032 | 2,609527 | 4,2870604 | 3,2902466 | 2,4776056 | 4,9150692 | 3,296226 |
-| 6 | 0,0018624 | 3,1660909 | 3,7884559 | 3,3306854 | 3,1666028 | 5,5989298 | 3,2163334 |
-| 7 | 0,0019943 | 3,0209209 | 5,7025867 | 4,995924 | 2,4584816 | 4,424112 | 2,6890962 |
-| 8 | 0,001791 | 2,3538676 | 4,1760797 | 3,173455 | 2,4060259 | 4,0451822 | 3,1164555 |
-| 9 | 0,0032063 | 3,3263054 | 4,8390286 | 3,2985729 | 2,9437614 | 4,7721182 | 3,1037891 |
-| AVG | **0,002055578** | **2,795413589** | **4,189224122** | **3,559950567** | **2,811339789** | **4,632825456** | **3,1973316** |
+| 1 | 0:00:00.002 | 0:00:03.679 | 0:00:03.989 | 0:00:03.813 | 0:00:02.639 | 0:00:04.987 | 0:00:04.008 |
+| 2 | 0:00:00.002 | 0:00:02.771 | 0:00:04.264 | 0:00:03.168 | 0:00:02.571 | 0:00:04.117 | 0:00:03.463 |
+| 3 | 0:00:00.002 | 0:00:03.198 | 0:00:04.940 | 0:00:04.129 | 0:00:03.277 | 0:00:05.513 | 0:00:03.346 |
+| 4 | 0:00:00.002 | 0:00:02.429 | 0:00:03.647 | 0:00:03.128 | 0:00:02.769 | 0:00:05.267 | 0:00:04.993 |
+| 5 | 0:00:00.002 | 0:00:02.761 | 0:00:03.950 | 0:00:03.471 | 0:00:02.641 | 0:00:05.018 | 0:00:04.270 |
+| 6 | 0:00:00.002 | 0:00:03.043 | 0:00:03.698 | 0:00:02.920 | 0:00:02.195 | 0:00:04.470 | 0:00:03.975 |
+| 7 | 0:00:00.003 | 0:00:03.870 | 0:00:05.282 | 0:00:03.586 | 0:00:02.852 | 0:00:05.348 | 0:00:04.066 |
+| 8 | 0:00:00.002 | 0:00:02.549 | 0:00:03.635 | 0:00:03.659 | 0:00:02.860 | 0:00:04.495 | 0:00:03.824 |
+| 9 | 0:00:00.003 | 0:00:02.389 | 0:00:03.507 | 0:00:02.974 | 0:00:02.269 | 0:00:04.917 | 0:00:03.723 |
+| 10 | 0:00:00.002 | 0:00:02.654 | 0:00:03.679 | 0:00:02.778 | 0:00:02.926 | 0:00:04.203 | 0:00:03.563 |
+| AVG | **0:00:00.002** | **0:00:02.934** | **0:00:04.059** | **0:00:03.363** | **0:00:02.700** | **0:00:04.834** | **0:00:03.923** |
 
 ### 1. Dapper query - read and serializes one million rows from SQL query. Averages in **3,367590256** seconds
 
