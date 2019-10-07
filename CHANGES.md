@@ -1,5 +1,9 @@
 # Version history
 
+## 1.1.2
+
+- Fixed extensions to use `IList` of tuples instead of `IEnumerable`
+
 ## 1.1.1
 
 - Replaced `FastMember` O/R Mapping `Select<T>` extensions with custom implementation
