@@ -218,7 +218,7 @@ from generate_series(1, 1000000) as i
 
 Following table shows execution times of Dapper read operation and different Norm read operations that yield enumerable results:
 
-| | dapper read (1) | norm read (2) | norm read (3)  | norm read (4) | norm read (5) | norm read (6) | norm read (7) |
+| | dapper read ([1](https://github.com/vbilopav/NoOrm.Net#1-dapper-query---read-and-serializes-one-million-rows-from-sql-query)) | norm read ([2](https://github.com/vbilopav/NoOrm.Net#2-norm-read-operation---builds-iterator-over-list-of-name-and-value-tuples)) | norm read ([3](https://github.com/vbilopav/NoOrm.Net#3-norm-read-operation-builds-iterator-over-namevalue-dictionaries))  | norm read ([4](https://github.com/vbilopav/NoOrm.Net#4-norm-read-operation---builds-iterator-over-namevalue-dictionaries-and-use-it-to-build-iterator-over-testclass-instances)) | norm read ([5](https://github.com/vbilopav/NoOrm.Net#5-norm-read-operation---builds-iterator-over-generic-typed-tuples-and-use-use-it-to-build-iterator-over-testclass-instances)) | norm read ([6](https://github.com/vbilopav/NoOrm.Net#6-norm-read-operation---builds-iterator-over-de-serialized-json-to-class-instances)) | norm read ([7](https://github.com/vbilopav/NoOrm.Net#7-norm-read-operation---builds-iterator-over-class-instances-mapped-with-selectt-or-mapping-extension)) |
 | - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
 | 1 | 0:00:04.100 | 0:00:00.006 | 0:00:00.001 | 0:00:00.001 | 0:00:00.004 | 0:00:00.001 | 0:00:00.001 |
 | 2 | 0:00:03.187 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 | 0:00:00.003 | 0:00:00.001 | 0:00:00.001 |
@@ -234,7 +234,7 @@ Following table shows execution times of Dapper read operation and different Nor
 
 Following table shows execution times of count operations over enumeration results from same operations.
 
-| | dapper count (1)  | norm count (2) | norm count (3)  | norm count (4) | norm count (5) | norm count (6) | norm count (7) |
+| | dapper count ([1](https://github.com/vbilopav/NoOrm.Net#1-dapper-query---read-and-serializes-one-million-rows-from-sql-query)) | norm count ([2](https://github.com/vbilopav/NoOrm.Net#2-norm-read-operation---builds-iterator-over-list-of-name-and-value-tuples)) | norm count ([3](https://github.com/vbilopav/NoOrm.Net#3-norm-read-operation-builds-iterator-over-namevalue-dictionaries)) | norm count ([4](https://github.com/vbilopav/NoOrm.Net#4-norm-read-operation---builds-iterator-over-namevalue-dictionaries-and-use-it-to-build-iterator-over-testclass-instances)) | norm count ([5](https://github.com/vbilopav/NoOrm.Net#5-norm-read-operation---builds-iterator-over-generic-typed-tuples-and-use-use-it-to-build-iterator-over-testclass-instances)) | norm count ([6](https://github.com/vbilopav/NoOrm.Net#6-norm-read-operation---builds-iterator-over-de-serialized-json-to-class-instances)) | norm count ([7](https://github.com/vbilopav/NoOrm.Net#7-norm-read-operation---builds-iterator-over-class-instances-mapped-with-selectt-or-mapping-extension)) |
 | - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
 | 1 | 0:00:00.002 | 0:00:03.679 | 0:00:03.989 | 0:00:03.813 | 0:00:02.639 | 0:00:04.987 | 0:00:04.008 |
 | 2 | 0:00:00.002 | 0:00:02.771 | 0:00:04.264 | 0:00:03.168 | 0:00:02.571 | 0:00:04.117 | 0:00:03.463 |
