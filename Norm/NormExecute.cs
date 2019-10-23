@@ -10,7 +10,6 @@ namespace Norm
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
             cmd.ExecuteNonQuery();
-            OnCommandExecuted(cmd);
             return this;
         }
 
@@ -20,7 +19,6 @@ namespace Norm
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
             cmd.AddParameters(parameters).ExecuteNonQuery();
-            OnCommandExecuted(cmd);
             return this;
         }
 
@@ -30,7 +28,6 @@ namespace Norm
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
             cmd.AddParameters(parameters).ExecuteNonQuery();
-            OnCommandExecuted(cmd);
             return this;
         }
     }

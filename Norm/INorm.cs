@@ -25,9 +25,6 @@ namespace Norm
         INorm AsText();
         INorm Timeout(int? timeout);
         INorm WithJsonOptions(JsonSerializerOptions options);
-        INorm WithOutParameter(string name);
-        INorm WithOutParameter(string name, object value);
-        object GetOutParameterValue(string name);
     }
 
     public interface INormExecute

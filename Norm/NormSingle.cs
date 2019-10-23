@@ -291,7 +291,6 @@ namespace Norm
             Connection.EnsureIsOpen();
             commandAction?.Invoke(cmd);
             using var reader = cmd.ExecuteReader();
-            OnCommandExecuted(cmd);
             return readerAction(reader);
         }
     }

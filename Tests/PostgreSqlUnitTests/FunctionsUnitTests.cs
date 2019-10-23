@@ -49,45 +49,5 @@ namespace PostgreSqlUnitTests
             }
             Assert.True(procMissing);
         }
-
-        [Fact]
-        public void Output_Parameters_Function_Test()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            connection
-                .Execute(@"
-                    create function test_out_param_func(out test_param text) returns text as
-                    $$
-                    begin
-                        test_param := 'I am output value!';
-                    end
-                    $$
-                    language plpgsql")
-                .AsProcedure()
-                .WithOutParameter("test_param")
-                .Execute("test_out_param_func");
-
-            Assert.Equal("I am output value!", connection.GetOutParameterValue("test_param"));
-        }
-
-        [Fact]
-        public void InputOutput_Parameters_Function_Test()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            connection
-                .Execute(@"
-                    create function test_inout_param_func(inout test_param text) returns text as
-                    $$
-                    begin
-                        test_param := test_param || ' returned from function';
-                    end
-                    $$
-                    language plpgsql")
-                .AsProcedure()
-                .WithOutParameter("test_param", "I am output value")
-                .Execute("test_inout_param_func");
-
-            Assert.Equal("I am output value returned from function", connection.GetOutParameterValue("test_param"));
-        }
     }
 }

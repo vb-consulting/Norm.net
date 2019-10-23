@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Norm.Extensions;
 using Xunit;
-using ConnectionExtensions = Norm.Extensions.ConnectionExtensions;
+
 
 namespace SqlServerUnitTests
 {
@@ -68,6 +68,7 @@ namespace SqlServerUnitTests
             Assert.Equal(new DateTime(1977, 5, 19), results[0]["day"]);
         }
 
+        /*
         [Fact]
         public void Output_Parameters_Function_Test()
         {
@@ -101,5 +102,6 @@ namespace SqlServerUnitTests
 
             Assert.Equal("I am output value returned from procedure", connection.GetOutParameterValue("TestParam"));
         }
+        */
     }
 }

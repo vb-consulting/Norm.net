@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Norm.Extensions
@@ -35,11 +37,27 @@ namespace Norm.Extensions
 
         public static DbCommand AddParameters(this DbCommand cmd, params object[] parameters)
         {
-            if (cmd.CommandType == CommandType.StoredProcedure)
-            {
-                throw new ArgumentException("Cannot use positional parameters with command type StoredProcedure. Use named parameters instead.");
-            }
             var command = cmd.CommandText;
+            var valueList = new List<object>();
+            var nameList = new List<string>();
+            foreach (var p in parameters)
+            {
+                if (p is DbParameter dbParameter)
+                {
+                    cmd.Parameters.Add(dbParameter);
+                    nameList.Add(dbParameter.ParameterName);
+                }
+                else
+                {
+                    valueList.Add(p);
+                }
+            }
+            var values = valueList.ToArray();
+            if (values.Length == 0)
+            {
+                return cmd;
+            }
+            var names = nameList.ToArray();
             var paramIndex = 0;
             for (var index = 0; ; index += ParamPrefix.Length)
             {
@@ -48,8 +66,16 @@ namespace Norm.Extensions
                     break;
                 index++;
                 var endOf = command.IndexOfAny(NonCharacters, index);
-                var name = endOf == -1 ? command.Substring(index) : command.Substring(index, endOf - index);
-                cmd.AddParamWithValue(name, parameters[paramIndex++]);
+                var name = endOf == -1 ? command.Substring(index) : command[index..endOf];
+                if (names.Contains(name))
+                {
+                    continue;
+                }
+                if (cmd.CommandType == CommandType.StoredProcedure)
+                {
+                    throw new ArgumentException("Cannot use positional parameters that are not DbParameter type with command type StoredProcedure. Use named parameters instead.");
+                }
+                cmd.AddParamWithValue(name, values[paramIndex++]);
                 if (endOf == -1)
                     break;
                 index = endOf;
@@ -62,7 +88,10 @@ namespace Norm.Extensions
         {
             foreach (var (name, value) in parameters)
             {
-                cmd.AddParamWithValue(name, value);
+                if (name != null)
+                {
+                    cmd.AddParamWithValue(name, value);
+                }
             }
 
             return cmd;

@@ -48,22 +48,5 @@ namespace Norm.Extensions
             instance.WithJsonOptions(jsonOptions);
             return connection;
         }
-
-        public static DbConnection WithOutParameter(this DbConnection connection, string name)
-        {
-            var instance = connection.GetNoOrmInstance();
-            instance.WithOutParameter(name);
-            return connection;
-        }
-
-        public static DbConnection WithOutParameter(this DbConnection connection, string name, object value)
-        {
-            var instance = connection.GetNoOrmInstance();
-            instance.WithOutParameter(name, value);
-            return connection;
-        }
-
-        public static object GetOutParameterValue(this DbConnection connection, string name) =>
-            connection.GetNoOrmInstance().GetOutParameterValue(name);
     }
 }

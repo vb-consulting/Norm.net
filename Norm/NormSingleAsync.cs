@@ -381,7 +381,6 @@ namespace Norm
             await Connection.EnsureIsOpenAsync();
             commandAction?.Invoke(cmd);
             await using var reader = await cmd.ExecuteReaderAsync();
-            OnCommandExecuted(cmd);
             return await readerAction(reader);
         }
     }

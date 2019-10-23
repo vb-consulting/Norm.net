@@ -17,14 +17,13 @@ namespace Norm
             Other
         }
 
+        private bool disposed = false;
         private CommandType commandType;
         private int? commandTimeout;
         private JsonSerializerOptions jsonOptions;
         private readonly bool convertsDbNull;
         private readonly DbType dbType;
         private static readonly Type StringType = typeof(string);
-        private readonly IList<(string name, ParameterDirection direction, object value)> outputParams;
-        private readonly IDictionary<string, object> outputParamValues;
 
         public DbConnection Connection { get; }
 
@@ -38,8 +37,6 @@ namespace Norm
             var name = connection.GetType().Name;
             dbType = name switch {"SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other};
             convertsDbNull = dbType != DbType.Ms;
-            outputParams = new List<(string name, ParameterDirection direction, object value)>();
-            outputParamValues = new Dictionary<string, object>();
         }
 
         public INorm As(CommandType type)
@@ -64,27 +61,29 @@ namespace Norm
             return this;
         }
 
-        public INorm WithOutParameter(string name)
-        {
-            outputParams.Add((name, ParameterDirection.Output, null));
-            return this;
-        }
-
-        public INorm WithOutParameter(string name, object value)
-        {
-            outputParams.Add((name, ParameterDirection.InputOutput, value));
-            return this;
-        }
-
-        public object GetOutParameterValue(string name) => outputParamValues[name];
-
         public void Dispose()
         {
-            if (Connection.State == ConnectionState.Open)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
             {
-                Connection.Close();
+                return;
             }
-            Connection?.Dispose();
+
+            if (disposing)
+            {
+                if (Connection.State == ConnectionState.Open)
+                {
+                    Connection.Close();
+                }
+                Connection?.Dispose();
+            }
+
+            disposed = true;
         }
 
         private JsonSerializerOptions JsonOptions => 
@@ -93,32 +92,6 @@ namespace Norm
         private void SetCommand(DbCommand cmd, string command)
         {
             cmd.SetCommandParameters(command, commandType, commandTimeout);
-            outputParamValues.Clear();
-            foreach (var (name, direction, value) in outputParams)
-            {
-                var param = cmd.CreateParameter();
-                param.ParameterName = name;
-                param.Direction = direction;
-                if (dbType == DbType.Ms && (value == null || value.GetType() == StringType))
-                {
-                    param.DbType = System.Data.DbType.AnsiString;
-                    param.Size = int.MaxValue;
-                }
-                if (direction == ParameterDirection.InputOutput)
-                {
-                    param.Value = value;
-                }
-                cmd.Parameters.Add(param);
-            }
-        }
-
-        private void OnCommandExecuted(DbCommand cmd)
-        {
-            foreach (var (name, _, _) in outputParams)
-            {
-                outputParamValues.Add(name, cmd.Parameters[name].Value); 
-            }
-            outputParams.Clear();
         }
 
         private bool CheckDbNull<T>() => (!convertsDbNull || typeof(T) == StringType);
