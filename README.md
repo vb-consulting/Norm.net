@@ -13,7 +13,7 @@ By default it will return iterator over tuples and not serialized instances.
 
 Because that's what databases do returns - **tuples.**
 
-This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping).
+This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-or-mapping).
 
 ## [Change log](https://github.com/vbilopav/NoOrm.Net/blob/master/CHANGES.md)
 
