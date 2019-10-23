@@ -40,16 +40,16 @@ Recap:
 | `Read`, `ReadAsync`  | Execute command and builds iterator over tuples. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/ReadTuplesUnitTests.cs) |
 | `SingleJson`, `SingleJsonAsync` |  single database JSON result (query that returns single value from database - JSON blob) -  into an instance of the type specified by a generic type parameter. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/SingleJsonUnitTests.cs) |
 | `Json`, `JsonAsync` |  database JSON results (single row of JSON objects) - into an enumerator (or async enumerator) of instance of the type specified by a generic type parameter. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/JsonUnitTests.cs)|
-| `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, `WithOutParameter`, `GetOutParameterValue` | Provide general functionality like changing command type from procedure to test, setting the timeout, and output parameters...|
+| `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, | Provide general functionality like changing command type from procedure to test, setting the timeout ...|
 | Extensions | Set of `IEnumerable` and `IAsyncEnumerable` extensions to convert database tuples to lists and dictionaries. New extensions can be added on will (for object mapping for example). |
 
 ### Working with database parameters
 
-Each database operation can receive params array (a variable number of arguments) that will be mapped top appropriate `DbParameter` type instance to avoid SQL injection.
+Each database connection method can receive list of parameters that are mapped to appropriate `DbParameter` to avoid SQL injection.
 
-There are two overloads that receive parameters:
+There are two overloads:
 
-#### Positional parameters
+#### Positional parameters by value
 
 Map parameter by position (name is not important, but it must start with `@` by convention)
 
@@ -59,7 +59,9 @@ connection.Execute("select @p1, @p2, @third", value1, value2, value3);
 // etc...
 ```
 
-#### Named parameters parameters
+Values are parameter values which are mapped to appropriate type by underlying database connection provider.
+
+#### Named parameters parameters by value
 
 Map parameter by exact name, position is not important:
 
@@ -68,6 +70,40 @@ connection.Execute("select @p1, @p2", ("p1", value1), ("p2", value2));
 connection.Execute("select @p1, @p2, @third", ("p1", value1), ("p2", value2), ("third", value3));
 // etc...
 ```
+
+Values are parameter values which are mapped to appropriate type by underlying database connection provider.
+
+#### Passing specific `DbParameter` value
+
+First overload for positional parameters can receive concrete `DbParameter` instead of object value if we want to narrow parameter type more precisely.
+
+For example, using PostgreSQL parameters would look like this:
+
+```csharp
+var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+    "select @s, @i, @b, @d",
+    new NpgsqlParameter("s", "str"),
+    new NpgsqlParameter("i", 999),
+    new NpgsqlParameter("b", true),
+    new NpgsqlParameter("d", new DateTime(1977, 5, 19)));
+```
+
+or same call for Microsoft SQL Server:
+
+```csharp
+var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+    "select @s, @i, @b, @d",
+    new SqlParameter("s", "str"),
+    new SqlParameter("i", 999),
+    new SqlParameter("b", true),
+    new SqlParameter("d", new DateTime(1977, 5, 19)));
+```
+
+Note that this approach is actually named parameters approach, since parameters are matched by name again. So, position is not important.
+
+Positional value parameters and `DbParameter` can be mixed. In that case `DbParameter` are populated first and ignored by value parameters later. For more examples, see this [unit tests](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/ParametersUnitTests.cs) for PostgreSQL or this [unit tests](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/SqlServerUnitTests/ParametersUnitTests.cs) for Microsoft SQL Server.
+
+Using concrete `DbParameter` parameter types allows us to use specific parameter types such as arrays or inet addresses for PostgreSQL and also to alter parameter direction and use output parameters.
 
 ### Available extensions
 

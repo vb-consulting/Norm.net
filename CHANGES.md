@@ -1,5 +1,11 @@
 # Version history
 
+## 1.1.3
+
+- Positional parameters can now receive parameters of native type derived from `DbParameter`. 
+This allows custom types of parameters to be passed to query (PostgreSQL array types for example) and
+eliminates need for `WithOutParameter` and `GetOutParameter` which are removed. See this [tests](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/ParametersUnitTests.cs) for examples.
+
 ## 1.1.2
 
 - Fixed extensions to use `IList` of tuples instead of `IEnumerable`
