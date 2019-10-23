@@ -13,7 +13,7 @@ By default it will return iterator over tuples and not serialized instances.
 
 Because that's what databases do returns - **tuples.**
 
-This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-mapping).
+This allows for more extendibility - iterator results can be then further extended or mapped and transformed to something else (such as dictioanires or O/R mappings, see [O/R mapping](https://github.com/vbilopav/NoOrm.Net#working-with-results-and-objectrelational-or-mapping).
 
 ## [Change log](https://github.com/vbilopav/NoOrm.Net/blob/master/CHANGES.md)
 
@@ -78,7 +78,7 @@ By convention any extension that Start with `Select` will build up expression tr
 | `SelectDictionary` | name and value tuple pairs | adds expression to build a dictionary from name, value tuples |
 | `SelectDictionaries`, `SelectDictionariesAsync` | enumerator over name and value tuple pairs | add expression to build a enumerator (sync or async) - of dictionaries from collection of name, value tuples |
 | `SelectValues` |  name and value tuple pairs or enumerator over name and value tuple pairs | Select only values from name value tuples |
-| `Select<T>`, `SelectAsync<T>` | name and value tuple pairs or enumerator over name and value tuple pairs | Map to an instance of provided generic type using `FastMember` (O/R mapping)
+| `Select<T>`, `SelectAsync<T>` | name and value tuple pairs or enumerator over name and value tuple pairs | Map to an instance of provided generic type (O/R mapping)
 
 ## Working with results and Object/Relational (O/R) mapping
 
