@@ -76,9 +76,19 @@ namespace PostgreSqlUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).SelectAsync<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync(Query).Select<TestClass>().ToListAsync();
 
             AssertTestClass(result);
+        }
+
+
+        [Fact]
+        public void Select_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            //connection.Select(nameof(TestClass.Bool), nameof(TestClass.Bar));
+            //connection.Select<TestClass>(p => p.Bar, p.Bool);
         }
     }
 }

@@ -170,7 +170,7 @@ namespace Norm.Extensions
             });
         }
 
-        public static IAsyncEnumerable<T> SelectAsync<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
+        public static IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
         {
             var instanceType = typeof(T);
             var instanceHashCode = instanceType.GetHashCode();
@@ -189,5 +189,9 @@ namespace Norm.Extensions
                 return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
             });
         }
+
+        [Obsolete]
+        public static IAsyncEnumerable<T> SelectAsync<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
+            => tuples.Select<T>();
     }
 }

@@ -1,5 +1,9 @@
 # Version history
 
+## 1.1.4
+
+- O/R mapping extension method on `IAsyncEnumerable` called `SelectAsync<TModel>` is deprecated in favor of `Select<TModel>` which is more consistent with `AsyncLinq` approach.
+
 ## 1.1.3
 
 - Positional parameters can now receive parameters of native type derived from `DbParameter`. 

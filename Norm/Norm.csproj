@@ -13,7 +13,7 @@
     <Description>Fast, modern and extendible C# 8  Data Access built for .NET Core 3 era (previously known as NoOrm).</Description>
     <Copyright>Vedran Bilopavlović</Copyright>
     <PackageTags>NoOrm;noorm;data acceess;orm;no-orm;micro-orm;sql;c# 8;.net core 3</PackageTags>
-    <Version>1.1.3</Version>
+    <Version>1.1.4</Version>
     <AssemblyVersion>1.1.3.0</AssemblyVersion>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageId>Norm.net</PackageId>
