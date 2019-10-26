@@ -134,7 +134,7 @@ namespace PostgreSqlUnitTests
                             (3, 'foo3', '1979-05-19'::date)
                           ) t(first, bar, day)");
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace PostgreSqlUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace PostgreSqlUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
     }
 }

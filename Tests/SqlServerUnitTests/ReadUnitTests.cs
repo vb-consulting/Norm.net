@@ -135,7 +135,7 @@ namespace SqlServerUnitTests
                             (3, 'foo3', cast('1979-05-19' as date))
                           ) t(first, bar, day)");
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace SqlServerUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
 
         [Fact]
@@ -179,7 +179,7 @@ namespace SqlServerUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            await AssertResultAsync(result.SelectDictionariesAsync());
+            await AssertResultAsync(result.SelectDictionaries());
         }
     }
 }

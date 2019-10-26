@@ -23,7 +23,7 @@ namespace Norm.Extensions
         /// <summary>
         /// Add expression to build a enumerator of dictionaries from enumerator of (name, value) tuples
         /// </summary>
-        public static async IAsyncEnumerable<IDictionary<string, object>> SelectDictionariesAsync(this IAsyncEnumerable<IList<(string name, object value)>> tuples)
+        public static async IAsyncEnumerable<IDictionary<string, object>> SelectDictionaries(this IAsyncEnumerable<IList<(string name, object value)>> tuples)
         {
             await foreach (var tuple in tuples)
             {
