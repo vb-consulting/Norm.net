@@ -114,7 +114,7 @@ By convention any extension that Start with `Select` will build up expression tr
 | `SelectDictionary` | name and value tuple pairs | adds expression to build a dictionary from name, value tuples |
 | `SelectDictionaries`, `SelectDictionariesAsync` | enumerator over name and value tuple pairs | add expression to build a enumerator (sync or async) - of dictionaries from collection of name, value tuples |
 | `SelectValues` |  name and value tuple pairs or enumerator over name and value tuple pairs | Select only values from name value tuples |
-| `Select<T>`, `SelectAsync<T>` | name and value tuple pairs or enumerator over name and value tuple pairs | Map to an instance of provided generic type (O/R mapping)
+| `Select<T>` | name and value tuple pairs or enumerator over name and value tuple pairs | Map to an instance of provided generic type (O/R mapping)
 
 ## Working with results and Object/Relational (O/R) mapping
 
