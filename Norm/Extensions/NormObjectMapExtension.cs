@@ -13,10 +13,10 @@ namespace Norm.Extensions
         private static readonly ConcurrentDictionary<int, HashSet<byte>> NullableCache = new ConcurrentDictionary<int, HashSet<byte>>();
 
         private static T SelectInternal<T>(
-            this IList<(string name, object value)> tuples,
+            this IEnumerable<(string name, object value)> tuples,
             T instance,
             int instanceHashCode,
-            Type instanceType, 
+            IReflect instanceType, 
             IDictionary<byte, Delegate> typeDict,
             HashSet<byte> nullableHash,
             bool isNewEntry)
@@ -36,7 +36,7 @@ namespace Norm.Extensions
                         return;
                     }
 
-                    var propertyInfo = instanceType.GetProperty(name.ToString(), BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var propertyInfo = instanceType.GetProperty(name, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (propertyInfo == null)
                     {
                         return;
@@ -66,7 +66,7 @@ namespace Norm.Extensions
                         ((Action<T, string>)cachedSetter).Invoke(instance, propertyValue.ToString());
                         return;
                     }
-                    var propertyInfo = instanceType.GetProperty(name.ToString(), BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    var propertyInfo = instanceType.GetProperty(name, BindingFlags.IgnoreCase | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (propertyInfo == null)
                     {
                         return;
@@ -134,22 +134,6 @@ namespace Norm.Extensions
             return instance;
         }
 
-        public static T Select<T>(this IList<(string name, object value)> tuples) where T : new()
-        {
-            var instanceType = typeof(T);
-            var instanceHashCode = instanceType.GetHashCode();
-            var instance = new T();
-
-            if (TypeCache.TryGetValue(instanceHashCode, out var dict))
-            {
-                return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
-            }
-
-            dict = new Dictionary<byte, Delegate>();
-            var nullableHash = new HashSet<byte>();
-            return tuples.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
-        }
-        
         public static IEnumerable<T> Select<T>(this IEnumerable<IList<(string name, object value)>> tuples) where T : new()
         {
             var instanceType = typeof(T);
@@ -170,28 +154,25 @@ namespace Norm.Extensions
             });
         }
 
-        public static IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
+        public static async IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
         {
             var instanceType = typeof(T);
             var instanceHashCode = instanceType.GetHashCode();
 
-            return tuples.Select(t =>
+            await foreach (var t in tuples)
             {
                 var instance = new T();
 
                 if (TypeCache.TryGetValue(instanceHashCode, out var dict))
                 {
-                    return t.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
+                    yield return t.SelectInternal(instance, instanceHashCode, instanceType, dict, NullableCache[instanceHashCode], false);
+                    continue;
                 }
 
                 dict = new Dictionary<byte, Delegate>();
                 var nullableHash = new HashSet<byte>();
-                return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
-            });
+                yield return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
+            }
         }
-
-        [Obsolete]
-        public static IAsyncEnumerable<T> SelectAsync<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
-            => tuples.Select<T>();
     }
 }

@@ -7,16 +7,32 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IAsyncEnumerable<T> JsonAsync<T>(string command) =>
-            ReadInternalAsync(command, r => GetFieldValue<string>(r, 0))
-                .Select(json => JsonSerializer.Deserialize<T>(json, JsonOptions));
+        public async IAsyncEnumerable<T> JsonAsync<T>(string command)
+        {
+            await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0)))
+            {
+                yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
+            }
+        }
 
-        public IAsyncEnumerable<T> JsonAsync<T>(string command, params object[] parameters) =>
-            ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters))
-                .Select(json => JsonSerializer.Deserialize<T>(json, JsonOptions));
+        public async IAsyncEnumerable<T> JsonAsync<T>(string command, params object[] parameters)
+        {
+            {
+                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters)))
+                {
+                    yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
+                }
+            }
+        }
 
-        public IAsyncEnumerable<T> JsonAsync<T>(string command, params (string name, object value)[] parameters) =>
-            ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters))
-                .Select(json => JsonSerializer.Deserialize<T>(json, JsonOptions));
+        public async IAsyncEnumerable<T> JsonAsync<T>(string command, params (string name, object value)[] parameters)
+        {
+            {
+                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters)))
+                {
+                    yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
+                }
+            }
+        }
     }
 }

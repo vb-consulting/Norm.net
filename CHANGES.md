@@ -1,5 +1,11 @@
 # Version history
 
+## 1.1.6
+
+- Removes unneccessary dependency to `System.Linq.Async`
+- Improves Async mapping `Select` and `JsonAsync`
+- Remove obsolete extensions
+
 ## 1.1.4
 
 - O/R mapping extension method on `IAsyncEnumerable` called `SelectAsync<TModel>` is deprecated in favor of `Select<TModel>` which is more consistent with `AsyncLinq` approach.
