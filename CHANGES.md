@@ -1,5 +1,10 @@
 # Version history
 
+## 1.1.7
+
+- Added tests and support for SQLite database
+- Add 11 and 12 tuples overloads
+
 ## 1.1.6
 
 - Removes unneccessary dependency to `System.Linq.Async`
