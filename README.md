@@ -35,25 +35,25 @@ Other types of databases should work theoretically but they are not currently te
 var value = connection.Single<string>("select v from t limit 1");
 ```
 
-- Get the first and second values from single row:
+- Get the first and second value from single row:
 
 ```csharp
 var (value1, value2) = connection.Single<string, string>("select v1, v2 from t limit 1");
 ```
 
-- Get the first value from single row and pass parameter by position
+- Get the first value from single row and pass parameter by position:
 
 ```csharp
 var value = connection.Single<string>("select v from t limit 1 where id = @id", 1);
 ```
 
-- Get the first value from single row and pass parameter by name
+- Get the first value from single row and pass parameter by name:
 
 ```csharp
 var value = connection.Single<string>("select v from t limit 1 where id = @id", ("id", 1));
 ```
 
-- Iterate trough three values
+- Iterate trough set of three values:
 
 ```csharp
 foreach(var (value, value2, value3) in connection.Read<string, int bool>("select v1, v2, v3 from t"))
@@ -62,13 +62,13 @@ foreach(var (value, value2, value3) in connection.Read<string, int bool>("select
 }
 ```
 
-- Map to class instance
+- Map to class instance:
 
 ```csharp
 var instance = connection.Single("select * from t limit 1").Select<MyClass>();
 ```
 
-- Map to enumerable of instances (query si execute on enumeration):
+- Map to enumerable of instances and delay query execution until enumeration:
 
 ```csharp
 var instances = connection.Read("select * from t limit 1").Select<MyClass>();
