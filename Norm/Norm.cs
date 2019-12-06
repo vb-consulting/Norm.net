@@ -12,9 +12,7 @@ namespace Norm
     {
         private enum DbType
         {
-            Ms,
-            Pg,
-            Other
+            Ms, Pg, Lt, Other
         }
 
         private bool disposed = false;
@@ -35,8 +33,13 @@ namespace Norm
             this.commandTimeout = commandTimeout;
             this.jsonOptions = jsonOptions;
             var name = connection.GetType().Name;
-            dbType = name switch {"SqlConnection" => DbType.Ms, "NpgsqlConnection" => DbType.Pg, _ => DbType.Other};
-            convertsDbNull = dbType != DbType.Ms;
+            (dbType, convertsDbNull) = name switch
+            {
+                "SqlConnection" => (DbType.Ms, false),
+                "NpgsqlConnection" => (DbType.Pg, true),
+                "SQLiteConnection" => (DbType.Lt, false),
+                _ => (DbType.Other, false)
+            };
         }
 
         public INorm As(CommandType type)

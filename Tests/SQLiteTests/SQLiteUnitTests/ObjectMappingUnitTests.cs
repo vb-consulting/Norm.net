@@ -1,38 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Norm.Extensions;
-using Npgsql;
 using Xunit;
 
-namespace PostgreSqlUnitTests
+namespace SQLiteUnitTests
 {
-    [Collection("PostgreSqlDatabase")]
+    [Collection("SQLiteDatabase")]
     public class ObjectMappingUnitTests
     {
-        private readonly PostgreSqlFixture fixture;
+        private readonly SqLiteFixture fixture;
 
         class TestClass
         {
-            public int Id { get; private set; }
+            public long Id { get; private set; }
             public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
+            public string Day { get; private set; }
+            public long? Bool { get; private set; }
             public string Bar { get; private set; }
         }
 
         private const string Query = @"
-                            select *
-                            from (
-                            values 
-                                (1, 'foo1', '1977-05-19'::date, true, null),
-                                (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
-                                (3, 'foo3', '1979-05-19'::date, null, 'bar3')
-                            ) t(id, foo, day, bool, bar)";
+            with cte(id, foo, day, bool, bar) as (
+            select * from (
+                values
+                  (1, 'foo1', date('1977-05-19'), true, null),
+                  (2, 'foo2', date('1978-05-19'), false, 'bar2'),
+                  (3, 'foo3', date('1979-05-19'), null, 'bar3')
+                )
+            )
+            select * from cte";
 
-        public ObjectMappingUnitTests(PostgreSqlFixture fixture)
+        public ObjectMappingUnitTests(SqLiteFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -49,12 +51,12 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo2", result[1].Foo);
             Assert.Equal("foo3", result[2].Foo);
 
-            Assert.Equal(new DateTime(1977, 5, 19), result[0].Day);
-            Assert.Equal(new DateTime(1978, 5, 19), result[1].Day);
-            Assert.Equal(new DateTime(1979, 5, 19), result[2].Day);
+            Assert.Equal("1977-05-19", result[0].Day);
+            Assert.Equal("1978-05-19", result[1].Day);
+            Assert.Equal("1979-05-19", result[2].Day);
 
-            Assert.Equal(true, result[0].Bool);
-            Assert.Equal(false, result[1].Bool);
+            Assert.Equal(1, result[0].Bool);
+            Assert.Equal(0, result[1].Bool);
             Assert.Null(result[2].Bool);
 
             Assert.Null(result[0].Bar);
@@ -65,17 +67,16 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void SelectMap_Sync()
         {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Select<TestClass>().ToList();
 
             AssertTestClass(result);
         }
 
-       
         [Fact]
         public async Task SelectMap_Async()
         {
-            await using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            await using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result = await connection.ReadAsync(Query).Select<TestClass>().ToListAsync();
 
             AssertTestClass(result);

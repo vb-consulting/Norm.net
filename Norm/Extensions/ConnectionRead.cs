@@ -104,5 +104,24 @@ namespace Norm.Extensions
 
         public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(command, parameters);
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this DbConnection connection, string command) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(command);
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this DbConnection connection, string command, params object[] parameters) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(command, parameters);
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(command, parameters);
+
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, string command) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(command);
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, string command, params object[] parameters) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(command, parameters);
+
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(command, parameters);
     }
 }

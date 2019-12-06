@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
+using Norm.Extensions;
+using Xunit;
+
+namespace SQLiteUnitTests
+{
+    [Collection("SQLiteDatabase")]
+    public class ParametersUnitTests
+    {
+        private readonly SqLiteFixture fixture;
+
+        public ParametersUnitTests(SqLiteFixture fixture)
+        {
+            this.fixture = fixture;
+        }
+
+        [Fact]
+        public void PositionalParams_Test()
+        {
+            using var connection = new SQLiteConnection(fixture.ConnectionString);
+            var (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d", "str", 999, true, new DateTime(1977, 5, 19));
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d);
+        }
+
+        [Fact]
+        public void NamedParams_Test()
+        {
+            using var connection = new SQLiteConnection(fixture.ConnectionString);
+            var (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d", 
+                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"));
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d);
+        }
+
+        [Fact]
+        public void DbParams_Test()
+        {
+            using var connection = new SQLiteConnection(fixture.ConnectionString);
+            var (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d", 
+                new SQLiteParameter("s", "str"), 
+                new SQLiteParameter("i", 999), 
+                new SQLiteParameter("b", true), 
+                new SQLiteParameter("d", new DateTime(1977, 5, 19)));
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d);
+
+            (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d",
+                new SQLiteParameter("d", new DateTime(1977, 5, 19)),
+                new SQLiteParameter("b", true),
+                new SQLiteParameter("i", 999),
+                new SQLiteParameter("s", "str"));
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d); 
+        }
+
+        [Fact]
+        public void MixedParams_Test()
+        {
+            using var connection = new SQLiteConnection(fixture.ConnectionString);
+            var (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d",
+                new SQLiteParameter("d", new DateTime(1977, 5, 19)), "str", 999, true);
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d);
+
+            (s, i, b, d) = connection.Single<string, long, long, string>(
+                "select @s, @i, @b, @d",
+                new SQLiteParameter("s", "str"), new SQLiteParameter("i", 999), true, new DateTime(1977, 5, 19));
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.Equal(1, b);
+            Assert.Equal("1977-05-19 00:00:00", d);
+        }
+    }
+}

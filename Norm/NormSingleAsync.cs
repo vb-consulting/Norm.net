@@ -372,6 +372,112 @@ namespace Norm
                     : (default, default, default, default, default, default, default, default, default, default),
                 cmd => cmd.AddParameters(parameters));
 
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command) =>
+            await SingleInternalAsync(command,
+        async r => await r.ReadAsync()
+            ? (
+                await GetFieldValueAsync<T1>(r, 0),
+                await GetFieldValueAsync<T2>(r, 1),
+                await GetFieldValueAsync<T3>(r, 2),
+                await GetFieldValueAsync<T4>(r, 3),
+                await GetFieldValueAsync<T5>(r, 4),
+                await GetFieldValueAsync<T6>(r, 5),
+                await GetFieldValueAsync<T7>(r, 6),
+                await GetFieldValueAsync<T8>(r, 7),
+                await GetFieldValueAsync<T9>(r, 8),
+                await GetFieldValueAsync<T10>(r, 9),
+                await GetFieldValueAsync<T11>(r, 10)
+            )
+            : (default, default, default, default, default, default, default, default, default, default, default));
+
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command, params object[] parameters) =>
+            await SingleInternalAsync(command,
+                async r => await r.ReadAsync()
+                    ? (
+                        await GetFieldValueAsync<T1>(r, 0),
+                        await GetFieldValueAsync<T2>(r, 1),
+                        await GetFieldValueAsync<T3>(r, 2),
+                        await GetFieldValueAsync<T4>(r, 3),
+                        await GetFieldValueAsync<T5>(r, 4),
+                        await GetFieldValueAsync<T6>(r, 5),
+                        await GetFieldValueAsync<T7>(r, 6),
+                        await GetFieldValueAsync<T8>(r, 7),
+                        await GetFieldValueAsync<T9>(r, 8),
+                        await GetFieldValueAsync<T10>(r, 9),
+                        await GetFieldValueAsync<T11>(r, 10)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command, params (string name, object value)[] parameters) =>
+            await SingleInternalAsync(command,
+                async r => await r.ReadAsync()
+                    ? (
+                        await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                        await GetFieldValueAsync<T3>(r, 2),
+                        await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                        await GetFieldValueAsync<T6>(r, 5),
+                        await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                        await GetFieldValueAsync<T9>(r, 8),
+                        await GetFieldValueAsync<T10>(r, 9), await GetFieldValueAsync<T11>(r, 10)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command) =>
+            await SingleInternalAsync(command,
+        async r => await r.ReadAsync()
+            ? (
+                await GetFieldValueAsync<T1>(r, 0),
+                await GetFieldValueAsync<T2>(r, 1),
+                await GetFieldValueAsync<T3>(r, 2),
+                await GetFieldValueAsync<T4>(r, 3),
+                await GetFieldValueAsync<T5>(r, 4),
+                await GetFieldValueAsync<T6>(r, 5),
+                await GetFieldValueAsync<T7>(r, 6),
+                await GetFieldValueAsync<T8>(r, 7),
+                await GetFieldValueAsync<T9>(r, 8),
+                await GetFieldValueAsync<T10>(r, 9),
+                await GetFieldValueAsync<T11>(r, 10),
+                await GetFieldValueAsync<T12>(r, 11)
+            )
+            : (default, default, default, default, default, default, default, default, default, default, default, default));
+
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command, params object[] parameters) =>
+            await SingleInternalAsync(command,
+                async r => await r.ReadAsync()
+                    ? (
+                        await GetFieldValueAsync<T1>(r, 0),
+                        await GetFieldValueAsync<T2>(r, 1),
+                        await GetFieldValueAsync<T3>(r, 2),
+                        await GetFieldValueAsync<T4>(r, 3),
+                        await GetFieldValueAsync<T5>(r, 4),
+                        await GetFieldValueAsync<T6>(r, 5),
+                        await GetFieldValueAsync<T7>(r, 6),
+                        await GetFieldValueAsync<T8>(r, 7),
+                        await GetFieldValueAsync<T9>(r, 8),
+                        await GetFieldValueAsync<T10>(r, 9),
+                        await GetFieldValueAsync<T11>(r, 10),
+                        await GetFieldValueAsync<T12>(r, 11)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
+        public async ValueTask<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> SingleAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command, params (string name, object value)[] parameters) =>
+            await SingleInternalAsync(command,
+                async r => await r.ReadAsync()
+                    ? (
+                        await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                        await GetFieldValueAsync<T3>(r, 2),
+                        await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                        await GetFieldValueAsync<T6>(r, 5),
+                        await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                        await GetFieldValueAsync<T9>(r, 8),
+                        await GetFieldValueAsync<T10>(r, 9), await GetFieldValueAsync<T11>(r, 10), await GetFieldValueAsync<T12>(r, 11)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default, default),
+                cmd => cmd.AddParameters(parameters));
+
 
         private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction,
             Action<DbCommand> commandAction = null)

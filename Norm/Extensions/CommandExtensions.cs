@@ -16,7 +16,9 @@ namespace Norm.Extensions
 
         public static DbCommand SetCommandParameters(this DbCommand cmd, string command, CommandType type, int? timeout)
         {
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandText = command;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandType = type;
             if (timeout != null)
             {
