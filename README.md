@@ -23,7 +23,7 @@ This allows for more extendibility - iterator results can be then further extend
 
 Usage examples can be found in [unit tests](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/)
 
-Around 99% of API is covered with tests only for [`PostgreSQL`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/PostgreSqlUnitTests) and [`Microsoft SQL Server`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/SqlServerUnitTests).
+Around 99% of API is covered with tests only for [`PostgreSQL`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/PostgreSqlUnitTests), [`Microsoft SQL Server`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/SqlServerUnitTests) and [`SQLite`](https://github.com/vbilopav/NoOrm.Net/tree/master/Tests/SQLiteTests/SQLiteUnitTests).
 
 Other types of databases should work theoretically but they are not currently tested.
 
