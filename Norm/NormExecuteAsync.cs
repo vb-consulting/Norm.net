@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Norm.Extensions;
+using Norm.Interfaces;
 
 namespace Norm
 {
