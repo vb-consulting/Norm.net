@@ -6,24 +6,6 @@ namespace Norm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        public static DbConnection Open(this DbConnection connection)
-        {
-            connection.Open();
-            return connection;
-        }
-
-        public static DbConnection Close(this DbConnection connection)
-        {
-            connection.Close();
-            return connection;
-        }
-
-        public static async Task<DbConnection> OpenAsync(this DbConnection connection)
-        {
-            await connection.OpenAsync();
-            return connection;
-        }
-
         public static DbConnection EnsureIsOpen(this DbConnection connection)
         {
             if (connection.State != ConnectionState.Open)
