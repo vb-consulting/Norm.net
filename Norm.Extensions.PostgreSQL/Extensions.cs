@@ -25,6 +25,9 @@ namespace Norm.Extensions.PostgreSQL
             return connection;
         }
 
+        public static void CreateSchema(this DbConnection connection, string schema, bool ifNotExists = false, string authorization = null) 
+            => connection.Execute(Sql.CreateSchema(schema, ifNotExists, authorization));
+
         public static bool TableExists(this DbConnection connection, string table, string schema = null) =>
             connection.Single(Sql.TableExists(schema), table, schema).Count != 0;
 
@@ -39,7 +42,13 @@ namespace Norm.Extensions.PostgreSQL
         public static DbConnection Rollback(this DbConnection connection, string savepoint = null) => 
             connection.Execute(Sql.Rollback(savepoint));
 
-        public static DbConnection Script(this DbConnection connection, string content, params (string, object)[] parameters) =>
-            connection.Execute(Sql.Script(content, parameters));
+        public static DbConnection Script(this DbConnection connection, (string name, string type, string defaultValue)[] parameters, string content) =>
+            connection.Execute(Sql.Script(parameters, content));
+
+        public static DbConnection Script(this DbConnection connection, (string name, string type)[] parameters, string content) =>
+            connection.Execute(Sql.Script(parameters, content));
+
+        public static DbConnection Script(this DbConnection connection, string content) =>
+            connection.Execute(Sql.Script(content));
     }
 }
