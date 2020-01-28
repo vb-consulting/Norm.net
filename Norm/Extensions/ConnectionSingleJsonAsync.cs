@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace Norm.Extensions
@@ -12,6 +13,9 @@ namespace Norm.Extensions
             await connection.GetNoOrmInstance().SingleJsonAsync<T>(command, parameters);
 
         public static async ValueTask<T> SingleJsonAsync<T>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            await connection.GetNoOrmInstance().SingleJsonAsync<T>(command, parameters);
+
+        public static async ValueTask<T> SingleJsonAsync<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
             await connection.GetNoOrmInstance().SingleJsonAsync<T>(command, parameters);
     }
 }

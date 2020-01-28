@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace Norm.Extensions
 {
@@ -17,6 +18,12 @@ namespace Norm.Extensions
         }
 
         public static DbConnection Execute(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        {
+            connection.GetNoOrmInstance().Execute(command, parameters);
+            return connection;
+        }
+
+        public static DbConnection Execute(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             connection.GetNoOrmInstance().Execute(command, parameters);
             return connection;

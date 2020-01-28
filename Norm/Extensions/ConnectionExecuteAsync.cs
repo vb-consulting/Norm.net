@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 namespace Norm.Extensions
@@ -18,6 +19,12 @@ namespace Norm.Extensions
         }
 
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        {
+            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
+            return connection;
+        }
+
+        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;

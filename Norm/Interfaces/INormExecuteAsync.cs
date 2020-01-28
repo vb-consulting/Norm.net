@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data;
+using System.Threading.Tasks;
 
 namespace Norm.Interfaces
 {
@@ -7,5 +8,6 @@ namespace Norm.Interfaces
         ValueTask<INorm> ExecuteAsync(string command);
         ValueTask<INorm> ExecuteAsync(string command, params object[] parameters);
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value)[] parameters);
+        ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, DbType type)[] parameters);
     }
 }

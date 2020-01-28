@@ -28,11 +28,15 @@ namespace Norm.Extensions
             return cmd;
         }
 
-        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value)
+        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value, DbType? type = null)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
             param.Value = value ?? DBNull.Value;
+            if (type.HasValue)
+            {
+                param.DbType = type.Value;
+            }
             cmd.Parameters.Add(param);
             return cmd;
         }
@@ -93,6 +97,19 @@ namespace Norm.Extensions
                 if (name != null)
                 {
                     cmd.AddParamWithValue(name, value);
+                }
+            }
+
+            return cmd;
+        }
+
+        public static DbCommand AddParameters(this DbCommand cmd, params (string name, object value, DbType type)[] parameters)
+        {
+            foreach (var (name, value, type) in parameters)
+            {
+                if (name != null)
+                {
+                    cmd.AddParamWithValue(name, value, type);
                 }
             }
 

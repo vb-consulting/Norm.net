@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Norm.Extensions;
@@ -19,6 +20,10 @@ namespace Norm
             params (string name, object value)[] parameters) =>
             ReadInternalAsync(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<IList<(string name, object value)>> ReadAsync(string command,
+            params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command, r => r.ToList(), cmd => cmd.AddParameters(parameters));
+
         public IAsyncEnumerable<T> ReadAsync<T>(string command) =>
             ReadInternalAsync(command,
                 async r => await GetFieldValueAsync<T>(r, 0));
@@ -29,6 +34,11 @@ namespace Norm
                 cmd => cmd.AddParameters(parameters));
 
         public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => await GetFieldValueAsync<T>(r, 0),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => await GetFieldValueAsync<T>(r, 0),
                 cmd => cmd.AddParameters(parameters));
@@ -48,6 +58,12 @@ namespace Norm
                 async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1)),
                 cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1)),
+                cmd => cmd.AddParameters(parameters));
+
         public IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command) =>
             ReadInternalAsync(command,
                 async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
@@ -61,6 +77,13 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command,
             params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
                     await GetFieldValueAsync<T3>(r, 2)),
@@ -85,6 +108,13 @@ namespace Norm
                     await GetFieldValueAsync<T3>(r, 2), await GetFieldValueAsync<T4>(r, 3)),
                 cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<(T1, T2, T3, T4)> ReadAsync<T1, T2, T3, T4>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2), await GetFieldValueAsync<T4>(r, 3)),
+                cmd => cmd.AddParameters(parameters));
+
         public IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command) =>
             ReadInternalAsync(command,
                 async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
@@ -101,6 +131,14 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command,
             params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2), await GetFieldValueAsync<T4>(r, 3),
+                    await GetFieldValueAsync<T5>(r, 4)),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5)> ReadAsync<T1, T2, T3, T4, T5>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
                     await GetFieldValueAsync<T3>(r, 2), await GetFieldValueAsync<T4>(r, 3),
@@ -129,6 +167,17 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(string command,
             params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (
                     await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
@@ -172,6 +221,18 @@ namespace Norm
                 ),
                 cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> ReadAsync<T1, T2, T3, T4, T5, T6, T7>(string command,
+            params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
             string command) =>
             ReadInternalAsync(command,
@@ -197,6 +258,18 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
             string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
+            string command, params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (
                     await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
@@ -234,6 +307,19 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                    await GetFieldValueAsync<T9>(r, 8)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+            string command, params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (
                     await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
@@ -287,6 +373,20 @@ namespace Norm
                 ),
                 cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
+            T10>(string command, params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                    await GetFieldValueAsync<T9>(r, 8),
+                    await GetFieldValueAsync<T10>(r, 9)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command) =>
             ReadInternalAsync(command,
@@ -328,6 +428,20 @@ namespace Norm
                 ),
                 cmd => cmd.AddParameters(parameters));
 
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
+            T10, T11>(string command, params (string name, object value, DbType type)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                    await GetFieldValueAsync<T9>(r, 8),
+                    await GetFieldValueAsync<T10>(r, 9), await GetFieldValueAsync<T11>(r, 10)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command) =>
             ReadInternalAsync(command,
@@ -357,6 +471,20 @@ namespace Norm
 
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
             T10, T11, T12>(string command, params (string name, object value)[] parameters) =>
+            ReadInternalAsync(command,
+                async r => (
+                    await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),
+                    await GetFieldValueAsync<T3>(r, 2),
+                    await GetFieldValueAsync<T4>(r, 3), await GetFieldValueAsync<T5>(r, 4),
+                    await GetFieldValueAsync<T6>(r, 5),
+                    await GetFieldValueAsync<T7>(r, 6), await GetFieldValueAsync<T8>(r, 7),
+                    await GetFieldValueAsync<T9>(r, 8),
+                    await GetFieldValueAsync<T10>(r, 9), await GetFieldValueAsync<T11>(r, 10), await GetFieldValueAsync<T12>(r, 11)
+                ),
+                cmd => cmd.AddParameters(parameters));
+
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
+            T10, T11, T12>(string command, params (string name, object value, DbType type)[] parameters) =>
             ReadInternalAsync(command,
                 async r => (
                     await GetFieldValueAsync<T1>(r, 0), await GetFieldValueAsync<T2>(r, 1),

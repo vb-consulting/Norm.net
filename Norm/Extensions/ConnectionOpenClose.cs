@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm.Extensions
@@ -29,6 +30,16 @@ namespace Norm.Extensions
             if (connection.State != ConnectionState.Open)
             {
                 await connection.OpenAsync();
+            }
+            return connection;
+        }
+
+        public static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (connection.State != ConnectionState.Open)
+            {
+                await connection.OpenAsync(cancellationToken);
             }
             return connection;
         }

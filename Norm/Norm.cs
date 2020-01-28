@@ -11,7 +11,7 @@ namespace Norm
 {
     public partial class Norm : IDisposable, INorm
     {
-        private enum DbType
+        private enum DatabaseType
         {
             Ms, Pg, Lt, Other
         }
@@ -21,7 +21,7 @@ namespace Norm
         private int? commandTimeout;
         private JsonSerializerOptions jsonOptions;
         private readonly bool convertsDbNull;
-        private readonly DbType dbType;
+        private readonly DatabaseType dbType;
         private static readonly Type StringType = typeof(string);
 
         public DbConnection Connection { get; }
@@ -36,10 +36,10 @@ namespace Norm
             var name = connection.GetType().Name;
             (dbType, convertsDbNull) = name switch
             {
-                "SqlConnection" => (DbType.Ms, false),
-                "NpgsqlConnection" => (DbType.Pg, true),
-                "SQLiteConnection" => (DbType.Lt, false),
-                _ => (DbType.Other, false)
+                "SqlConnection" => (DatabaseType.Ms, false),
+                "NpgsqlConnection" => (DatabaseType.Pg, true),
+                "SQLiteConnection" => (DatabaseType.Lt, false),
+                _ => (DatabaseType.Other, false)
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Data;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Norm
@@ -12,6 +13,9 @@ namespace Norm
             JsonSerializer.Deserialize<T>(await SingleAsync<string>(command, parameters), JsonOptions);
 
         public async ValueTask<T> SingleJsonAsync<T>(string command, params (string name, object value)[] parameters) => 
+            JsonSerializer.Deserialize<T>(await SingleAsync<string>(command, parameters), JsonOptions);
+
+        public async ValueTask<T> SingleJsonAsync<T>(string command, params (string name, object value, DbType type)[] parameters) =>
             JsonSerializer.Deserialize<T>(await SingleAsync<string>(command, parameters), JsonOptions);
     }
 }

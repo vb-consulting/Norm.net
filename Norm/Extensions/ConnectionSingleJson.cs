@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace Norm.Extensions
 {
@@ -11,6 +12,9 @@ namespace Norm.Extensions
             connection.GetNoOrmInstance().SingleJson<T>(command, parameters);
 
         public static T SingleJson<T>(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+            connection.GetNoOrmInstance().SingleJson<T>(command, parameters);
+
+        public static T SingleJson<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
             connection.GetNoOrmInstance().SingleJson<T>(command, parameters);
     }
 }

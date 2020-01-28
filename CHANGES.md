@@ -1,5 +1,9 @@
 # Version history
 
+## 1.1.9
+
+- New overload for all functions with named parameters. Named parametzers now accept DBType along name and value.
+
 ## 1.1.8
 
 - All parameters with `null` value will be interpreted as database null value (`DBNull.Value`)

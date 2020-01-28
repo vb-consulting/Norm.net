@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Data;
+using System.Text.Json;
 
 namespace Norm
 {
@@ -11,6 +12,9 @@ namespace Norm
             JsonSerializer.Deserialize<T>(Single<string>(command, parameters), JsonOptions);
 
         public T SingleJson<T>(string command, params (string name, object value)[] parameters) => 
+            JsonSerializer.Deserialize<T>(Single<string>(command, parameters), JsonOptions);
+
+        public T SingleJson<T>(string command, params (string name, object value, DbType type)[] parameters) =>
             JsonSerializer.Deserialize<T>(Single<string>(command, parameters), JsonOptions);
     }
 }

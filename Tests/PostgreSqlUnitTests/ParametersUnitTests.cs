@@ -40,7 +40,7 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (s, i, b, d, @null) = connection.Single<string, int, bool, DateTime, string>(
-                "select @s, @i, @b, @d, @null", 
+                "select @s, @i, @b, @d, @null",
                 ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"), ("null", null));
 
             Assert.Equal("str", s);
@@ -55,10 +55,10 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d", 
-                new NpgsqlParameter("s", "str"), 
-                new NpgsqlParameter("i", 999), 
-                new NpgsqlParameter("b", true), 
+                "select @s, @i, @b, @d",
+                new NpgsqlParameter("s", "str"),
+                new NpgsqlParameter("i", 999),
+                new NpgsqlParameter("b", true),
                 new NpgsqlParameter("d", new DateTime(1977, 5, 19)));
 
             Assert.Equal("str", s);
@@ -108,7 +108,7 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var p = new NpgsqlParameter("p", NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = new List<int> { 1, 2, 3 }
+                Value = new List<int> {1, 2, 3}
             };
             var result = connection.Read<int>("select unnest(@p)", p).ToList();
             Assert.Equal(3, result.Count);
@@ -120,7 +120,7 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void InputOutput_Parameters_Function_Test()
         {
-            var p = new NpgsqlParameter("test_param", "I am output value") { Direction = ParameterDirection.InputOutput };
+            var p = new NpgsqlParameter("test_param", "I am output value") {Direction = ParameterDirection.InputOutput};
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             connection
@@ -137,6 +137,32 @@ namespace PostgreSqlUnitTests
                 .Execute("test_inout_param_func", p);
 
             Assert.Equal("I am output value returned from function", p.Value);
+        }
+
+        [Fact]
+        public void Nullable_Params_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            long? one = 1;
+            long? two = null;
+
+            var (result1, result2) = connection.Single<long?, long?>(
+                "select @one, @two", ("one", one), ("two", two));
+
+            Assert.Equal(one, result1);
+            Assert.Equal(two, result2);
+        }
+
+        [Fact]
+        public void Undetermined_Param_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            long? id = null;
+            
+            var result = connection.Read<long>("select * from (values (1),(2),(3)) t(id) where @id is null or id = @id",
+                ("id", id, DbType.Int64)).ToList();
+                //new NpgsqlParameter("id", id.HasValue ? id as object : DBNull.Value) { DbType = DbType.Int64 }).ToList();
+            Assert.Equal(3, result.Count);
         }
     }
 }
