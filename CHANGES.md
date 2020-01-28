@@ -1,5 +1,9 @@
 # Version history
 
+## 1.1.8
+
+- All parameters with `null` value will be interpreted as database null value (`DBNull.Value`)
+
 ## 1.1.7
 
 - Added tests and support for SQLite database

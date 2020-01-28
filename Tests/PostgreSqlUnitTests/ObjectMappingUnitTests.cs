@@ -71,7 +71,15 @@ namespace PostgreSqlUnitTests
             AssertTestClass(result);
         }
 
-       
+        [Fact]
+        public void SelectEmpty_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read($"select * from ({Query}) q where id = 999").Select<TestClass>().ToList();
+            Assert.Empty(result);
+        }
+
+
         [Fact]
         public async Task SelectMap_Async()
         {

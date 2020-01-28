@@ -32,7 +32,7 @@ namespace Norm.Extensions
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
-            param.Value = value;
+            param.Value = value ?? DBNull.Value;
             cmd.Parameters.Add(param);
             return cmd;
         }

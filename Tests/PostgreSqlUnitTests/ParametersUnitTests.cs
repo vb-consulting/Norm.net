@@ -25,27 +25,29 @@ namespace PostgreSqlUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d", "str", 999, true, new DateTime(1977, 5, 19));
+            var (s, i, b, d, @null) = connection.Single<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null", "str", 999, true, new DateTime(1977, 5, 19), null);
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
         }
 
         [Fact]
         public void NamedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d", 
-                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"));
+            var (s, i, b, d, @null) = connection.Single<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null", 
+                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"), ("null", null));
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
         }
 
         [Fact]
