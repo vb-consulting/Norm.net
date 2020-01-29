@@ -16,30 +16,20 @@ namespace Norm.Extensions
             return connection;
         }
 
-        public static DbConnection EnsureIsClose(this DbConnection connection)
+        public static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection, CancellationToken? cancellationToken = null)
         {
-            if (connection.State != ConnectionState.Open)
+            if (connection.State == ConnectionState.Open)
             {
-                connection.Close();
+                return connection;
             }
-            return connection;
-        }
-
-        public static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection)
-        {
-            if (connection.State != ConnectionState.Open)
+            cancellationToken?.ThrowIfCancellationRequested();
+            if (cancellationToken.HasValue)
+            {
+                await connection.OpenAsync(cancellationToken.Value);
+            }
+            else
             {
                 await connection.OpenAsync();
-            }
-            return connection;
-        }
-
-        public static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (connection.State != ConnectionState.Open)
-            {
-                await connection.OpenAsync(cancellationToken);
             }
             return connection;
         }

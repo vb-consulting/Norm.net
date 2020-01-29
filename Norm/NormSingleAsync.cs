@@ -645,12 +645,21 @@ namespace Norm
         private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction,
             Action<DbCommand> commandAction = null)
         {
+            cancellationToken?.ThrowIfCancellationRequested();
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
             commandAction?.Invoke(cmd);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            return await readerAction(reader);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                return await readerAction(reader);
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                return await readerAction(reader);
+            }
         }
     }
 }

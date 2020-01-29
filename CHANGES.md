@@ -1,5 +1,11 @@
 # Version history
 
+## 1.2.0
+
+- Extensions that will change state of connection object like `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions` are now thread safe. That means that connection can safely be singleton or static object.
+- New (thread safe) extension `WithCancellationToken` that will throw exception if cancellation is requested and propogate cancellation token to all async calls.
+- Extensions `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions` and `WithCancellationToken` will only apply to current call chain.
+
 ## 1.1.9
 
 - New overload for all functions with named parameters. Named parametzers now accept DBType along name and value.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm.Extensions
@@ -130,6 +131,12 @@ namespace Norm.Extensions
             }
 
             return cmd;
+        }
+
+        public static Task<int> ExecuteNonQueryWithOptionalTokenAsync(this DbCommand cmd,
+            CancellationToken? cancellationToken)
+        {
+            return cancellationToken.HasValue ? cmd.ExecuteNonQueryAsync(cancellationToken.Value) : cmd.ExecuteNonQueryAsync();
         }
     }
 }

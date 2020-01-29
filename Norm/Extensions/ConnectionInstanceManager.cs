@@ -2,6 +2,8 @@
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading;
+using Norm.Interfaces;
 
 namespace Norm.Extensions
 {
@@ -24,29 +26,22 @@ namespace Norm.Extensions
             return instance;
         }
 
-        public static DbConnection As(this DbConnection connection, CommandType type)
-        {
-            var instance = connection.GetNoOrmInstance();
-            instance.As(type);
-            return connection;
-        }
+        public static INorm As(this DbConnection connection, CommandType type) => 
+            connection.GetNoOrmInstance().Clone().As(type);
 
-        public static DbConnection AsProcedure(this DbConnection connection) => connection.As(CommandType.StoredProcedure);
+        public static INorm AsProcedure(this DbConnection connection) => 
+            connection.As(CommandType.StoredProcedure);
 
-        public static DbConnection AsText(this DbConnection connection) => connection.As(CommandType.Text);
+        public static INorm AsText(this DbConnection connection) => 
+            connection.As(CommandType.Text);
 
-        public static DbConnection Timeout(this DbConnection connection, int? timeout)
-        {
-            var instance = connection.GetNoOrmInstance();
-            instance.Timeout(timeout);
-            return connection;
-        }
+        public static INorm Timeout(this DbConnection connection, int? timeout) => 
+            connection.GetNoOrmInstance().Clone().Timeout(timeout);
 
-        public static DbConnection WithJsonOptions(this DbConnection connection, JsonSerializerOptions jsonOptions)
-        {
-            var instance = connection.GetNoOrmInstance();
-            instance.WithJsonOptions(jsonOptions);
-            return connection;
-        }
+        public static INorm WithJsonOptions(this DbConnection connection, JsonSerializerOptions jsonOptions) => 
+            connection.GetNoOrmInstance().Clone().WithJsonOptions(jsonOptions);
+
+        public static INorm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken) =>
+            connection.GetNoOrmInstance().Clone().WithCancellationToken(cancellationToken);
     }
 }

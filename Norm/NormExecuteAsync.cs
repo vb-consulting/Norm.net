@@ -11,8 +11,8 @@ namespace Norm
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await cmd.ExecuteNonQueryAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
             return this;
         }
 
@@ -20,8 +20,8 @@ namespace Norm
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await cmd.AddParameters(parameters).ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
             return this;
         }
 
@@ -29,8 +29,8 @@ namespace Norm
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await cmd.AddParameters(parameters).ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
             return this;
         }
 
@@ -38,8 +38,8 @@ namespace Norm
         {
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await cmd.AddParameters(parameters).ExecuteNonQueryAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await cmd.AddParameters(parameters).ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
             return this;
         }
     }

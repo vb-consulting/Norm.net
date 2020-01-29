@@ -105,14 +105,14 @@ Recap:
 | `Read`, `ReadAsync`  | Execute command and builds iterator over tuples. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/ReadTuplesUnitTests.cs) |
 | `SingleJson`, `SingleJsonAsync` |  single database JSON result (query that returns single value from database - JSON blob) -  into an instance of the type specified by a generic type parameter. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/SingleJsonUnitTests.cs) |
 | `Json`, `JsonAsync` |  database JSON results (single row of JSON objects) - into an enumerator (or async enumerator) of instance of the type specified by a generic type parameter. See some [examples here.](https://github.com/vbilopav/NoOrm.Net/blob/master/Tests/PostgreSqlUnitTests/JsonUnitTests.cs)|
-| `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, | Provide general functionality like changing command type from procedure to test, setting the timeout ...|
+| `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions`, `WithCancellationToken` | Provide general functionality like changing command type from procedure to test, setting the timeout ...|
 | Extensions | Set of `IEnumerable` and `IAsyncEnumerable` extensions to convert database tuples to lists and dictionaries. New extensions can be added on will (for object mapping for example). |
 
 ### Working with database parameters
 
 Each database connection method can receive list of parameters that are mapped to appropriate `DbParameter` to avoid SQL injection.
 
-There are two overloads:
+There are three overloads:
 
 #### Positional parameters by value
 
@@ -137,6 +137,21 @@ connection.Execute("select @p1, @p2, @third", ("p1", value1), ("p2", value2), ("
 ```
 
 Values are parameter values which are mapped to appropriate type by underlying database connection provider.
+
+#### Named parameters parameters by value with type
+
+When using named parameters you can pass ald `DbType` value to specify underlaying database type exactly__
+
+```csharp
+connection.Execute("select @p1, @p2", ("p1", value1, DbType.Int32), ("p2", value2, DbType.String));
+connection.Execute("select @p1, @p2, @third", ("p1", value1, DbType.Int32), ("p2", value2, DbType.String), ("third", value3, DbType.Boolean));
+// etc...
+```
+
+Important:
+> All parameters `null` values will be interpreted as `DbValue.Null` to match database nulls.
+
+When passing null values, exact database type of paramater cannot be determined automatically, so, you must pass type value manually.
 
 #### Passing specific `DbParameter` value
 

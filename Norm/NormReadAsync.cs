@@ -501,28 +501,52 @@ namespace Norm
         private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, T> readerAction,
             Action<DbCommand> commandAction = null)
         {
+            cancellationToken?.ThrowIfCancellationRequested();
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
             commandAction?.Invoke(cmd);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            if (cancellationToken.HasValue)
             {
-                yield return readerAction(reader);
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return readerAction(reader);
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return readerAction(reader);
+                }
             }
         }
 
         private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction,
             Action<DbCommand> commandAction = null)
         {
+            cancellationToken?.ThrowIfCancellationRequested();
             await using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
+            await Connection.EnsureIsOpenAsync(cancellationToken);
             commandAction?.Invoke(cmd);
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            if (cancellationToken.HasValue)
             {
-                yield return await readerAction(reader);
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return await readerAction(reader);
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return await readerAction(reader);
+                }
             }
         }
     }

@@ -3,36 +3,45 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Norm.Extensions;
 using Norm.Interfaces;
 
 namespace Norm
 {
-    public partial class Norm : IDisposable, INorm
+    public partial class Norm : INorm
     {
         private enum DatabaseType
         {
-            Ms, Pg, Lt, Other
+            Ms,
+            Pg,
+            Lt,
+            Other
         }
 
-        private bool disposed = false;
         private CommandType commandType;
         private int? commandTimeout;
         private JsonSerializerOptions jsonOptions;
+        private CancellationToken? cancellationToken;
         private readonly bool convertsDbNull;
         private readonly DatabaseType dbType;
         private static readonly Type StringType = typeof(string);
 
         public DbConnection Connection { get; }
 
-        public Norm(DbConnection connection, CommandType commandType = CommandType.Text, int? commandTimeout = null,
-            JsonSerializerOptions jsonOptions = null)
+        internal Norm(
+            DbConnection connection, 
+            CommandType commandType = CommandType.Text, 
+            int? commandTimeout = null,
+            JsonSerializerOptions jsonOptions = null,
+            CancellationToken? cancellationToken = null)
         {
             Connection = connection;
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
             this.jsonOptions = jsonOptions;
+            this.cancellationToken = cancellationToken;
             var name = connection.GetType().Name;
             (dbType, convertsDbNull) = name switch
             {
@@ -42,6 +51,8 @@ namespace Norm
                 _ => (DatabaseType.Other, false)
             };
         }
+
+        internal Norm Clone() => new Norm(Connection, commandType, commandTimeout, jsonOptions, cancellationToken);
 
         public INorm As(CommandType type)
         {
@@ -65,29 +76,10 @@ namespace Norm
             return this;
         }
 
-        public void Dispose()
+        public INorm WithCancellationToken(CancellationToken token)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                if (Connection.State == ConnectionState.Open)
-                {
-                    Connection.Close();
-                }
-                Connection?.Dispose();
-            }
-
-            disposed = true;
+            this.cancellationToken = token;
+            return this;
         }
 
         private JsonSerializerOptions JsonOptions => 
