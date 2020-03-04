@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Norm.Extensions.PostgreSQL\Norm.Extensions.PostgreSQL.csproj" />
     <ProjectReference Include="..\..\Norm\Norm.csproj" />
   </ItemGroup>
 
