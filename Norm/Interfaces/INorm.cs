@@ -22,5 +22,6 @@ namespace Norm.Interfaces
         INorm AsText();
         INorm Timeout(int? timeout);
         INorm WithJsonOptions(JsonSerializerOptions options);
+        INorm Prepared();
     }
 }

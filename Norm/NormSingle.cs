@@ -478,6 +478,7 @@ namespace Norm
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
             commandAction?.Invoke(cmd);
+            Prepare(cmd);
             using var reader = cmd.ExecuteReader();
             return readerAction(reader);
         }

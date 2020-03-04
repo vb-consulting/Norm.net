@@ -1,5 +1,27 @@
 # Version history
 
+## 1.3.0
+
+#### Added support for **prepared statemnts.** 
+
+- To execute prepared statement execute `Prepared()` method before any given execution:
+
+```csharp
+connection.Prepared().Execute("command 1").Execute("command 2");
+```
+
+In example above only `command 1` is executed as prepared. 
+
+- To execute both commands as prepared `Prepared()` call must preceed command execution:
+
+```csharp
+connection.Prepared().Execute("command 1").Prepared().Execute("command 2");
+```
+
+- In SQL Server, prepared statements don't have [has no significant performance advantage over direct execution](https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2008-r2/ms175528(v=sql.105)?redirectedfrom=MSDN)
+
+- In PostgreSQL, prepared statements have [17% performance increase](http://www.roji.org/prepared-statements-in-npgsql-3-2)
+
 ## 1.2.0
 
 - Extensions that will change state of connection object like `As`, `AsProcedure`, `AsText`, `Timeout`, `WithJsonOptions` are now thread safe. That means that connection can safely be singleton or static object.

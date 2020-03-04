@@ -650,6 +650,7 @@ namespace Norm
             SetCommand(cmd, command);
             await Connection.EnsureIsOpenAsync(cancellationToken);
             commandAction?.Invoke(cmd);
+            await PrepareAsync(cmd);
             if (cancellationToken.HasValue)
             {
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);

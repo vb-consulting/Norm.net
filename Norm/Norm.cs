@@ -24,6 +24,7 @@ namespace Norm
         private int? commandTimeout;
         private JsonSerializerOptions jsonOptions;
         private CancellationToken? cancellationToken;
+        private bool prepared;
         private readonly bool convertsDbNull;
         private readonly DatabaseType dbType;
         private static readonly Type StringType = typeof(string);
@@ -35,13 +36,15 @@ namespace Norm
             CommandType commandType = CommandType.Text, 
             int? commandTimeout = null,
             JsonSerializerOptions jsonOptions = null,
-            CancellationToken? cancellationToken = null)
+            CancellationToken? cancellationToken = null,
+            bool prepared = false)
         {
             Connection = connection;
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
             this.jsonOptions = jsonOptions;
             this.cancellationToken = cancellationToken;
+            this.prepared = prepared;
             var name = connection.GetType().Name;
             (dbType, convertsDbNull) = name switch
             {
@@ -82,12 +85,51 @@ namespace Norm
             return this;
         }
 
+        public INorm Prepared()
+        {
+            prepared = true;
+            return this;
+        }
+
         private JsonSerializerOptions JsonOptions => 
             this.jsonOptions ?? GlobalJsonSerializerOptions.Options;
 
         private void SetCommand(DbCommand cmd, string command)
         {
             cmd.SetCommandParameters(command, commandType, commandTimeout);
+        }
+
+        private DbCommand Prepare(DbCommand cmd)
+        {
+            if (!prepared)
+            {
+                return cmd;
+            }
+
+            cmd.Prepare();
+            prepared = false;
+
+            return cmd;
+        }
+
+        private async ValueTask<DbCommand> PrepareAsync(DbCommand cmd)
+        {
+            if (!prepared)
+            {
+                return cmd;
+            }
+
+            if (cancellationToken.HasValue)
+            {
+                await cmd.PrepareAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.PrepareAsync();
+            }
+            prepared = false;
+
+            return cmd;
         }
 
         private bool CheckDbNull<T>() => (!convertsDbNull || typeof(T) == StringType);

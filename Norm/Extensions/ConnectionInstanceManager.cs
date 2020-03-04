@@ -43,5 +43,8 @@ namespace Norm.Extensions
 
         public static INorm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken) =>
             connection.GetNoOrmInstance().Clone().WithCancellationToken(cancellationToken);
+
+        public static INorm Prepared(this DbConnection connection) =>
+            connection.GetNoOrmInstance().Clone().Prepared();
     }
 }

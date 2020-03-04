@@ -11,7 +11,7 @@ namespace Norm
             using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
-            cmd.ExecuteNonQuery();
+            Prepare(cmd).ExecuteNonQuery();
             return this;
         }
 
@@ -20,7 +20,7 @@ namespace Norm
             using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
-            cmd.AddParameters(parameters).ExecuteNonQuery();
+            Prepare(cmd.AddParameters(parameters)).ExecuteNonQuery();
             return this;
         }
 
@@ -29,7 +29,7 @@ namespace Norm
             using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
-            cmd.AddParameters(parameters).ExecuteNonQuery();
+            Prepare(cmd.AddParameters(parameters)).ExecuteNonQuery();
             return this;
         }
 
@@ -38,7 +38,7 @@ namespace Norm
             using var cmd = Connection.CreateCommand();
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
-            cmd.AddParameters(parameters).ExecuteNonQuery();
+            Prepare(cmd.AddParameters(parameters)).ExecuteNonQuery();
             return this;
         }
     }
