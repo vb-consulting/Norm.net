@@ -131,7 +131,6 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo2", result[3]);
         }
 
-
         /*
         [Fact]
         public void _Test()
@@ -156,7 +155,7 @@ namespace PostgreSqlUnitTests
             {
 
             //connection.Execute("rollback");
-            //PSQLException: current transaction is aborted, commands ignored until end of transaction block
+            //25P02: current transaction is aborted, commands ignored until end of transaction block
             var result = connection
                     .Read<string>("select t from testx")
                     .ToArray();

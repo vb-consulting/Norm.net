@@ -1,5 +1,37 @@
 # Version history
 
+## 1.4.0
+
+#### Added support `PostgreSQL` format parameters
+
+- Calling
+
+```csharp
+connection.UsingPostgresFormatParamsMode().Execute("command 1", p1, p2)
+```
+
+Will parse parameters using `PostgreSQL format` function to parse user input and prevent SQL injection.
+
+This can send parameter to `PostgreSQL` anonymous script block;
+
+```csharp
+connection
+    .Execute("create table plpgsql_test (t text)")
+    .UsingPostgresFormatParamsMode()
+    .Execute(@"
+
+        do $$
+        begin
+
+            insert into plpgsql_test values (@foo1);
+            insert into plpgsql_test values (@foo2);
+            insert into plpgsql_test values (@foo1);
+            insert into plpgsql_test values (@foo2);
+
+        end
+        $$;", ("foo1", "foo1"), ("foo2", "foo2"));
+```
+
 ## 1.3.0
 
 #### Added support for **prepared statemnts.** 
