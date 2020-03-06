@@ -91,6 +91,10 @@ namespace Norm
         public INorm Prepared()
         {
             prepared = true;
+            if (prepared && usingPostgresFormatParamsMode)
+            {
+                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on prepared statements.");
+            }
             return this;
         }
 
@@ -100,6 +104,10 @@ namespace Norm
             if (dbType != DatabaseType.Pg)
             {
                 throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on connection other than PostgreSQL.");
+            }
+            if (prepared && usingPostgresFormatParamsMode)
+            {
+                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on prepared statements.");
             }
             return this;
         }
@@ -118,7 +126,6 @@ namespace Norm
             {
                 return cmd;
             }
-
             cmd.Prepare();
             prepared = false;
 
