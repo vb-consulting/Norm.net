@@ -23,5 +23,6 @@ namespace Norm.Interfaces
         INorm Timeout(int? timeout);
         INorm WithJsonOptions(JsonSerializerOptions options);
         INorm Prepared();
+        INorm UsingPostgresFormatParamsMode();
     }
 }

@@ -25,6 +25,7 @@ namespace Norm
         private JsonSerializerOptions jsonOptions;
         private CancellationToken? cancellationToken;
         private bool prepared;
+        private bool usingPostgresFormatParamsMode;
         private readonly bool convertsDbNull;
         private readonly DatabaseType dbType;
         private static readonly Type StringType = typeof(string);
@@ -37,7 +38,8 @@ namespace Norm
             int? commandTimeout = null,
             JsonSerializerOptions jsonOptions = null,
             CancellationToken? cancellationToken = null,
-            bool prepared = false)
+            bool prepared = false,
+            bool usingPostgresFormatParamsMode = false)
         {
             Connection = connection;
             this.commandType = commandType;
@@ -45,6 +47,7 @@ namespace Norm
             this.jsonOptions = jsonOptions;
             this.cancellationToken = cancellationToken;
             this.prepared = prepared;
+            this.usingPostgresFormatParamsMode = usingPostgresFormatParamsMode;
             var name = connection.GetType().Name;
             (dbType, convertsDbNull) = name switch
             {
@@ -91,6 +94,16 @@ namespace Norm
             return this;
         }
 
+        public INorm UsingPostgresFormatParamsMode()
+        {
+            this.usingPostgresFormatParamsMode = true;
+            if (dbType != DatabaseType.Pg)
+            {
+                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on connection other than PostgreSQL.");
+            }
+            return this;
+        }
+
         private JsonSerializerOptions JsonOptions => 
             this.jsonOptions ?? GlobalJsonSerializerOptions.Options;
 
@@ -110,6 +123,72 @@ namespace Norm
             prepared = false;
 
             return cmd;
+        }
+
+        private DbCommand AddParameters(DbCommand cmd, params object[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return Prepare(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return Prepare(cmd.AddParameters(parameters));
+        }
+
+        private DbCommand AddParameters(DbCommand cmd, params (string name, object value)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return Prepare(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return Prepare(cmd.AddParameters(parameters));
+        }
+
+        private DbCommand AddParameters(DbCommand cmd, params (string name, object value, DbType type)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return Prepare(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return Prepare(cmd.AddParameters(parameters));
+        }
+
+        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params object[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return await PrepareAsync(cmd.AddParameters(parameters));
+        }
+
+        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params (string name, object value)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return await PrepareAsync(cmd.AddParameters(parameters));
+        }
+
+        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params (string name, object value, DbType type)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return await PrepareAsync(cmd.AddParameters(parameters));
         }
 
         private async ValueTask<DbCommand> PrepareAsync(DbCommand cmd)

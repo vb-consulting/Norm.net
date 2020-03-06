@@ -19,7 +19,7 @@ namespace Norm
         public async IAsyncEnumerable<T> JsonAsync<T>(string command, params object[] parameters)
         {
             {
-                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters)))
+                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), parameters))
                 {
                     yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
                 }
@@ -29,7 +29,7 @@ namespace Norm
         public async IAsyncEnumerable<T> JsonAsync<T>(string command, params (string name, object value)[] parameters)
         {
             {
-                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters)))
+                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), parameters))
                 {
                     yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
                 }
@@ -39,7 +39,7 @@ namespace Norm
         public async IAsyncEnumerable<T> JsonAsync<T>(string command, params (string name, object value, DbType type)[] parameters)
         {
             {
-                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), cmd => cmd.AddParameters(parameters)))
+                await foreach (var json in ReadInternalAsync(command, r => GetFieldValue<string>(r, 0), parameters))
                 {
                     yield return JsonSerializer.Deserialize<T>(json, JsonOptions);
                 }

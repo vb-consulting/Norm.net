@@ -46,5 +46,8 @@ namespace Norm.Extensions
 
         public static INorm Prepared(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().Prepared();
+
+        public static INorm UsingPostgresFormatParamsMode(this DbConnection connection) =>
+            connection.GetNoOrmInstance().Clone().UsingPostgresFormatParamsMode();
     }
 }

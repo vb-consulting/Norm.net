@@ -31,7 +31,7 @@ namespace PostgreSqlUnitTests
                         insert into plpgsql_test1 values ('foo2');
 
                     end
-                    $$ language plpgsql;
+                    $$;
 
                 ");
 
@@ -44,7 +44,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void ParametersInScript_Test()
+        public void ParametersInScriptManual_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString)
                 .Execute("create table plpgsql_test2 (t text)")
@@ -57,7 +57,7 @@ namespace PostgreSqlUnitTests
                         insert into plpgsql_test2 values (format('%s', '{"foo2"}'));
 
                     end
-                    $$ language plpgsql;
+                    $$;
 
                 ");
 
@@ -68,5 +68,100 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo1", result[0]);
             Assert.Equal("foo2", result[1]);
         }
+
+        [Fact]
+        public void UsingPostgresFormatParamsPositionalMode_Positional_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            
+            connection
+                .Execute("create table plpgsql_test3 (t text)")
+                .UsingPostgresFormatParamsMode()
+                .Execute(@"
+
+                    do $$
+                    begin
+
+                        insert into plpgsql_test3 values (@foo1);
+                        insert into plpgsql_test3 values (@foo2);
+
+                    end
+                    $$;
+
+                ", "foo1", "foo2");
+
+            var result = connection
+                .Read<string>("select t from plpgsql_test3")
+                .ToArray();
+
+            Assert.Equal("foo1", result[0]);
+            Assert.Equal("foo2", result[1]);
+        }
+
+        [Fact]
+        public void UsingPostgresFormatParamsNamedMode_Positional_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection
+                .Execute("create table plpgsql_test4 (t text)")
+                .UsingPostgresFormatParamsMode()
+                .Execute(@"
+
+                    do $$
+                    begin
+
+                        insert into plpgsql_test4 values (@foo1);
+                        insert into plpgsql_test4 values (@foo2);
+                        insert into plpgsql_test4 values (@foo1);
+                        insert into plpgsql_test4 values (@foo2);
+
+                    end
+                    $$;
+
+                ", ("foo1", "foo1"), ("foo2", "foo2"));
+
+            var result = connection
+                .Read<string>("select t from plpgsql_test4")
+                .ToArray();
+
+            Assert.Equal("foo1", result[0]);
+            Assert.Equal("foo2", result[1]);
+            Assert.Equal("foo1", result[2]);
+            Assert.Equal("foo2", result[3]);
+        }
+
+
+        /*
+        [Fact]
+        public void _Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection.Execute("create table testx (t text not null)");
+
+            try
+            {
+                connection.Execute(@"
+
+                    begin;
+
+                        insert into testx values ('test');
+                        insert into testx values (null);
+
+                    end;
+
+                ", "test", null);
+            }
+            catch (Exception e)
+            {
+
+            //connection.Execute("rollback");
+            //PSQLException: current transaction is aborted, commands ignored until end of transaction block
+            var result = connection
+                    .Read<string>("select t from testx")
+                    .ToArray();
+            }
+        }
+        */
     }
 }
