@@ -1,5 +1,10 @@
 # Version history
 
+## 1.5.0
+
+- Removed unneccessary JSON support. There are so many different JSON libraries, there is no need to have reference to `System.Json` package. You can always get `string` result and serialize/deserialize as you want.
+- Fixed issue with weak table connection reference in highly concurrent code.
+
 ## 1.4.0
 
 #### Added support `PostgreSQL` format parameters

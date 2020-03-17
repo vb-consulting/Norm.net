@@ -21,7 +21,7 @@ namespace Norm.Extensions
                 return instance;
             }
             instance = new Norm(connection);
-            Table.Add(connection, instance);
+            Table.AddOrUpdate(connection, instance);
             return instance;
         }
 
