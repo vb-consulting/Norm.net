@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Threading;
 using Norm.Interfaces;
 
@@ -37,9 +36,6 @@ namespace Norm.Extensions
 
         public static INorm Timeout(this DbConnection connection, int? timeout) => 
             connection.GetNoOrmInstance().Clone().Timeout(timeout);
-
-        public static INorm WithJsonOptions(this DbConnection connection, JsonSerializerOptions jsonOptions) => 
-            connection.GetNoOrmInstance().Clone().WithJsonOptions(jsonOptions);
 
         public static INorm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken) =>
             connection.GetNoOrmInstance().Clone().WithCancellationToken(cancellationToken);

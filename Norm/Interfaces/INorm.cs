@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.Common;
-using System.Text.Json;
 
 namespace Norm.Interfaces
 {
@@ -10,18 +9,13 @@ namespace Norm.Interfaces
         INormSingle, 
         INormSingleAsync,
         INormRead,
-        INormReadAsync,
-        INormSingleJson,
-        INormSingleJsonAsync,
-        INormJson,
-        INormJsonAsync
+        INormReadAsync
     {
         DbConnection Connection { get; }
         INorm As(CommandType type);
         INorm AsProcedure();
         INorm AsText();
         INorm Timeout(int? timeout);
-        INorm WithJsonOptions(JsonSerializerOptions options);
         INorm Prepared();
         INorm UsingPostgresFormatParamsMode();
     }

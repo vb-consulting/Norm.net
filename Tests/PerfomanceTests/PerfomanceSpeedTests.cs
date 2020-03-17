@@ -99,7 +99,7 @@ namespace PerfomanceTests
             //var (e3, r3) = Measure(() => connection.Read(TestQuery).SelectDictionaries());
             var (e4, r4) = Measure(() => connection.Read(TestQuery).SelectDictionaries().Select(d => new TestClass(d)));
             var (e5, r5) = Measure(() => connection.Read<int, string, string, DateTime>(TestQuery).Select(tuple => new TestClass(tuple)));
-            var (e6, r6) = Measure(() => connection.Json<TestClass>(JsonTestQuery));
+            //var (e6, r6) = Measure(() => connection.Json<TestClass>(JsonTestQuery));
             var (e7, r7) = Measure(() => connection.Read(TestQuery).Select<TestClass>());
 
 
@@ -108,11 +108,12 @@ namespace PerfomanceTests
             var (e3Count, c3) = Measure(() => r3.ToList().Count);
             var (e4Count, c4) = Measure(() => r4.ToList().Count);
             var (e5Count, c5) = Measure(() => r5.ToList().Count);
-            var (e6Count, c6) = Measure(() => r6.ToList().Count);
+            //var (e6Count, c6) = Measure(() => r6.ToList().Count);
             var (e7Count, c7) = Measure(() => r7.ToList().Count);
 
             //output.WriteLine($"{e1},    {e2},   {e3},   {e7},   {e1Count},  {e2Count},  {e3Count},  {e7Count}");
-            output.WriteLine($"{e1},{e2},{e3},{e4},{e5},{e6},{e7},{e1Count},{e2Count},{e3Count},{e4Count},{e5Count},{e6Count},{e7Count}");
+            //output.WriteLine($"{e1},{e2},{e3},{e4},{e5},{e6},{e7},{e1Count},{e2Count},{e3Count},{e4Count},{e5Count},{e6Count},{e7Count}");
+            output.WriteLine($"{e1},{e2},{e3},{e4},{e5},{e7},{e1Count},{e2Count},{e3Count},{e4Count},{e5Count},{e7Count}");
             /*
              00:00:02.9073922,00:00:00.0018315,00:00:00.0009539,00:00:00.0008372,00:00:00.0014880,00:00:00.0006290,00:00:00.0009730,00:00:00.0016179,00:00:02.5370354,00:00:02.3914171,00:00:02.9139682,00:00:02.3039374,00:00:04.2189928,00:00:03.0418838
              00:00:02.7778788,00:00:00.0016037,00:00:00.0009633,00:00:00.0007911,00:00:00.0019141,00:00:00.0006245,00:00:00.0006308,00:00:00.0013831,00:00:02.3186422,00:00:02.0883494,00:00:02.9988069,00:00:01.9987436,00:00:03.6312376,00:00:02.9569528

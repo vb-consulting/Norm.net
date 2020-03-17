@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Norm.Extensions;
@@ -22,7 +21,6 @@ namespace Norm
 
         private CommandType commandType;
         private int? commandTimeout;
-        private JsonSerializerOptions jsonOptions;
         private CancellationToken? cancellationToken;
         private bool prepared;
         private bool usingPostgresFormatParamsMode;
@@ -36,7 +34,6 @@ namespace Norm
             DbConnection connection, 
             CommandType commandType = CommandType.Text, 
             int? commandTimeout = null,
-            JsonSerializerOptions jsonOptions = null,
             CancellationToken? cancellationToken = null,
             bool prepared = false,
             bool usingPostgresFormatParamsMode = false)
@@ -44,7 +41,6 @@ namespace Norm
             Connection = connection;
             this.commandType = commandType;
             this.commandTimeout = commandTimeout;
-            this.jsonOptions = jsonOptions;
             this.cancellationToken = cancellationToken;
             this.prepared = prepared;
             this.usingPostgresFormatParamsMode = usingPostgresFormatParamsMode;
@@ -58,7 +54,7 @@ namespace Norm
             };
         }
 
-        internal Norm Clone() => new Norm(Connection, commandType, commandTimeout, jsonOptions, cancellationToken);
+        internal Norm Clone() => new Norm(Connection, commandType, commandTimeout, cancellationToken);
 
         public INorm As(CommandType type)
         {
@@ -73,12 +69,6 @@ namespace Norm
         public INorm Timeout(int? timeout)
         {
             commandTimeout = timeout;
-            return this;
-        }
-
-        public INorm WithJsonOptions(JsonSerializerOptions options)
-        {
-            this.jsonOptions = options;
             return this;
         }
 
@@ -111,9 +101,6 @@ namespace Norm
             }
             return this;
         }
-
-        private JsonSerializerOptions JsonOptions => 
-            this.jsonOptions ?? GlobalJsonSerializerOptions.Options;
 
         private void SetCommand(DbCommand cmd, string command)
         {
