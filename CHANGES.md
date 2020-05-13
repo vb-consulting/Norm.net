@@ -1,5 +1,84 @@
 # Version history
 
+## 1.5.1
+
+- Changes to object mapper read extension. Extensions call `connection.Read(Query).Select<MyClass>()` now supports:
+
+1) Snake case naming. Query results containg case name fields will be mapped properly to C# names. 
+
+For example query:
+
+```sql
+select * from (
+values 
+    (1, 'foo1', '1977-05-19'::date, true, null),
+    (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
+    (3, 'foo3', '1979-05-19'::date, null, 'bar3')
+) t(my_id, my_foo, my_day, my_bool, my_bar)
+```
+
+will return following fields: `my_id`, `my_foo`, `my_day`, `my_bool`, `my_bar`.
+
+Those fields will map properly to you C# class by using standard call 
+`var result = connection.Read(sql).Select<SnakeCaseMapTestClass>();`:
+
+```csharp
+class SnakeCaseMapTestClass
+{
+    public int MyId { get; private set; }
+    public string MyFoo { get; private set; }
+    public DateTime MyDay { get; private set; }
+    public bool? MyBool { get; private set; }
+    public string MyBar { get; private set; }
+}
+```
+
+2) Array field support. Some servers like `PostgreSQL` can return array as result which simplifies programming model and improves perfomances as well.
+
+Now you can map directly to your instances declared as arrays. For example this `PostgreSQL` query will return 5 arrays:
+
+```sql
+select 
+    array_agg(id) as id,
+    array_agg(foo) as foo,
+    array_agg(day) as day,
+    array_agg(bool) as bool,
+    array_agg(bar) as bar
+from (
+values 
+    (1, 'foo1', '1977-05-19'::date, true, null),
+    (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
+    (3, 'foo3', '1979-05-19'::date, null, 'bar3')
+) t(id, foo, day, bool, bar)
+```
+
+You can map these results with standard call `var result = connection.Read(sql).Select<ArraysTestClass>()`:
+
+```csharp
+class ArraysTestClass
+{
+    public int[] Id { get; private set; }
+    public string[] Foo { get; private set; }
+    public DateTime[] Day { get; private set; }
+    public bool[] Bool { get; private set; }
+    public string[] Bar { get; private set; }
+}
+```
+
+**Important notes:**
+
+> Nullable types when using standard value types are not supported. `NULL` values willl just fall to its default value. 
+
+For example, if `int` array contains some null values, value after mapping will be 0. 
+
+> However, if type is reference type, like `string` type, `NULL` values will be used and mapped correctly.
+
+This is issue with underlying database provider, `Npgsql` in this case and cannot be resolved at this moment. Nevertheless array types in results are immensly useful.
+
+Also: 
+> This feature depeneds heavily on underlying database provider implementation and it is tested only with `PostgreSQL` at this point.
+
+
 ## 1.5.0
 
 - Removed unneccessary JSON support. There are so many different JSON libraries, there is no need to have reference to `System.Json` package. You can always get `string` result and serialize/deserialize as you want.
