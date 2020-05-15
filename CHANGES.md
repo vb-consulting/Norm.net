@@ -74,18 +74,18 @@ class ArraysTestClass
 
 **Important notes:**
 
-> Nullable types when using standard value types are not supported. 
-> `NULL` values willl just fall back to its default value.
+> **Nullable types when using standard value types are not supported.
+> `NULL` values willl just fall back to its default value.**
 
 For example, if `int` array contains some `NULL` values, value after mapping will be `0` (default `int` value).
 
-> However, if type is reference type, like for example `string` type, `NULL` values will be used and mapped correctly.
+> **However, if type is reference type, like for example `string` type, `NULL` values will be used and mapped correctly.**
 
 This is issue with underlying database provider, `Npgsql` in this case and cannot be resolved at this moment. Nevertheless array types in results are immensly useful feature that everyone should use..
 
 Also:
 
-> This feature depeneds heavily on underlying database provider implementation and it is tested only with PostgreSQL at this point.
+> **This feature depeneds heavily on underlying database provider implementation and it is tested only with PostgreSQL at this point.**
 
 
 ## 1.5.0
