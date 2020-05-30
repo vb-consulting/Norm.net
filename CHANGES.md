@@ -1,5 +1,14 @@
 # Version history
 
+## 1.5.2
+
+Fix big with named parameters in tuple parameter format `("name1", value1), ("name2", value2), ...` when single parameter in parametrized query have multiple occurances.
+
+Note:
+> Named tuple parameter format overload `("name1", value1, DbType), ("name2", value2, DbType), ...` cannot receive specifix DB parameter types (like `NpgsqlDbType` for example). Doing so will invoke value parameter overload `(param1, param2, ...)`. 
+
+
+
 ## 1.5.1
 
 #### Changes to object mapper read extension. Extensions call `connection.Read(Query).Select<MyClass>()` now supports:

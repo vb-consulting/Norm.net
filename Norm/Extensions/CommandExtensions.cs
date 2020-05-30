@@ -64,7 +64,7 @@ namespace Norm.Extensions
             }
             var names = nameList.ToArray();
             var paramIndex = 0;
-            foreach (var (name, _, _) in EnumerateParams(command, names))
+            foreach (var name in EnumerateParams(command, names).Select(t => t.name).Distinct())
             {
                 if (cmd.CommandType == CommandType.StoredProcedure)
                 {
