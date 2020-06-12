@@ -164,5 +164,26 @@ namespace PostgreSqlUnitTests
                 //new NpgsqlParameter("id", id.HasValue ? id as object : DBNull.Value) { DbType = DbType.Int64 }).ToList();
             Assert.Equal(3, result.Count);
         }
+
+        [Fact]
+        public void Array_Params_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection
+                .Execute(@"
+                    create function array_params_test(_p int[]) returns int[] as
+                    $$
+                    begin
+                        return _p;
+                    end
+                    $$
+                    language plpgsql");
+                
+            var result = connection
+                .AsProcedure()
+                .Single<int[]>("array_params_test", ("_p", new[]{3,6,9}));
+
+            Assert.Equal(new[] { 3, 6, 9 }, result);
+        }
     }
 }

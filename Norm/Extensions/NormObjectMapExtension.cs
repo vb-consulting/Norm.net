@@ -112,63 +112,48 @@ namespace Norm.Extensions
                 switch (code)
                 {
                     case TypeCode.Boolean:
-                        //SetNullableValue((bool)value);
                         if (!isArray) SetValue((bool)value); else SetSpanValue<bool>(new ReadOnlySpan<bool>((bool[])value));
                         continue;
                     case TypeCode.Byte:
-                        //SetNullableValue((byte)value);
                         if (!isArray) SetValue((byte)value); else SetSpanValue<byte>(new ReadOnlySpan<byte>((byte[])value));
                         continue;
                     case TypeCode.Char:
-                        //SetNullableValue((char)value);
                         if (!isArray) SetValue((char)value); else SetSpanValue<char>(new ReadOnlySpan<char>((char[])value));
                         continue;
                     case TypeCode.DateTime:
-                        //SetNullableValue((DateTime)value);
                         if (!isArray) SetValue((DateTime)value); else SetSpanValue<DateTime>(new ReadOnlySpan<DateTime>((DateTime[])value));
                         continue;
                     case TypeCode.Decimal:
-                        //SetNullableValue((decimal)value);
                         if (!isArray) SetValue((decimal)value); else SetSpanValue<decimal>(new ReadOnlySpan<decimal>((decimal[])value));
                         continue;
                     case TypeCode.Double:
-                        //SetNullableValue((double)value);
                         if (!isArray) SetValue((double)value); else SetSpanValue<double>(new ReadOnlySpan<double>((double[])value));
                         continue;
                     case TypeCode.Int16:
-                        //SetNullableValue((short)value);
                         if (!isArray) SetValue((short)value); else SetSpanValue<short>(new ReadOnlySpan<short>((short[])value));
                         continue;
                     case TypeCode.Int32:
-                        //SetNullableValue((int) value);
                         if (!isArray) SetValue((int) value); else SetSpanValue<int>(new ReadOnlySpan<int>((int[])value));
                         continue;
                     case TypeCode.Int64:
-                        //SetNullableValue((long)value);
                         if (!isArray) SetValue((long)value); else SetSpanValue<long>(new ReadOnlySpan<long>((long[])value));
                         continue;
                     case TypeCode.SByte:
-                        //SetNullableValue((sbyte)value);
                         if (!isArray) SetValue((sbyte)value); else SetSpanValue<sbyte>(new ReadOnlySpan<sbyte>((sbyte[])value));
                         continue;
                     case TypeCode.Single:
-                        //SetNullableValue((float)value);
                         if (!isArray) SetValue((float)value); else SetSpanValue<float>(new ReadOnlySpan<float>((float[])value));
                         continue;
                     case TypeCode.String:
-                        //SetSpanValue<char>((string) value);
                         if (!isArray) SetStringValue((string)value); else SetSpanValue<string>(new ReadOnlySpan<string>((string[])value));
                         continue;
                     case TypeCode.UInt16:
-                        //SetNullableValue((ushort)value);
                         if (!isArray) SetValue((ushort)value); else SetSpanValue<ushort>(new ReadOnlySpan<ushort>((ushort[])value));
                         continue;
                     case TypeCode.UInt32:
-                        //SetNullableValue((uint)value);
                         if (!isArray) SetValue((uint)value); else SetSpanValue<uint>(new ReadOnlySpan<uint>((uint[])value));
                         continue;
                     case TypeCode.UInt64:
-                        //SetNullableValue((ulong)value);
                         if (!isArray) SetValue((ulong)value); else SetSpanValue<ulong>(new ReadOnlySpan<ulong>((ulong[])value));
                         continue;
                 }
