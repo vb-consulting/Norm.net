@@ -331,6 +331,7 @@ See detailed [performance tests here](https://github.com/vbilopav/NoOrm.Net/blob
 
 - .NET Standard 2.1
 - .NET Core 3.0
+- .NET Core 3.1
 
 ## Support
 
@@ -343,5 +344,5 @@ bitcoincash:qp93skpzyxtvw3l3lqqy7egwv8zrszn3wcfygeg0mv
 
 ## Licence
 
-Copyright (c) Vedran Bilopavlović - VB Consulting 2019
+Copyright (c) Vedran Bilopavlović - VB Consulting and VB Software 2020
 This source code is licensed under the [MIT license](https://github.com/vbilopav/NoOrm.Net/blob/master/LICENSE).
