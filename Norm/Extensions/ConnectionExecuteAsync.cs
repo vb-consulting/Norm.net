@@ -29,5 +29,11 @@ namespace Norm.Extensions
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
+
+        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        {
+            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
+            return connection;
+        }
     }
 }

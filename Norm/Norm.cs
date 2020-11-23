@@ -152,6 +152,17 @@ namespace Norm
             return Prepare(cmd.AddParameters(parameters));
         }
 
+        private DbCommand AddParametersUnknownType(DbCommand cmd, params (string name, object value, object type)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return Prepare(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return Prepare(cmd.AddUnknownTypeParameters(parameters));
+        }
+
         private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params object[] parameters)
         {
             if (usingPostgresFormatParamsMode)
@@ -183,6 +194,17 @@ namespace Norm
             }
 
             return await PrepareAsync(cmd.AddParameters(parameters));
+        }
+
+        private async ValueTask<DbCommand> AddParametersUnknownTypeAsync(DbCommand cmd, params (string name, object value, object type)[] parameters)
+        {
+            if (usingPostgresFormatParamsMode)
+            {
+                usingPostgresFormatParamsMode = false;
+                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
+            }
+
+            return await PrepareAsync(cmd.AddUnknownTypeParameters(parameters));
         }
 
         private async ValueTask<DbCommand> PrepareAsync(DbCommand cmd)

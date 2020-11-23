@@ -42,5 +42,14 @@ namespace Norm
             await (await AddParametersAsync(cmd, parameters)).ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
             return this;
         }
+
+        public async ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, object type)[] parameters)
+        {
+            await using var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await (await AddParametersUnknownTypeAsync(cmd, parameters)).ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            return this;
+        }
     }
 }

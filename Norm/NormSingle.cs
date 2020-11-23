@@ -27,6 +27,12 @@ namespace Norm
                 r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
                 parameters);
 
+        public IList<(string name, object value)> Single(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
+                parameters);
+
+
         public T Single<T>(string command) =>
             SingleInternal(command, r => r.Read() ? GetFieldValue<T>(r,0) : default);
 
@@ -50,6 +56,14 @@ namespace Norm
                     ? GetFieldValue<T>(r, 0)
                     : default,
                 parameters);
+
+        public T Single<T>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType<T>(command,
+                r => r.Read()
+                    ? GetFieldValue<T>(r, 0)
+                    : default,
+                parameters);
+
 
         public (T1, T2) Single<T1, T2>(string command) =>
             SingleInternal(command,
@@ -78,6 +92,14 @@ namespace Norm
                     : (default, default),
                 parameters);
 
+        public (T1, T2) Single<T1, T2>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1))
+                    : (default, default),
+                parameters);
+
+
         public (T1, T2, T3) Single<T1, T2, T3>(string command) =>
             SingleInternal(command,
                 r => r.Read()
@@ -104,6 +126,14 @@ namespace Norm
                     ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2))
                     : (default, default, default),
                 parameters);
+
+        public (T1, T2, T3) Single<T1, T2, T3>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2))
+                    : (default, default, default),
+                parameters);
+
 
         public (T1, T2, T3, T4) Single<T1, T2, T3, T4>(string command) =>
             SingleInternal(command,
@@ -132,6 +162,14 @@ namespace Norm
                     : (default, default, default, default),
                 parameters);
 
+        public (T1, T2, T3, T4) Single<T1, T2, T3, T4>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3))
+                    : (default, default, default, default),
+                parameters);
+
+
         public (T1, T2, T3, T4, T5) Single<T1, T2, T3, T4, T5>(string command) =>
             SingleInternal(command,
                 r => r.Read()
@@ -158,6 +196,14 @@ namespace Norm
                     ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4))
                     : (default, default, default, default, default),
                 parameters);
+
+        public (T1, T2, T3, T4, T5) Single<T1, T2, T3, T4, T5>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2), GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4))
+                    : (default, default, default, default, default),
+                parameters);
+
 
         public (T1, T2, T3, T4, T5, T6) Single<T1, T2, T3, T4, T5, T6>(string command) =>
             SingleInternal(command,
@@ -198,6 +244,17 @@ namespace Norm
                     : (default, default, default, default, default, default),
                 parameters);
 
+        public (T1, T2, T3, T4, T5, T6) Single<T1, T2, T3, T4, T5, T6>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5)
+                    )
+                    : (default, default, default, default, default, default),
+                parameters);
+
+
         public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command) =>
             SingleInternal(command,
                 r => r.Read()
@@ -232,6 +289,17 @@ namespace Norm
 
         public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command, params (string name, object value, DbType type)[] parameters) =>
             SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6)
+                    )
+                    : (default, default, default, default, default, default, default),
+                parameters);
+
+        public (T1, T2, T3, T4, T5, T6, T7) Single<T1, T2, T3, T4, T5, T6, T7>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
                 r => r.Read()
                     ? (
                         GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
@@ -285,6 +353,17 @@ namespace Norm
                     : (default, default, default, default, default, default, default, default),
                 parameters);
 
+        public (T1, T2, T3, T4, T5, T6, T7, T8) Single<T1, T2, T3, T4, T5, T6, T7, T8>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7)
+                    )
+                    : (default, default, default, default, default, default, default, default),
+                parameters);
+
 
         public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command) =>
             SingleInternal(command,
@@ -320,6 +399,17 @@ namespace Norm
 
         public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command, params (string name, object value, DbType type)[] parameters) =>
             SingleInternal(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8)
+                    )
+                    : (default, default, default, default, default, default, default, default, default),
+                parameters);
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
                 r => r.Read()
                     ? (
                         GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
@@ -377,6 +467,19 @@ namespace Norm
                     : (default, default, default, default, default, default, default, default, default, default),
                 parameters);
 
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8),
+                        GetFieldValue<T10>(r, 9)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default),
+                parameters);
+
+
         public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command) =>
             SingleInternal(command,
         r => r.Read()
@@ -423,6 +526,19 @@ namespace Norm
                     )
                     : (default, default, default, default, default, default, default, default, default, default, default),
                 parameters);
+
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8),
+                        GetFieldValue<T10>(r, 9), GetFieldValue<T11>(r, 10)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default),
+                parameters);
+
 
         public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command) => 
             SingleInternal(command,
@@ -471,6 +587,18 @@ namespace Norm
                     : (default, default, default, default, default, default, default, default, default, default, default, default),
                 parameters);
 
+        public (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) Single<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command, params (string name, object value, object type)[] parameters) =>
+            SingleInternalUnknowParamsType(command,
+                r => r.Read()
+                    ? (
+                        GetFieldValue<T1>(r, 0), GetFieldValue<T2>(r, 1), GetFieldValue<T3>(r, 2),
+                        GetFieldValue<T4>(r, 3), GetFieldValue<T5>(r, 4), GetFieldValue<T6>(r, 5),
+                        GetFieldValue<T7>(r, 6), GetFieldValue<T8>(r, 7), GetFieldValue<T9>(r, 8),
+                        GetFieldValue<T10>(r, 9), GetFieldValue<T11>(r, 10), GetFieldValue<T12>(r, 11)
+                    )
+                    : (default, default, default, default, default, default, default, default, default, default, default, default),
+                parameters);
+
 
         private T SingleInternal<T>(string command, Func<DbDataReader, T> readerAction)
         {
@@ -508,6 +636,16 @@ namespace Norm
             SetCommand(cmd, command);
             Connection.EnsureIsOpen();
             AddParameters(cmd, parameters);
+            using var reader = cmd.ExecuteReader();
+            return readerAction(reader);
+        }
+
+        private T SingleInternalUnknowParamsType<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value, object type)[] parameters)
+        {
+            using var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParametersUnknownType(cmd, parameters);
             using var reader = cmd.ExecuteReader();
             return readerAction(reader);
         }

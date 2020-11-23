@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,21 @@ namespace Norm.Extensions
             if (type.HasValue)
             {
                 param.DbType = type.Value;
+            }
+            cmd.Parameters.Add(param);
+            return cmd;
+        }
+
+        public static DbCommand AddUnknownParamTypeWithValue(this DbCommand cmd, string name, object value, object type = null)
+        {
+            var param = cmd.CreateParameter();
+            param.ParameterName = name;
+            param.Value = value ?? DBNull.Value;
+            if (type != null)
+            {
+                var paramTypeName = type.GetType().Name;
+                var propertyInfo = param.GetType().GetProperty(paramTypeName);
+                propertyInfo.SetValue(param, type);
             }
             cmd.Parameters.Add(param);
             return cmd;
@@ -95,6 +111,19 @@ namespace Norm.Extensions
                 if (name != null)
                 {
                     cmd.AddParamWithValue(name, value, type);
+                }
+            }
+
+            return cmd;
+        }
+
+        public static DbCommand AddUnknownTypeParameters(this DbCommand cmd, params (string name, object value, object type)[] parameters)
+        {
+            foreach (var (name, value, type) in parameters)
+            {
+                if (name != null)
+                {
+                    cmd.AddUnknownParamTypeWithValue(name, value, type);
                 }
             }
 

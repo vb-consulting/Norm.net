@@ -9,5 +9,7 @@ namespace Norm.Interfaces
         ValueTask<INorm> ExecuteAsync(string command, params object[] parameters);
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value)[] parameters);
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, DbType type)[] parameters);
+
+        ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, object type)[] parameters);
     }
 }

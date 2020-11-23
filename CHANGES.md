@@ -1,5 +1,38 @@
 # Version history
 
+## 1.6.0
+
+- New overload for all functions with named parameters. Named parameters now accept type parameter of `object` type:
+
+```csharp
+Execute(string command, params (string name, object value, object type)[] parameters);
+ExecuteAsync(string command, params (string name, object value, object type)[] parameters);
+Read(string command, params (string name, object value, object type)[] parameters);
+ReadAsync(string command, params (string name, object value, object type)[] parameters);
+Single(string command, params (string name, object value, object type)[] parameters);
+SingleAsync(string command, params (string name, object value, object type)[] parameters);
+```
+
+Besides already existing version where you can pass `DbType` parameter type value like this:
+
+```csharp
+connection.Single("select @myParam", ("myParam", 1, DbType.Int32));
+```
+
+Now you can use new overload version that accepets `object` for parameter type value and you can pass custom type from different database provider. 
+For example PostgreSQL types as parameters:
+
+```csharp
+connection.Single("select @myParam1, @myParam2", ("myParam1", 1, NpgsqlDbType.Integer), ("myParam2", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+```
+
+You can even mix standard `DbType` types with custom types in same call:
+
+
+```csharp
+onnection.Single("select @i, @j->>'test'",("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+```
+
 ## 1.5.2
 
 Fix big with named parameters in tuple parameter format `("name1", value1), ("name2", value2), ...` when single parameter in parametrized query have multiple occurances.

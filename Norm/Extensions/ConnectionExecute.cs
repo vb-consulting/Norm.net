@@ -28,5 +28,11 @@ namespace Norm.Extensions
             connection.GetNoOrmInstance().Execute(command, parameters);
             return connection;
         }
+
+        public static DbConnection Execute(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        {
+            connection.GetNoOrmInstance().Execute(command, parameters);
+            return connection;
+        }
     }
 }

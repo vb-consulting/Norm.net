@@ -8,5 +8,7 @@ namespace Norm.Interfaces
         INorm Execute(string command, params object[] parameters);
         INorm Execute(string command, params (string name, object value)[] parameters);
         INorm Execute(string command, params (string name, object value, DbType type)[] parameters);
+
+        INorm Execute(string command, params (string name, object value, object type)[] parameters);
     }
 }

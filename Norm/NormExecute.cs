@@ -41,5 +41,14 @@ namespace Norm
             AddParameters(cmd, parameters).ExecuteNonQuery();
             return this;
         }
+
+        public INorm Execute(string command, params (string name, object value, object type)[] parameters)
+        {
+            using var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParametersUnknownType(cmd, parameters).ExecuteNonQuery();
+            return this;
+        }
     }
 }

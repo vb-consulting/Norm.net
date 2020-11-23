@@ -108,7 +108,7 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var p = new NpgsqlParameter("p", NpgsqlDbType.Array | NpgsqlDbType.Integer)
             {
-                Value = new List<int> {1, 2, 3}
+                Value = new List<int> { 1, 2, 3 }
             };
             var result = connection.Read<int>("select unnest(@p)", p).ToList();
             Assert.Equal(3, result.Count);
@@ -120,7 +120,7 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void InputOutput_Parameters_Function_Test()
         {
-            var p = new NpgsqlParameter("test_param", "I am output value") {Direction = ParameterDirection.InputOutput};
+            var p = new NpgsqlParameter("test_param", "I am output value") { Direction = ParameterDirection.InputOutput };
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             connection
@@ -158,10 +158,10 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             long? id = null;
-            
+
             var result = connection.Read<long>("select * from (values (1),(2),(3)) t(id) where @id is null or id = @id",
                 ("id", id, DbType.Int64)).ToList();
-                //new NpgsqlParameter("id", id.HasValue ? id as object : DBNull.Value) { DbType = DbType.Int64 }).ToList();
+            //new NpgsqlParameter("id", id.HasValue ? id as object : DBNull.Value) { DbType = DbType.Int64 }).ToList();
             Assert.Equal(3, result.Count);
         }
 
@@ -178,12 +178,32 @@ namespace PostgreSqlUnitTests
                     end
                     $$
                     language plpgsql");
-                
+
             var result = connection
                 .AsProcedure()
-                .Single<int[]>("array_params_test", ("_p", new[]{3,6,9}));
+                .Single<int[]>("array_params_test", ("_p", new[] { 3, 6, 9 }));
 
             Assert.Equal(new[] { 3, 6, 9 }, result);
+        }
+
+        [Fact]
+        public void Array_Params_Types_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i, j) = connection.Single<int, string>("select @i, @j->>'test'", 
+                ("i", 1, NpgsqlDbType.Integer), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+            Assert.Equal(1, i);
+            Assert.Equal("value", j);
+        }
+
+        [Fact]
+        public void Array_Params_Mixed_Types_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i, j) = connection.Single<int, string>("select @i, @j->>'test'",
+                ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+            Assert.Equal(1, i);
+            Assert.Equal("value", j);
         }
     }
 }
