@@ -187,7 +187,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void Array_Params_Types_Test()
+        public void Custom_Params_Types_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (i, j) = connection.Single<int, string>("select @i, @j->>'test'", 
@@ -197,13 +197,24 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void Array_Params_Mixed_Types_Test()
+        public void Custom_Params_Mixed_Types_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (i, j) = connection.Single<int, string>("select @i, @j->>'test'",
                 ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
             Assert.Equal(1, i);
             Assert.Equal("value", j);
+        }
+
+        [Fact]
+        public void Custom_Params_Aray_Types_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<int>("select unnest(@p)", ("p", new List<int> { 1, 2, 3 }, NpgsqlDbType.Array | NpgsqlDbType.Integer)).ToList();
+            Assert.Equal(3, result.Count);
+            Assert.Equal(1, result[0]);
+            Assert.Equal(2, result[1]);
+            Assert.Equal(3, result[2]);
         }
     }
 }
