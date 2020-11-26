@@ -1,5 +1,40 @@
 # Version history
 
+## 1.7.0
+
+### `Select` extension now works with `record` structures from C# 9
+
+Same usage as before. Example:
+
+```csharp
+public record TestRecord(int Id, string Foo, string Bar, DateTime Datetime);
+
+//...
+
+var results = connection.Read(TestQuery).Select<TestRecord>();
+```
+
+`Select` method can accept either POCO class or immutable `record`.
+
+If type parameter structure contains constructor with parameters (either `class` or `record`), constructor with highest number of parameters will be used for consturction and parameters will be matched by position, not by name.
+
+If type parameter structure contains parametless constructor - values will be matched by name (same as before).
+
+This method of matching constructor paramaters by position doesn't require any internal caching and it is the fastest method of serialization. Here are some measurments:
+
+| Dapper Query | Norm Read Tuples | Norm Select POCO class | Norm Select immutable record |
+| ------------ |------------------|------------------------------------------------- | ----------------------------------- |
+|00:00:02.7631820|00:00:01.9683174|00:00:02.6515440|00:00:02.4122985|
+|00:00:02.6781349|00:00:01.9326094|00:00:02.9011784|00:00:02.4464330|
+|00:00:02.7270078|00:00:01.9002550|00:00:02.6752303|00:00:02.4246634|
+|00:00:02.7237423|00:00:01.9675548|00:00:02.7367278|00:00:02.5056493|
+|00:00:02.7481510|00:00:01.9454488|00:00:02.6408709|00:00:02.5578935|
+
+Plus, using `record` is much less coding (single line for `record` declaration).
+
+Also, if you are into the functional programming and immutable structures, its a plus.
+
+
 ## 1.6.0
 
 - New overload for all functions with named parameters. Named parameters now accept type parameter of `object` type:

@@ -7,39 +7,16 @@ using Norm.Extensions;
 using Npgsql;
 using Xunit;
 
-namespace PostgreSqlUnitTests
+namespace Net5TestProject
 {
+    public record TestRecord(int Id, string Foo, DateTime Day, bool? Bool, string Bar);
+    public record SnakeCaseMapTestRecord(int MyId, string MyFoo, DateTime MyDay, bool? MyBool, string MyBar);
+    public record ArraysTestRecord(int[] Id, string[] Foo, DateTime[] Day, bool[] Bool, string[] Bar);
+
     [Collection("PostgreSqlDatabase")]
     public class ObjectMappingUnitTests
     {
         private readonly PostgreSqlFixture fixture;
-
-        class TestClass
-        {
-            public int Id { get; private set; }
-            public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
-            public string Bar { get; private set; }
-        }
-
-        class SnakeCaseMapTestClass
-        {
-            public int MyId { get; private set; }
-            public string MyFoo { get; private set; }
-            public DateTime MyDay { get; private set; }
-            public bool? MyBool { get; private set; }
-            public string MyBar { get; private set; }
-        }
-
-        class ArraysTestClass
-        {
-            public int[] Id { get; private set; }
-            public string[] Foo { get; private set; }
-            public DateTime[] Day { get; private set; }
-            public bool[] Bool { get; private set; }
-            public string[] Bar { get; private set; }
-        }
 
         private const string Query = @"
                             select *
@@ -79,7 +56,7 @@ namespace PostgreSqlUnitTests
             this.fixture = fixture;
         }
 
-        private void AssertTestClass(IList<TestClass> result)
+        private void AssertTestRecord(IList<TestRecord> result)
         {
             Assert.Equal(3, result.Count);
 
@@ -104,20 +81,21 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar3", result[2].Bar);
         }
 
+
+
         [Fact]
         public void SelectMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Select<TestClass>().ToList();
-
-            AssertTestClass(result);
+            var result = connection.Read(Query).Select<TestRecord>().ToList();
+            AssertTestRecord(result);
         }
 
         [Fact]
         public void SelectEmpty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read($"select * from ({Query}) q where id = 999").Select<TestClass>().ToList();
+            var result = connection.Read($"select * from ({Query}) q where id = 999").Select<TestRecord>().ToList();
             Assert.Empty(result);
         }
 
@@ -126,16 +104,15 @@ namespace PostgreSqlUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Select<TestClass>().ToListAsync();
-
-            AssertTestClass(result);
+            var result = await connection.ReadAsync(Query).Select<TestRecord>().ToListAsync();
+            AssertTestRecord(result);
         }
 
         [Fact]
         public void SelectSnakeCaseMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(SnakeCaseQuery).Select<SnakeCaseMapTestClass>().ToList();
+            var result = connection.Read(SnakeCaseQuery).Select<SnakeCaseMapTestRecord>().ToList();
 
             Assert.Equal(3, result.Count);
 
@@ -164,7 +141,7 @@ namespace PostgreSqlUnitTests
         public void SelectArraysMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(ArraysQuery).Select<ArraysTestClass>().ToList();
+            var result = connection.Read(ArraysQuery).Select<ArraysTestRecord>().ToList();
 
             Assert.Single(result);
 
@@ -192,7 +169,6 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar2", result[0].Bar[1]);
             Assert.Equal("bar3", result[0].Bar[2]);
             Assert.Equal("bar4", result[0].Bar[3]);
-
         }
     }
 }

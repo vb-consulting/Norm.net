@@ -165,14 +165,12 @@ namespace Norm.Extensions
             return instance;
         }
 
-        public static IEnumerable<T> Select<T>(this IEnumerable<IList<(string name, object value)>> tuples) where T : new()
+        private static IEnumerable<T> SelectInternal<T>(this IEnumerable<IList<(string name, object value)>> tuples, Type instanceType, ConstructorInfo ctor)
         {
-            var instanceType = typeof(T);
             var instanceHashCode = instanceType.GetHashCode();
-
             return tuples.Select(t =>
             {
-                var instance = new T();
+                var instance = (T)ctor.Invoke(Array.Empty<object>());
 
                 if (TypeCache.TryGetValue(instanceHashCode, out var dict))
                 {
@@ -185,14 +183,13 @@ namespace Norm.Extensions
             });
         }
 
-        public static async IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples) where T : new()
+        public static async IAsyncEnumerable<T> SelectInternal<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples, Type instanceType, ConstructorInfo ctor)
         {
-            var instanceType = typeof(T);
             var instanceHashCode = instanceType.GetHashCode();
 
             await foreach (var t in tuples)
             {
-                var instance = new T();
+                var instance = (T)ctor.Invoke(Array.Empty<object>());
 
                 if (TypeCache.TryGetValue(instanceHashCode, out var dict))
                 {
@@ -203,6 +200,72 @@ namespace Norm.Extensions
                 dict = new Dictionary<byte, Delegate>();
                 var nullableHash = new HashSet<byte>();
                 yield return t.SelectInternal(instance, instanceHashCode, instanceType, dict, nullableHash, true);
+            }
+        }
+
+        private static (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters) GetCtors(Type type)
+        {
+            ConstructorInfo parametlessCtor = null;
+            ConstructorInfo paramsCtor = null;
+            ParameterInfo[] parameters = null;
+            foreach (var ctor in type.GetConstructors())
+            {
+                var p = ctor.GetParameters();
+                var len = p.Length;
+                if (len == 0)
+                {
+                    parametlessCtor = ctor;
+                }
+                if (len != 0 && (paramsCtor == null || parameters.Length < len))
+                {
+                    paramsCtor = ctor;
+                    parameters = p;
+                }
+            }
+            return (parametlessCtor, paramsCtor, parameters);
+        }
+        
+        public static IEnumerable<T> Select<T>(this IEnumerable<IList<(string name, object value)>> tuples)
+        {
+            var instanceType = typeof(T);
+            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType);
+            
+            if (paramsCtor == null && parametlessCtor != null)
+            {
+                return tuples.SelectInternal<T>(instanceType, parametlessCtor);
+            }
+            else if (paramsCtor != null)
+            {
+                return tuples.Select(record => (T)paramsCtor.Invoke(record.Select(r => r.value == DBNull.Value ? null : r.value).ToArray()));
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+        }
+
+        public static async IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples)
+        {
+            var instanceType = typeof(T);
+            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType);
+
+            if (paramsCtor == null && parametlessCtor != null)
+            {
+                await foreach (var t in tuples.SelectInternal<T>(instanceType, parametlessCtor))
+                {
+                    yield return t;
+                }
+            }
+            else if (paramsCtor != null)
+            {
+                await foreach (var record in tuples)
+                {
+                    yield return (T)paramsCtor.Invoke(record.Select(r => r.value == DBNull.Value ? null : r.value).ToArray());
+                }
+            }
+            else
+            {
+                throw new ArgumentException();
             }
         }
     }

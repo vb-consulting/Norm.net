@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norm", "Norm\Norm.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLiteUnitTests", "Tests\SQLiteTests\SQLiteUnitTests\SQLiteUnitTests.csproj", "{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net5TestProject", "Tests\Net5TestProject\Net5TestProject.csproj", "{27C5989E-721F-46FF-958F-012441C40916}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27C5989E-721F-46FF-958F-012441C40916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27C5989E-721F-46FF-958F-012441C40916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27C5989E-721F-46FF-958F-012441C40916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27C5989E-721F-46FF-958F-012441C40916}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
