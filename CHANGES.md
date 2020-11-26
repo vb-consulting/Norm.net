@@ -20,7 +20,7 @@ If type parameter structure contains a constructor with parameters (either `clas
 
 If the type parameter structure contains a parametless constructor - values will be matched by name (same as before).
 
-This method of matching constructor parameters by position doesn't require any internal caching and it is the fastest method of serialization. 
+This method of matching constructor parameters by position doesn't require any internal caching with minimal reflection and it is the fastest method of serialization. 
 
 Here are some measurements and comparison with dapper (1 million records serialization):
 
