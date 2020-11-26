@@ -4,7 +4,7 @@
 
 ### `Select` extension now works with `record` structures from C# 9
 
-Same usage as before. Example:
+`Norm.net` is still .NET Standard 2.1 library, but now it can handle new `record` types from C# 9. Same usage as before. Here is an example:
 
 ```csharp
 public record TestRecord(int Id, string Foo, string Bar, DateTime Datetime);
