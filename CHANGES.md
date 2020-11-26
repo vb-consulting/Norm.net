@@ -16,11 +16,11 @@ var results = connection.Read(TestQuery).Select<TestRecord>();
 
 `Select` method can accept either POCO class or immutable `record`.
 
-If type parameter structure contains constructor with parameters (either `class` or `record`), constructor with highest number of parameters will be used for consturction and parameters will be matched by position, not by name.
+If type parameter structure contains a constructor with parameters (either `class` or `record`), a constructor with the highest number of parameters will be used for construction and parameters will be matched by position, not by name.
 
-If type parameter structure contains parametless constructor - values will be matched by name (same as before).
+If the type parameter structure contains a parametless constructor - values will be matched by name (same as before).
 
-This method of matching constructor paramaters by position doesn't require any internal caching and it is the fastest method of serialization. Here are some measurments:
+This method of matching constructor parameters by position doesn't require any internal caching and it is the fastest method of serialization. Here are some measurements:
 
 | Dapper Query | Norm Read Tuples | Norm Select POCO class | Norm Select immutable record |
 | ------------ |------------------|------------------------------------------------- | ----------------------------------- |
@@ -32,7 +32,7 @@ This method of matching constructor paramaters by position doesn't require any i
 
 Plus, using `record` is much less coding (single line for `record` declaration).
 
-Also, if you are into the functional programming and immutable structures, its a plus.
+Also, if you are into functional programming and immutable structures, it's a plus.
 
 
 ## 1.6.0
@@ -54,7 +54,7 @@ Besides already existing version where you can pass `DbType` parameter type valu
 connection.Single("select @myParam", ("myParam", 1, DbType.Int32));
 ```
 
-Now you can use new overload version that accepets `object` for parameter type value and you can pass custom type from different database provider. 
+Now you can use the new overload version that accepts `object` for parameter type value and you can pass custom type from different database providers. 
 For example PostgreSQL types as parameters:
 
 ```csharp
