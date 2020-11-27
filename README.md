@@ -1,6 +1,6 @@
 # `Norm.Net`
 
-Modern and extendible **`C# 8`** data access built for **.NET Core 3** era.
+Modern and extendible **`C# 8`** data access library **.NET Core**.
 
 > Warning
 >**THIS IS NOT ORM** `Norm` is `NoORM`, or not an `ORM` (although, there is O/R mapping extension).
