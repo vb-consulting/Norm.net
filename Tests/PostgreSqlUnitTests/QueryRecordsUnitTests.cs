@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Norm.Extensions;
 using Npgsql;
+using NpgsqlTypes;
 using Xunit;
 
-namespace Net5TestProject
+namespace PostgreSqlUnitTests
 {
     public record TestRecord(int Id, string Foo, DateTime Day, bool? Bool, string Bar);
     public record SnakeCaseMapTestRecord(int MyId, string MyFoo, DateTime MyDay, bool? MyBool, string MyBar);
     public record ArraysTestRecord(int[] Id, string[] Foo, DateTime[] Day, bool[] Bool, string[] Bar);
 
     [Collection("PostgreSqlDatabase")]
-    public class ObjectMappingUnitTests
+    public class QueryRecordsUnitTests
     {
         private readonly PostgreSqlFixture fixture;
 
@@ -51,7 +53,7 @@ namespace Net5TestProject
                                 (4, 'foo4', '1980-05-19'::date, false, 'bar4')
                             ) t(id, foo, day, bool, bar)";
 
-        public ObjectMappingUnitTests(PostgreSqlFixture fixture)
+        public QueryRecordsUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -87,7 +89,7 @@ namespace Net5TestProject
         public void SelectMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Select<TestRecord>().ToList();
+            var result = connection.Query<TestRecord>(Query).ToList();
             AssertTestRecord(result);
         }
 
@@ -95,7 +97,7 @@ namespace Net5TestProject
         public void SelectEmpty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read($"select * from ({Query}) q where id = 999").Select<TestRecord>().ToList();
+            var result = connection.Query<TestRecord>($"select * from ({Query}) q where id = 999").ToList();
             Assert.Empty(result);
         }
 
@@ -104,7 +106,7 @@ namespace Net5TestProject
         public async Task SelectMap_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Select<TestRecord>().ToListAsync();
+            var result = await connection.QueryAsync<TestRecord>(Query).ToListAsync();
             AssertTestRecord(result);
         }
 
@@ -112,7 +114,7 @@ namespace Net5TestProject
         public void SelectSnakeCaseMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(SnakeCaseQuery).Select<SnakeCaseMapTestRecord>().ToList();
+            var result = connection.Query<SnakeCaseMapTestRecord>(SnakeCaseQuery).ToList();
 
             Assert.Equal(3, result.Count);
 
@@ -141,7 +143,7 @@ namespace Net5TestProject
         public void SelectArraysMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(ArraysQuery).Select<ArraysTestRecord>().ToList();
+            var result = connection.Query<ArraysTestRecord>(ArraysQuery).ToList();
 
             Assert.Single(result);
 

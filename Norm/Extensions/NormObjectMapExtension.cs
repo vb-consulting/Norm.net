@@ -9,8 +9,12 @@ namespace Norm.Extensions
 {
     public static partial class NormExtensions
     {
-        private static readonly ConcurrentDictionary<int, IDictionary<byte, Delegate>> TypeCache = new ConcurrentDictionary<int, IDictionary<byte, Delegate>>();
-        private static readonly ConcurrentDictionary<int, HashSet<byte>> NullableCache = new ConcurrentDictionary<int, HashSet<byte>>();
+        private static readonly Dictionary<int, IDictionary<byte, Delegate>> TypeCache =
+            new Dictionary<int, IDictionary<byte, Delegate>>();
+        private static readonly Dictionary<int, HashSet<byte>> NullableCache =
+            new Dictionary<int, HashSet<byte>>();
+        private static readonly Dictionary<int, (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters)> CtorCache =
+            new Dictionary<int, (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters)>();
 
         private static T SelectInternal<T>(
             this IEnumerable<(string name, object value)> tuples,
@@ -165,9 +169,9 @@ namespace Norm.Extensions
             return instance;
         }
 
-        private static IEnumerable<T> SelectInternal<T>(this IEnumerable<IList<(string name, object value)>> tuples, Type instanceType, ConstructorInfo ctor)
+        private static IEnumerable<T> SelectInternal<T>(this IEnumerable<IList<(string name, object value)>> tuples, 
+            Type instanceType, ConstructorInfo ctor, int instanceHashCode)
         {
-            var instanceHashCode = instanceType.GetHashCode();
             return tuples.Select(t =>
             {
                 var instance = (T)ctor.Invoke(Array.Empty<object>());
@@ -183,10 +187,9 @@ namespace Norm.Extensions
             });
         }
 
-        public static async IAsyncEnumerable<T> SelectInternal<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples, Type instanceType, ConstructorInfo ctor)
+        public static async IAsyncEnumerable<T> SelectInternal<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples, 
+            Type instanceType, ConstructorInfo ctor, int instanceHashCode)
         {
-            var instanceHashCode = instanceType.GetHashCode();
-
             await foreach (var t in tuples)
             {
                 var instance = (T)ctor.Invoke(Array.Empty<object>());
@@ -203,8 +206,12 @@ namespace Norm.Extensions
             }
         }
 
-        private static (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters) GetCtors(Type type)
+        private static (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters) GetCtors(Type type, int instanceHashCode)
         {
+            if (CtorCache.TryGetValue(instanceHashCode, out var result))
+            {
+                return result;
+            }
             ConstructorInfo parametlessCtor = null;
             ConstructorInfo paramsCtor = null;
             ParameterInfo[] parameters = null;
@@ -222,17 +229,19 @@ namespace Norm.Extensions
                     parameters = p;
                 }
             }
+            CtorCache.TryAdd(instanceHashCode, (parametlessCtor, paramsCtor, parameters));
             return (parametlessCtor, paramsCtor, parameters);
         }
         
         public static IEnumerable<T> Select<T>(this IEnumerable<IList<(string name, object value)>> tuples)
         {
             var instanceType = typeof(T);
-            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType);
+            var instanceHashCode = instanceType.GetHashCode();
+            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType, instanceHashCode);
             
             if (paramsCtor == null && parametlessCtor != null)
             {
-                return tuples.SelectInternal<T>(instanceType, parametlessCtor);
+                return tuples.SelectInternal<T>(instanceType, parametlessCtor, instanceHashCode);
             }
             else if (paramsCtor != null)
             {
@@ -247,11 +256,12 @@ namespace Norm.Extensions
         public static async IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<IList<(string name, object value)>> tuples)
         {
             var instanceType = typeof(T);
-            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType);
+            var instanceHashCode = instanceType.GetHashCode();
+            var (parametlessCtor, paramsCtor, parameters) = GetCtors(instanceType, instanceHashCode);
 
             if (paramsCtor == null && parametlessCtor != null)
             {
-                await foreach (var t in tuples.SelectInternal<T>(instanceType, parametlessCtor))
+                await foreach (var t in tuples.SelectInternal<T>(instanceType, parametlessCtor, instanceHashCode))
                 {
                     yield return t;
                 }

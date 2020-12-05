@@ -14,8 +14,6 @@ namespace SQLiteUnitTests
     {
         private const string FileName = "norm_unit_tests.db";
 
-        private const string TestDatabase = "no_orm_unit_tests";
-
         public SqLiteFixture()
         {
             var sb = new SQLiteConnectionStringBuilder

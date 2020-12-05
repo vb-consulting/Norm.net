@@ -1,114 +1,101 @@
-# Performances
+# Serialization to POCO and RECORD - 1,000,000 records, 10 fields wide
 
-PostgreSQL SQL test query that returns a million tuples from server:
+## Round 1 
 
-```sql
-select
-    i as id,
-    'foo' || i::text as foo,
-    'bar' || i::text as bar,
-    ('2000-01-01'::date) + (i::text || ' days')::interval as datetime
-from generate_series(1, 1000000) as i
-```
+|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm TUPLES|Norm RECORD|
+|-|-----------|-------------|---------|-----------|-----------|
+|1|00:05.1414549|00:04.2834960|00:04.8365578|00:03.6584139|00:04.4554887|
+|2|00:05.5865675|00:04.0812837|00:04.5447417|00:03.6737297|00:03.8819289|
+|3|00:03.9361230|00:04.2931027|00:05.8803625|00:06.0163576|00:04.0807014|
+|4|00:04.1528047|00:04.1026970|00:04.8071836|00:04.4890993|00:03.5389838|
+|5|00:03.9315917|00:04.0588855|00:05.1512491|00:03.6456092|00:04.2805976|
+|6|00:04.5732918|00:04.0741933|00:05.2740957|00:03.8553617|00:03.6997598|
+|7|00:04.3200296|00:04.0932415|00:04.5017537|00:03.6737514|00:04.9671915|
+|8|00:04.4804413|00:04.1508550|00:04.8340032|00:03.8330618|00:03.5419578|
+|9|00:04.2227844|00:04.0115254|00:05.7126092|00:03.8297269|00:03.6259093|
+|10|00:03.9886002|00:04.0824287|00:05.0622074|00:03.5850005|00:03.6985121|
+|AVG|00:04.4333689|00:04.1231708|00:05.0604763|00:04.0260112|00:03.9771030|
 
-Following table shows execution times of Dapper read operation and different Norm read operations that yield enumerable results:
 
-| | dapper read ([1](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#1-dapper-query---read-and-serializes-one-million-rows-from-sql-query)) | norm read ([2](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#2-norm-read-operation---builds-iterator-over-list-of-name-and-value-tuples)) | norm read ([3](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#3-norm-read-operation-builds-iterator-over-database-tuples))  | norm read ([4](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#4-norm-read-operation---builds-iterator-over-namevalue-dictionaries-and-use-it-to-build-iterator-over-testclass-instances)) | norm read ([5](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#5-norm-read-operation---builds-iterator-over-generic-typed-tuples-and-use-use-it-to-build-iterator-over-testclass-instances)) | norm read ([6](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#6-norm-read-operation---builds-iterator-over-de-serialized-json-to-class-instances)) | norm read ([7](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#7-norm-read-operation---builds-iterator-over-class-instances-mapped-with-selectt-or-mapping-extension)) |
-| - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
-| 1 | 0:02.907 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 2 | 0:02.778 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.002 | 0:00.001 | 0:00.001 |
-| 3 | 0:02.992 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 4 | 0:02.765 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.002 | 0:00.001 | 0:00.001 |
-| 5 | 0:02.813 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 6 | 0:02.540 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.002 | 0:00.001 | 0:00.001 |
-| 7 | 0:02.813 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 8 | 0:02.933 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 9 | 0:02.762 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 | 0:00.001 |
-| 10 | 0:03.282 | 0:00.002 | 0:00.001 | 0:00.001 | 0:00.002 | 0:00.001 | 0:00.001 |
-| AVG | **0:02.859** | **0:00.002** | **0:00.001** | **0:00.001** | **0:00.002** | **0:00.001** | **0:00:00.001** |
+## Round 2
 
-Following table shows execution times of count operations over enumeration results from same operations.
+|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm TUPLES|Norm RECORD|
+|-|-----------|-------------|---------|-----------|-----------|
+|1|00:04.4198219|00:03.9320183|00:04.3639771|00:03.5867489|00:05.0830922|
+|2|00:05.4578714|00:04.1126493|00:04.6567354|00:03.7051178|00:03.8901076|
+|3|00:04.0858353|00:04.5101434|00:05.1539658|00:03.7442199|00:04.2891383|
+|4|00:04.5743777|00:04.5498280|00:05.0471907|00:03.8036928|00:04.0518959|
+|5|00:04.7004058|00:04.2422265|00:05.6140030|00:03.6322184|00:03.9261792|
+|6|00:05.1991679|00:05.2882929|00:05.7829367|00:04.2948739|00:04.8592731|
+|7|00:05.4195947|00:05.5409268|00:05.4429511|00:03.7961635|00:04.7003936|
+|8|00:04.0197979|00:04.9609636|00:04.6715441|00:03.6242067|00:03.6625411|
+|9|00:04.1827212|00:04.0534160|00:04.6250105|00:03.5812178|00:03.6604931|
+|10|00:04.0599807|00:04.1287197|00:04.9164774|00:03.7019593|00:03.6560005|
+|AVG|00:04.6119574|00:04.5319184|00:05.0274791|00:03.7470419|00:04.1779114|
 
-| | dapper count ([1](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#1-dapper-query---read-and-serializes-one-million-rows-from-sql-query)) | norm count ([2](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#2-norm-read-operation---builds-iterator-over-list-of-name-and-value-tuples)) | norm count ([3](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#3-norm-read-operation-builds-iterator-over-database-tuples)) | norm count ([4](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#4-norm-read-operation---builds-iterator-over-namevalue-dictionaries-and-use-it-to-build-iterator-over-testclass-instances)) | norm count ([5](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#5-norm-read-operation---builds-iterator-over-generic-typed-tuples-and-use-use-it-to-build-iterator-over-testclass-instances)) | norm count ([6](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#6-norm-read-operation---builds-iterator-over-de-serialized-json-to-class-instances)) | norm count ([7](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md#7-norm-read-operation---builds-iterator-over-class-instances-mapped-with-selectt-or-mapping-extension)) |
-| - | --------- | --------  | --------  | --------  | --------  | --------  | --------  |
-| 1 | 0:00.002 | 0:02.537 | 0:02.391 | 0:02.914 | 0:02.304 | 0:04.219 | 0:03.042 |
-| 2 | 0:00.001 | 0:02.319 | 0:02.088 | 0:02.999 | 0:01.999 | 0:03.631 | 0:02.957 |
-| 3 | 0:00.001 | 0:02.232 | 0:01.862 | 0:02.488 | 0:02.157 | 0:03.949 | 0:02.719 |
-| 4 | 0:00.002 | 0:02.439 | 0:03.111 | 0:03.208 | 0:02.878 | 0:04.799 | 0:03.081 |
-| 5 | 0:00.001 | 0:02.216 | 0:02.069 | 0:02.578 | 0:02.179 | 0:03.966 | 0:02.532 |
-| 6 | 0:00.001 | 0:02.113 | 0:01.910 | 0:02.541 | 0:02.007 | 0:03.577 | 0:02.506 |
-| 7 | 0:00.001 | 0:02.118 | 0:02.201 | 0:03.068 | 0:03.107 | 0:05.965 | 0:03.705 |
-| 8 | 0:00.002 | 0:02.596 | 0:02.338 | 0:02.781 | 0:02.483 | 0:04.602 | 0:03.756 |
-| 9 | 0:00.002 | 0:02.249 | 0:02.190 | 0:02.780 | 0:02.700 | 0:04.213 | 0:02.866 |
-| 10 | 0:00.002 | 0:02.372 | 0:02.229 | 0:02.654 | 0:02.190 | 0:03.911 | 0:03.056 |
-| AVG | **0:00.001** | **0:02.319** | **0:02.239** | **0:02.801** | **0:02.400** | **0:04.283** | **0:03.022** |
+## Round 3
 
-## 1. Dapper query - read and serializes one million rows from SQL query
+|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm TUPLES|Norm RECORD|
+|-|-----------|-------------|---------|-----------|-----------|
+|1|00:04.4787987|00:04.1097294|00:04.7395220|00:03.6187353|00:04.2423684|
+|2|00:05.5315529|00:04.7470719|00:04.7514400|00:03.7520754|00:04.0588441|
+|3|00:04.5989610|00:04.6415978|00:04.6925581|00:03.5585721|00:03.6623767|
+|4|00:03.9951137|00:04.0038715|00:04.5211695|00:03.6553260|00:03.6619488|
+|5|00:04.5614358|00:04.0624460|00:04.5491709|00:03.6195832|00:03.7019561|
+|6|00:03.9968808|00:03.9870623|00:04.5930413|00:03.5445205|00:03.7116642|
+|7|00:03.9726251|00:04.0213070|00:04.6346623|00:03.6877117|00:03.9765892|
+|8|00:04.1472498|00:03.9876039|00:04.6000939|00:03.5992782|00:03.5736563|
+|9|00:04.0255391|00:04.3224300|00:04.5715502|00:03.6178030|00:03.6835433|
+|10|00:04.0679622|00:04.0509839|00:04.5873230|00:03.9122785|00:03.6932405|
+|AVG|00:04.3376119|00:04.1934103|00:04.6240531|00:03.6565883|00:03.7966187|
 
-```csharp
-// Average execution time: 0:02.859
-IEnumerable<TestClass> results1 = connection.Query<TestClass>(sql);
 
-// Average execution time: 0:00.001
-results1.Count();
-```
+# Linq Expression on 500000 records: RECORD toDictionary
 
-## 2. Norm read operation - builds iterator over list of name and value tuples
+## Round 1 
 
-```csharp
-// Average execution time: 0:00.002
-IEnumerable<IList<(string name, string value)>> results2 = connection.Read(sql);
+|#|Dapper RECORD to Dict|Norm RECORD to Dict|
+|-|---------------------|-------------------|
+|1|00:04.5467480|00:03.5219250|
+|2|00:04.5168735|00:03.5129387|
+|3|00:04.0644763|00:03.6465059|
+|4|00:04.1583371|00:03.9369450|
+|5|00:04.2646509|00:03.6523002|
+|6|00:04.2829396|00:03.8924582|
+|7|00:04.1358578|00:03.7280271|
+|8|00:04.0596293|00:03.8484468|
+|9|00:04.1404537|00:03.6832802|
+|10|00:04.0135804|00:03.5848982|
+|AVG|00:04.2183546|00:03.7007725|
 
-// Average execution time: 0:02.319
-results2.Count();
-```
+## Round 2
 
-## 3. Norm read operation, builds iterator over database tuples
+|#|Dapper RECORD to Dict|Norm RECORD to Dict|
+|-|---------------------|-------------------|
+|1|00:04.6277440|00:03.4831297|
+|2|00:04.1357945|00:03.5178817|
+|3|00:03.9916591|00:03.5711629|
+|4|00:04.1769495|00:03.6448175|
+|5|00:04.1086334|00:03.6474632|
+|6|00:04.6392040|00:03.6848407|
+|7|00:04.1407143|00:03.8520762|
+|8|00:04.4997692|00:04.9330624|
+|9|00:05.4175976|00:03.7281177|
+|10|00:04.7146583|00:03.7502109|
+|AVG|00:04.4452723|00:03.7812762|
 
-```csharp
-// Average execution time: 0:00.001
-IEnumerable<(int, string, string, DateTime)> results3 = connection.Read<int, string, string, DateTime>(sql);
+## Round 3
 
-// Average execution time: 0:02.239
-results3.Count();
-```
-
-## 4. Norm read operation - builds iterator over name/value dictionaries and use it to build iterator over `TestClass` instances
-
-```csharp
-// Average execution time: 0:00.001
-IEnumerable<TestClass> results4 = connection.Read(sql).SelectDictionaries().Select(dict => new TestClass(dict));
-
-// Average execution time: 0:02.801
-results4.Count();
-```
-
-## 5. Norm read operation - builds iterator over generic, typed tuples and use use it to build iterator over `TestClass` instances
-
-```csharp
-// Average execution time: 0:00.002
-IEnumerable<TestClass> results5 = connection.Read<int, string, string, DateTime>(sql).Select(tuple => new TestClass(tuple));
-
-// Average execution time: 0:02.400
-results5.Count();
-```
-
-## 6. Norm read operation - builds iterator over de-serialized JSON to class instances
-
-```csharp
-// Average execution time: 0:00.001
-IEnumerable<TestClass> results6 = connection.Json<TestClass>(JsonTestQuery))
-
-// Average execution time: 0:04.283
-results5.Count();
-```
-
-## 7. Norm read operation - builds iterator over class instances mapped with `Select<T>` O/R mapping extension
-
-```csharp
-// Average execution time: 0:00.001
-IEnumerable<TestClass> results7 = connection.Read(TestQuery).Select<TestClass>());
-
-// Average execution time: 0:03.022
-results7.Count();
-```
+|#|Dapper RECORD to Dict|Norm RECORD to Dict|
+|-|---------------------|-------------------|
+|1|00:04.8976685|00:03.3797209|
+|2|00:04.1471557|00:03.4358471|
+|3|00:04.4585191|00:03.6438402|
+|4|00:04.0324074|00:03.5269199|
+|5|00:04.2021515|00:03.9647250|
+|6|00:04.5630653|00:03.9505387|
+|7|00:04.5614047|00:03.7120992|
+|8|00:04.3672218|00:03.5203179|
+|9|00:04.1218557|00:03.5050216|
+|10|00:04.0358490|00:03.8182814|
+|AVG|00:04.3387298|00:03.6457311|
