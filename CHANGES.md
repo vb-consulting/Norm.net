@@ -91,7 +91,7 @@ will execute fillowing query: `select * from mytable where id = 1 and value = 'a
 
 Object mapper is rewritten from scratch. Matching by position, inestad of by name is now default and only method of matching in object mapper.
 
-See [performance tests here](https://github.com/vbilopav/NoOrm.Net/blob/master/PERFOMANCE-TESTS.md).
+See [performance tests here](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
 
 
 ## 1.7.0
