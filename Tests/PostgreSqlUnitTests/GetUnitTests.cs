@@ -139,5 +139,17 @@ namespace PostgreSqlUnitTests
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
+
+        [Fact]
+        public async Task Query_Param2__NameOf_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection.Execute(Query);
+            var result1 = await connection.GetAsync<TestClass>((nameof(TestClass.Id), 1)).ToListAsync();
+            // switch position
+            var result2 = await connection.GetAsync<TestClass>((nameof(TestClass.Foo), "foo1"), (nameof(TestClass.Id), 1)).ToListAsync();
+            AssertSingleTestClass(result1);
+            AssertSingleTestClass(result2);
+        }
     }
 }
