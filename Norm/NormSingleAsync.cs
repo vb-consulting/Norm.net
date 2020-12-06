@@ -1,37 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Threading.Tasks;
-using Norm.Extensions;
 
 namespace Norm
 {
     public partial class Norm
     {
-        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command) =>
-            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default);
+        public async ValueTask<(string name, object value)[]> SingleAsync(string command) =>
+            await SingleToArrayInternalAsync(command);
 
-        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command,
+        public async ValueTask<(string name, object value)[]> SingleAsync(string command,
             params object[] parameters) =>
-            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default,
-                parameters);
+            await SingleToArrayInternalAsync(command, parameters);
 
-        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command,
+        public async ValueTask<(string name, object value)[]> SingleAsync(string command,
             params (string name, object value)[] parameters) =>
-            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default,
-                parameters);
+            await SingleToArrayInternalAsync(command, parameters);
 
-        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command,
+        public async ValueTask<(string name, object value)[]> SingleAsync(string command,
             params (string name, object value, DbType type)[] parameters) =>
-            await SingleInternalAsync(command, async r => await r.ReadAsync() ? r.ToList() : default,
-                parameters);
+            await SingleToArrayInternalAsync(command, parameters);
 
-        public async ValueTask<IList<(string name, object value)>> SingleAsync(string command,
+        public async ValueTask<(string name, object value)[]> SingleAsync(string command,
             params (string name, object value, object type)[] parameters) =>
-            await SingleInternalUnknowParamsTypeAsync(command, async r => await r.ReadAsync() ? r.ToList() : default,
-                parameters);
-
+            await SingleToArrayInternalUnknowParamsTypeAsync(command, parameters);
 
         public async ValueTask<T> SingleAsync<T>(string command) =>
             await SingleInternalAsync<T>(command,
@@ -812,101 +804,5 @@ namespace Norm
                     )
                     : (default, default, default, default, default, default, default, default, default, default, default, default),
                 parameters);
-
-
-        private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await PrepareAsync(cmd);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                return await readerAction(reader);
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                return await readerAction(reader);
-            }
-        }
-
-        private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params object[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersAsync(cmd, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                return await readerAction(reader);
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                return await readerAction(reader);
-            }
-        }
-
-        private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params (string name, object value)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersAsync(cmd, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                return await readerAction(reader);
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                return await readerAction(reader);
-            }
-        }
-
-        private async ValueTask<T> SingleInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params (string name, object value, DbType type)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersAsync(cmd, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                return await readerAction(reader);
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                return await readerAction(reader);
-            }
-        }
-
-        private async ValueTask<T> SingleInternalUnknowParamsTypeAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params (string name, object value, object type)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            await using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersUnknownTypeAsync(cmd, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                return await readerAction(reader);
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                return await readerAction(reader);
-            }
-        }
     }
 }

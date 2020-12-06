@@ -7,19 +7,19 @@ namespace Norm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        public static IList<(string name, object value)> Single(this DbConnection connection, string command) =>
+        public static (string name, object value)[] Single(this DbConnection connection, string command) =>
             connection.GetNoOrmInstance().Single(command);
 
-        public static IList<(string name, object value)> Single(this DbConnection connection, string command, params object[] parameters) =>
+        public static (string name, object value)[] Single(this DbConnection connection, string command, params object[] parameters) =>
             connection.GetNoOrmInstance().Single(command, parameters);
 
-        public static IList<(string name, object value)> Single(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+        public static (string name, object value)[] Single(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             connection.GetNoOrmInstance().Single(command, parameters);
 
-        public static IList<(string name, object value)> Single(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
+        public static (string name, object value)[] Single(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
             connection.GetNoOrmInstance().Single(command, parameters);
 
-        public static IList<(string name, object value)> Single(this DbConnection connection, string command, params (string name, object value, object type)[] parameters) =>
+        public static (string name, object value)[] Single(this DbConnection connection, string command, params (string name, object value, object type)[] parameters) =>
             connection.GetNoOrmInstance().Single(command, parameters);
 
 

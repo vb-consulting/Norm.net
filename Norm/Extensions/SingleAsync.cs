@@ -8,19 +8,19 @@ namespace Norm.Extensions
 {
     public static partial class ConnectionExtensions
     {
-        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command) =>
+        public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command) =>
             await connection.GetNoOrmInstance().SingleAsync(command);
 
-        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params object[] parameters) =>
+        public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command, params object[] parameters) =>
             await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
-        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
+        public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters) =>
             await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
-        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
+        public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters) =>
             await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
-        public static async ValueTask<IList<(string name, object value)>> SingleAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters) =>
+        public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters) =>
             await connection.GetNoOrmInstance().SingleAsync(command, parameters);
 
 

@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Common;
 
 namespace Norm.Extensions
 {
     public static class ReaderExtensions
     {
-        public static IList<(string name, object value)> ToList(this DbDataReader reader)
+        internal static (string name, object value)[] ToArray(this DbDataReader reader)
         {
-            var result = new List<(string name, object value)>(reader.FieldCount);
+            (string name, object value)[] result = new (string name, object value)[reader.FieldCount];
             for (var index = 0; index < reader.FieldCount; index++)
             {
-                result.Add((reader.GetName(index), reader.GetValue(index)));
+                var v = reader.GetValue(index);
+                result[index] = (reader.GetName(index), v == DBNull.Value ? null : v);
             }
-
             return result;
         }
     }

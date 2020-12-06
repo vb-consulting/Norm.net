@@ -59,7 +59,7 @@ namespace SqlServerUnitTests
             var results = connection
                 .AsProcedure()
                 .Read("TestStoredProcedure", ("id", 1))
-                .SelectDictionaries()
+                .Select(tuples => tuples.ToDictionary(t => t.name, t => t.value))
                 .ToList();
 
             Assert.Single(results);

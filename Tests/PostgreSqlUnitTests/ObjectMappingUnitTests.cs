@@ -109,7 +109,6 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Select<TestClass>().ToList();
-
             AssertTestClass(result);
         }
 

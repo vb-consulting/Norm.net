@@ -46,18 +46,18 @@ namespace PostgreSqlUnitTests
         public void Null_Value_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var list = connection.Read("values (null)").SelectValues().ToList();
+            var list = connection.Read("values (null)").Select(tuples => tuples.Select(t => t.value)).ToList();
             var value = list.First().First();
-            Assert.Equal(DBNull.Value, value);
+            Assert.Null(value);
         }
 
         [Fact]
         public async Task Null_Value_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var list = (await connection.ReadAsync("values (null)").ToListAsync()).SelectValues();
+            var list = (await connection.ReadAsync("values (null)").ToListAsync()).Select(tuples => tuples.Select(t => t.value));
             var value = list.First().First();
-            Assert.Equal(DBNull.Value, value);
+            Assert.Null(value);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace PostgreSqlUnitTests
                             (2, 'foo2', '1978-05-19'::date),
                             (3, 'foo3', '1979-05-19'::date)
                           ) t(first, bar, day)")
-                .SelectDictionaries();
+                .Select(tuples => tuples.ToDictionary(t => t.name, t => t.value));
 
             AssertResult(result);
         }
@@ -93,7 +93,7 @@ namespace PostgreSqlUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            AssertResult(result.SelectDictionaries());
+            AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace PostgreSqlUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            AssertResult(result.SelectDictionaries());
+            AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
 
         [Fact]
@@ -134,7 +134,7 @@ namespace PostgreSqlUnitTests
                             (3, 'foo3', '1979-05-19'::date)
                           ) t(first, bar, day)");
 
-            await AssertResultAsync(result.SelectDictionaries());
+            await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace PostgreSqlUnitTests
                 2, "foo2", new DateTime(1978, 5, 19),
                 3, "foo3", new DateTime(1979, 5, 19));
 
-            await AssertResultAsync(result.SelectDictionaries());
+            await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace PostgreSqlUnitTests
                 ("t3", "foo3"),
                 ("d3", new DateTime(1979, 5, 19)));
 
-            await AssertResultAsync(result.SelectDictionaries());
+            await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
     }
 }

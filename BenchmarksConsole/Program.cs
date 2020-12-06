@@ -41,14 +41,14 @@ void RunSerializationBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm TUPLES|Norm RECORD|");
-    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------|");
+    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|");
+    Console.WriteLine("|-|-----------|-------------|---------|-----------|");
 
     var list = new List<long[]>();
 
     for (int i = 0; i<10; i++)
     {
-        var values = new long[5];
+        var values = new long[4];
 
         GC.Collect();
         sw.Reset();
@@ -77,42 +77,21 @@ void RunSerializationBenchmarks()
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var normTuples = connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).Select(t => new PocoClass
-        {
-            Id1 = t.Item1,
-            Foo1 = t.Item2,
-            Bar1 = t.Item3,
-            DateTime1 = t.Item4,
-            Id2 = t.Item5,
-            Foo2 = t.Item6,
-            Bar2 = t.Item7,
-            DateTime2 = t.Item8,
-            LongFooBar = t.Item9,
-            IsFooBar = t.Item10
-        }).ToList();
-        sw.Stop();
-        var normTuplesElapsed = sw.Elapsed;
-        values[3] = sw.Elapsed.Ticks;
-
-        GC.Collect();
-        sw.Reset();
-        sw.Start();
         var normRecord = connection.Query<Record>(query).ToList();
         sw.Stop();
         var normRecordElapsed = sw.Elapsed;
-        values[4] = sw.Elapsed.Ticks;
+        values[3] = sw.Elapsed.Ticks;
 
         list.Add(values);
-        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normTuplesElapsed}|{normRecordElapsed}|");
+        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|");
     }
 
     var dapperPocoAvg = new TimeSpan((long)list.Select(v => v[0]).Average());
     var dapperRecordAvg = new TimeSpan((long)list.Select(v => v[1]).Average());
     var normPocoAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
-    var normTuplesAvg = new TimeSpan((long)list.Select(v => v[3]).Average());
-    var normRecordAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
+    var normRecordAvg = new TimeSpan((long)list.Select(v => v[3]).Average());
 
-    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normTuplesAvg}|{normRecordAvg}|");
+    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|");
     Console.WriteLine();
 }
 
@@ -121,14 +100,14 @@ void RunLinqExpBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper RECORD to Dict|Norm RECORD to Dict|");
-    Console.WriteLine("|-|---------------------|-------------------|");
+    Console.WriteLine("|#|Dapper RECORD to Dict|Norm TUPLES to Dict|Norm RECORD to Dict|");
+    Console.WriteLine("|-|---------------------|-------------------|-------------------|");
 
     var list = new List<long[]>();
 
     for (int i = 0; i < 10; i++)
     {
-        var values = new long[2];
+        var values = new long[3];
 
         GC.Collect();
         sw.Reset();
@@ -141,19 +120,28 @@ void RunLinqExpBenchmarks()
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var norm = connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
+        var normTuples = connection.Read(query).ToDictionary(t => t[0].value, t => (DateTime)t[3].value);
         sw.Stop();
-        var normRecordElapsed = sw.Elapsed;
+        var dapperTuplesElapsed = sw.Elapsed;
         values[1] = sw.Elapsed.Ticks;
 
+        GC.Collect();
+        sw.Reset();
+        sw.Start();
+        var normRecord = connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
+        sw.Stop();
+        var normRecordElapsed = sw.Elapsed;
+        values[2] = sw.Elapsed.Ticks;
+
         list.Add(values);
-        Console.WriteLine($"|{i + 1}|{dapperRecordElapsed}|{normRecordElapsed}|");
+        Console.WriteLine($"|{i + 1}|{dapperRecordElapsed}|{dapperTuplesElapsed}|{normRecordElapsed}|");
     }
 
     var dapperAvg = new TimeSpan((long)list.Select(v => v[0]).Average());
-    var normAvg = new TimeSpan((long)list.Select(v => v[1]).Average());
-    
-    Console.WriteLine($"|AVG|{dapperAvg}|{normAvg}|");
+    var normTuplesAvg = new TimeSpan((long)list.Select(v => v[1]).Average());
+    var normRecordAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
+
+    Console.WriteLine($"|AVG|{dapperAvg}|{normTuplesAvg}|{normRecordAvg}|");
     Console.WriteLine();
 }
 

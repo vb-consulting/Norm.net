@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Norm.Extensions;
 using Npgsql;
@@ -237,6 +236,39 @@ namespace PostgreSqlUnitTests
                 $"{Query} where id = @id and foo = @foo",
                 ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, DbType.Int32)).ToListAsync();
             AssertSingleTestClass(result2);
+        }
+
+        [Fact]
+        public void Query_Parallel_Sync()
+        {
+            var query = $"select * from ({Query}) t1 cross join ({Query}) t2 cross join ({Query}) t3"; // 27 records
+            var task = new Action(() =>
+            {
+                using var connection = new NpgsqlConnection(fixture.ConnectionString);
+                connection.Query<TestClass>(query).ToList();
+            });
+
+            Task.WaitAll(
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task));
         }
     }
 }

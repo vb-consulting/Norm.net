@@ -27,7 +27,7 @@ namespace SQLiteUnitTests
 
             var result = connection
                 .Single("select * from test")
-                .SelectDictionary();
+                .ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal("foo", result.Values.First());
 
@@ -55,7 +55,7 @@ namespace SQLiteUnitTests
                 .Execute("insert into test values (@i, @t, @d)",
                     1, "foo", new DateTime(1977, 5, 19))
                 .Single("select * from test")
-                .SelectDictionary();
+                .ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -84,7 +84,7 @@ namespace SQLiteUnitTests
                 .Execute("create table test (i int, t text, d date)")
                 .Execute("insert into test values (@i, @t, @d)", ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1))
                 .Single("select * from test")
-                .SelectDictionary();
+                .ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -110,7 +110,7 @@ namespace SQLiteUnitTests
             await connection.ExecuteAsync("begin");
             await connection.ExecuteAsync("create table test (t text)");
             await connection.ExecuteAsync("insert into test values ('foo')");
-            var result = (await connection.SingleAsync("select * from test")).SelectDictionary();
+            var result = (await connection.SingleAsync("select * from test")).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal("foo", result.Values.First());
 
@@ -135,7 +135,7 @@ namespace SQLiteUnitTests
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1));
-            var result = (await connection.SingleAsync("select * from test")).SelectDictionary();
+            var result = (await connection.SingleAsync("select * from test")).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
@@ -163,7 +163,7 @@ namespace SQLiteUnitTests
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
                 1, "foo", new DateTime(1977, 5, 19));
 
-            var result = (await connection.SingleAsync("select * from test")).SelectDictionary();
+            var result = (await connection.SingleAsync("select * from test")).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);

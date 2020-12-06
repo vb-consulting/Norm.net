@@ -9,29 +9,20 @@ namespace Norm
 {
     public partial class Norm
     {
-        public IList<(string name, object value)> Single(string command) =>
-            SingleInternal(command, r => r.Read() ? r.ToList() : new List<(string name, object value)>());
+        public (string name, object value)[] Single(string command) =>
+            SingleToArrayInternal(command);
 
-        public IList<(string name, object value)> Single(string command, params object[] parameters) =>
-            SingleInternal(command, 
-                r => r.Read() ? r.ToList() : new List<(string name, object value)>(), 
-                parameters);
+        public (string name, object value)[] Single(string command, params object[] parameters) =>
+            SingleToArrayInternal(command, parameters);
 
-        public IList<(string name, object value)> Single(string command, params (string name, object value)[] parameters) =>
-            SingleInternal(command,
-                r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
-                parameters);
+        public (string name, object value)[] Single(string command, params (string name, object value)[] parameters) =>
+            SingleToArrayInternal(command, parameters);
 
-        public IList<(string name, object value)> Single(string command, params (string name, object value, DbType type)[] parameters) =>
-            SingleInternal(command,
-                r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
-                parameters);
+        public (string name, object value)[] Single(string command, params (string name, object value, DbType type)[] parameters) =>
+            SingleToArrayInternal(command, parameters);
 
-        public IList<(string name, object value)> Single(string command, params (string name, object value, object type)[] parameters) =>
-            SingleInternalUnknowParamsType(command,
-                r => r.Read() ? r.ToList() : new List<(string name, object value)>(),
-                parameters);
-
+        public (string name, object value)[] Single(string command, params (string name, object value, object type)[] parameters) =>
+            SingleToArrayInternalUnknowParamsType(command, parameters);
 
         public T Single<T>(string command) =>
             SingleInternal(command, r => r.Read() ? GetFieldValue<T>(r,0) : default);
@@ -598,56 +589,5 @@ namespace Norm
                     )
                     : (default, default, default, default, default, default, default, default, default, default, default, default),
                 parameters);
-
-
-        private T SingleInternal<T>(string command, Func<DbDataReader, T> readerAction)
-        {
-            using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            Prepare(cmd);
-            using var reader = cmd.ExecuteReader();
-            return readerAction(reader);
-        }
-
-        private T SingleInternal<T>(string command, Func<DbDataReader, T> readerAction, params object[] parameters)
-        {
-            using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            return readerAction(reader);
-        }
-
-        private T SingleInternal<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value)[] parameters)
-        {
-            using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            return readerAction(reader);
-        }
-
-        private T SingleInternal<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            return readerAction(reader);
-        }
-
-        private T SingleInternalUnknowParamsType<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value, object type)[] parameters)
-        {
-            using var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParametersUnknownType(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            return readerAction(reader);
-        }
     }
 }
