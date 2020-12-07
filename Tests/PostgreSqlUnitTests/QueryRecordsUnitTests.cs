@@ -83,8 +83,6 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar3", result[2].Bar);
         }
 
-
-
         [Fact]
         public void SelectMap_Sync()
         {

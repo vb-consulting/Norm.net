@@ -16,20 +16,20 @@ namespace PostgreSqlUnitTests
 
         class TestClass
         {
-            public int Id { get; private set; }
-            public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
-            public string Bar { get; private set; }
+            public int Id { get; init; }
+            public string Foo { get; init; }
+            public DateTime Day { get; init; }
+            public bool? Bool { get; init; }
+            public string Bar { get; init; }
         }
 
         class SnakeCaseMapTestClass
         {
-            public int MyId { get; private set; }
-            public string MyFoo { get; private set; }
-            public DateTime MyDay { get; private set; }
-            public bool? MyBool { get; private set; }
-            public string MyBar { get; private set; }
+            public int MyId { get; init; }
+            public string MyFoo { get; init; }
+            public DateTime MyDay { get; init; }
+            public bool? MyBool { get; init; }
+            public string MyBar { get; init; }
         }
 
         class ArraysTestClass
@@ -39,6 +39,14 @@ namespace PostgreSqlUnitTests
             public DateTime[] Day { get; private set; }
             public bool[] Bool { get; private set; }
             public string[] Bar { get; private set; }
+        }
+
+        class TestClassChangedPosition
+        {
+            public string Bar { get; init; }
+            public bool? Bool { get; init; }
+            public DateTime Day { get; init; }
+            public string Foo { get; init; }
         }
 
         private const string Query = @"
@@ -191,6 +199,31 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar2", result[0].Bar[1]);
             Assert.Equal("bar3", result[0].Bar[2]);
             Assert.Equal("bar4", result[0].Bar[3]);
+        }
+
+        [Fact]
+        public void SelectMap_ChangedPositionSync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read(Query).Map<TestClassChangedPosition>().ToList();
+
+            Assert.Equal(3, result.Count);
+
+            Assert.Equal("foo1", result[0].Foo);
+            Assert.Equal("foo2", result[1].Foo);
+            Assert.Equal("foo3", result[2].Foo);
+
+            Assert.Equal(new DateTime(1977, 5, 19), result[0].Day);
+            Assert.Equal(new DateTime(1978, 5, 19), result[1].Day);
+            Assert.Equal(new DateTime(1979, 5, 19), result[2].Day);
+
+            Assert.Equal(true, result[0].Bool);
+            Assert.Equal(false, result[1].Bool);
+            Assert.Null(result[2].Bool);
+
+            Assert.Null(result[0].Bar);
+            Assert.Equal("bar2", result[1].Bar);
+            Assert.Equal("bar3", result[2].Bar);
         }
     }
 }

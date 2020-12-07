@@ -13,21 +13,9 @@ namespace Norm.Extensions
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
-            var (parametlessCtor, paramsCtor, parameters) = GetCtors(type, hash);
-
-            if (paramsCtor == null && parametlessCtor != null)
+            foreach (var t in tuples.MapInternal<T>(type, GetCtorInfo(type, hash), hash))
             {
-                foreach (var t in tuples.MapInternal<T>(type, parametlessCtor, hash))
-                {
-                    yield return t;
-                }
-            }
-            else
-            {
-                foreach (var record in tuples)
-                {
-                    yield return (T)paramsCtor.Invoke(record.Select(r => r.value).ToArray());
-                }
+                yield return t;
             }
         }
 
@@ -35,122 +23,67 @@ namespace Norm.Extensions
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
-            var (parametlessCtor, paramsCtor, parameters) = GetCtors(type, hash);
-
-            if (paramsCtor == null && parametlessCtor != null)
+            await foreach (var t in tuples.MapInternal<T>(type, GetCtorInfo(type, hash), hash))
             {
-                await foreach (var t in tuples.MapInternal<T>(type, parametlessCtor, hash))
-                {
-                    yield return t;
-                }
+                yield return t;
             }
-            else
-            {
-                await foreach (var record in tuples)
-                {
-                    yield return (T)paramsCtor.Invoke(record.Select(r => r.value).ToArray());
-                }
-            }
-        }
-
-        private static readonly ConcurrentDictionary<int, (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters)> CtorCache =
-            new ConcurrentDictionary<int, (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters)>();
-
-        private static (ConstructorInfo parametlessCtor, ConstructorInfo paramsCtor, ParameterInfo[] parameters) GetCtors(Type type, int hash)
-        {
-            if (CtorCache.TryGetValue(hash, out var result))
-            {
-                return result;
-            }
-            ConstructorInfo parametlessCtor = null;
-            ConstructorInfo paramsCtor = null;
-            ParameterInfo[] parameters = null;
-            foreach (var ctor in type.GetConstructors())
-            {
-                var p = ctor.GetParameters();
-                var len = p.Length;
-                if (len == 0)
-                {
-                    parametlessCtor = ctor;
-                }
-                if (len != 0 && (paramsCtor == null || parameters.Length < len))
-                {
-                    paramsCtor = ctor;
-                    parameters = p;
-                }
-            }
-            CtorCache.TryAdd(hash, (parametlessCtor, paramsCtor, parameters));
-            return (parametlessCtor, paramsCtor, parameters);
         }
 
         private static IEnumerable<T> MapInternal<T>(
-            this IEnumerable<(string name, object value)[]> tuples, Type type, ConstructorInfo ctor, int hash)
+            this IEnumerable<(string name, object value)[]> tuples, Type type, (object instance, MethodInfo clone) ctorInfo, int hash)
         {
-            foreach(var tuple in tuples)
+            foreach (var tuple in tuples)
             {
-                yield return tuple.GetInstance<T>(type, ctor, hash);
+                var instance = CreateInstance<T>(ctorInfo);
+                yield return tuple.MapInstance(type, instance, hash);
             }
         }
 
         private static async IAsyncEnumerable<T> MapInternal<T>(
-            this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, ConstructorInfo ctor, int hash)
+            this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, (object instance, MethodInfo clone) ctorInfo, int hash)
         {
             await foreach (var tuple in tuples)
             {
-                yield return tuple.GetInstance<T>(type, ctor, hash);
+                var instance = CreateInstance<T>(ctorInfo);
+                yield return tuple.MapInstance(type, instance, hash);
             }
         }
 
-        private static T GetInstance<T>(this (string name, object value)[] tuple, Type type, ConstructorInfo ctor, int hash)
+        private static T MapInstance<T>(this (string name, object value)[] tuple, Type type, T instance, int hash)
         {
-            var instance = (T)ctor.Invoke(Array.Empty<object>());
-
-            byte i = 0;
+            ushort i = 0;
             var properties = GetProperties(hash, type);
             var delegates = GetDelegates(hash, properties.Length);
+            Dictionary<string, ushort> names = null;
             foreach (var property in properties)
             {
-                var value = tuple[i].value;
-                var (method, nullable, code, isArray) = delegates[i];
+                var (method, nullable, code, isArray, index) = delegates[i];
                 if (method == null)
                 {
                     var propType = property.PropertyType;
                     nullable = Nullable.GetUnderlyingType(propType) != null;
                     (method, code, isArray) = CreateDelegate<T>(property, nullable);
-                    delegates[i] = (method, nullable, code, isArray);
+
+                    var name = property.Name.ToLower();
+                    if (names == null)
+                    {
+                        names = tuple.Select((t, i) => (t, i)).ToDictionary(t => t.t.name.ToLower().Replace("_", ""), t => (ushort)t.i);
+                    }
+                    if (!names.TryGetValue(name, out index))
+                    {
+                        index = ushort.MaxValue;
+                    }
+                    delegates[i] = (method, nullable, code, isArray, index);
                 }
+                if (index == ushort.MaxValue)
+                {
+                    continue;
+                }
+                var value = tuple[index].value;
                 InvokeSet(method, nullable, code, instance, value, isArray);
                 i++;
             }
             return instance;
-        }
-
-        private static readonly ConcurrentDictionary<int, PropertyInfo[]> PropertiesCache =
-            new ConcurrentDictionary<int, PropertyInfo[]>();
-
-        private static PropertyInfo[] GetProperties(int hash, Type type)
-        {
-            if (PropertiesCache.TryGetValue(hash, out var result))
-            {
-                return result;
-            }
-            result = type.GetProperties();
-            PropertiesCache.TryAdd(hash, result);
-            return result;
-        }
-
-        private static readonly ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray)[]> DelegateCache = 
-            new ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray)[]>();
-
-        private static (Delegate method, bool nullable, TypeCode code, bool isArray)[] GetDelegates(int hash, int len)
-        {
-            if (DelegateCache.TryGetValue(hash, out var result))
-            {
-                return result;
-            }
-            result = new (Delegate method, bool nullable, TypeCode code, bool isArray)[len];
-            DelegateCache.TryAdd(hash, result);
-            return result;
         }
 
         private static (Delegate method, TypeCode code, bool isArray) CreateDelegate<T>(PropertyInfo property, bool nullable)

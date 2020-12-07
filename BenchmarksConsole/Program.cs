@@ -15,8 +15,20 @@ Console.WriteLine("Running...");
 Console.WriteLine();
 
 
-//RunSerializationBenchmarks();
-RunLinqExpBenchmarks();
+
+if (GC.TryStartNoGCRegion(1024 * 1024 * 128, true))
+{
+    try
+    {
+        RunSerializationBenchmarks();
+        //RunLinqExpBenchmarks();
+    }
+    finally
+    {
+        GC.EndNoGCRegion();
+    }
+}
+
 
 string GetQuery(int records)
 {
