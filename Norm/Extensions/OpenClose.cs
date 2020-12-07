@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Norm
 {
-    public static partial class ConnectionExtensions
+    public static partial class NormExtensions
     {
         public static DbConnection EnsureIsOpen(this DbConnection connection)
         {

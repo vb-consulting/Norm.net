@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-1) Return types for `Read()`, `ReadAsync()`, `Single()` and `SingleAsync()` changed to return array instead of lists:
+#### 1) Return types for `Read()`, `ReadAsync()`, `Single()` and `SingleAsync()` changed to return array instead of lists:
 
 - `Read()` now returns `IEnumerable<(string name, object value)[]>`
 - `ReadAsync()` now returns `IAsyncEnumerable<(string name, object value)[]>`
@@ -13,20 +13,29 @@
 
 List of tuples retunred from the database should never be resized or changed. Also, small optimization for object mapper.
 
-2) Tuple array extensions `SelectDictionary`, `SelectDictionaries` and `SelectValues` have been removed also.
+#### 2) Tuple array extensions `SelectDictionary`, `SelectDictionaries` and `SelectValues` have been removed also. They can be replaced with simple LINQ expressions.
 
-They all can be replaced with simple LINQ expression:
+
+#### 3) Extension on tuple array (previously list) `(string name, object value)[]` is renamed from `Select` to `Map`
+
+#### 4) `Norm.Extensions` namespace is removed. Now, only `Norm` namespace should be used.
+
+#### Migration from 1.X version of library
+
+1) Replace  `using Norm.Extensions;` with `using Norm;`
+2) Replace all calls `connection.Read(...).Select<MyClass>` with `connection.Read(...).Map<MyClass>` or `connection.Query<MyClass>(...)`
+3) Replace all calls `connection.ReadAsync(...).Select<MyClass>` with `connection.Read(...).MapAsync<MyClass>` or `connection.QueryAsync<MyClass>(...)`
+4) Replace `SelectDictionary`, `SelectDictionaries` and `SelectValues` with following LINQ expressions:
+
+LINQ expression:
 
 - `SelectDictionary` with `tuples.ToDictionary(t => t.name, t => t.value);`
 - `SelectDictionaries` with `tuples.Select(t => t.ToDictionary(t => t.name, t => t.value));`
 - `SelectValues` with `tuples.Select(t => t.value);`
 
-3) Extension on tuple array (previously list) `(string name, object value)[]` is renamed from `Select` to `Map`
-
-
 ### New API
 
-1) `Query` and `QueryAsync` with overloads:
+#### 1) `Query` and `QueryAsync` with overloads:
 
 - `IEnumerable<T> Query<T>(this DbConnection connection, string command)`
 - `IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command)`
@@ -43,9 +52,7 @@ This new API is just shortheand for standard object-mapping calls.
 
 Instead of `Read(command, parameters).Map<T>()` (previosly `Select`) you can use `Query<T>(command, parameters)`.
 
-It's shorter and more standardized.
-
-2) `Select<T>` and `SelectAsync<T>`:
+#### 2) `Select<T>` and `SelectAsync<T>`:
 
 - `IEnumerable<T> Select<T>(this DbConnection connection)`
 - `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection)`

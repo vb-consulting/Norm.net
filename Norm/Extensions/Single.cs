@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Norm
 {
-    public static partial class ConnectionExtensions
+    public static partial class NormExtensions
     {
         public static (string name, object value)[] Single(this DbConnection connection, string command) =>
             connection.GetNoOrmInstance().Single(command);

@@ -16,6 +16,9 @@ namespace Norm
         private static readonly ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[]> DelegateCache =
             new ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[]>();
 
+        private static readonly ConcurrentDictionary<int, (string name, string[] fields)> CommandCache =
+            new ConcurrentDictionary<int, (string name, string[] fields)>();
+
         private static (object, MethodInfo) GetCtorInfo(Type type, int hash)
         {
             if (CtorCache.TryGetValue(hash, out var result))
@@ -35,7 +38,7 @@ namespace Norm
             return (T)ctorInfo.clone.Invoke(ctorInfo.instance, null);
         }
 
-        private static PropertyInfo[] GetProperties(int hash, Type type)
+        internal static PropertyInfo[] GetProperties(int hash, Type type)
         {
             if (PropertiesCache.TryGetValue(hash, out var result))
             {
@@ -55,6 +58,18 @@ namespace Norm
             result = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
             DelegateCache.TryAdd(hash, result);
             return result;
+        }
+
+        internal static (string name, string[] fields) GetCommandData<T>(Type type, int hash)
+        {
+            if (CommandCache.TryGetValue(hash, out var result))
+            {
+                return result;
+            }
+            var name = type.Name.ToLower();
+            var fields = GetProperties(hash, type).Select(p => p.Name.ToLower()).ToArray();
+            CommandCache.TryAdd(hash, (name, fields));
+            return (name, fields);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -6,10 +7,11 @@ using Norm.Interfaces;
 
 namespace Norm
 {
-    public static partial class ConnectionExtensions
+    public static partial class NormExtensions
     {
         private static readonly ConditionalWeakTable<DbConnection, Norm> Table;
-        static ConnectionExtensions()
+
+        static NormExtensions()
         {
             Table = new ConditionalWeakTable<DbConnection, Norm>();
         }
@@ -45,5 +47,7 @@ namespace Norm
 
         public static INorm UsingPostgresFormatParamsMode(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().UsingPostgresFormatParamsMode();
+
+        internal static int TypeHash(this Type type) => type.GetHashCode();
     }
 }

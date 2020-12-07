@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Norm
 {
-    public static partial class ConnectionExtensions
+    public static partial class NormExtensions
     {
         public static async ValueTask<(string name, object value)[]> SingleAsync(this DbConnection connection, string command) =>
             await connection.GetNoOrmInstance().SingleAsync(command);

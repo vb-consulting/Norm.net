@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Norm
 {
-    public static class ReaderExtensions
+    public static partial class NormExtensions
     {
         internal static (string name, object value)[] ToArray(this DbDataReader reader)
         {

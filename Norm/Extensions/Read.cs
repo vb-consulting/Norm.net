@@ -5,7 +5,7 @@ using System.Data.Common;
 
 namespace Norm
 {
-    public static partial class ConnectionExtensions
+    public static partial class NormExtensions
     {
         public static IEnumerable<(string name, object value)[]> Read(this DbConnection connection, string command) =>
             connection.GetNoOrmInstance().Read(command);

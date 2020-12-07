@@ -8,23 +8,23 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
+        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null, int? hash = null)
         {
-            var type = typeof(T);
-            var hash = type.GetHashCode();
-            var ctorInfo = GetCtorInfo(type, hash);
-            foreach (var t in tuples.MapInternal<T>(type, ctorInfo, hash))
+            type ??= typeof(T);
+            int th = hash ?? type.TypeHash();
+            var ctorInfo = GetCtorInfo(type, th);
+            foreach (var t in tuples.MapInternal<T>(type, ctorInfo, th))
             {
                 yield return t;
             }
         }
 
-        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
+        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null, int? hash = null)
         {
-            var type = typeof(T);
-            var hash = type.GetHashCode();
-            var ctorInfo = GetCtorInfo(type, hash);
-            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo, hash))
+            type ??= typeof(T);
+            int th = hash ?? type.TypeHash();
+            var ctorInfo = GetCtorInfo(type, th);
+            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo, th))
             {
                 yield return t;
             }
@@ -35,8 +35,7 @@ namespace Norm
         {
             foreach (var tuple in tuples)
             {
-                var instance = CreateInstance<T>(ctorInfo);
-                yield return tuple.MapInstance(type, instance, hash);
+                yield return tuple.MapInstance(type, CreateInstance<T>(ctorInfo), hash);
             }
         }
 
@@ -45,8 +44,7 @@ namespace Norm
         {
             await foreach (var tuple in tuples)
             {
-                var instance = CreateInstance<T>(ctorInfo);
-                yield return tuple.MapInstance(type, instance, hash);
+                yield return tuple.MapInstance(type, CreateInstance<T>(ctorInfo), hash);
             }
         }
 
@@ -76,13 +74,12 @@ namespace Norm
                     }
                     delegates[i] = (method, nullable, code, isArray, index);
                 }
+                i++;
                 if (index == ushort.MaxValue)
                 {
                     continue;
                 }
-                var value = tuple[index].value;
-                InvokeSet(method, nullable, code, instance, value, isArray);
-                i++;
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray);
             }
             return instance;
         }
