@@ -40,6 +40,8 @@ class PocoClass
 record Record(int Id1, string Foo1, string Bar1, DateTime DateTime1, int Id2, string Foo2, string Bar2, DateTime DateTime2, string LongFooBar, bool IsFooBar);
 ```
 
+All results are in seconds.
+
 ## Test 1
 
 Serialization to `PocoClass` and `Record` by Dapper and Norm.
@@ -146,7 +148,7 @@ connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
 |8|04.5820484|03.7027318|03.5736443|
 |9|04.1093835|03.5552922|03.4871451|
 |10|04.0639286|03.5927925|03.5993064|
-|AVG|**04.1600910**|**03.5947520**|**03.5723777**|
+|**AVG**|**04.1600910**|**03.5947520**|**03.5723777**|
 
 ### Round 3
 
