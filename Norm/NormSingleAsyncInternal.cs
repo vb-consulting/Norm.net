@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
-using Norm.Extensions;
 
 namespace Norm
 {
@@ -103,12 +102,6 @@ namespace Norm
                 return await readerAction(reader);
             }
         }
-
-
-
-
-
-
 
         private async ValueTask<(string name, object value)[]> SingleToArrayInternalAsync(string command)
         {

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net.Sockets;
-using Norm.Extensions;
+using Norm;
 using Npgsql;
 using NpgsqlTypes;
-using PostgreSqlUnitTests;
 using Xunit;
 
 namespace PostgreSqlUnitTests

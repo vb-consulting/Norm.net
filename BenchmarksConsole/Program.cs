@@ -3,7 +3,7 @@ using DapperQuery = Dapper.SqlMapper;
 
 using Npgsql;
 using PostgreSqlUnitTests;
-using Norm.Extensions;
+using Norm;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static class ReaderExtensions
     {

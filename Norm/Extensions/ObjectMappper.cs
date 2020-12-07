@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class NormExtensions
     {

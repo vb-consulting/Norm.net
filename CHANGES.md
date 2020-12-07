@@ -92,7 +92,7 @@ will execute fillowing query: `select * from mytable where id = 1 and value = 'a
 ### Improvements
 
 
-Object mapper is rewritten from scratch. Matching by position, inestad of by name is now default and only method of matching in object mapper.
+Object mapper is rewritten from scratch and it has many perfomance improvements.
 
 See [performance tests here](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
 
@@ -172,7 +172,6 @@ Fix big with named parameters in tuple parameter format `("name1", value1), ("na
 
 Note:
 > Named tuple parameter format overload `("name1", value1, DbType), ("name2", value2, DbType), ...` cannot receive specifix DB parameter types (like `NpgsqlDbType` for example). Doing so will invoke value parameter overload `(param1, param2, ...)`. 
-
 
 
 ## 1.5.1

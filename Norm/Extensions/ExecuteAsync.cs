@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class ConnectionExtensions
     {

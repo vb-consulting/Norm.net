@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using Norm.Extensions;
+using Norm;
 using Xunit;
 
 namespace SQLiteUnitTests

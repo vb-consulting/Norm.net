@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Norm.Extensions;
+using Norm;
 using Xunit;
 
 namespace SqlServerUnitTests

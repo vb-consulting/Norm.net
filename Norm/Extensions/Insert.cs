@@ -1,11 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using Norm;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class ConnectionExtensions
     {

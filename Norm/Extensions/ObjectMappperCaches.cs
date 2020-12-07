@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class NormExtensions
     {

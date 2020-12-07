@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Norm.Extensions;
 using Norm.Interfaces;
 
 namespace Norm

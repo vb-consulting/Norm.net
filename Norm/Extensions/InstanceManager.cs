@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Norm.Interfaces;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class ConnectionExtensions
     {

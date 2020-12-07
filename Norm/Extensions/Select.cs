@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 
-namespace Norm.Extensions
+namespace Norm
 {
     public static partial class ConnectionExtensions
     {
