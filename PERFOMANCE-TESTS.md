@@ -15,7 +15,7 @@ select
     'foo' || (i+1)::text as foo2, 
     'bar' || (i+1)::text as bar2, 
     ('2000-01-01'::date) + ((i+1)::text || ' days')::interval as datetime2,
-    'long_foo_bar_' || (i+2)::text as longfoobar, 
+    'long_foo_bar_' || (i+2)::text as longfoobar, -- dapper doesn't understands the snake case
     (i % 2)::boolean as isfoobar
 from generate_series(1, 1000000) as i
 ```
