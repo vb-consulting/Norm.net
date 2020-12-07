@@ -26,8 +26,6 @@ namespace Norm.Extensions
             var tuple = (
                 ctor.Invoke(Enumerable.Repeat<object>(default, ctor.GetParameters().Length).ToArray()),
                 type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
-            
-            
             CtorCache.TryAdd(hash, tuple);
             return tuple;
         }

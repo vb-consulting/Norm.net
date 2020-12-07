@@ -13,7 +13,8 @@ namespace Norm.Extensions
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
-            foreach (var t in tuples.MapInternal<T>(type, GetCtorInfo(type, hash), hash))
+            var ctorInfo = GetCtorInfo(type, hash);
+            foreach (var t in tuples.MapInternal<T>(type, ctorInfo, hash))
             {
                 yield return t;
             }
@@ -23,7 +24,8 @@ namespace Norm.Extensions
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
-            await foreach (var t in tuples.MapInternal<T>(type, GetCtorInfo(type, hash), hash))
+            var ctorInfo = GetCtorInfo(type, hash);
+            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo, hash))
             {
                 yield return t;
             }
