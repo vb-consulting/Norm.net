@@ -9,7 +9,7 @@ namespace Norm.Extensions
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> Select<T>(this IEnumerable<(string name, object value)[]> tuples)
+        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
@@ -17,7 +17,7 @@ namespace Norm.Extensions
 
             if (paramsCtor == null && parametlessCtor != null)
             {
-                foreach (var t in tuples.SelectInternal<T>(type, parametlessCtor, hash))
+                foreach (var t in tuples.MapInternal<T>(type, parametlessCtor, hash))
                 {
                     yield return t;
                 }
@@ -31,7 +31,7 @@ namespace Norm.Extensions
             }
         }
 
-        public static async IAsyncEnumerable<T> Select<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
+        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
             var hash = type.GetHashCode();
@@ -39,7 +39,7 @@ namespace Norm.Extensions
 
             if (paramsCtor == null && parametlessCtor != null)
             {
-                await foreach (var t in tuples.SelectInternal<T>(type, parametlessCtor, hash))
+                await foreach (var t in tuples.MapInternal<T>(type, parametlessCtor, hash))
                 {
                     yield return t;
                 }
@@ -83,7 +83,7 @@ namespace Norm.Extensions
             return (parametlessCtor, paramsCtor, parameters);
         }
 
-        private static IEnumerable<T> SelectInternal<T>(
+        private static IEnumerable<T> MapInternal<T>(
             this IEnumerable<(string name, object value)[]> tuples, Type type, ConstructorInfo ctor, int hash)
         {
             foreach(var tuple in tuples)
@@ -92,7 +92,7 @@ namespace Norm.Extensions
             }
         }
 
-        private static async IAsyncEnumerable<T> SelectInternal<T>(
+        private static async IAsyncEnumerable<T> MapInternal<T>(
             this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, ConstructorInfo ctor, int hash)
         {
             await foreach (var tuple in tuples)

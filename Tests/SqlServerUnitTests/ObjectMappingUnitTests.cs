@@ -63,7 +63,7 @@ namespace SqlServerUnitTests
         public void SelectMap_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Select<TestClass>().ToList();
+            var result = connection.Read(Query).Map<TestClass>().ToList();
 
             AssertTestClass(result);
         }
@@ -73,7 +73,7 @@ namespace SqlServerUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Select<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
 
             AssertTestClass(result);
         }

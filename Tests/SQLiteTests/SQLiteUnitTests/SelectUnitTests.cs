@@ -12,7 +12,7 @@ using Xunit;
 namespace SQLiteUnitTests
 {
     [Collection("SQLiteDatabase")]
-    public class GetUnitTests
+    public class SelectUnitTests
     {
         private readonly SqLiteFixture fixture;
 
@@ -34,7 +34,7 @@ namespace SQLiteUnitTests
               (3, 'foo3', date('1979-05-19'), null, 'bar3');";
 
 
-        public GetUnitTests(SqLiteFixture fixture)
+        public SelectUnitTests(SqLiteFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -79,7 +79,7 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result = connection.Get<TestClass>().ToList();
+            var result = connection.Select<TestClass>().ToList();
             AssertTestClass(result);
         }
 
@@ -88,8 +88,8 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result1 = connection.Get<TestClass>(1).ToList();
-            var result2 = connection.Get<TestClass>(1, "foo1").ToList();
+            var result1 = connection.Select<TestClass>(1).ToList();
+            var result2 = connection.Select<TestClass>(1, "foo1").ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -99,9 +99,9 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result1 = connection.Get<TestClass>(("id", 1)).ToList();
+            var result1 = connection.Select<TestClass>(("id", 1)).ToList();
             // switch position
-            var result2 = connection.Get<TestClass>(("foo", "foo1"), ("id", 1)).ToList();
+            var result2 = connection.Select<TestClass>(("foo", "foo1"), ("id", 1)).ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -111,7 +111,7 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result = await connection.GetAsync<TestClass>().ToListAsync();
+            var result = await connection.SelectAsync<TestClass>().ToListAsync();
             AssertTestClass(result);;
         }
 
@@ -120,8 +120,8 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result1 = await connection.GetAsync<TestClass>(1).ToListAsync();
-            var result2 = await connection.GetAsync<TestClass>(1, "foo1").ToListAsync();
+            var result1 = await connection.SelectAsync<TestClass>(1).ToListAsync();
+            var result2 = await connection.SelectAsync<TestClass>(1, "foo1").ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -131,9 +131,9 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             connection.Execute(Query);
-            var result1 = await connection.GetAsync<TestClass>(("id", 1)).ToListAsync();
+            var result1 = await connection.SelectAsync<TestClass>(("id", 1)).ToListAsync();
             // switch position
-            var result2 = await connection.GetAsync<TestClass>(("foo", "foo1"), ("id", 1)).ToListAsync();
+            var result2 = await connection.SelectAsync<TestClass>(("foo", "foo1"), ("id", 1)).ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }

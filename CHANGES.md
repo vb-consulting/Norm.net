@@ -21,6 +21,9 @@ They all can be replaced with simple LINQ expression:
 - `SelectDictionaries` with `tuples.Select(t => t.ToDictionary(t => t.name, t => t.value));`
 - `SelectValues` with `tuples.Select(t => t.value);`
 
+3) Extension on tuple array (previously list) `(string name, object value)[]` is renamed from `Select` to `Map`
+
+
 ### New API
 
 1) `Query` and `QueryAsync` with overloads:
@@ -38,14 +41,14 @@ They all can be replaced with simple LINQ expression:
 
 This new API is just shortheand for standard object-mapping calls.
 
-Instead of `Read(command, parameters).Select<T>()` you can use `Query<T>(command, parameters)`.
+Instead of `Read(command, parameters).Map<T>()` (previosly `Select`) you can use `Query<T>(command, parameters)`.
 
 It's shorter and more standardized.
 
-2) `Get<T>` and `GetAsync<T>`:
+2) `Select<T>` and `SelectAsync<T>`:
 
-- `IEnumerable<T> Get<T>(this DbConnection connection)`
-- `IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection)`
+- `IEnumerable<T> Select<T>(this DbConnection connection)`
+- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection)`
 
 
 Selects the entity from the database and returns enumerator. For example:
@@ -53,34 +56,34 @@ Selects the entity from the database and returns enumerator. For example:
 ```csharp
 public record MyTable(Id int, string Value);
 ...
-connection.Get<MyTable>();
+connection.Select<MyTable>();
 ```
 
 will execute fillowing query: `select * from mytable` (name is case insensitive) and return enumerator.
 
 
-- `IEnumerable<T> Get<T>(this DbConnection connection, params object[] parameters)`
-- `IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection, params object[] parameters)`
+- `IEnumerable<T> Select<T>(this DbConnection connection, params object[] parameters)`
+- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params object[] parameters)`
 
 Selects the entity from the database, adds filter parameters by position and returns enumerator. For example:
 
 ```csharp
 public record MyTable(Id int, string Value);
 ...
-connection.Get<MyTable>(1, "a");
+connection.Select<MyTable>(1, "a");
 ```
 
 will execute fillowing query: `select * from mytable where id = 1 and value = 'a'` (name is case insensitive, parameters matched by poistion) and return enumerator.
 
-- `IEnumerable<T> Get<T>(this DbConnection connection, params (string name, object value)[] parameters)`
-- `IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection, params (string name, object value)[] parameters)`
+- `IEnumerable<T> Select<T>(this DbConnection connection, params (string name, object value)[] parameters)`
+- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params (string name, object value)[] parameters)`
 
 Selects the entity from the database, adds filter parameters by name and returns enumerator. For example:
 
 ```csharp
 public record MyTable(Id int, string Value);
 ...
-connection.Get<MyTable>(("id", 1), ("value", "a"));
+connection.Select<MyTable>(("id", 1), ("value", "a"));
 ```
 
 will execute fillowing query: `select * from mytable where id = 1 and value = 'a'` (name is case insensitive, parameters matched by name) and return enumerator.
@@ -129,7 +132,6 @@ Here are some measurements and comparison with dapper (1 million records seriali
 Plus, using `record` is much less coding (single line for `record` declaration).
 
 Also, if you are into functional programming and immutable structures, it's a plus.
-
 
 ## 1.6.0
 

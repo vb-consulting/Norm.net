@@ -108,7 +108,7 @@ namespace PostgreSqlUnitTests
         public void SelectMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Select<TestClass>().ToList();
+            var result = connection.Read(Query).Map<TestClass>().ToList();
             AssertTestClass(result);
         }
 
@@ -116,7 +116,7 @@ namespace PostgreSqlUnitTests
         public void SelectEmpty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read($"select * from ({Query}) q where id = 999").Select<TestClass>().ToList();
+            var result = connection.Read($"select * from ({Query}) q where id = 999").Map<TestClass>().ToList();
             Assert.Empty(result);
         }
 
@@ -125,7 +125,7 @@ namespace PostgreSqlUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Select<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
 
             AssertTestClass(result);
         }
@@ -134,7 +134,7 @@ namespace PostgreSqlUnitTests
         public void SelectSnakeCaseMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(SnakeCaseQuery).Select<SnakeCaseMapTestClass>().ToList();
+            var result = connection.Read(SnakeCaseQuery).Map<SnakeCaseMapTestClass>().ToList();
 
             Assert.Equal(3, result.Count);
 
@@ -163,7 +163,7 @@ namespace PostgreSqlUnitTests
         public void SelectArraysMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(ArraysQuery).Select<ArraysTestClass>().ToList();
+            var result = connection.Read(ArraysQuery).Map<ArraysTestClass>().ToList();
 
             Assert.Single(result);
 

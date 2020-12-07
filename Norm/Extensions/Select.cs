@@ -11,40 +11,40 @@ namespace Norm.Extensions
         private static readonly ConcurrentDictionary<int, (string name, string[] fields, string select)> CommandCache = 
             new ConcurrentDictionary<int, (string name, string[] fields, string select)>();
 
-        public static IEnumerable<T> Get<T>(this DbConnection connection)
+        public static IEnumerable<T> Select<T>(this DbConnection connection)
         {
             var (_, _, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().Read(select).Select<T>();
+            return connection.GetNoOrmInstance().Read(select).Map<T>();
         }
 
-        public static IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection)
+        public static IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection)
         {
             var (_, _, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().ReadAsync(select).Select<T>();
+            return connection.GetNoOrmInstance().ReadAsync(select).Map<T>();
         }
 
-        public static IEnumerable<T> Get<T>(this DbConnection connection, params object[] parameters)
+        public static IEnumerable<T> Select<T>(this DbConnection connection, params object[] parameters)
         {
             var (_, fields, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().Read(string.Concat(select, GetWhere(fields, parameters)), parameters).Select<T>();
+            return connection.GetNoOrmInstance().Read(string.Concat(select, GetWhere(fields, parameters)), parameters).Map<T>();
         }
 
-        public static IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection, params object[] parameters)
+        public static IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params object[] parameters)
         {
             var (_, fields, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().ReadAsync(string.Concat(select, GetWhere(fields, parameters)), parameters).Select<T>();
+            return connection.GetNoOrmInstance().ReadAsync(string.Concat(select, GetWhere(fields, parameters)), parameters).Map<T>();
         }
 
-        public static IEnumerable<T> Get<T>(this DbConnection connection, params (string name, object value)[] parameters)
+        public static IEnumerable<T> Select<T>(this DbConnection connection, params (string name, object value)[] parameters)
         {
             var (_, _, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().Read(string.Concat(select, GetWhere(parameters)), parameters).Select<T>();
+            return connection.GetNoOrmInstance().Read(string.Concat(select, GetWhere(parameters)), parameters).Map<T>();
         }
 
-        public static IAsyncEnumerable<T> GetAsync<T>(this DbConnection connection, params (string name, object value)[] parameters)
+        public static IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params (string name, object value)[] parameters)
         {
             var (_, _, select) = GetCommandData<T>();
-            return connection.GetNoOrmInstance().ReadAsync(string.Concat(select, GetWhere(parameters)), parameters).Select<T>();
+            return connection.GetNoOrmInstance().ReadAsync(string.Concat(select, GetWhere(parameters)), parameters).Map<T>();
         }
 
         private static string GetWhere(string[] fields, params object[] parameters)
