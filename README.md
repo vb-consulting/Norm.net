@@ -1,6 +1,6 @@
-# `Norm.Net`
+# `Norm` data mapper
 
-Fast and modern MicroORM for .NET Standard 2.1
+Fast and modern data mapper for .NET Standard 2.1
 
 > website with totorial under construction
 
