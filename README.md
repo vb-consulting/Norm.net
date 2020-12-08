@@ -1,6 +1,6 @@
 # `Norm` data mapper
 
-![example workflow file path](https://github.com/vb-consulting/Norm.net/tree/master/.github/workflows/dotnet-core.yml/badge.svg)
+![231 tests](https://github.com/vb-consulting/Norm.net/tree/master/.github/workflows/dotnet-core.yml/badge.svg)
 
 
 Fast and modern data mapper for .NET Standard 2.1
