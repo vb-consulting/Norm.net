@@ -52,49 +52,6 @@ This new API is just shortheand for standard object-mapping calls.
 
 Instead of `Read(command, parameters).Map<T>()` (previosly `Select`) you can use `Query<T>(command, parameters)`.
 
-#### 2) `Select<T>` and `SelectAsync<T>`:
-
-- `IEnumerable<T> Select<T>(this DbConnection connection)`
-- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection)`
-
-
-Selects the entity from the database and returns enumerator. For example:
-
-```csharp
-public record MyTable(Id int, string Value);
-...
-connection.Select<MyTable>();
-```
-
-will execute fillowing query: `select * from mytable` (name is case insensitive) and return enumerator.
-
-
-- `IEnumerable<T> Select<T>(this DbConnection connection, params object[] parameters)`
-- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params object[] parameters)`
-
-Selects the entity from the database, adds filter parameters by position and returns enumerator. For example:
-
-```csharp
-public record MyTable(Id int, string Value);
-...
-connection.Select<MyTable>(1, "a");
-```
-
-will execute fillowing query: `select * from mytable where id = 1 and value = 'a'` (name is case insensitive, parameters matched by poistion) and return enumerator.
-
-- `IEnumerable<T> Select<T>(this DbConnection connection, params (string name, object value)[] parameters)`
-- `IAsyncEnumerable<T> SelectAsync<T>(this DbConnection connection, params (string name, object value)[] parameters)`
-
-Selects the entity from the database, adds filter parameters by name and returns enumerator. For example:
-
-```csharp
-public record MyTable(Id int, string Value);
-...
-connection.Select<MyTable>(("id", 1), ("value", "a"));
-```
-
-will execute fillowing query: `select * from mytable where id = 1 and value = 'a'` (name is case insensitive, parameters matched by name) and return enumerator.
-
 
 ### Improvements
 

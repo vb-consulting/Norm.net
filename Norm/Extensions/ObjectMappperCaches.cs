@@ -1,75 +1,108 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Norm
 {
-    public static partial class NormExtensions
+    internal static class TypeCache<T>
     {
-        private static readonly ConcurrentDictionary<int, (object, MethodInfo)> CtorCache =
-            new ConcurrentDictionary<int, (object, MethodInfo)>();
-
-        private static readonly ConcurrentDictionary<int, PropertyInfo[]> PropertiesCache =
-            new ConcurrentDictionary<int, PropertyInfo[]>();
-
-        private static readonly ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[]> DelegateCache =
-            new ConcurrentDictionary<int, (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[]>();
-
-        private static readonly ConcurrentDictionary<int, (string name, string[] fields)> CommandCache =
-            new ConcurrentDictionary<int, (string name, string[] fields)>();
-
-        private static (object, MethodInfo) GetCtorInfo(Type type, int hash)
+        private static readonly object ctorLocker = new object();
+        private static (T, Func<T, object>) ctorInfo = default;
+        public static (T, Func<T, object>) GetCtorInfo(Type type)
         {
-            if (CtorCache.TryGetValue(hash, out var result))
+            if (ctorInfo.Item1 != null)
             {
-                return result;
+                return ctorInfo;
             }
-            var ctor = type.GetConstructors()[0];
-            var tuple = (
-                ctor.Invoke(Enumerable.Repeat<object>(default, ctor.GetParameters().Length).ToArray()),
-                type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic));
-            CtorCache.TryAdd(hash, tuple);
-            return tuple;
+            lock (ctorLocker)
+            {
+                if (ctorInfo.Item1 != null)
+                {
+                    return ctorInfo;
+                }
+                var defaultCtor = type.GetConstructors()[0];
+                ctorInfo = (
+                    (T)defaultCtor.Invoke(Enumerable.Repeat<object>(default, defaultCtor.GetParameters().Length).ToArray()),
+                    (Func<T, object>)Delegate.CreateDelegate(typeof(Func<T, object>), type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)));
+                return ctorInfo;
+            }
         }
 
-        private static T CreateInstance<T>((object instance, MethodInfo clone) ctorInfo)
+        public static T CreateInstance((T instance, Func<T, object> clone) info)
         {
-            return (T)ctorInfo.clone.Invoke(ctorInfo.instance, null);
+            return (T)info.clone.Invoke(info.instance);
         }
 
-        internal static PropertyInfo[] GetProperties(int hash, Type type)
+        private static readonly object nameLocker = new object();
+        private static Dictionary<string, ushort> names = null;
+        public static Dictionary<string, ushort> GetNames((string name, object value)[] tuple)
         {
-            if (PropertiesCache.TryGetValue(hash, out var result))
+            if (names != null)
             {
-                return result;
+                return names;
             }
-            result = type.GetProperties();
-            PropertiesCache.TryAdd(hash, result);
-            return result;
+            lock (nameLocker) 
+            {
+                if (names != null)
+                {
+                    return names;
+                }
+                var hashes = new HashSet<string>();
+                var result = new Dictionary<string, ushort>();
+                ushort i = 0;
+                foreach (var t in tuple)
+                {
+                    var name = string.Concat(t.name.ToLower().Replace("_", ""));
+                    if (hashes.Contains(name))
+                    {
+                        i++;
+                        continue;
+                    }
+                    hashes.Add(name);
+                    result[name] = i++;
+                }
+                names = result;
+                return names;
+            }
         }
 
-        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int hash, int len)
+        private static readonly object propertiesLocker = new object();
+        private static PropertyInfo[] properties = null;
+        public static PropertyInfo[] GetProperties(Type type)
         {
-            if (DelegateCache.TryGetValue(hash, out var result))
+            if (properties != null)
             {
-                return result;
+                return properties;
             }
-            result = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
-            DelegateCache.TryAdd(hash, result);
-            return result;
+            lock (propertiesLocker)
+            {
+                if (properties != null)
+                {
+                    return properties;
+                }
+                properties = type.GetProperties();
+                return properties;
+            }
         }
 
-        internal static (string name, string[] fields) GetCommandData<T>(Type type, int hash)
+        private static readonly object delegateLocker = new object();
+        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
+        public static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int len)
         {
-            if (CommandCache.TryGetValue(hash, out var result))
+            if (delegateCache != null)
             {
-                return result;
+                return delegateCache;
             }
-            var name = type.Name.ToLower();
-            var fields = GetProperties(hash, type).Select(p => p.Name.ToLower()).ToArray();
-            CommandCache.TryAdd(hash, (name, fields));
-            return (name, fields);
+            lock (delegateLocker)
+            {
+                if (delegateCache != null)
+                {
+                    return delegateCache;
+                }
+                delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
+                return delegateCache;
+            }
         }
     }
 }

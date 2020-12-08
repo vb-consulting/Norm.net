@@ -102,8 +102,8 @@ void RunLinqExpBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper RECORD to Dict|Norm TUPLES to Dict|Norm RECORD to Dict|");
-    Console.WriteLine("|-|---------------------|-------------------|-------------------|");
+    Console.WriteLine("|#|Dapper POCO to Dict|Norm TUPLES to Dict|Norm POCO to Dict|");
+    Console.WriteLine("|-|-------------------|-------------------|-----------------|");
 
     var list = new List<long[]>();
 
@@ -114,7 +114,7 @@ void RunLinqExpBenchmarks()
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var dapper = DapperQuery.Query<Record>(connection, query).ToDictionary(r => r.Id1, r => r.DateTime1);
+        var dapper = DapperQuery.Query<PocoClass>(connection, query).ToDictionary(r => r.Id1, r => r.DateTime1);
         sw.Stop();
         var dapperRecordElapsed = sw.Elapsed;
         values[0] = sw.Elapsed.Ticks;
@@ -130,7 +130,7 @@ void RunLinqExpBenchmarks()
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var normRecord = connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
+        var normRecord = connection.Query<PocoClass>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
         sw.Stop();
         var normRecordElapsed = sw.Elapsed;
         values[2] = sw.Elapsed.Ticks;

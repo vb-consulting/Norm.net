@@ -47,7 +47,5 @@ namespace Norm
 
         public static INorm UsingPostgresFormatParamsMode(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().UsingPostgresFormatParamsMode();
-
-        internal static int TypeHash(this Type type) => type.GetHashCode();
     }
 }

@@ -1,58 +1,54 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Norm
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null, int? hash = null)
+        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
         {
-            type ??= typeof(T);
-            int th = hash ?? type.TypeHash();
-            var ctorInfo = GetCtorInfo(type, th);
-            foreach (var t in tuples.MapInternal<T>(type, ctorInfo, th))
+            var type = typeof(T);
+            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+            foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
             {
                 yield return t;
             }
         }
 
-        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null, int? hash = null)
+        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
         {
-            type ??= typeof(T);
-            int th = hash ?? type.TypeHash();
-            var ctorInfo = GetCtorInfo(type, th);
-            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo, th))
+            var type = typeof(T);
+            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
             {
                 yield return t;
             }
         }
 
         private static IEnumerable<T> MapInternal<T>(
-            this IEnumerable<(string name, object value)[]> tuples, Type type, (object instance, MethodInfo clone) ctorInfo, int hash)
+            this IEnumerable<(string name, object value)[]> tuples, Type type, (T instance, Func<T, object> clone) ctorInfo)
         {
             foreach (var tuple in tuples)
             {
-                yield return tuple.MapInstance(type, CreateInstance<T>(ctorInfo), hash);
+                yield return tuple.MapInstance(type, TypeCache<T>.CreateInstance(ctorInfo));
             }
         }
 
         private static async IAsyncEnumerable<T> MapInternal<T>(
-            this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, (object instance, MethodInfo clone) ctorInfo, int hash)
+            this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, (T instance, Func<T, object> clone) ctorInfo)
         {
             await foreach (var tuple in tuples)
             {
-                yield return tuple.MapInstance(type, CreateInstance<T>(ctorInfo), hash);
+                yield return tuple.MapInstance(type, TypeCache<T>.CreateInstance(ctorInfo));
             }
         }
 
-        private static T MapInstance<T>(this (string name, object value)[] tuple, Type type, T instance, int hash)
+        private static T MapInstance<T>(this (string name, object value)[] tuple, Type type, T instance)
         {
             ushort i = 0;
-            var properties = GetProperties(hash, type);
-            var delegates = GetDelegates(hash, properties.Length);
+            var properties = TypeCache<T>.GetProperties(type);
+            var delegates = TypeCache<T>.GetDelegates(properties.Length);
             Dictionary<string, ushort> names = null;
             foreach (var property in properties)
             {
@@ -66,7 +62,7 @@ namespace Norm
                     var name = property.Name.ToLower();
                     if (names == null)
                     {
-                        names = tuple.Select((t, i) => (t, i)).ToDictionary(t => t.t.name.ToLower().Replace("_", ""), t => (ushort)t.i);
+                        names = TypeCache<T>.GetNames(tuple);
                     }
                     if (!names.TryGetValue(name, out index))
                     {

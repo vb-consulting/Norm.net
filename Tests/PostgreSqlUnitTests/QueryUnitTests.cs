@@ -245,10 +245,29 @@ namespace PostgreSqlUnitTests
             var task = new Action(() =>
             {
                 using var connection = new NpgsqlConnection(fixture.ConnectionString);
-                connection.Query<TestClass>(query).ToList();
+                var result = connection.Query<TestClass>(query).ToList();
             });
 
             Task.WaitAll(
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
+                Task.Factory.StartNew(task),
                 Task.Factory.StartNew(task),
                 Task.Factory.StartNew(task),
                 Task.Factory.StartNew(task),
