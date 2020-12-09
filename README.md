@@ -1,6 +1,8 @@
 # `Norm` data mapper
 
-![250 tests for SqlServer, PostgreSQL, SQLite and MySql](https://github.com/vb-consulting/Norm.net/workflows/tests/badge.svg)
+250 tests for SqlServer, PostgreSQL, SQLite and MySql
+
+![](https://github.com/vb-consulting/Norm.net/workflows/tests/badge.svg)
 
 
 Fast and modern data mapper for .NET Standard 2.1
