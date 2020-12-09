@@ -2,7 +2,7 @@
 
 [Benchmark code](https://github.com/vb-consulting/Norm.net/tree/master/BenchmarksConsole) is included in the project, you can run it manually to repeat these tests.
 
-Query used for testing doesn't use any tables and it runs on local PostgreSQL server. 
+Query used for testing doesn't use any tables and it runs on the local PostgreSQL server. 
 It generates series of 1 million records an returns 10 fields of various types for each record:
 
 ```sql
@@ -20,7 +20,7 @@ select
 from generate_series(1, 1000000) as i
 ```
 
-Results are serialized to one class amnd one record used for testing:
+Results are serialized to one class and one record used for testing:
 
 ```csharp
 class PocoClass
@@ -96,8 +96,8 @@ Serialization to `PocoClass` and `Record` by Dapper and Norm.
 
 ## Test 2
 
-These tests will convert serliazed results to `Dictionary<int, DateTime>`
-where key is populated by field `Id1` and value is `DateTime1` field from results.
+These tests will convert serialized results to `Dictionary<int, DateTime>`
+where the key is populated by field `Id1` and value is `DateTime1` field from results.
 
 - Dapper record query will seralize to record and use LINQ to convert to dictionary:
 
@@ -111,7 +111,7 @@ connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
 connection.Read(query).ToDictionary(t => t[0].value, t => (DateTime)t[3].value);
 ```
 
-- Norm record query will seralize to record and use LINQ to convert to dictionary, same as Dapper. 
+- Norm record query will serialize to record and use LINQ to convert to the dictionary, same as Dapper. 
 However, Norm generates iterators internally instead of list, so iteration should occur only once and difference should be slightly higher:
 
 ```cshap
