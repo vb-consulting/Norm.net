@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: harmon758/postgresql-action@v1
+    - uses: vb-consulting/postgresql-action@v1
       with:
         postgresql version: '11'  # See https://hub.docker.com/_/postgres for available versions
         postgresql user: 'norm_postgresql_unit_tests_user'
         postgresql password: 'norm_postgresql_unit_password'
-    - uses: 280780363/sqlserver-action@v1.0
+    - uses: vb-consulting/sqlserver-action@v1.0
       with:
         accept eula: Y #Required, ACCEPT_EULA confirms your acceptance of the End-User Licensing Agreement.
-    - uses: mirromutth/mysql-action@v1.1
+    - uses: vb-consulting/mysql-action@v1.1
       with:
         mysql version: '8.0'
         mysql root password: 'root'
