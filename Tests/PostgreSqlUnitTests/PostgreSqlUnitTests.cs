@@ -9,18 +9,20 @@ namespace PostgreSqlUnitTests
 
     public class PostgreSqlFixture : IDisposable
     {
-        private const string Default =
-            "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;";
+        private readonly TestConfig.TestConfig config;
 
-        private const string TestDatabase = "no_orm_unit_tests";
+        public string ConnectionString { get; }
 
         public PostgreSqlFixture()
         {
-            ConnectionString = $"Server=localhost;Database={TestDatabase};Port=5432;User Id=postgres;Password=postgres;";
+            config = TestConfig.Config.Value;
+            var builder = new NpgsqlConnectionStringBuilder(config.Default)
+            {
+                Database = config.TestDatabase
+            };
+            ConnectionString = builder.ToString();
             CreateTestDatabase();
         }
-
-        public string ConnectionString { get; }
 
         public void Dispose()
         {
@@ -29,7 +31,7 @@ namespace PostgreSqlUnitTests
 
         private void CreateTestDatabase()
         {
-            void DoCreate() => Execute($"create database {TestDatabase}");
+            void DoCreate() => Execute($"create database {config.TestDatabase}");
             try
             {
                 DoCreate();
@@ -52,18 +54,17 @@ namespace PostgreSqlUnitTests
         private void DropTestDatabase()
         {
             Execute($@"
-            revoke connect on database {TestDatabase} from public;
+            revoke connect on database {config.TestDatabase} from public;
             
             select pid, pg_terminate_backend(pid) from pg_stat_activity 
-            where datname = '{TestDatabase}' and pid <> pg_backend_pid();
+            where datname = '{config.TestDatabase}' and pid <> pg_backend_pid();
 
-            drop database {TestDatabase};");
+            drop database {config.TestDatabase};");
         }
-
 
         private void Execute(string command)
         {
-            using var conn = new NpgsqlConnection(Default);
+            using var conn = new NpgsqlConnection(config.Default);
             using var cmd = new NpgsqlCommand(command, conn);
             conn.Open();
             cmd.ExecuteNonQuery();

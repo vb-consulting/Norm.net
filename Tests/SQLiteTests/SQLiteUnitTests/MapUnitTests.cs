@@ -10,7 +10,7 @@ using Xunit;
 namespace SQLiteUnitTests
 {
     [Collection("SQLiteDatabase")]
-    public class ObjectMappingUnitTests
+    public class MapUnitTests
     {
         private readonly SqLiteFixture fixture;
 
@@ -43,7 +43,7 @@ namespace SQLiteUnitTests
             )
             select * from cte";
 
-        public ObjectMappingUnitTests(SqLiteFixture fixture)
+        public MapUnitTests(SqLiteFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -100,7 +100,7 @@ namespace SQLiteUnitTests
 
 
         [Fact]
-        public void SelectMap_Sync()
+        public void Map_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Map<TestClass>().ToList();
@@ -109,7 +109,7 @@ namespace SQLiteUnitTests
         }
 
         [Fact]
-        public async Task SelectMap_Async()
+        public async Task Map_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
@@ -118,50 +118,60 @@ namespace SQLiteUnitTests
         }
 
         [Fact]
-        public void SelectMapFromTable_Sync()
+        public void Map_From_Table_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            connection
-                .Execute("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);")
-                .Execute(@"
+            try
+            {
+                connection
+                    .Execute("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);")
+                    .Execute(@"
                     insert into test_class2 
                     (id, foo, day, bool, bar)
                     values
                     (@id1, @foo1, @day1, @bool1, @bar1),
                     (@id2, @foo2, @day2, @bool2, @bar2),
                     (@id3, @foo3, @day3, @bool3, @bar3);",
-                    1, "foo1", new DateTime(1977, 5, 19), true, null,
-                    2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
-                    3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
+                        1, "foo1", new DateTime(1977, 5, 19), true, null,
+                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
+                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
 
-            var result = connection.Read("select * from test_class2").Map<TestClass2>().ToList();
+                var result = connection.Read("select * from test_class2").Map<TestClass2>().ToList();
 
-            AssertTestClass2(result);
-
-            connection.Execute("drop table test_class2;");
+                AssertTestClass2(result);
+            }
+            finally
+            {
+                connection.Execute("drop table test_class2;");
+            }
         }
 
         [Fact]
-        public async Task SelectMapFromTable_ASync()
+        public async Task Map_From_Table_ASync()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            await connection.ExecuteAsync("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);"); 
-            await connection.ExecuteAsync(@"
+            try
+            {
+                await connection.ExecuteAsync("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);");
+                await connection.ExecuteAsync(@"
                     insert into test_class2 
                     (id, foo, day, bool, bar)
                     values
                     (@id1, @foo1, @day1, @bool1, @bar1),
                     (@id2, @foo2, @day2, @bool2, @bar2),
                     (@id3, @foo3, @day3, @bool3, @bar3);",
-                    1, "foo1", new DateTime(1977, 5, 19), true, null,
-                    2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
-                    3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
+                        1, "foo1", new DateTime(1977, 5, 19), true, null,
+                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
+                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
 
-            var result = await connection.ReadAsync("select * from test_class2").Map<TestClass2>().ToListAsync();
+                var result = await connection.ReadAsync("select * from test_class2").Map<TestClass2>().ToListAsync();
 
-            AssertTestClass2(result);
-
-            await connection.ExecuteAsync("drop table test_class2;");
+                AssertTestClass2(result);
+            }
+            finally
+            {
+                await connection.ExecuteAsync("drop table test_class2;");
+            }
         }
 
     }

@@ -9,7 +9,7 @@ using Xunit;
 namespace SqlServerUnitTests
 {
     [Collection("SqlClientDatabase")]
-    public class ObjectMappingUnitTests
+    public class MapUnitTests
     {
         private readonly SqlClientFixture fixture;
 
@@ -29,7 +29,7 @@ namespace SqlServerUnitTests
                               (2, 'foo2', cast('1978-05-19' as date), cast(0 as bit), 'bar2'),
                               (3, 'foo3', cast('1979-05-19' as date), null, 'bar3')
                             ) t (id, foo, day, bool, bar)";
-        public ObjectMappingUnitTests(SqlClientFixture fixture)
+        public MapUnitTests(SqlClientFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -60,7 +60,7 @@ namespace SqlServerUnitTests
         }
 
         [Fact]
-        public void SelectMap_Sync()
+        public void Map_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Map<TestClass>().ToList();
@@ -70,7 +70,7 @@ namespace SqlServerUnitTests
 
 
         [Fact]
-        public async Task SelectMap_Async()
+        public async Task Map_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
             var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();

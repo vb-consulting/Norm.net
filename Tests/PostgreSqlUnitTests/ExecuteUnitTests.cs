@@ -126,7 +126,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public async Task Execute_With_Positional_Parameters_Test_Async()
+        public async Task Execute_With_Named_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             await connection.ExecuteAsync("begin");
@@ -153,7 +153,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public async Task Execute_With_Named_Parameters_Test_Async()
+        public async Task Execute_With_Positional_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             await connection.ExecuteAsync("begin");

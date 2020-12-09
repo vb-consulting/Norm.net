@@ -1,0 +1,6 @@
+{
+  "db": {
+    "Default": "Data Source=.\\SQLExpress;Initial Catalog=master;Integrated Security=True;",
+    "TestDatabase": "NormSqlServerUnitTests"
+  }
+}

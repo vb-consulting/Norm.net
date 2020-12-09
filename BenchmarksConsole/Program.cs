@@ -17,7 +17,7 @@ Console.WriteLine();
 
 
 //RunSerializationBenchmarks();
-RunLinqExpBenchmarks();
+//RunLinqExpBenchmarks();
 
 
 string GetQuery(int records)
@@ -38,7 +38,9 @@ string GetQuery(int records)
 ";
 }
 
+#pragma warning disable CS8321 // Local function is declared but never used
 void RunSerializationBenchmarks()
+#pragma warning restore CS8321 // Local function is declared but never used
 {
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
@@ -97,6 +99,7 @@ void RunSerializationBenchmarks()
     Console.WriteLine();
 }
 
+#pragma warning disable CS8321 // Local function is declared but never used
 void RunLinqExpBenchmarks()
 {
     var sw = new Stopwatch();

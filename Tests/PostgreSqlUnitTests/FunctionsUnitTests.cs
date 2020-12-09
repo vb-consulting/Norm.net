@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using Norm;
 using Npgsql;
-using PostgreSqlUnitTests;
 using Xunit;
 
 namespace PostgreSqlUnitTests

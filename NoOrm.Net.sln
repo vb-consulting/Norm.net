@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CHANGES.md = CHANGES.md
 		PERFOMANCE-TESTS.md = PERFOMANCE-TESTS.md
 		README.md = README.md
+		.github\workflows\tests.yml = .github\workflows\tests.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norm", "Norm\Norm.csproj", "{8874B51F-4010-465D-85DF-B389B076F06D}"
@@ -20,7 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLiteUnitTests", "Tests\SQ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarksConsole", "BenchmarksConsole\BenchmarksConsole.csproj", "{3CE092AD-54D2-4F3C-AEB8-98996493F0EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarksConsole", "BenchmarksConsole\BenchmarksConsole.csproj", "{3CE092AD-54D2-4F3C-AEB8-98996493F0EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlUnitTests", "Tests\MySqlUnitTests\MySqlUnitTests.csproj", "{9F453EA2-995B-49F8-B001-7E11F0E03607}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConfig", "Tests\TestConfig\TestConfig.csproj", "{475C4241-476E-4417-8A8F-EFD9CD9E8021}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +53,14 @@ Global
 		{3CE092AD-54D2-4F3C-AEB8-98996493F0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CE092AD-54D2-4F3C-AEB8-98996493F0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CE092AD-54D2-4F3C-AEB8-98996493F0EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F453EA2-995B-49F8-B001-7E11F0E03607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F453EA2-995B-49F8-B001-7E11F0E03607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F453EA2-995B-49F8-B001-7E11F0E03607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F453EA2-995B-49F8-B001-7E11F0E03607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +69,8 @@ Global
 		{F38A7FDB-78B7-4040-8ACC-29123FE525EF} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{2322AE7F-4ABA-4C7C-8C91-CED576A9F714} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
+		{9F453EA2-995B-49F8-B001-7E11F0E03607} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
+		{475C4241-476E-4417-8A8F-EFD9CD9E8021} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {640D1BA9-B36A-414D-8FFB-F6500FCF8E6E}

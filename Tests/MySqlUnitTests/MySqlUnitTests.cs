@@ -1,26 +1,25 @@
 using System;
-using System.Data.SqlClient;
 using Xunit;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
-namespace SqlServerUnitTests
+namespace MySqlUnitTests
 {
-    [CollectionDefinition("SqlClientDatabase")]
-    public class DatabaseFixtureCollection : ICollectionFixture<SqlClientFixture> { }
+    [CollectionDefinition("MySqlDatabase")]
+    public class DatabaseFixtureCollection : ICollectionFixture<MySqlFixture> { }
 
-    public class SqlClientFixture : IDisposable
+    public class MySqlFixture : IDisposable
     {
         private readonly TestConfig.TestConfig config;
 
         public string ConnectionString { get; }
 
-        public SqlClientFixture()
+        public MySqlFixture()
         {
             config = TestConfig.Config.Value;
-            var builder = new SqlConnectionStringBuilder(config.Default)
-            {
-                InitialCatalog = config.TestDatabase
-            };
-            ConnectionString = builder.ToString();
+            var parts = new List<string>(config.Default.Split(';'));
+            parts.Add($"Initial Catalog={config.TestDatabase}");
+            ConnectionString = string.Join(';', parts);
             CreateTestDatabase();
         }
 
@@ -36,12 +35,12 @@ namespace SqlServerUnitTests
             {
                 DoCreate();
             }
-            catch (SqlException e)
+            catch (MySqlException e)
             {
                 switch (e.Number)
                 {
 
-                    case 1801:
+                    case 1007:
                         DropTestDatabase();
                         DoCreate();
                         break;
@@ -53,14 +52,13 @@ namespace SqlServerUnitTests
 
         private void DropTestDatabase()
         {
-            Execute($"alter database {config.TestDatabase} set single_user with rollback immediate;");
             Execute($"drop database {config.TestDatabase};");
         }
 
         private void Execute(string command)
         {
-            using var conn = new SqlConnection(config.Default);
-            using var cmd = new SqlCommand(command, conn);
+            using var conn = new MySqlConnection(config.Default);
+            using var cmd = new MySqlCommand(command, conn);
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();

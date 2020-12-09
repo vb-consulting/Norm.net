@@ -130,37 +130,5 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo1", result[2]);
             Assert.Equal("foo2", result[3]);
         }
-
-        /*
-        [Fact]
-        public void _Test()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            connection.Execute("create table testx (t text not null)");
-
-            try
-            {
-                connection.Execute(@"
-
-                    begin;
-
-                        insert into testx values ('test');
-                        insert into testx values (null);
-
-                    end;
-
-                ", "test", null);
-            }
-            catch (Exception e)
-            {
-
-            //connection.Execute("rollback");
-            //25P02: current transaction is aborted, commands ignored until end of transaction block
-            var result = connection
-                    .Read<string>("select t from testx")
-                    .ToArray();
-            }
-        }
-        */
     }
 }

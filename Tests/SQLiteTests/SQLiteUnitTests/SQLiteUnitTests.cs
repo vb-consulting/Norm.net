@@ -2,7 +2,6 @@ using System;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using System.Net;
 using Xunit;
 
 namespace SQLiteUnitTests
@@ -12,13 +11,15 @@ namespace SQLiteUnitTests
 
     public class SqLiteFixture : IDisposable
     {
-        private const string FileName = "norm_unit_tests.db";
+        private readonly TestConfig.TestConfig config;
 
         public SqLiteFixture()
         {
+            config = TestConfig.Config.Value;
+
             var sb = new SQLiteConnectionStringBuilder
             {
-                DataSource = FileName
+                DataSource = config.Default
             };
             ConnectionString = sb.ToString();
             CreateTestDatabase();
@@ -33,9 +34,9 @@ namespace SQLiteUnitTests
 
         private void CreateTestDatabase()
         {
-            if (File.Exists(FileName))
+            if (File.Exists(config.Default))
             {
-                File.Delete(FileName);
+                File.Delete(config.Default);
             }
 
             using var connection = new SQLiteConnection(ConnectionString);
@@ -54,9 +55,9 @@ namespace SQLiteUnitTests
 
         private void DropTestDatabase()
         {
-            if (File.Exists(FileName))
+            if (File.Exists(config.Default))
             {
-                File.Delete(FileName);
+                File.Delete(config.Default);
             }
         }
     }

@@ -10,7 +10,7 @@ using Xunit;
 namespace PostgreSqlUnitTests
 {
     [Collection("PostgreSqlDatabase")]
-    public class ObjectMappingUnitTests
+    public class MapUnitTests
     {
         private readonly PostgreSqlFixture fixture;
 
@@ -82,7 +82,7 @@ namespace PostgreSqlUnitTests
                                 (4, 'foo4', '1980-05-19'::date, false, 'bar4')
                             ) t(id, foo, day, bool, bar)";
 
-        public ObjectMappingUnitTests(PostgreSqlFixture fixture)
+        public MapUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;
         }
@@ -113,7 +113,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void SelectMap_Sync()
+        public void Map_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Map<TestClass>().ToList();
@@ -121,7 +121,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void SelectEmpty_Sync()
+        public void Map_Empty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read($"select * from ({Query}) q where id = 999").Map<TestClass>().ToList();
@@ -130,7 +130,7 @@ namespace PostgreSqlUnitTests
 
 
         [Fact]
-        public async Task SelectMap_Async()
+        public async Task Map_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
@@ -139,7 +139,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void SelectSnakeCaseMap_Sync()
+        public void Map_Snake_Case_Names_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read(SnakeCaseQuery).Map<SnakeCaseMapTestClass>().ToList();
@@ -168,7 +168,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void SelectArraysMap_Sync()
+        public void Map_Array_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read(ArraysQuery).Map<ArraysTestClass>().ToList();
@@ -202,7 +202,7 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void SelectMap_ChangedPositionSync()
+        public void Map_Changed_Position_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read(Query).Map<TestClassChangedPosition>().ToList();

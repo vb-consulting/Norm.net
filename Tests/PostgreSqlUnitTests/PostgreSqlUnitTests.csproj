@@ -19,6 +19,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Norm\Norm.csproj" />
+    <ProjectReference Include="..\TestConfig\TestConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="testsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="testsettings.local.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
