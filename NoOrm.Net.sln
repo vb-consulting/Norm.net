@@ -10,9 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB305EE7-BD84-4B6C-B6F8-03075129448C}"
 	ProjectSection(SolutionItems) = preProject
 		CHANGES.md = CHANGES.md
+		.github\workflows\database-tests.yml = .github\workflows\database-tests.yml
 		PERFOMANCE-TESTS.md = PERFOMANCE-TESTS.md
 		README.md = README.md
-		.github\workflows\tests.yml = .github\workflows\tests.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norm", "Norm\Norm.csproj", "{8874B51F-4010-465D-85DF-B389B076F06D}"
