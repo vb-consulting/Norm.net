@@ -5,17 +5,17 @@
     <LangVersion>8</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/vbilopav/NoOrm.Net</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/vb-consulting/Norm.net</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <RepositoryUrl>https://github.com/vbilopav/NoOrm.Net</RepositoryUrl>
+    <RepositoryUrl>https://github.com/vb-consulting/Norm.net</RepositoryUrl>
     <Authors>VB-Consulting</Authors>
     <Company>VB-Consulting</Company>
     <Description>Fast, modern and extendible C# Data Access library</Description>
-    <Copyright>Vedran Bilopavlović</Copyright>
-    <PackageTags>NoOrm;noorm;data acceess;orm;no-orm;micro-orm;sql;c# 8;.net core 3</PackageTags>
+    <Copyright>VB-Consulting</Copyright>
+    <PackageTags>Norm;norm;data acceess;orm;no-orm;micro-orm;sql</PackageTags>
     <Version>2.0.0</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/CHANGES.md#200</PackageReleaseNotes>
     <PackageId>Norm.net</PackageId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <FileVersion>2.0.0.0</FileVersion>
