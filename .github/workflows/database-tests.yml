@@ -17,6 +17,9 @@ jobs:
         postgresql version: '11'  # See https://hub.docker.com/_/postgres for available versions
         postgresql user: 'norm_postgresql_unit_tests_user'
         postgresql password: 'norm_postgresql_unit_password'
+    - uses: 280780363/sqlserver-action@v1.0
+      with:
+        accept eula: Y #Required, ACCEPT_EULA confirms your acceptance of the End-User Licensing Agreement.
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1

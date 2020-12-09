@@ -1,6 +1,6 @@
 {
   "db": {
-    "Default": "Data Source=.\\SQLExpress;Initial Catalog=master;Integrated Security=True;",
+    "Default": "Data Source=mcr.microsoft.com/mssql/server:2017-latest;Initial Catalog=master;User Id=sa;Password=SqlSever123123;",
     "TestDatabase": "NormSqlServerUnitTests"
   }
 }
