@@ -1,6 +1,6 @@
 {
   "db": {
-    "Default": "Data Source=mcr.microsoft.com/mssql/server:2017-latest;Initial Catalog=master;User Id=sa;Password=SqlSever123123;",
+    "Default": "Data Source=localhost;Initial Catalog=master;User Id=sa;Password=SqlSever123123;",
     "TestDatabase": "NormSqlServerUnitTests"
   }
 }
