@@ -1,4 +1,4 @@
-# `Norm` micro orm
+# **`Norm micro orm`**
 
 _The fastest database mapper for .NET Standard 2.1_
 
