@@ -30,7 +30,7 @@ See detailed perfomance benchmarks compared to **Dapper** at [performance tests 
 > dotnet add package Norm.net
 ```
 
-### Use is your project
+### Use in project
 
 ```csharp
 using Norm;
