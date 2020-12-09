@@ -42,6 +42,7 @@ using Norm;
 public record MyRecord(int Id, string Foo, string Bar);
 // ...
 var records = connection.Query<MyRecord>("select id, foor, bar from my_table");
+// ...
 ```
 
 ## Currently supported platforms
