@@ -20,6 +20,10 @@ jobs:
     - uses: 280780363/sqlserver-action@v1.0
       with:
         accept eula: Y #Required, ACCEPT_EULA confirms your acceptance of the End-User Licensing Agreement.
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql version: '8.0'
+        mysql root password: 'root'
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
