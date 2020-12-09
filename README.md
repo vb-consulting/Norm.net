@@ -1,22 +1,43 @@
-# `Norm` data mapper
+# `Norm` micro orm
 
-250 tests for SqlServer, PostgreSQL, SQLite and MySql
+_The fastest database mapper for .NET Standard 2.1_
 
-![tests](https://github.com/vb-consulting/Norm.net/workflows/tests/badge.svg)
-
-
-Fast and modern data mapper for .NET Standard 2.1
-
-> website with totorial under construction
+> **the website with tutorial currently under construction**
 
 ## Performances
 
 See detailed perfomance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
 
-## Get it on Nuget
+## Testing
+
+250 tests for SqlServer, PostgreSQL, SQLite and MySql
+
+![tests](https://github.com/vb-consulting/Norm.net/workflows/tests/badge.svg)
+
+### Local testing
+
+- Under each test project there is a `testsettings.json`. 
+- Copy this file and rename it to `testsettings.local.json`. It will be ignored by git.
+- Set the key `Default` to the value of your actual, local connection string.
+- The key `TestDatabase` contains the name of the test database, which is created and dropped on each testing session, so be careful about that.
+- Run `dotnet test`
+
+## Usage
+
+### Get it on Nuget
 
 ```txt
 > dotnet add package Norm.net
+```
+
+### Use is your project
+
+```csharp
+using Norm;
+
+// ...
+// start using database connection extensions
+// ...
 ```
 
 ## Currently supported platforms
