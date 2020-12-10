@@ -40,7 +40,7 @@ class PocoClass
 record Record(int Id1, string Foo1, string Bar1, DateTime DateTime1, int Id2, string Foo2, string Bar2, DateTime DateTime2, string LongFooBar, bool IsFooBar);
 ```
 
-Norm also tests serialziation to enumaerable of named tuples:
+Norm also tests serialziation to enumerable of named tuples:
 
 ```csharp
 IEnumerable<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)> normTuples = 
@@ -106,7 +106,7 @@ Serialization to `PocoClass` and `Record` by Dapper and Norm.
 Serialization to named tuples enumerable doesn't use any mapping logic (no reflection and no caching) and
 it is fast as raw data reader.
 
-Results indicate that mapping to POCO or Record are indistinguishable from raw data reader. They are just as fast.
+Results indicate that mapping to POCO or Record are indistinguishable from raw data reader. They seem to be just as fast.
 
 ## Test 2
 
