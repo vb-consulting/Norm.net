@@ -45,14 +45,14 @@ void RunSerializationBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|");
-    Console.WriteLine("|-|-----------|-------------|---------|-----------|");
+    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|");
+    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------|");
 
     var list = new List<long[]>();
 
     for (int i = 0; i<10; i++)
     {
-        var values = new long[4];
+        var values = new long[5];
 
         GC.Collect();
         sw.Reset();
@@ -86,16 +86,26 @@ void RunSerializationBenchmarks()
         var normRecordElapsed = sw.Elapsed;
         values[3] = sw.Elapsed.Ticks;
 
+        GC.Collect();
+        sw.Reset();
+        sw.Start();
+        IEnumerable<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)> normTuples = 
+            connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList();
+        sw.Stop();
+        var normTuplesElapsed = sw.Elapsed;
+        values[4] = sw.Elapsed.Ticks;
+
         list.Add(values);
-        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|");
+        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|{normTuplesElapsed}|");
     }
 
     var dapperPocoAvg = new TimeSpan((long)list.Select(v => v[0]).Average());
     var dapperRecordAvg = new TimeSpan((long)list.Select(v => v[1]).Average());
     var normPocoAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
     var normRecordAvg = new TimeSpan((long)list.Select(v => v[3]).Average());
+    var normTuplesAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
 
-    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|");
+    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|{normTuplesAvg}|");
     Console.WriteLine();
 }
 

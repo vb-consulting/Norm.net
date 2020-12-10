@@ -35,14 +35,31 @@ See detailed perfomance benchmarks compared to **Dapper** at [performance tests 
 ```csharp
 using Norm;
 
-// ...
-// start using database connection extensions
-// ...
+// Start using database connection extensions. Some examples:
 
+// Map results to record:
 public record MyRecord(int Id, string Foo, string Bar);
 // ...
-var records = connection.Query<MyRecord>("select id, foor, bar from my_table");
+var records = connection.Query<MyRecord>("select id, foo, bar from my_table");
+
+// Map results to class:
+public class MyClass { public int Id { get; init; } public string Foo { get; init; } public string Bar { get; init; } };
 // ...
+var records = connection.Query<MyClass>("select id, foo, bar from my_table");
+
+// Map single values from tuple to variables:
+var (id, foo, bar) = connection.Single<int, string, string>("select id, foor, bar from my_table limit 1");
+
+// Map to enumerable of named tuples:
+IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foor, bar from my_table");
+
+// Asynchronously stream values directly from database
+await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("select id, foor, bar from my_table"))
+{
+    //...
+}
+
+// etc...
 ```
 
 ## Currently supported platforms
