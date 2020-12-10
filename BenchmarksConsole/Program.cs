@@ -45,14 +45,14 @@ void RunSerializationBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|");
-    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------|");
+    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|Raw DataReader|");
+    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------|--------------|");
 
     var list = new List<long[]>();
 
     for (int i = 0; i<10; i++)
     {
-        var values = new long[5];
+        var values = new long[6];
 
         GC.Collect();
         sw.Reset();
@@ -95,8 +95,43 @@ void RunSerializationBenchmarks()
         var normTuplesElapsed = sw.Elapsed;
         values[4] = sw.Elapsed.Ticks;
 
+        GC.Collect();
+        sw.Reset();
+        sw.Start();
+        var rawReader = new List<PocoClass>();
+        using var command = new NpgsqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var id1 = reader.GetInt32(0);
+            var foo1 = reader.GetString(1);
+            var bar1 = reader.GetString(2);
+            var dateTime1 = reader.GetDateTime(3);
+            var id2 = reader.GetInt32(4);
+            var foo2 = reader.GetString(5);
+            var bar2 = reader.GetString(6);
+            var dateTime2 = reader.GetDateTime(7);
+            var longFooBar = reader.GetString(8);
+            var isFooBar = reader.GetBoolean(9);
+            rawReader.Add(new PocoClass
+            {
+                Id1 = id1,
+                Foo1 = (foo1 as object == DBNull.Value ? null : foo1),
+                Bar1 = (bar1 as object == DBNull.Value ? null : bar1),
+                DateTime1 = dateTime1,
+                Foo2 = (foo2 as object == DBNull.Value ? null : foo2),
+                Bar2 = (bar2 as object == DBNull.Value ? null : bar2),
+                DateTime2 = dateTime2,
+                LongFooBar = (longFooBar as object == DBNull.Value ? null : longFooBar),
+                IsFooBar = isFooBar,
+            });
+        }
+        sw.Stop();
+        var rawDataReaderElapsed = sw.Elapsed;
+        values[5] = sw.Elapsed.Ticks;
+
         list.Add(values);
-        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|{normTuplesElapsed}|");
+        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|{normTuplesElapsed}|{rawDataReaderElapsed}|");
     }
 
     var dapperPocoAvg = new TimeSpan((long)list.Select(v => v[0]).Average());
@@ -104,8 +139,9 @@ void RunSerializationBenchmarks()
     var normPocoAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
     var normRecordAvg = new TimeSpan((long)list.Select(v => v[3]).Average());
     var normTuplesAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
+    var rawDataReaderAvg = new TimeSpan((long)list.Select(v => v[5]).Average());
 
-    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|{normTuplesAvg}|");
+    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|{normTuplesAvg}|{rawDataReaderAvg}|");
     Console.WriteLine();
 }
 
