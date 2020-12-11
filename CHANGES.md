@@ -1,5 +1,10 @@
 # Version history
 
+## 2.0.2
+## 2.0.1
+
+Version 2.0.1, 2.0.2 are identical to 2.0.0 and used only for building packeges with source links to github repo and automated publish integration.
+
 ## 2.0.0
 
 ### Breaking changes
