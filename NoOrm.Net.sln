@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConfig", "Tests\TestCon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSqlNorm", "PostgreSqlNorm\PostgreSqlNorm.csproj", "{13DEE1E9-B2E7-4269-9B97-E1F260433FFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSqlNormUnitTests", "Tests\PostgreSqlNormUnitTests\PostgreSqlNormUnitTests.csproj", "{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{13DEE1E9-B2E7-4269-9B97-E1F260433FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13DEE1E9-B2E7-4269-9B97-E1F260433FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13DEE1E9-B2E7-4269-9B97-E1F260433FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{9F453EA2-995B-49F8-B001-7E11F0E03607} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
+		{17A3F9BE-3DA9-4263-B7F3-105258BFEC5E} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {640D1BA9-B36A-414D-8FFB-F6500FCF8E6E}
