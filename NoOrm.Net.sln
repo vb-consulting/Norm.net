@@ -9,8 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServerUnitTests", "Tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB305EE7-BD84-4B6C-B6F8-03075129448C}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-test-publish.yml = .github\workflows\build-test-publish.yml
 		CHANGES.md = CHANGES.md
-		.github\workflows\database-tests.yml = .github\workflows\database-tests.yml
 		PERFOMANCE-TESTS.md = PERFOMANCE-TESTS.md
 		README.md = README.md
 	EndProjectSection
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarksConsole", "Benchm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlUnitTests", "Tests\MySqlUnitTests\MySqlUnitTests.csproj", "{9F453EA2-995B-49F8-B001-7E11F0E03607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConfig", "Tests\TestConfig\TestConfig.csproj", "{475C4241-476E-4417-8A8F-EFD9CD9E8021}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConfig", "Tests\TestConfig\TestConfig.csproj", "{475C4241-476E-4417-8A8F-EFD9CD9E8021}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

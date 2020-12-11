@@ -1,4 +1,4 @@
-name: tests
+name: build-test-publish
 
 on:
   push:
@@ -12,15 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: vb-consulting/postgresql-action@v1
+    - name: Install PosgtreSQL
+      uses: vb-consulting/postgresql-action@v1
       with:
         postgresql version: '11'  # See https://hub.docker.com/_/postgres for available versions
         postgresql user: 'norm_postgresql_unit_tests_user'
         postgresql password: 'norm_postgresql_unit_password'
-    - uses: vb-consulting/sqlserver-action@v1.0
+    - name: Install SQL Server
+      uses: vb-consulting/sqlserver-action@v1.0
       with:
         accept eula: Y #Required, ACCEPT_EULA confirms your acceptance of the End-User Licensing Agreement.
-    - uses: vb-consulting/mysql-action@v1.1
+    - name: Install MySQL
+      uses: vb-consulting/mysql-action@v1.1
       with:
         mysql version: '8.0'
         mysql root password: 'root'
@@ -35,3 +38,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity m
+    - name: Publish
+      uses: vb-consulting/publish-nuget@v2.5.2
+      with:
+        PROJECT_FILE_PATH: Norm/Norm.csproj
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
