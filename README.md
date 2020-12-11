@@ -48,13 +48,13 @@ public class MyClass { public int Id { get; init; } public string Foo { get; ini
 var records = connection.Query<MyClass>("select id, foo, bar from my_table");
 
 // Map single values from tuple to variables:
-var (id, foo, bar) = connection.Single<int, string, string>("select id, foor, bar from my_table limit 1");
+var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table limit 1");
 
 // Map to enumerable of named tuples:
-IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foor, bar from my_table");
+IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foo, bar from my_table");
 
 // Asynchronously stream values directly from database
-await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("select id, foor, bar from my_table"))
+await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("select id, foo, bar from my_table"))
 {
     //...
 }
