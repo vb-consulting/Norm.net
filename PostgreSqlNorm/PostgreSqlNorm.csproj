@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Norm.net" Version="2.0.2" />
-    <PackageReference Include="Npgsql" Version="5.0.0" />
+    <PackageReference Include="Norm.net" Version="2.0.3" />
+    <PackageReference Include="Npgsql" Version="5.0.1.1" />
   </ItemGroup>
 
 </Project>
