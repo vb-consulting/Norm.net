@@ -7,7 +7,7 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        public static DbConnection EnsureIsOpen(this DbConnection connection)
+        internal static DbConnection EnsureIsOpen(this DbConnection connection)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -16,7 +16,7 @@ namespace Norm
             return connection;
         }
 
-        public static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection, CancellationToken? cancellationToken = null)
+        internal static async Task<DbConnection> EnsureIsOpenAsync(this DbConnection connection, CancellationToken? cancellationToken = null)
         {
             if (connection.State == ConnectionState.Open)
             {

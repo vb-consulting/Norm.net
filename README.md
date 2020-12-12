@@ -12,7 +12,7 @@ See detailed perfomance benchmarks compared to **Dapper** at [performance tests 
 
 250 tests for SqlServer, PostgreSQL, SQLite and MySql
 
-![tests](https://github.com/vb-consulting/Norm.net/workflows/tests/badge.svg)
+![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
 
 ### Local testing
 

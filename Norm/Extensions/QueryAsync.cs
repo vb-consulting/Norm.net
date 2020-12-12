@@ -8,27 +8,27 @@ namespace Norm
     {
         //
         // Summary:
-        //     Maps command results to instance enumerator.
+        //     Maps command results to async instance enumerator.
         //
         // Parameters:
         //   connection:
         //     DbConnection instance.
         //
         //   command:
-        //     SQL command text.
+        //     SQL Command text.
         //
         //   T:
         //    Type of instances that name and value tuples array will be mapped to. 
         //
         // Returns:
-        //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command)
+        //     IAsyncEnumerable async enumerator of instances of type T.
+        public static IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command)
         {
-            return connection.GetNoOrmInstance().Query<T>(command);
+            return connection.GetNoOrmInstance().QueryAsync<T>(command);
         }
         //
         // Summary:
-        //     Maps command results with positional parameter values to instance enumerator.
+        //     Maps command results with positional parameter values to async instance enumerator.
         //
         // Parameters:
         //   connection:
@@ -44,14 +44,14 @@ namespace Norm
         //    Type of instances that name and value tuples array will be mapped to. 
         //
         // Returns:
-        //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params object[] parameters)
+        //     IAsyncEnumerable async enumerator of instances of type T. 
+        public static IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command, params object[] parameters)
         {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
+            return connection.GetNoOrmInstance().QueryAsync<T>(command, parameters);
         }
         //
         // Summary:
-        //     Maps command results with named parameter values to instance enumerator.
+        //     Maps command results with named parameter values to async instance enumerator.
         //
         // Parameters:
         //   connection:
@@ -67,14 +67,14 @@ namespace Norm
         //    Type of instances that name and value tuples array will be mapped to. 
         //
         // Returns:
-        //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        //     IAsyncEnumerable async enumerator of instances of type T.
+        public static IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
+            return connection.GetNoOrmInstance().QueryAsync<T>(command, parameters);
         }
         //
         // Summary:
-        //     Maps command results with named parameter values and DbType type for each parameter to instance enumerator.
+        //     Maps command results with named parameter values and DbType type for each parameter to async instance enumerator.
         //
         // Parameters:
         //   connection:
@@ -90,14 +90,14 @@ namespace Norm
         //    Type of instances that name and value tuples array will be mapped to. 
         //
         // Returns:
-        //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
+        //     IAsyncEnumerable async enumerator of instances of type T.
+        public static IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
+            return connection.GetNoOrmInstance().QueryAsync<T>(command, parameters);
         }
         //
         // Summary:
-        //     Maps command results with named parameter values and custom type for each parameter to instance enumerator.
+        //     Maps command results with named parameter values and custom type for each parameter to async instance enumerator.
         //
         // Parameters:
         //   connection:
@@ -114,10 +114,10 @@ namespace Norm
         //    Type of instances that name and value tuples array will be mapped to. 
         //
         // Returns:
-        //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        //     IAsyncEnumerable async enumerator of instances of type T.
+        public static IAsyncEnumerable<T> QueryAsync<T>(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
         {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
+            return connection.GetNoOrmInstance().QueryAsync<T>(command, parameters);
         }
     }
 }

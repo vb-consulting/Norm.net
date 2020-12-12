@@ -1,19 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 
-namespace Norm
+namespace Norm.Interfaces
 {
-    public static partial class NormExtensions
+    public interface INormQuery
     {
         //
         // Summary:
         //     Maps command results to instance enumerator.
         //
         // Parameters:
-        //   connection:
-        //     DbConnection instance.
-        //
         //   command:
         //     SQL command text.
         //
@@ -22,18 +18,12 @@ namespace Norm
         //
         // Returns:
         //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command)
-        {
-            return connection.GetNoOrmInstance().Query<T>(command);
-        }
+        IEnumerable<T> Query<T>(string command);
         //
         // Summary:
         //     Maps command results with positional parameter values to instance enumerator.
         //
         // Parameters:
-        //   connection:
-        //     DbConnection instance.
-        //
         //   command:
         //     SQL command text.
         //
@@ -45,18 +35,12 @@ namespace Norm
         //
         // Returns:
         //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params object[] parameters)
-        {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
-        }
+        IEnumerable<T> Query<T>(string command, params object[] parameters);
         //
         // Summary:
         //     Maps command results with named parameter values to instance enumerator.
         //
         // Parameters:
-        //   connection:
-        //     DbConnection instance.
-        //
         //   command:
         //     SQL command text.
         //
@@ -68,18 +52,12 @@ namespace Norm
         //
         // Returns:
         //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value)[] parameters)
-        {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
-        }
+        IEnumerable<T> Query<T>(string command, params (string name, object value)[] parameters);
         //
         // Summary:
         //     Maps command results with named parameter values and DbType type for each parameter to instance enumerator.
         //
         // Parameters:
-        //   connection:
-        //     DbConnection instance.
-        //
         //   command:
         //     SQL command text.
         //
@@ -91,18 +69,12 @@ namespace Norm
         //
         // Returns:
         //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
-        {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
-        }
+        IEnumerable<T> Query<T>(string command, params (string name, object value, DbType type)[] parameters);
         //
         // Summary:
         //     Maps command results with named parameter values and custom type for each parameter to instance enumerator.
         //
         // Parameters:
-        //   connection:
-        //     DbConnection instance.
-        //
         //   command:
         //     SQL command text.
         //
@@ -115,9 +87,6 @@ namespace Norm
         //
         // Returns:
         //     IEnumerable enumerator of instances of type T.
-        public static IEnumerable<T> Query<T>(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
-        {
-            return connection.GetNoOrmInstance().Query<T>(command, parameters);
-        }
+        IEnumerable<T> Query<T>(string command, params (string name, object value, object type)[] parameters);
     }
 }

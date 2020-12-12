@@ -14,6 +14,7 @@ namespace Norm
             Ms,
             Pg,
             Lt,
+            My,
             Other
         }
 
@@ -48,6 +49,7 @@ namespace Norm
                 "SqlConnection" => (DatabaseType.Ms, false),
                 "NpgsqlConnection" => (DatabaseType.Pg, true),
                 "SQLiteConnection" => (DatabaseType.Lt, false),
+                "MySqlConnection" => (DatabaseType.My, false),
                 _ => (DatabaseType.Other, false)
             };
         }
@@ -64,7 +66,7 @@ namespace Norm
 
         public INorm AsText() => As(CommandType.Text);
 
-        public INorm Timeout(int? timeout)
+        public INorm Timeout(int timeout)
         {
             commandTimeout = timeout;
             return this;

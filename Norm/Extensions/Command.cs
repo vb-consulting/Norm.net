@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Norm
 {
-    public static partial class NormExtensions
+    internal static class CommandExtensions
     {
         public static DbCommand SetCommandParameters(this DbCommand cmd, string command, CommandType type, int? timeout)
         {
