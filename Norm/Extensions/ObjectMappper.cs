@@ -6,19 +6,19 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        //
-        // Summary:
-        //     Maps name and value tuples array returned from non-generic Read extension to instance enumerator.
-        //
-        // Parameters:
-        //   tuples:
-        //    Name and value tuples array. 
-        //
-        //   T:
-        //    Type of instances that name and value tuples array will be mapped to. 
-        //
-        // Returns:
-        //     IEnumerable enumerator of instances of type T.
+        ///
+        /// Summary:
+        ///     Maps name and value tuples array returned from non-generic Read extension to instance enumerator.
+        ///
+        /// Parameters:
+        ///   tuples:
+        ///    Name and value tuples array. 
+        ///
+        ///   T:
+        ///    Type of instances that name and value tuples array will be mapped to. 
+        ///
+        /// Returns:
+        ///     IEnumerable enumerator of instances of type T.
         public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
@@ -28,19 +28,19 @@ namespace Norm
                 yield return t;
             }
         }
-        //
-        // Summary:
-        //     Maps name and value tuples array returned from non-generic Read extension to instance async enumerator.
-        //
-        // Parameters:
-        //   tuples:
-        //    Name and value tuples array. 
-        //
-        //   T:
-        //    Type of instances that name and value tuples array will be mapped to. 
-        //
-        // Returns:
-        //     IAsyncEnumerable async enumerator of instances of type T.
+        ///
+        /// Summary:
+        ///     Maps name and value tuples array returned from non-generic Read extension to instance async enumerator.
+        ///
+        /// Parameters:
+        ///   tuples:
+        ///    Name and value tuples array. 
+        ///
+        ///   T:
+        ///    Type of instances that name and value tuples array will be mapped to. 
+        ///
+        /// Returns:
+        ///     IAsyncEnumerable async enumerator of instances of type T.
         public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
