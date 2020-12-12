@@ -1,5 +1,12 @@
 # Version history
 
+## 2.0.3
+
+- Added comment documentation for all public methods
+- Command extensnion changed to internal access
+- Type cache for GetProperties made public for future extensions
+- Added missing Query methods to INorm interface
+
 ## 2.0.2
 ## 2.0.1
 

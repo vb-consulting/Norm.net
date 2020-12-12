@@ -9,40 +9,48 @@ namespace Norm
     {
         private static readonly object ctorLocker = new object();
         private static (T, Func<T, object>) ctorInfo = default;
-        public static (T, Func<T, object>) GetCtorInfo(Type type)
-        {
-            if (ctorInfo.Item1 != null)
-            {
-                return ctorInfo;
-            }
-            lock (ctorLocker)
-            {
-                if (ctorInfo.Item1 != null)
-                {
-                    return ctorInfo;
-                }
-                var defaultCtor = type.GetConstructors()[0];
-                ctorInfo = (
-                    (T)defaultCtor.Invoke(Enumerable.Repeat<object>(default, defaultCtor.GetParameters().Length).ToArray()),
-                    (Func<T, object>)Delegate.CreateDelegate(typeof(Func<T, object>), type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)));
-                return ctorInfo;
-            }
-        }
-
-        public static T CreateInstance((T instance, Func<T, object> clone) info)
-        {
-            return (T)info.clone.Invoke(info.instance);
-        }
-
         private static readonly object nameLocker = new object();
         private static Dictionary<string, ushort> names = null;
-        public static Dictionary<string, ushort> GetNames((string name, object value)[] tuple)
+        private static readonly object propertiesLocker = new object();
+        private static PropertyInfo[] properties = null;
+        private static readonly object delegateLocker = new object();
+        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
+
+        //
+        // Summary:
+        //    Return cached property info array
+        //
+        // Parameters:
+        //
+        //   type:
+        //     Type for properties to be returned
+        //
+        // Returns:
+        //     PropertyInfo array
+        public static PropertyInfo[] GetProperties(Type type)
+        {
+            if (properties != null)
+            {
+                return properties;
+            }
+            lock (propertiesLocker)
+            {
+                if (properties != null)
+                {
+                    return properties;
+                }
+                properties = type.GetProperties();
+                return properties;
+            }
+        }
+
+        internal static Dictionary<string, ushort> GetNames((string name, object value)[] tuple)
         {
             if (names != null)
             {
                 return names;
             }
-            lock (nameLocker) 
+            lock (nameLocker)
             {
                 if (names != null)
                 {
@@ -67,28 +75,32 @@ namespace Norm
             }
         }
 
-        private static readonly object propertiesLocker = new object();
-        private static PropertyInfo[] properties = null;
-        public static PropertyInfo[] GetProperties(Type type)
+        internal static (T, Func<T, object>) GetCtorInfo(Type type)
         {
-            if (properties != null)
+            if (ctorInfo.Item1 != null)
             {
-                return properties;
+                return ctorInfo;
             }
-            lock (propertiesLocker)
+            lock (ctorLocker)
             {
-                if (properties != null)
+                if (ctorInfo.Item1 != null)
                 {
-                    return properties;
+                    return ctorInfo;
                 }
-                properties = type.GetProperties();
-                return properties;
+                var defaultCtor = type.GetConstructors()[0];
+                ctorInfo = (
+                    (T)defaultCtor.Invoke(Enumerable.Repeat<object>(default, defaultCtor.GetParameters().Length).ToArray()),
+                    (Func<T, object>)Delegate.CreateDelegate(typeof(Func<T, object>), type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)));
+                return ctorInfo;
             }
         }
 
-        private static readonly object delegateLocker = new object();
-        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
-        public static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int len)
+        internal static T CreateInstance((T instance, Func<T, object> clone) info)
+        {
+            return (T)info.clone.Invoke(info.instance);
+        }
+
+        internal static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int len)
         {
             if (delegateCache != null)
             {
