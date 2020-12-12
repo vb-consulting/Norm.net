@@ -1,5 +1,13 @@
 # Version history
 
+## 2.0.5
+
+- include comments documentation in package
+
+## 2.0.4
+
+- include source link package
+
 ## 2.0.3
 
 - Added comment documentation for all public methods
