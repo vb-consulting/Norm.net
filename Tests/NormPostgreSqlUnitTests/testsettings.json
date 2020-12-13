@@ -1,0 +1,6 @@
+{
+  "db": {
+    "Default": "Server=localhost;Database=postgres;Port=5432;User Id=norm_postgresql_unit_tests_user;Password=norm_postgresql_unit_password;",
+    "TestDatabase": "norm_postgresql_unit_tests"
+  }
+}
