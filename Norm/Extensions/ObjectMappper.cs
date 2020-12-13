@@ -6,19 +6,12 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        ///
-        /// Summary:
+        ///<summary>
         ///     Maps name and value tuples array returned from non-generic Read extension to instance enumerator.
-        ///
-        /// Parameters:
-        ///   tuples:
-        ///    Name and value tuples array. 
-        ///
-        ///   T:
-        ///    Type of instances that name and value tuples array will be mapped to. 
-        ///
-        /// Returns:
-        ///     IEnumerable enumerator of instances of type T.
+        ///</summary>
+        ///<param name="tuples">Name and value tuples array.</param>
+        ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
+        ///<returns>IEnumerable enumerator of instances of type T.</returns>
         public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
@@ -28,19 +21,12 @@ namespace Norm
                 yield return t;
             }
         }
-        ///
-        /// Summary:
+        ///<summary>
         ///     Maps name and value tuples array returned from non-generic Read extension to instance async enumerator.
-        ///
-        /// Parameters:
-        ///   tuples:
-        ///    Name and value tuples array. 
-        ///
-        ///   T:
-        ///    Type of instances that name and value tuples array will be mapped to. 
-        ///
-        /// Returns:
-        ///     IAsyncEnumerable async enumerator of instances of type T.
+        ///</summary>
+        ///<param name="tuples">Name and value tuples array.</param>
+        ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
+        ///<returns>IAsyncEnumerable async enumerator of instances of type T.</returns>
         public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);

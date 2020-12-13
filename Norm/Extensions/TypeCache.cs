@@ -16,17 +16,11 @@ namespace Norm
         private static readonly object delegateLocker = new object();
         private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
 
-        ///
-        /// Summary:
+        ///<summary>
         ///    Return cached property info array
-        ///
-        /// Parameters:
-        ///
-        ///   type:
-        ///     Type for properties to be returned
-        ///
-        /// Returns:
-        ///     PropertyInfo array
+        ///</summary>
+        ///<param name="type">Type for properties to be returned</param>
+        ///<returns>PropertyInfo array</returns>
         public static PropertyInfo[] GetProperties(Type type)
         {
             if (properties != null)

@@ -13,71 +13,49 @@ namespace Norm.Interfaces
         INormQuery,
         INormQueryAsync
     {
-        /// Returns:
+        ///<summary>
         ///     returns DbConnection for this instance
+        ///</summary>
         DbConnection Connection { get; }
-        ///
-        /// Summary:
+        ///<summary>
         ///     Set command type for the connection commands and return Norm instance.
         ///     Default command type for new instance is Text.
-        ///
-        /// Parameters:
-        ///   type:
+        ///</summary>
+        ///<param name="type">
         ///     One of the System.Data.CommandType values.
-        ///     Values are Text, StoredProcedure or TableDirect
-        ///
-        /// Returns:
-        ///     Norm instance.
+        ///     Values are Text, StoredProcedure or TableDirect.
+        ///</param>
+        ///<returns>Norm instance.</returns>
         INorm As(CommandType type);
-        ///
-        /// Summary:
+        ///<summary>
         ///     Set command type to StoredProcedure for the connection commands and return Norm instance.
         ///
-        /// Returns:
-        ///     Norm instance.
+        ///<returns>Norm instance.</returns>
         INorm AsProcedure();
-        ///
-        /// Summary:
+        ///<summary>
         ///     Set command type to Text for the connection commands and return Norm instance.
         ///
-        /// Returns:
-        ///     Norm instance.
+        ///<returns>Norm instance.</returns>
         INorm AsText();
-        ///
-        /// Summary:
+        ///<summary>
         ///     Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
-        ///
-        /// Parameters:
-        ///   timeout:
-        ///     Wait time in seconds.
-        ///
-        /// Returns:
-        ///     Norm instance.
+        ///</summary>
+        ///<param name="timeout">Wait time in seconds.</param>
+        ///<returns>Norm instance.</returns>
         INorm Timeout(int timeout);
-        ///
-        /// Summary:
+        ///<summary>
         ///     Sets the next command in prepared mode by calling Prepare for the next command.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        /// Returns:
-        ///     Norm instance.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<returns>Norm instance.</returns>
         INorm Prepared();
-        ///
-        /// Summary:
+        ///<summary>
         ///     Next command will use PostgreSQL format function to parse parameter values.
         ///     This allows for parametrized PostgreSQL scripts execution.
+        ///</summary>
         ///
-        /// Parameters:
-        ///
-        /// Returns:
-        ///     Norm instance.on.
-        ///
-        /// Exceptions:
-        ///   ArgumentException:
-        ///     Connecntion is not PostgreSQL connection or command is in prepared mode.
+        ///<returns>Norm instance.</returns>on.
+        ///<exception cref="ArgumentException">Connection is not PostgreSQL connection or command is in prepared mode.</exception>.
         INorm UsingPostgresFormatParamsMode();
     }
 }
