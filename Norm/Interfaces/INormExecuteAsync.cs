@@ -5,73 +5,42 @@ namespace Norm.Interfaces
 {
     public interface INormExecuteAsync
     {
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously.
-        ///
-        /// Parameters:
-        ///   command:
-        ///     SQL command text.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command);
-        ///
-        /// Summary:
+        ///<summary>
         ///      Execute SQL command asynchronously with positional parameter values.
-        ///
-        /// Parameters:
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters objects array.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters objects array.</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command, params object[] parameters);
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values.
-        ///
-        /// Parameters:
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name and value tuples array - (string name, object value).
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value)[] parameters);
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values DbType type for each parameter.
-        ///
-        /// Parameters:
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name and value tuples array - (string name, object value).
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, DbType type)[] parameters);
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
-        ///
-        /// Parameters:
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name, value and type tuples array - (string name, object value, object type).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
         ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same Norm instance.
+        ///</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command, params (string name, object value, object type)[] parameters);
     }
 }

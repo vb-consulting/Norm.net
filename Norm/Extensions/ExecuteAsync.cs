@@ -6,104 +6,63 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        ///   command:
-        ///     SQL command text.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command);
             return connection;
         }
-        ///
-        /// Summary:
+        ///<summary>
         ///      Execute SQL command asynchronously with positional parameter values.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters objects array.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters objects array.</param>
+        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params object[] parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name and value tuples array - (string name, object value).
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
+        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values DbType type for each parameter.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name and value tuples array - (string name, object value).
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
+        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;
         }
-        ///
-        /// Summary:
+        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
-        ///
-        /// Parameters:
-        ///   connection:
-        ///     DbConnection instance.
-        ///
-        ///   command:
-        ///     SQL command text.
-        ///
-        ///   parameters:
-        ///     Parameters name, value and type tuples array - (string name, object value, object type).
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
         ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///
-        /// Returns:
-        ///     A value task representing the asynchronous operation returning the same DbConnection instance.
+        ///</param>
+        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);

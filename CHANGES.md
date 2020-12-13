@@ -1,5 +1,9 @@
 # Version history
 
+## 2.0.6
+
+- fix comments documentation for package
+
 ## 2.0.5
 
 - include comments documentation in package
