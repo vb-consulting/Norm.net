@@ -2,8 +2,6 @@
 
 _The fastest database mapper for .NET Standard 2.1_
 
-> **the website with tutorial currently under construction**
-
 ## Features at a Glance
 
 - Modern: maps SQL results to **tuples**, **named tuples** **plain old classes** or **records**.
