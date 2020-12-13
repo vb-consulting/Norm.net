@@ -51,7 +51,11 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 
 ## Performances
 
-See detailed perfomance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
+- See detailed perfomance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
+
+- To run [beckmark console](https://github.com/vb-consulting/Norm.net/blob/master/BenchmarksConsole/Program.cs) manually, configure local testing for [PostgreSQL unit tests project](https://github.com/vb-consulting/Norm.net/tree/master/Tests/PostgreSqlUnitTests) first. See instructions for local testing bellow.
+
+- Techical deep-dive article with explanation: [What Makes Norm Micro ORM for .NET Fast As Raw DataReader](https://dev.to/vbilopav/what-makes-norm-micro-orm-for-net-fast-as-raw-datareader-5eoa)
 
 ## Testing
 
