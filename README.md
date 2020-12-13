@@ -9,8 +9,8 @@ _The fastest database mapper for .NET Standard 2.1_
 - Modern: maps SQL results to **tuples**, **named tuples** **plain old classes** or **records**.
 - Fast: mapping **perfomances indistinguishable from the raw data reader.**
 - Powrerful: generates async enumareables to enable **asynchronous database streaming.**
-- Simple: Implemented strictly as **set of extensions (four sync and four async) - for `System.Data.Common.DbConnection` instances.**
-- Works with all databases based on `System.Data.Common.DbConnection`. And that is pretty much **all databases.**
+- Simple: Implemented strictly as **set of extensions (four sync and four async) - for System.Data.Common.DbConnection instances.**
+- Works with all databases based on common DbConnection class, and that is pretty much **all databases.**
 - Thoroughly tested, 250+ automated tests for SqlServer, PostgreSQL, SQLite and MySql.
 - No need for extra configuration.
 - Small, and absolutely no dependencies whatsoever.
