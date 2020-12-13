@@ -30,20 +30,16 @@ using Norm;
 
 // Start using database connection extensions. Some examples:
 
-// Map results to record:
-public record MyRecord(int Id, string Foo, string Bar);
-// ...
+// Map results to record MyRecord
 var records = connection.Query<MyRecord>("select id, foo, bar from my_table");
 
-// Map results to class:
-public class MyClass { public int Id { get; init; } public string Foo { get; init; } public string Bar { get; init; } };
-// ...
+// Map results to class MyClass
 var records = connection.Query<MyClass>("select id, foo, bar from my_table");
 
-// Map single values from tuple to variables:
+// Map single values to tuple and deconstruct to three variables
 var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table");
 
-// Map to enumerable of named tuples:
+// Build enumerable of named tuples:
 IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foo, bar from my_table");
 
 // Asynchronously stream values directly from database
