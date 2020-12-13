@@ -4,23 +4,16 @@ _The fastest database mapper for .NET Standard 2.1_
 
 > **the website with tutorial currently under construction**
 
-## Performances
+## Features at a Glance
 
-See detailed perfomance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
-
-## Testing
-
-250 tests for SqlServer, PostgreSQL, SQLite and MySql
-
-![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
-
-### Local testing
-
-- Under each test project there is a `testsettings.json`. 
-- Copy this file and rename it to `testsettings.local.json`. It will be ignored by git.
-- Set the key `Default` to the value of your actual, local connection string.
-- The key `TestDatabase` contains the name of the test database, which is created and dropped on each testing session, so be careful about that.
-- Run `dotnet test`
+- Modern: maps SQL results to **tuples**, **named tuples** **plain old classes** or **records**.
+- Fast: mapping **perfomances indistinguishable from the raw data reader.**
+- Powrerful: generates async enumareables to enable **asynchronous database streaming.**
+- Simple: Implemented strictly as **set of extensions (four sync and four async) - for `System.Data.Common.DbConnection` instances.**
+- Works with all databases based on `System.Data.Common.DbConnection`. And that is pretty much **all databases.**
+- Thoroughly tested, 250+ automated tests for SqlServer, PostgreSQL, SQLite and MySql.
+- No need for extra configuration.
+- Small, and absolutely no dependencies whatsoever.
 
 ## Usage
 
@@ -48,7 +41,7 @@ public class MyClass { public int Id { get; init; } public string Foo { get; ini
 var records = connection.Query<MyClass>("select id, foo, bar from my_table");
 
 // Map single values from tuple to variables:
-var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table limit 1");
+var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table");
 
 // Map to enumerable of named tuples:
 IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foo, bar from my_table");
@@ -61,6 +54,24 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 
 // etc...
 ```
+
+## Performances
+
+See detailed perfomance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
+
+## Testing
+
+250 automated tests for SqlServer, PostgreSQL, SQLite and MySql
+
+![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
+
+### Local testing
+
+- Under each test project there is a `testsettings.json`. 
+- Copy this file and rename it to `testsettings.local.json`. It will be ignored by git.
+- Set the key `Default` to the value of your actual, local connection string.
+- The key `TestDatabase` contains the name of the test database, which is created and dropped on each testing session, so be careful about that.
+- Run `dotnet test`
 
 ## Currently supported platforms
 
