@@ -10,6 +10,7 @@ _The fastest database mapper for .NET Standard 2.1_
 - Simple: Implemented strictly as set of extensions - for `System.Data.Common.DbConnection` instances.
 - Only four extensions  (plus parameters overloads and async versions): `Execute`, `Query`, `Read`, and `Single`. That's all it needs. There is no learning curve at all.
 - Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
+- Works also with `array` types, where arrays are supported (PostgreSQL for example).
 - Thoroughly tested, 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
 - No need for extra configuration or special attributes.
 - Small, and absolutely `no dependencies whatsoever.`
