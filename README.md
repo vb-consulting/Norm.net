@@ -4,17 +4,17 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ## Features at a Glance
 
-- Modern: maps SQL results to **`tuples`**, **`named tuples`** **`plain old classes`** or **`records`**.
-- Fast: mapping **` performances indistinguishable from the raw data reader`.**
-- Powerful: generates async enumerable to enable **`asynchronous database streaming`.**
-- Simple: Implemented strictly as **set of extensions - for `System.Data.Common.DbConnection` instances.**
-- Only **four extensions**  (plus parameters overloads and async versions): `Execute`, `Query`, `Read`, and `Single`. That's all it needs. There is no learning curve at all.
-- Works with all databases based on `common DbConnection` class, and that is pretty much `**all databases.**`
-- Thoroughly tested, **250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`**.
+- Modern: maps SQL results to `tuples`, `named tuples` `plain old classes` or `records`.
+- Fast: mapping ` performances indistinguishable from the raw data reader`.
+- Powerful: generates async enumerable to enable `asynchronous database streaming`.
+- Simple: Implemented strictly as set of extensions - for `System.Data.Common.DbConnection` instances.
+- Only four extensions  (plus parameters overloads and async versions): `Execute`, `Query`, `Read`, and `Single`. That's all it needs. There is no learning curve at all.
+- Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
+- Thoroughly tested, 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
 - No need for extra configuration or special attributes.
-- Small, and absolutely `**no dependencies whatsoever.**`
-- All public methods were thoroughly documented in documentation comments that are available to IntelliSense and shipped with the package 
-- Package also includes source links for convenient debugging.
+- Small, and absolutely `no dependencies whatsoever.`
+- All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package 
+- Package also includes `source links` for convenient debugging.
 
 ## Usage
 
