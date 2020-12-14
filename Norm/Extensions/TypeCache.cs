@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Norm
 {
-    internal static class TypeCache<T>
+    public static class TypeCache<T>
     {
         private static readonly object ctorLocker = new object();
         private static (T, Func<T, object>) ctorInfo = default;
@@ -69,7 +69,7 @@ namespace Norm
             }
         }
 
-        internal static (T, Func<T, object>) GetCtorInfo(Type type)
+        public static (T, Func<T, object>) GetCtorInfo(Type type)
         {
             if (ctorInfo.Item1 != null)
             {
@@ -89,9 +89,14 @@ namespace Norm
             }
         }
 
-        internal static T CreateInstance((T instance, Func<T, object> clone) info)
+        public static T CreateInstance((T instance, Func<T, object> clone) info)
         {
             return (T)info.clone.Invoke(info.instance);
+        }
+
+        public static T CreateInstance()
+        {
+            return CreateInstance(GetCtorInfo(typeof(T)));
         }
 
         internal static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int len)
