@@ -17,6 +17,8 @@ _The fastest database mapper for .NET Standard 2.1_
 - All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package 
 - Package also includes `source links` for convenient debugging.
 
+See [manual](https://github.com/vb-consulting/Norm.net/wiki) for more details
+
 ## Usage
 
 ### Get it on Nuget
