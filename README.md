@@ -57,7 +57,7 @@ using Norm;
 var records = connection.Query<MyRecord>("select id, foo, bar from my_table");
 
 // Map results to class MyClass
-var records = connection.Query<MyClass>("select id, foo, bar from my_table");
+var results = connection.Query<MyClass>("select id, foo, bar from my_table");
 
 // Map single values to tuple and deconstruct to three variables
 var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table");
@@ -70,8 +70,9 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 {
     //...
 }
-
+//
 // etc...
+//
 ```
 
 ## Performances
