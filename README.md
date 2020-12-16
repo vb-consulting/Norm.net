@@ -6,37 +6,37 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ### Modern and Fast
 
-#### Uses [`tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#iterate-a-two-value-tuples-int-and-string-example), [`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#create-a-named-tuples-enumeration-and-get-the-highest-value-example), [`records`]() or [`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/5.-Query-extension#map-to-class-instances-example) - to map the SQL results from your databases.
+##### Uses [`tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#iterate-a-two-value-tuples-int-and-string-example), [`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#create-a-named-tuples-enumeration-and-get-the-highest-value-example), [`records`]() or [`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/5.-Query-extension#map-to-class-instances-example) - to map the SQL results from your databases.
 
-#### Uses async enumerables and powerful [`asynchronous database streaming`](https://github.com/vb-consulting/Norm.net/wiki/8.-Asynchronous-programming#readasync-and-queryasync)
+##### Uses async enumerables and powerful [`asynchronous database streaming`](https://github.com/vb-consulting/Norm.net/wiki/8.-Asynchronous-programming#readasync-and-queryasync)
 
-#### Fast. Very fast mapping. [`performances indistinguishable from the raw data reader`](https://github.com/vb-consulting/Norm.net#performances).
+##### Fast. Very fast mapping. [`performances indistinguishable from the raw data reader`](https://github.com/vb-consulting/Norm.net#performances).
 
 ### Trustworthy and reliable
 
-#### Over 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
+##### Over 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
 
-#### [`Source links`](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) are included in the package. That means that you can [Step Into] the source code when debugging to see exactly what it does.
+##### [`Source links`](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) are included in the package. That means that you can [Step Into] the source code when debugging to see exactly what it does.
 
 ### All Databases
 
-#### Strictly Implemented as set of extensions - for  [`System.Data.Common.DbConnection`](https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection?view=net-5.0) instances.
+##### Strictly Implemented as set of extensions - for  [`System.Data.Common.DbConnection`](https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection?view=net-5.0) instances.
 
-#### Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
+##### Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
 
-#### Native support for `ARRAY` databae types for database providers that have `ARRAY` support (PostgreSQL).
+##### Native support for `ARRAY` databae types for database providers that have `ARRAY` support (PostgreSQL).
 
 ### Simple, Lightweight and Easy to Use
 
-#### Only four extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.-Execute-extension), [`Query`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension), [`Read`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension), and [`Single`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension). That's all it needs. There is no learning curve at all.
+##### Only four extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.-Execute-extension), [`Query`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension), [`Read`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension), and [`Single`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension). That's all it needs. There is no learning curve at all.
 
-#### No need for extra configuration or any special attributes.
+##### No need for extra configuration or any special attributes.
 
-#### Small, and absolutely **`no dependencies whatsoever.`**
+##### Small, and absolutely **`no dependencies whatsoever.`**
 
-#### All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package.
+##### All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package.
 
-#### User friendly [Manual](https://github.com/vb-consulting/Norm.net/wiki) available.
+##### User friendly [Manual](https://github.com/vb-consulting/Norm.net/wiki) available.
 
 ## Usage
 
