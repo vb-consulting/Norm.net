@@ -4,7 +4,7 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ## Features at a Glance
 
-### Modern and Fast
+### `Modern and Fast`
 
 ##### Uses [`tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#iterate-a-two-value-tuples-int-and-string-example), [`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#create-a-named-tuples-enumeration-and-get-the-highest-value-example), [`records`]() or [`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/5.-Query-extension#map-to-class-instances-example) - to map the SQL results from your databases.
 
@@ -12,13 +12,13 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ##### Fast. Very fast mapping. [`performances indistinguishable from the raw data reader`](https://github.com/vb-consulting/Norm.net#performances).
 
-### Trustworthy and reliable
+### `Trustworthy and Reliable`
 
 ##### Over 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
 
 ##### [`Source links`](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) are included in the package. That means that you can [Step Into] the source code when debugging to see exactly what it does.
 
-### All Databases
+### `All Databases`
 
 ##### Strictly Implemented as set of extensions - for  [`System.Data.Common.DbConnection`](https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection?view=net-5.0) instances.
 
@@ -26,7 +26,7 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ##### Native support for `ARRAY` databae types for database providers that have `ARRAY` support (PostgreSQL).
 
-### Simple, Lightweight and Easy to Use
+### `Simple, Lightweight and Easy to Use`
 
 ##### Only four extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.-Execute-extension), [`Query`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension), [`Read`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension), and [`Single`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension). That's all it needs. There is no learning curve at all.
 
