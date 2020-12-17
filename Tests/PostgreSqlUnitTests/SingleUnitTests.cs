@@ -139,5 +139,40 @@ namespace PostgreSqlUnitTests
             Assert.Equal(new DateTime(1977, 5, 19), result["day"]);
             Assert.Null(result["null"]);
         }
+
+        [Fact]
+        public void Single_No_Result_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var tuple = connection.Single(
+                @"
+                    select *
+                    from (
+                        select 1 as first, 'foo' as bar
+                    ) as sub
+                    where first = 2
+                    "
+                );
+
+            Assert.Empty(tuple);
+        }
+
+        [Fact]
+        public void Single_No_Result_Generic_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (first, bar) = connection.Single<int, string>(
+                @"
+                    select *
+                    from (
+                        select 1 as first, 'foo' as bar
+                    ) as sub
+                    where first = 2
+                    "
+                );
+
+            Assert.Equal(default, first);
+            Assert.Equal(default, bar);
+        }
     }
 }
