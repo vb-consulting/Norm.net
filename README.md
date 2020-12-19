@@ -63,7 +63,7 @@ var results = connection.Query<MyClass>("select id, foo, bar from my_table");
 var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table");
 
 // Build enumerable of named tuples:
-IEnumerable<(int id, string foo, string bar)> results = connection.Read<int, string, string>("select id, foo, bar from my_table");
+var tuples = connection.Query<(int id, string foo, string bar)>("select id, foo, bar from my_table");
 
 // Asynchronously stream values directly from database
 await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("select id, foo, bar from my_table"))
