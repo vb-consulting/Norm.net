@@ -4,9 +4,9 @@
 
 - `Query` and `QueryAsync` methods can now also work with value tuples. Example:
 
-```
-var result = connection.Query<(int id, string name)>("select 'myid' as id, 'myname' as name").First();
-Console.WriteLine(result.id); // outputs myid
+```csharp
+var result = connection.Query<(int id, string name)>("select 1 as id, 'myname' as name").First();
+Console.WriteLine(result.id); // outputs 1
 Console.WriteLine(result.name); // outputs myname
 ```
 
