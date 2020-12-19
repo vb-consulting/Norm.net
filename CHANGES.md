@@ -1,5 +1,20 @@
 # Version history
 
+## 2.0.7
+
+- `Query` and `QueryAsync` methods can now also work with value tuples. Example:
+
+```
+var result = connection.Query<(int id, string name)>("select 'myid' as id, 'myname' as name").First();
+Console.WriteLine(result.id); // outputs myid
+Console.WriteLine(result.name); // outputs myname
+```
+
+Limitation: **Value tuples are mapped by matching position in the query.**
+
+Meaning, value tuple members `(int id, string name)` must match positions of query result `'myid' as id, 'myname' as name"`.
+
+
 ## 2.0.6
 
 - fix comments documentation for package

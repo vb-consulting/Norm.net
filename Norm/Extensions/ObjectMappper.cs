@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Norm
@@ -15,10 +16,21 @@ namespace Norm
         public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
-            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-            foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+            if (type.Name.StartsWith("ValueTuple"))
             {
-                yield return t;
+                var defaultCtor = type.GetConstructors()[0];
+                foreach (var t in tuples)
+                {
+                    yield return (T)defaultCtor.Invoke(t.Select(t => t.value).ToArray());
+                }
+            } 
+            else
+            {
+                var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+                foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+                {
+                    yield return t;
+                }
             }
         }
         ///<summary>
@@ -30,10 +42,21 @@ namespace Norm
         public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
         {
             var type = typeof(T);
-            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+            if (type.Name.StartsWith("ValueTuple"))
             {
-                yield return t;
+                var defaultCtor = type.GetConstructors()[0];
+                await foreach (var t in tuples)
+                {
+                    yield return (T)defaultCtor.Invoke(t.Select(t => t.value).ToArray());
+                }
+            }
+            else 
+            {
+                var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+                await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+                {
+                    yield return t;
+                }
             }
         }
 
