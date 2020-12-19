@@ -27,6 +27,10 @@ namespace Norm
             else
             {
                 var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+                if (ctorInfo.Item1 == null)
+                {
+                    throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+                }
                 foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
                 {
                     yield return t;
@@ -53,6 +57,10 @@ namespace Norm
             else 
             {
                 var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+                if (ctorInfo.Item1 == null)
+                {
+                    throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+                }
                 await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
                 {
                     yield return t;

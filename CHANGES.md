@@ -1,5 +1,11 @@
 # Version history
 
+## 2.0.8
+
+Add type checking for mapping methods `Query` and `QueryAsync`.
+
+Those methods will throw AgrumentException with appropriate message if generic type parameter is not either class, record or value tuple.
+
 ## 2.0.7
 
 - `Query` and `QueryAsync` methods can now also work with value tuples. 
