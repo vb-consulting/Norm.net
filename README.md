@@ -4,20 +4,39 @@ _The fastest database mapper for .NET Standard 2.1_
 
 ## Features at a Glance
 
-- Modern: maps SQL results to `tuples`, `named tuples` `plain old classes` or `records`.
-- Fast: mapping ` performances indistinguishable from the raw data reader`.
-- Powerful: generates async enumerable to enable `asynchronous database streaming`.
-- Simple: Implemented strictly as set of extensions - for `System.Data.Common.DbConnection` instances.
-- Only four extensions  (plus parameters overloads and async versions): `Execute`, `Query`, `Read`, and `Single`. That's all it needs. There is no learning curve at all.
-- Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
-- Works also with `array` types, where arrays are supported (PostgreSQL for example).
-- Thoroughly tested, 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
-- No need for extra configuration or special attributes.
-- Small, and absolutely `no dependencies whatsoever.`
-- All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package 
-- Package also includes `source links` for convenient debugging.
+### `Modern and Fast`
 
-See [manual](https://github.com/vb-consulting/Norm.net/wiki) for more details
+##### Uses [`tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#iterate-a-two-value-tuples-int-and-string-example), [`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#create-a-named-tuples-enumeration-and-get-the-highest-value-example), [`records`]() or [`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/5.-Query-extension#map-to-class-instances-example) - to map the SQL results from your databases.
+
+##### Uses async enumerables and powerful [`asynchronous database streaming`](https://github.com/vb-consulting/Norm.net/wiki/8.-Asynchronous-programming#readasync-and-queryasync)
+
+##### Fast. Very fast mapping. [`performances indistinguishable from the raw data reader`](https://github.com/vb-consulting/Norm.net#performances).
+
+### `Trustworthy and Reliable`
+
+##### Over 250+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
+
+##### [`Source links`](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) are included in the package. That means that you can [Step Into] the source code when debugging to see exactly what it does.
+
+### `All Databases`
+
+##### Strictly Implemented as set of extensions - for  [`System.Data.Common.DbConnection`](https://docs.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection?view=net-5.0) instances.
+
+##### Works with all databases based on `common DbConnection` class, and that is pretty much `all databases.`
+
+##### Native support for `ARRAY` databae types for database providers that have `ARRAY` support (PostgreSQL).
+
+### `Simple, Lightweight and Easy to Use`
+
+##### Only four extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.-Execute-extension), [`Query`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension), [`Read`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension), and [`Single`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension). That's all it needs. There is no learning curve at all.
+
+##### No need for extra configuration or any special attributes.
+
+##### Small, and absolutely **`no dependencies whatsoever.`**
+
+##### All public methods were thoroughly documented in documentation comments that are `available to IntelliSense` and shipped with the package.
+
+##### User friendly [Manual](https://github.com/vb-consulting/Norm.net/wiki) available.
 
 ## Usage
 
@@ -38,7 +57,7 @@ using Norm;
 var records = connection.Query<MyRecord>("select id, foo, bar from my_table");
 
 // Map results to class MyClass
-var records = connection.Query<MyClass>("select id, foo, bar from my_table");
+var results = connection.Query<MyClass>("select id, foo, bar from my_table");
 
 // Map single values to tuple and deconstruct to three variables
 var (id, foo, bar) = connection.Single<int, string, string>("select id, foo, bar from my_table");
@@ -51,8 +70,9 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 {
     //...
 }
-
+//
 // etc...
+//
 ```
 
 ## Performances
