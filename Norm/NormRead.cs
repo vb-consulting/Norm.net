@@ -24,20 +24,55 @@ namespace Norm
             params (string name, object value, object type)[] parameters) =>
             ReadToArrayInternalUnknowParamsType(command, parameters);
 
-        public IEnumerable<T> Read<T>(string command) =>
-            ReadInternal(command, r => GetFieldValue<T>(r, 0));
+        public IEnumerable<T> Read<T>(string command)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternal(command, r => GetFieldValue<T>(r, 0));
+            }
+            return Read(command).Map<T>(type);
+        }
 
-        public IEnumerable<T> Read<T>(string command, params object[] parameters) =>
-            ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+        public IEnumerable<T> Read<T>(string command, params object[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+            }
+            return Read(command, parameters).Map<T>(type);
+        }
 
-        public IEnumerable<T> Read<T>(string command, params (string name, object value)[] parameters) =>
-            ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+        public IEnumerable<T> Read<T>(string command, params (string name, object value)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+            }
+            return Read(command, parameters).Map<T>(type);
+        }
 
-        public IEnumerable<T> Read<T>(string command, params (string name, object value, DbType type)[] parameters) =>
-            ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+        public IEnumerable<T> Read<T>(string command, params (string name, object value, DbType type)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternal(command, r => GetFieldValue<T>(r, 0), parameters);
+            }
+            return Read(command, parameters).Map<T>(type);
+        }
 
-        public IEnumerable<T> Read<T>(string command, params (string name, object value, object type)[] parameters) =>
-            ReadInternalUnknowParamsType(command, r => GetFieldValue<T>(r, 0), parameters);
+        public IEnumerable<T> Read<T>(string command, params (string name, object value, object type)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalUnknowParamsType(command, r => GetFieldValue<T>(r, 0), parameters);
+            }
+            return Read(command, parameters).Map<T>(type);
+        }
 
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command) =>
             ReadInternal(command,

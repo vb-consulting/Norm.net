@@ -110,5 +110,42 @@ namespace Norm
                 return delegateCache;
             }
         }
+
+        internal static (Type type, bool complex) IsSimpleType()
+        {
+            var type = typeof(T);
+            if (type.IsPrimitive)
+            {
+                return (type, true);
+            }
+            TypeCode code;
+            if (type.IsArray)
+            {
+                code = Type.GetTypeCode(type.GetElementType());
+            }
+            else
+            {
+                code = Nullable.GetUnderlyingType(type) != null ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
+            }
+            return code switch
+            {
+                TypeCode.Int32 => (type, true),
+                TypeCode.DateTime => (type, true),
+                TypeCode.String => (type, true),
+                TypeCode.Boolean => (type, true),
+                TypeCode.Byte => (type, true),
+                TypeCode.Char => (type, true),
+                TypeCode.Decimal => (type, true),
+                TypeCode.Double => (type, true),
+                TypeCode.Int16 => (type, true),
+                TypeCode.Int64 => (type, true),
+                TypeCode.SByte => (type, true),
+                TypeCode.Single => (type, true),
+                TypeCode.UInt16 => (type, true),
+                TypeCode.UInt32 => (type, true),
+                TypeCode.UInt64 => (type, true),
+                _ => (type, false),
+            };
+        }
     }
 }

@@ -87,7 +87,7 @@ namespace PostgreSqlUnitTests
         public void SelectMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Query<TestRecord>(Query).ToList();
+            var result = connection.Read<TestRecord>(Query).ToList();
             AssertTestRecord(result);
         }
 
@@ -95,7 +95,7 @@ namespace PostgreSqlUnitTests
         public void SelectEmpty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Query<TestRecord>($"select * from ({Query}) q where id = 999").ToList();
+            var result = connection.Read<TestRecord>($"select * from ({Query}) q where id = 999").ToList();
             Assert.Empty(result);
         }
 
@@ -104,7 +104,7 @@ namespace PostgreSqlUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.QueryAsync<TestRecord>(Query).ToListAsync();
+            var result = await connection.ReadAsync<TestRecord>(Query).ToListAsync();
             AssertTestRecord(result);
         }
 
@@ -112,7 +112,7 @@ namespace PostgreSqlUnitTests
         public void SelectSnakeCaseMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Query<SnakeCaseMapTestRecord>(SnakeCaseQuery).ToList();
+            var result = connection.Read<SnakeCaseMapTestRecord>(SnakeCaseQuery).ToList();
 
             Assert.Equal(3, result.Count);
 
@@ -141,7 +141,7 @@ namespace PostgreSqlUnitTests
         public void SelectArraysMap_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Query<ArraysTestRecord>(ArraysQuery).ToList();
+            var result = connection.Read<ArraysTestRecord>(ArraysQuery).ToList();
 
             Assert.Single(result);
 

@@ -22,8 +22,9 @@ namespace MySqlUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Single<string, long, long, DateTime, string>(
-                "select @s, @i, @b, @d, @null", "str", (long)999, Convert.ToInt64(true), new DateTime(1977, 5, 19), null);
+            var (s, i, b, d, @null) = connection.Read<string, long, long, DateTime, string>(
+                "select @s, @i, @b, @d, @null", "str", (long)999, Convert.ToInt64(true), new DateTime(1977, 5, 19), null)
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -36,9 +37,10 @@ namespace MySqlUnitTests
         public void NamedParams_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Single<string, long, long, DateTime, string>(
+            var (s, i, b, d, @null) = connection.Read<string, long, long, DateTime, string>(
                 "select @s, @i, @b, @d, @null",
-                ("d", new DateTime(1977, 5, 19)), ("b", Convert.ToInt64(true)), ("i", (long)999), ("s", "str"), ("null", null));
+                ("d", new DateTime(1977, 5, 19)), ("b", Convert.ToInt64(true)), ("i", (long)999), ("s", "str"), ("null", null))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -51,24 +53,26 @@ namespace MySqlUnitTests
         public void DbParams_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, long, long, DateTime>(
+            var (s, i, b, d) = connection.Read<string, long, long, DateTime>(
                 "select @s, @i, @b, @d",
                 new MySqlParameter("s", "str"),
                 new MySqlParameter("i", 999),
                 new MySqlParameter("b", true),
-                new MySqlParameter("d", new DateTime(1977, 5, 19)));
+                new MySqlParameter("d", new DateTime(1977, 5, 19)))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(Convert.ToBoolean(b));
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, long, long, DateTime>(
+            (s, i, b, d) = connection.Read<string, long, long, DateTime>(
                 "select @s, @i, @b, @d",
                 new MySqlParameter("d", new DateTime(1977, 5, 19)),
                 new MySqlParameter("b", true),
                 new MySqlParameter("i", 999),
-                new MySqlParameter("s", "str"));
+                new MySqlParameter("s", "str"))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -80,18 +84,20 @@ namespace MySqlUnitTests
         public void MixedParams_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, long, long, DateTime>(
+            var (s, i, b, d) = connection.Read<string, long, long, DateTime>(
                 "select @s, @i, @b, @d",
-                new MySqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true);
+                new MySqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(Convert.ToBoolean(b));
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, long, long, DateTime>(
+            (s, i, b, d) = connection.Read<string, long, long, DateTime>(
                 "select @s, @i, @b, @d",
-                new MySqlParameter("s", "str"), new MySqlParameter("i", 999), true, new DateTime(1977, 5, 19));
+                new MySqlParameter("s", "str"), new MySqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -133,8 +139,9 @@ namespace MySqlUnitTests
             long? one = 1;
             long? two = null;
 
-            var (result1, result2) = connection.Single<long?, long?>(
-                "select @one, @two", ("one", one), ("two", two));
+            var (result1, result2) = connection.Read<long?, long?>(
+                "select @one, @two", ("one", one), ("two", two))
+                .Single();
 
             Assert.Equal(one, result1);
             Assert.Equal(two, result2);
@@ -160,8 +167,9 @@ namespace MySqlUnitTests
         public void Custom_Params_Types_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (i, j) = connection.Single<long, string>("select @i, json_unquote(json_extract(@j, '$.test'))", 
-                ("i", 1, MySqlDbType.Int32), ("j", "{\"test\": \"value\"}", MySqlDbType.JSON));
+            var (i, j) = connection.Read<long, string>("select @i, json_unquote(json_extract(@j, '$.test'))", 
+                ("i", 1, MySqlDbType.Int32), ("j", "{\"test\": \"value\"}", MySqlDbType.JSON))
+                .Single();
             Assert.Equal(1, i);
             Assert.Equal("value", j);
         }
@@ -170,8 +178,9 @@ namespace MySqlUnitTests
         public void Custom_Params_Mixed_Types_Test()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var (i, j) = connection.Single<long, string>("select @i, json_unquote(json_extract(@j, '$.test'))",
-                ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", MySqlDbType.JSON));
+            var (i, j) = connection.Read<long, string>("select @i, json_unquote(json_extract(@j, '$.test'))",
+                ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", MySqlDbType.JSON))
+                .Single();
             Assert.Equal(1, i);
             Assert.Equal("value", j);
         }

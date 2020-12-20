@@ -23,7 +23,7 @@ namespace PostgreSqlUnitTests
         public void Single_Value_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Single<int>(Query);
+            var result = connection.Read<int>(Query).Single();
             Assert.Equal(1, result);
         }
 
@@ -31,7 +31,7 @@ namespace PostgreSqlUnitTests
         public void Null_Value_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Single<int?>("values (null)");
+            var result = connection.Read<int?>("values (null)").Single();
             Assert.Null(result);
         }
 
@@ -39,7 +39,7 @@ namespace PostgreSqlUnitTests
         public async Task Null_Value_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.SingleAsync<int?>("values (null)");
+            var result = await connection.ReadAsync<int?>("values (null)").SingleAsync();
             Assert.Null(result);
         }
 
@@ -47,7 +47,7 @@ namespace PostgreSqlUnitTests
         public void Two_Tuples_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2) = connection.Single<int, string>(Query);
+            var (r1, r2) = connection.Read<int, string>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
         }
@@ -56,7 +56,7 @@ namespace PostgreSqlUnitTests
         public async Task Single_Value_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.SingleAsync<int>(Query);
+            var result = await connection.ReadAsync<int>(Query).SingleAsync();
             Assert.Equal(1, result);
         }
 
@@ -64,7 +64,7 @@ namespace PostgreSqlUnitTests
         public async Task Two_Tuples_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2) = await connection.SingleAsync<int, string>(Query);
+            var (r1, r2) = await connection.ReadAsync<int, string>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
         }
@@ -73,7 +73,7 @@ namespace PostgreSqlUnitTests
         public void Three_Tuples_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3) = connection.Single<int, string, DateTime>(Query);
+            var (r1, r2, r3) = connection.Read<int, string, DateTime>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);
@@ -83,7 +83,7 @@ namespace PostgreSqlUnitTests
         public void Four_Tuples_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4) = connection.Single<int, string, DateTime, bool>(Query);
+            var (r1, r2, r3, r4) = connection.Read<int, string, DateTime, bool>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);
@@ -94,7 +94,7 @@ namespace PostgreSqlUnitTests
         public void Five_Tuples_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4, r5) = connection.Single<int, string, DateTime, bool, string>(Query);
+            var (r1, r2, r3, r4, r5) = connection.Read<int, string, DateTime, bool, string>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);
@@ -106,7 +106,7 @@ namespace PostgreSqlUnitTests
         public async Task Three_Tuples_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3) = await connection.SingleAsync<int, string, DateTime>(Query);
+            var (r1, r2, r3) = await connection.ReadAsync<int, string, DateTime>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);
@@ -116,7 +116,7 @@ namespace PostgreSqlUnitTests
         public async Task Four_Tuples_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4) = await connection.SingleAsync<int, string, DateTime, bool>(Query);
+            var (r1, r2, r3, r4) = await connection.ReadAsync<int, string, DateTime, bool>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);
@@ -127,7 +127,7 @@ namespace PostgreSqlUnitTests
         public async Task Five_Tuples_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4, r5) = await connection.SingleAsync<int, string, DateTime, bool, string>(Query);
+            var (r1, r2, r3, r4, r5) = await connection.ReadAsync<int, string, DateTime, bool, string>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal(new DateTime(1977, 5, 19), r3);

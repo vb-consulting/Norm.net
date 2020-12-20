@@ -6,12 +6,8 @@ namespace Norm.Interfaces
     public interface INorm :
         INormExecute, 
         INormExecuteAsync,
-        INormSingle, 
-        INormSingleAsync,
         INormRead,
-        INormReadAsync,
-        INormQuery,
-        INormQueryAsync
+        INormReadAsync
     {
         ///<summary>
         ///     returns DbConnection for this instance

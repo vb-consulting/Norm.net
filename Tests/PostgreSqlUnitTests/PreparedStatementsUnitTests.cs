@@ -23,7 +23,7 @@ namespace PostgreSqlUnitTests
             var statement = "select 1, 2, 3";
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            connection.Prepared().Single(statement);
+            connection.Prepared().Read(statement).Single();
 
             var result = connection.Read<string, uint[], bool>(
                 $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{statement}'").ToArray();
@@ -33,7 +33,7 @@ namespace PostgreSqlUnitTests
             Assert.Empty(result[0].Item2);
             Assert.False(result[0].Item3);
 
-            connection.Prepared().Single(statement);
+            connection.Prepared().Read(statement).Single();
 
             result = connection.Read<string, uint[], bool>(
                 $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{statement}'").ToArray();
@@ -52,7 +52,7 @@ namespace PostgreSqlUnitTests
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            connection.Prepared().Single(statement, 1, 2, 3);
+            connection.Prepared().Read(statement, 1, 2, 3).Single();
 
             var result = connection.Read<string, uint[], bool>(
                 $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{expected}'").ToArray();
@@ -71,7 +71,7 @@ namespace PostgreSqlUnitTests
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            connection.Prepared().Single(statement, ("p1", 1), ("p2", 2), ("p3", 2));
+            connection.Prepared().Read(statement, ("p1", 1), ("p2", 2), ("p3", 2)).Single();
 
             var result = connection.Read<string, uint[], bool>(
                 $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{expected}'").ToArray();

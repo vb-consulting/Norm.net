@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Norm;
 using Npgsql;
 using Xunit;
@@ -31,7 +32,8 @@ namespace PostgreSqlUnitTests
                     $$
                     language plpgsql")
                 .AsProcedure()
-                .Single<string>("test_func");
+                .Read<string>("test_func")
+                .Single();
 
             Assert.Equal("I am function result!", result);
 

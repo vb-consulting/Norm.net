@@ -11,11 +11,12 @@ namespace Norm
         ///     Maps name and value tuples array returned from non-generic Read extension to instance enumerator.
         ///</summary>
         ///<param name="tuples">Name and value tuples array.</param>
+        /// <param name="type">optional type parameter value that matches T. Used internally</param>
         ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
         ///<returns>IEnumerable enumerator of instances of type T.</returns>
-        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples)
+        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
         {
-            var type = typeof(T);
+            type = type ?? typeof(T);
             if (type.Name.StartsWith("ValueTuple"))
             {
                 var defaultCtor = type.GetConstructors()[0];
@@ -41,11 +42,12 @@ namespace Norm
         ///     Maps name and value tuples array returned from non-generic Read extension to instance async enumerator.
         ///</summary>
         ///<param name="tuples">Name and value tuples array.</param>
+        ///<param name="type">optional type parameter value that matches T. Used internally</param>
         ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
         ///<returns>IAsyncEnumerable async enumerator of instances of type T.</returns>
-        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples)
+        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
         {
-            var type = typeof(T);
+            type = type ?? typeof(T);
             if (type.Name.StartsWith("ValueTuple"))
             {
                 var defaultCtor = type.GetConstructors()[0];
@@ -138,40 +140,25 @@ namespace Norm
                 code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
             }
 
-            switch (code)
+            return code switch
             {
-                case TypeCode.Int32:
-                    return (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray);
-                case TypeCode.DateTime:
-                    return (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray);
-                case TypeCode.String:
-                    return (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray);
-                case TypeCode.Boolean:
-                    return (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray);
-                case TypeCode.Byte:
-                    return (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray);
-                case TypeCode.Char:
-                    return (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray);
-                case TypeCode.Decimal:
-                    return (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray);
-                case TypeCode.Double:
-                    return (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray);
-                case TypeCode.Int16:
-                    return (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray);
-                case TypeCode.Int64:
-                    return (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray);
-                case TypeCode.SByte:
-                    return (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray);
-                case TypeCode.Single:
-                    return (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray);
-                case TypeCode.UInt16:
-                    return (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray);
-                case TypeCode.UInt32:
-                    return (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray);
-                case TypeCode.UInt64:
-                    return (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray);
-            }
-            throw new NotImplementedException($"TypeCode {code} not implemnted");
+                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray),
+                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray),
+                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray),
+                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray),
+                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray),
+                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray),
+                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray),
+                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray),
+                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray),
+                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray),
+                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray),
+                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray),
+                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray),
+                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray),
+                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray),
+                _ => throw new NotImplementedException($"TypeCode {code} not implemnted"),
+            };
         }
 
         private static Delegate CreateDelegateValue<T, TProp>(PropertyInfo property)

@@ -64,7 +64,7 @@ namespace MySqlUnitTests
         public void Map_Sync()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Map<TestClass>().ToList();
+            var result = connection.Read<TestClass>(Query).ToList();
             AssertTestClass(result);
         }
 
@@ -72,7 +72,7 @@ namespace MySqlUnitTests
         public void Map_Empty_Sync()
         {
             using var connection = new MySqlConnection(fixture.ConnectionString);
-            var result = connection.Read($"select * from ({Query}) q where id = 999").Map<TestClass>().ToList();
+            var result = connection.Read<TestClass>($"select * from ({Query}) q where id = 999").ToList();
             Assert.Empty(result);
         }
 
@@ -81,7 +81,7 @@ namespace MySqlUnitTests
         public async Task Map_Async()
         {
             await using var connection = new MySqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync<TestClass>(Query).ToListAsync();
 
             AssertTestClass(result);
         }

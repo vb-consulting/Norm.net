@@ -24,8 +24,9 @@ namespace SqlServerUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d", "str", 999, true, new DateTime(1977, 5, 19));
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
+                "select @s, @i, @b, @d", "str", 999, true, new DateTime(1977, 5, 19))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -37,9 +38,10 @@ namespace SqlServerUnitTests
         public void NamedParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"));
+                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -51,24 +53,26 @@ namespace SqlServerUnitTests
         public void DbParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
                 new SqlParameter("s", "str"),
                 new SqlParameter("i", 999),
                 new SqlParameter("b", true),
-                new SqlParameter("d", new DateTime(1977, 5, 19)));
+                new SqlParameter("d", new DateTime(1977, 5, 19)))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
                 new SqlParameter("d", new DateTime(1977, 5, 19)),
                 new SqlParameter("b", true),
                 new SqlParameter("i", 999),
-                new SqlParameter("s", "str"));
+                new SqlParameter("s", "str"))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -80,18 +84,20 @@ namespace SqlServerUnitTests
         public void MixedParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                new SqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true);
+                new SqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                new SqlParameter("s", "str"), new SqlParameter("i", 999), true, new DateTime(1977, 5, 19));
+                new SqlParameter("s", "str"), new SqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);

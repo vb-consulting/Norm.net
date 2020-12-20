@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using Norm;
 using Xunit;
@@ -35,7 +36,7 @@ namespace MySqlUnitTests
             "
             }.Execute();
 
-            var result = connection.Single<string>($"select {name}()");
+            var result = connection.Read<string>($"select {name}()").Single();
             Assert.Equal("I am procedure result!", result);
 
             connection.Execute($"drop function {name}");
@@ -43,7 +44,7 @@ namespace MySqlUnitTests
             var procMissing = false;
             try
             {
-                connection.Single<string>($"select {name}()");
+                connection.Read<string>($"select {name}()").Single();
             }
             catch (MySqlException)
             {

@@ -31,18 +31,15 @@ namespace MySqlUnitTests
                     .Execute($"insert into {table} values ('foo')");
 
                 var result = connection
-                    .Single($"select * from {table}")
+                    .Read($"select * from {table}")
+                    .Single()
                     .ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal("foo", result.Values.First());
 
                 connection.Execute("rollback");
 
-                result = connection
-                    .Single($"select * from {table}")
-                    .ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty(connection.Read($"select * from {table}").ToList());
             }
             finally
             {
@@ -62,7 +59,8 @@ namespace MySqlUnitTests
                 var result = connection
                     .Execute("start transaction")
                     .Execute($"insert into {table} values (@i, @t, @d)",1, "foo", new DateTime(1977, 5, 19))
-                    .Single($"select * from {table}")
+                    .Read($"select * from {table}")
+                    .Single()
                     .ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal(1, result["i"]);
@@ -71,11 +69,7 @@ namespace MySqlUnitTests
 
                 connection.Execute("rollback");
 
-                result = connection
-                    .Single($"select * from {table}")
-                    .ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty(connection.Read($"select * from {table}").ToList());
             }
             finally
             {
@@ -95,7 +89,8 @@ namespace MySqlUnitTests
                 var result = connection
                     .Execute("start transaction")
                     .Execute($"insert into {table} values (@i, @t, @d)", ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1))
-                    .Single($"select * from {table}")
+                    .Read($"select * from {table}")
+                    .Single()
                     .ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal(1, result["i"]);
@@ -104,11 +99,7 @@ namespace MySqlUnitTests
 
                 connection.Execute("rollback");
 
-                result = connection
-                    .Single($"select * from {table}")
-                    .ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty(connection.Read($"select * from {table}").ToList());
             }
             finally
             {
@@ -128,15 +119,13 @@ namespace MySqlUnitTests
                 await connection.ExecuteAsync("start transaction");
                 await connection.ExecuteAsync($"insert into {table} values ('foo')");
 
-                var result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
+                var result = (await connection.ReadAsync($"select * from {table}").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal("foo", result.Values.First());
 
                 await connection.ExecuteAsync("rollback");
 
-                result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty(await connection.ReadAsync($"select * from {table}").ToListAsync());
             }
             finally
             {
@@ -155,7 +144,7 @@ namespace MySqlUnitTests
             {
                 await connection.ExecuteAsync("start transaction");
                 await connection.ExecuteAsync($"insert into {table} values (@i, @t, @d)", ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1));
-                var result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
+                var result = (await connection.ReadAsync($"select * from {table}").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal(1, result["i"]);
                 Assert.Equal("foo", result["t"]);
@@ -163,9 +152,7 @@ namespace MySqlUnitTests
 
                 await connection.ExecuteAsync("rollback");
 
-                result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty((await connection.ReadAsync($"select * from {table}").ToListAsync()));
             }
             finally
             {
@@ -184,7 +171,7 @@ namespace MySqlUnitTests
             {
                 await connection.ExecuteAsync("start transaction");
                 await connection.ExecuteAsync($"insert into {table} values (@i, @t, @d)", 1, "foo", new DateTime(1977, 5, 19));
-                var result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
+                var result = (await connection.ReadAsync($"select * from {table}").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
                 Assert.Equal(1, result["i"]);
                 Assert.Equal("foo", result["t"]);
@@ -192,9 +179,7 @@ namespace MySqlUnitTests
 
                 await connection.ExecuteAsync("rollback");
 
-                result = (await connection.SingleAsync($"select * from {table}")).ToDictionary(t => t.name, t => t.value);
-
-                Assert.Empty(result.Values);
+                Assert.Empty(await connection.ReadAsync($"select * from {table}").ToListAsync());
             }
             finally
             {

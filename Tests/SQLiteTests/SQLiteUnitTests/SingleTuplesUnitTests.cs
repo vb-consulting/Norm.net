@@ -23,7 +23,7 @@ namespace SQLiteUnitTests
         public void Single_Value_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.Single<long>(Query);
+            var result = connection.Read<long>(Query).Single();
             Assert.Equal(1, result);
         }
 
@@ -31,7 +31,7 @@ namespace SQLiteUnitTests
         public void Null_Value_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.Single<long?>("select null");
+            var result = connection.Read<long?>("select null").Single();
             Assert.Null(result);
         }
 
@@ -39,7 +39,7 @@ namespace SQLiteUnitTests
         public async Task Null_Value_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = await connection.SingleAsync<long?>("select null");
+            var result = await connection.ReadAsync<long?>("select null").SingleAsync();
             Assert.Null(result);
         }
 
@@ -47,7 +47,7 @@ namespace SQLiteUnitTests
         public void Two_Tuples_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2) = connection.Single<long, string>(Query);
+            var (r1, r2) = connection.Read<long, string>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
         }
@@ -56,7 +56,7 @@ namespace SQLiteUnitTests
         public async Task Single_Value_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = await connection.SingleAsync<long>(Query);
+            var result = await connection.ReadAsync<long>(Query).SingleAsync();
             Assert.Equal(1, result);
         }
 
@@ -64,7 +64,7 @@ namespace SQLiteUnitTests
         public async Task Two_Tuples_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2) = await connection.SingleAsync<long, string>(Query);
+            var (r1, r2) = await connection.ReadAsync<long, string>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
         }
@@ -73,7 +73,7 @@ namespace SQLiteUnitTests
         public void Three_Tuples_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3) = connection.Single<long, string, string>(Query);
+            var (r1, r2, r3) = connection.Read<long, string, string>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);
@@ -83,7 +83,7 @@ namespace SQLiteUnitTests
         public void Four_Tuples_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4) = connection.Single<long, string, string, long>(Query);
+            var (r1, r2, r3, r4) = connection.Read<long, string, string, long>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);
@@ -94,7 +94,7 @@ namespace SQLiteUnitTests
         public void Five_Tuples_Test_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4, r5) = connection.Single<long, string, string, long, string>(Query);
+            var (r1, r2, r3, r4, r5) = connection.Read<long, string, string, long, string>(Query).Single();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);
@@ -106,7 +106,7 @@ namespace SQLiteUnitTests
         public async Task Three_Tuples_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3) = await connection.SingleAsync<long, string, string>(Query);
+            var (r1, r2, r3) = await connection.ReadAsync<long, string, string>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);
@@ -116,7 +116,7 @@ namespace SQLiteUnitTests
         public async Task Four_Tuples_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4) = await connection.SingleAsync<long, string, string, long>(Query);
+            var (r1, r2, r3, r4) = await connection.ReadAsync<long, string, string, long>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);
@@ -127,7 +127,7 @@ namespace SQLiteUnitTests
         public async Task Five_Tuples_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (r1, r2, r3, r4, r5) = await connection.SingleAsync<long, string, string, long, string>(Query);
+            var (r1, r2, r3, r4, r5) = await connection.ReadAsync<long, string, string, long, string>(Query).SingleAsync();
             Assert.Equal(1, r1);
             Assert.Equal("foo1", r2);
             Assert.Equal("1977-05-19", r3);

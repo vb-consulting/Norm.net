@@ -116,7 +116,7 @@ namespace PostgreSqlUnitTests
         public void Map_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Map<TestClass>().ToList();
+            var result = connection.Read<TestClass>(Query).ToList();
             AssertTestClass(result);
         }
 
@@ -124,7 +124,7 @@ namespace PostgreSqlUnitTests
         public void Map_Empty_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read($"select * from ({Query}) q where id = 999").Map<TestClass>().ToList();
+            var result = connection.Read<TestClass>($"select * from ({Query}) q where id = 999").ToList();
             Assert.Empty(result);
         }
 
@@ -133,7 +133,7 @@ namespace PostgreSqlUnitTests
         public async Task Map_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync<TestClass>(Query).ToListAsync();
 
             AssertTestClass(result);
         }
@@ -142,7 +142,7 @@ namespace PostgreSqlUnitTests
         public void Map_Snake_Case_Names_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(SnakeCaseQuery).Map<SnakeCaseMapTestClass>().ToList();
+            var result = connection.Read<SnakeCaseMapTestClass>(SnakeCaseQuery).ToList();
 
             Assert.Equal(3, result.Count);
 
@@ -171,7 +171,7 @@ namespace PostgreSqlUnitTests
         public void Map_Array_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(ArraysQuery).Map<ArraysTestClass>().ToList();
+            var result = connection.Read<ArraysTestClass>(ArraysQuery).ToList();
 
             Assert.Single(result);
 
@@ -205,7 +205,7 @@ namespace PostgreSqlUnitTests
         public void Map_Changed_Position_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Map<TestClassChangedPosition>().ToList();
+            var result = connection.Read<TestClassChangedPosition>(Query).ToList();
 
             Assert.Equal(3, result.Count);
 

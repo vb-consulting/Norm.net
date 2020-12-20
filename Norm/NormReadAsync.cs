@@ -25,30 +25,55 @@ namespace Norm
             params (string name, object value, object type)[] parameters) =>
             ReadToArrayInternalUnknownParamsTypeAsync(command, parameters);
 
-        public IAsyncEnumerable<T> ReadAsync<T>(string command) =>
-            ReadInternalAsync(command,
-                async r => await GetFieldValueAsync<T>(r, 0));
+        public IAsyncEnumerable<T> ReadAsync<T>(string command)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0));
+            }
+            return ReadAsync(command).Map<T>(type);
+        }
 
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, params object[] parameters) =>
-            ReadInternalAsync(command,
-                async r => await GetFieldValueAsync<T>(r, 0),
-                parameters);
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params object[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0), parameters);
+            }
+            return ReadAsync(command, parameters).Map<T>(type);
+        }
 
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters) =>
-            ReadInternalAsync(command,
-                async r => await GetFieldValueAsync<T>(r, 0),
-                parameters);
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0), parameters);
+            }
+            return ReadAsync(command, parameters).Map<T>(type);
+        }
 
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, DbType type)[] parameters) =>
-            ReadInternalAsync(command,
-                async r => await GetFieldValueAsync<T>(r, 0),
-                parameters);
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, DbType type)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0), parameters);
+            }
+            return ReadAsync(command, parameters).Map<T>(type);
+        }
 
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, object type)[] parameters) =>
-            ReadInternalUnknownParamsTypeAsync(command,
-                async r => await GetFieldValueAsync<T>(r, 0),
-                parameters);
-
+        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, object type)[] parameters)
+        {
+            var (type, simple) = TypeCache<T>.IsSimpleType();
+            if (simple)
+            {
+                return ReadInternalUnknownParamsTypeAsync(command, async r => await GetFieldValueAsync<T>(r, 0), parameters);
+            }
+            return ReadAsync(command, parameters).Map<T>(type);
+        }
 
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command) =>
             ReadInternalAsync(command,

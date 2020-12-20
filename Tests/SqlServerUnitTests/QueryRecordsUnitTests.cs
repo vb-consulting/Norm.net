@@ -61,7 +61,7 @@ namespace SqlServerUnitTests
         public void SelectMap_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.Query<TestRecord>(Query).ToList();
+            var result = connection.Read<TestRecord>(Query).ToList();
             AssertTestRecord(result);
         }
 
@@ -69,7 +69,7 @@ namespace SqlServerUnitTests
         public void SelectEmpty_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.Query<TestRecord>($"select * from ({Query}) q where id = 999").ToList();
+            var result = connection.Read<TestRecord>($"select * from ({Query}) q where id = 999").ToList();
             Assert.Empty(result);
         }
 
@@ -78,7 +78,7 @@ namespace SqlServerUnitTests
         public async Task SelectMap_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = await connection.QueryAsync<TestRecord>(Query).ToListAsync();
+            var result = await connection.ReadAsync<TestRecord>(Query).ToListAsync();
             AssertTestRecord(result);
         }
     }

@@ -103,7 +103,7 @@ namespace SQLiteUnitTests
         public void Map_Sync()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.Read(Query).Map<TestClass>().ToList();
+            var result = connection.Read<TestClass>(Query).ToList();
 
             AssertTestClass(result);
         }
@@ -112,7 +112,7 @@ namespace SQLiteUnitTests
         public async Task Map_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(Query).Map<TestClass>().ToListAsync();
+            var result = await connection.ReadAsync<TestClass>(Query).ToListAsync();
 
             AssertTestClass(result);
         }
@@ -136,7 +136,7 @@ namespace SQLiteUnitTests
                         2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
                         3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
 
-                var result = connection.Read("select * from test_class2").Map<TestClass2>().ToList();
+                var result = connection.Read<TestClass2>("select * from test_class2").ToList();
 
                 AssertTestClass2(result);
             }
@@ -164,7 +164,7 @@ namespace SQLiteUnitTests
                         2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
                         3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
 
-                var result = await connection.ReadAsync("select * from test_class2").Map<TestClass2>().ToListAsync();
+                var result = await connection.ReadAsync<TestClass2>("select * from test_class2").ToListAsync();
 
                 AssertTestClass2(result);
             }

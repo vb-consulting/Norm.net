@@ -23,8 +23,10 @@ namespace PostgreSqlUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Single<string, int, bool, DateTime, string>(
-                "select @s, @i, @b, @d, @null", "str", 999, true, new DateTime(1977, 5, 19), null);
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null", 
+                "str", 999, true, new DateTime(1977, 5, 19), null)
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -37,9 +39,10 @@ namespace PostgreSqlUnitTests
         public void NamedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Single<string, int, bool, DateTime, string>(
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
                 "select @s, @i, @b, @d, @null",
-                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"), ("null", null));
+                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"), ("null", null))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -52,24 +55,26 @@ namespace PostgreSqlUnitTests
         public void DbParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
                 new NpgsqlParameter("s", "str"),
                 new NpgsqlParameter("i", 999),
                 new NpgsqlParameter("b", true),
-                new NpgsqlParameter("d", new DateTime(1977, 5, 19)));
+                new NpgsqlParameter("d", new DateTime(1977, 5, 19)))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
                 new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
                 new NpgsqlParameter("b", true),
                 new NpgsqlParameter("i", 999),
-                new NpgsqlParameter("s", "str"));
+                new NpgsqlParameter("s", "str"))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -81,18 +86,20 @@ namespace PostgreSqlUnitTests
         public void MixedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                new NpgsqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true);
+                new NpgsqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Single<string, int, bool, DateTime>(
+            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                new NpgsqlParameter("s", "str"), new NpgsqlParameter("i", 999), true, new DateTime(1977, 5, 19));
+                new NpgsqlParameter("s", "str"), new NpgsqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+                .Single();
 
             Assert.Equal("str", s);
             Assert.Equal(999, i);
@@ -144,8 +151,9 @@ namespace PostgreSqlUnitTests
             long? one = 1;
             long? two = null;
 
-            var (result1, result2) = connection.Single<long?, long?>(
-                "select @one, @two", ("one", one), ("two", two));
+            var (result1, result2) = connection.Read<long?, long?>(
+                "select @one, @two", ("one", one), ("two", two))
+                .Single();
 
             Assert.Equal(one, result1);
             Assert.Equal(two, result2);
@@ -179,7 +187,8 @@ namespace PostgreSqlUnitTests
 
             var result = connection
                 .AsProcedure()
-                .Single<int[]>("array_params_test", ("_p", new[] { 3, 6, 9 }));
+                .Read<int[]>("array_params_test", ("_p", new[] { 3, 6, 9 }))
+                .Single();
 
             Assert.Equal(new[] { 3, 6, 9 }, result);
         }
@@ -188,8 +197,9 @@ namespace PostgreSqlUnitTests
         public void Custom_Params_Types_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (i, j) = connection.Single<int, string>("select @i, @j->>'test'", 
-                ("i", 1, NpgsqlDbType.Integer), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+            var (i, j) = connection.Read<int, string>("select @i, @j->>'test'", 
+                ("i", 1, NpgsqlDbType.Integer), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json))
+                .Single();
             Assert.Equal(1, i);
             Assert.Equal("value", j);
         }
@@ -198,8 +208,9 @@ namespace PostgreSqlUnitTests
         public void Custom_Params_Mixed_Types_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (i, j) = connection.Single<int, string>("select @i, @j->>'test'",
-                ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json));
+            var (i, j) = connection.Read<int, string>("select @i, @j->>'test'",
+                ("i", 1, DbType.Int32), ("j", "{\"test\": \"value\"}", NpgsqlDbType.Json))
+                .Single();
             Assert.Equal(1, i);
             Assert.Equal("value", j);
         }
