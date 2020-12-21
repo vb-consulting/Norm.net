@@ -7,65 +7,84 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        ///<summary>
-        ///     Maps name and value tuples array returned from non-generic Read extension to instance enumerator.
-        ///</summary>
-        ///<param name="tuples">Name and value tuples array.</param>
-        /// <param name="type">optional type parameter value that matches T. Used internally</param>
-        ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
-        ///<returns>IEnumerable enumerator of instances of type T.</returns>
-        public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
+        internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
         {
-            type = type ?? typeof(T);
-            if (type.Name.StartsWith("ValueTuple"))
+            type ??= typeof(T);
+            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+            if (ctorInfo.Item1 == null)
             {
-                var defaultCtor = type.GetConstructors()[0];
+                throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+            }
+            foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+            {
+                yield return t;
+            }
+        }
+
+        internal static IEnumerable<T> MapValueTuple<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
+        {
+            type ??= typeof(T);
+            ConstructorInfo defaultCtor = type.GetConstructors()[0];
+            ParameterInfo[] ctorParams = defaultCtor.GetParameters();
+            var len = ctorParams.Length;
+            if (len < 8)
+            {
                 foreach (var t in tuples)
                 {
-                    yield return (T)defaultCtor.Invoke(t.Select(t => t.value).ToArray());
+                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).ToArray());
                 }
-            } 
+            }
             else
             {
-                var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-                if (ctorInfo.Item1 == null)
+                var lastCtor = ctorParams[7].ParameterType.GetConstructors()[0];
+                if (lastCtor.GetParameters().Length > 7)
                 {
-                    throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+                    throw new ArgumentException($"Too many named tuple members. Maximum is 14.");
                 }
-                foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+                foreach (var t in tuples)
                 {
-                    yield return t;
+                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).Union(Enumerable.Repeat(lastCtor.Invoke(t.Skip(7).Select(t => t.value).ToArray()), 1)).ToArray());
                 }
             }
         }
-        ///<summary>
-        ///     Maps name and value tuples array returned from non-generic Read extension to instance async enumerator.
-        ///</summary>
-        ///<param name="tuples">Name and value tuples array.</param>
-        ///<param name="type">optional type parameter value that matches T. Used internally</param>
-        ///<typeparam name="T">Type of instances that name and value tuples array will be mapped to.</typeparam>
-        ///<returns>IAsyncEnumerable async enumerator of instances of type T.</returns>
-        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+
+        internal static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
         {
-            type = type ?? typeof(T);
-            if (type.Name.StartsWith("ValueTuple"))
+            type ??= typeof(T);
+            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
+            if (ctorInfo.Item1 == null)
             {
-                var defaultCtor = type.GetConstructors()[0];
+                throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+            }
+            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+            {
+                yield return t;
+            }
+        }
+
+        internal static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+        {
+            type ??= typeof(T);
+            ConstructorInfo defaultCtor = type.GetConstructors()[0];
+            ParameterInfo[] ctorParams = defaultCtor.GetParameters();
+            var len = ctorParams.Length;
+            if (len < 8)
+            {
                 await foreach (var t in tuples)
                 {
-                    yield return (T)defaultCtor.Invoke(t.Select(t => t.value).ToArray());
+                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).ToArray());
                 }
             }
-            else 
+            else
             {
-                var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-                if (ctorInfo.Item1 == null)
+                var lastCtor = ctorParams[7].ParameterType.GetConstructors()[0];
+                if (lastCtor.GetParameters().Length > 7)
                 {
-                    throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
+                    throw new ArgumentException($"Too many named tuple members. Maximum is 14.");
                 }
-                await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
+                await foreach (var t in tuples)
                 {
-                    yield return t;
+                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).Union(Enumerable.Repeat(lastCtor.Invoke(t.Skip(7).Select(t => t.value).ToArray()), 1)).ToArray());
                 }
             }
         }

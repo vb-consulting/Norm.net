@@ -217,5 +217,177 @@ namespace PostgreSqlUnitTests
             Assert.Null(result[2].Item4);
             Assert.Equal("bar3", result[2].Item5);
         }
+
+        [Fact]
+        public void Six_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6) = connection.Read<int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+        }
+
+        [Fact]
+        public void Seven_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7) = connection.Read<int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+        }
+
+        [Fact]
+        public void Eight_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7, i8) = connection.Read<int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+            Assert.Equal(8, i8);
+        }
+
+        [Fact]
+        public void Eight_Undestructed_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8").Single();
+
+            Assert.Equal(1, t.Item1);
+            Assert.Equal(2, t.Item2);
+            Assert.Equal(3, t.Item3);
+            Assert.Equal(4, t.Item4);
+            Assert.Equal(5, t.Item5);
+            Assert.Equal(6, t.Item6);
+            Assert.Equal(7, t.Item7);
+            Assert.Equal(8, t.Item8);
+        }
+
+        [Fact]
+        public void Nine_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7, i8, i9) = connection.Read<int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+            Assert.Equal(8, i8);
+            Assert.Equal(9, i9);
+        }
+
+        [Fact]
+        public void Nine_Undestructed_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9").Single();
+
+            Assert.Equal(1, t.Item1);
+            Assert.Equal(2, t.Item2);
+            Assert.Equal(3, t.Item3);
+            Assert.Equal(4, t.Item4);
+            Assert.Equal(5, t.Item5);
+            Assert.Equal(6, t.Item6);
+            Assert.Equal(7, t.Item7);
+            Assert.Equal(8, t.Item8);
+            Assert.Equal(9, t.Item9);
+        }
+
+        [Fact]
+        public void Ten_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10) = connection.Read<int, int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+            Assert.Equal(8, i8);
+            Assert.Equal(9, i9);
+            Assert.Equal(10, i10);
+        }
+
+        [Fact]
+        public void Eleven_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11) = connection.Read<int, int, int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+            Assert.Equal(8, i8);
+            Assert.Equal(9, i9);
+            Assert.Equal(10, i10);
+            Assert.Equal(11, i11);
+        }
+
+        [Fact]
+        public void Twelve_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12) = connection.Read<int, int, int, int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12").Single();
+
+            Assert.Equal(1, i1);
+            Assert.Equal(2, i2);
+            Assert.Equal(3, i3);
+            Assert.Equal(4, i4);
+            Assert.Equal(5, i5);
+            Assert.Equal(6, i6);
+            Assert.Equal(7, i7);
+            Assert.Equal(8, i8);
+            Assert.Equal(9, i9);
+            Assert.Equal(10, i10);
+            Assert.Equal(11, i11);
+            Assert.Equal(12, i12);
+        }
+
+        [Fact]
+        public void Twelve_Undestructed_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<int, int, int, int, int, int, int, int, int, int, int, int>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12").Single();
+
+            Assert.Equal(1, t.Item1);
+            Assert.Equal(2, t.Item2);
+            Assert.Equal(3, t.Item3);
+            Assert.Equal(4, t.Item4);
+            Assert.Equal(5, t.Item5);
+            Assert.Equal(6, t.Item6);
+            Assert.Equal(7, t.Item7);
+            Assert.Equal(8, t.Item8);
+            Assert.Equal(9, t.Item9);
+            Assert.Equal(10, t.Item10);
+            Assert.Equal(11, t.Item11);
+            Assert.Equal(12, t.Item12);
+        }
     }
 }

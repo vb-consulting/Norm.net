@@ -1,5 +1,173 @@
 # Version history
 
+## 3.0.0
+ 
+### Breaking changes
+ 
+**Consolidation and simplification of the interface.**
+ 
+#### 1) Removed extensnions `Query` and `QueryAsync` with all overloads
+ 
+Functionalities of these extensions are now implemented in `Read` and `ReadAsync` extensions.
+ 
+For example, before:
+ 
+```csharp
+public class MyClass { ... }
+public record MyRecord(...);
+ 
+// mapping to class instances enumeration generator
+var r1 = connection.Query<MyClass>(sql);
+ 
+// mapping to record instances enumeration generator
+var r2 = connection.Query<MyRecord>(sql);
+ 
+// mapping to named value tupleas enumeration generator
+var r3 = connection.Query<(...)>(sql);
+```
+ 
+Now, all of this is done by existing `Read` extension. Example:
+ 
+```csharp
+public class MyClass { ... }
+public record MyRecord(...);
+ 
+// mapping to class instances enumeration generator
+var r1 = connection.Read<MyClass>(sql);
+ 
+// mapping to record instances enumeration generator
+var r2 = connection.Read<MyRecord>(sql);
+ 
+// mapping to named value tupleas enumeration generator
+var r3 = connection.Read<(...)>(sql);
+```
+ 
+Note that existing functionality of `Read` extension remeains the same. You can still map single value or tuples. Example:
+ 
+```csharp
+// map single int values to int enumeration generator
+var r1 = connection.Read<int>(sql);
+ 
+// map unnamed int and string tuples to int and string enumeration generator
+var r2 = connection.Read<int, int>(sql); 
+ 
+// map unnamed int, int and string tuples to int, int and string enumeration generator
+var r3 = connection.Read<int, int, string>(sql);
+```
+ 
+#### 2) Removed extensnions `Single` and `SingleAsync` with all overloads
+ 
+These extensions are completely unnecessary. 
+ 
+Since `Read` extensions are returning enumeration generators, **identical functionalities** can be achieved with `LINQ` extensnions.
+ 
+ 
+For example, before:
+ 
+```csharp
+// map to single int value
+var i = connection.Single<int>(sql);
+ 
+// map to two int values
+var (i1, i2) = connection.Single<int, int>(sql); 
+ 
+// map to two int and single string values
+var (i1, i2, s) = connection.Single<int, int, string>(sql); 
+```
+ 
+Now, identical functionality can be achieved with `Single` or `First` LINQ extension. Example:
+ 
+```csharp
+using System.Linq;
+ 
+// map to single int value
+var i = connection.Read<int>(sql).Single();
+ 
+// map to two int values
+var (i1, i2) = connection.Read<int, int>(sql).Single(); 
+ 
+// map to two int and single string values
+var (i1, i2, s) = connection.Read<int, int, string>(sql).Single(); 
+```
+ 
+### New functionality - multiple results
+ 
+Norm supports queries returning multiple results.
+ 
+For example, following query returns two result sets with different names:
+ 
+```csharp
+public Queires = @"
+    select 1 as id1, 'foo1' as foo1, 'bar1' as bar1; 
+    select 2 as id2, 'foo2' as foo2, 'bar2' as bar2
+";
+```
+ 
+Mapping to a record type example:
+ 
+```csharp
+using var connection = new SQLiteConnection(fixture.ConnectionString);
+using var multiple = connection.Multiple(Queires);
+
+var result1 = multiple.Read<Record1>();
+multiple.Next();
+var result2 = multiple.Read<Record2>();
+";
+```
+ 
+- Extension `Multiple` executes a command with multiple select statements and returns a disposable object.
+ 
+- Use that object to read the results and avance to the next result set:
+ 
+```csharp
+using var connection = new SQLiteConnection(fixture.ConnectionString);
+using var multiple = connection.Multiple(Queires);
+while (multiple.Next())
+{
+    var result = multiple.Read<MyStructure>();
+}
+";
+```
+ 
+- Extension `Multiple` receives command with parameters same way as any other method that executes sql:
+ 
+```csharp
+using var connection = new SQLiteConnection(fixture.ConnectionString);
+using var multiple = connection.Multiple(QueiresWithParams, 1, "bar2");
+// - or -
+using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2"), ("id1", 1));
+// - or -
+using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", DbType.String), ("id1", 1, DbType.Int32));
+// - or -
+ussing var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", SqlDbType.VarChar), ("id1", 1, SqlDbType.Int));
+ 
+```
+ 
+- Or, asynchronous version:
+ 
+```csharp
+using var connection = new SQLiteConnection(fixture.ConnectionString);
+using var multiple = await connection.MultipleAsync(Queires);
+ 
+var result1 = await multiple.ReadAsync<Record1>().SingleAsync();
+await multiple.NextAsync();
+var result2 = await multiple.ReadAsync<Record2>().SingleAsync();
+";
+```
+ 
+### Improvements and bugfixes
+ 
+- Reading named tuples can now have up to 14 members. Example:
+ 
+```
+connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query)
+```
+ 
+There was a bug that caused crashing when reading more than 8 named tuples. That is fixed and the limit is 14. 
+More than 14 will raise `ArgumentException` with the message: `Too many named tuple members. Maximum is 14.`.
+ 
+- Added missing cancelation tokens on asynchronous reads. Before cancelation wouldn't stop the asynchronous iteration, just the command. That is fixed.
+
 ## 2.0.8
 
 Add type checking for mapping methods `Query` and `QueryAsync`.

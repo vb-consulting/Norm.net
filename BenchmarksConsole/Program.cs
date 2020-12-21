@@ -16,7 +16,7 @@ Console.WriteLine();
 
 
 
-//RunSerializationBenchmarks();
+RunSerializationBenchmarks();
 //RunLinqExpBenchmarks();
 
 
@@ -45,14 +45,14 @@ void RunSerializationBenchmarks()
     var sw = new Stopwatch();
     var query = GetQuery(1000000);
 
-    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|Raw DataReader|");
-    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------|--------------|");
+    Console.WriteLine("|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm NAMED TUPLES|Norm TUPLES|Raw DataReader|");
+    Console.WriteLine("|-|-----------|-------------|---------|-----------|-----------------|-----------|--------------|");
 
     var list = new List<long[]>();
 
     for (int i = 0; i<10; i++)
     {
-        var values = new long[6];
+        var values = new long[8];
 
         GC.Collect();
         sw.Reset();
@@ -61,6 +61,7 @@ void RunSerializationBenchmarks()
         sw.Stop();
         var dapperPocoElapsed = sw.Elapsed;
         values[0] = sw.Elapsed.Ticks;
+        dapperPoco = null;
 
         GC.Collect();
         sw.Reset();
@@ -69,31 +70,43 @@ void RunSerializationBenchmarks()
         sw.Stop();
         var dapperRecordElapsed = sw.Elapsed;
         values[1] = sw.Elapsed.Ticks;
+        dapperRecord = null;
 
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var normPoco = connection.Query<PocoClass>(query).ToList();
+        var normPoco = connection.Read<PocoClass>(query).ToList();
         sw.Stop();
         var normPocoElapsed = sw.Elapsed;
         values[2] = sw.Elapsed.Ticks;
+        normPoco = null;
 
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var normRecord = connection.Query<Record>(query).ToList();
+        var normRecord = connection.Read<Record>(query).ToList();
         sw.Stop();
         var normRecordElapsed = sw.Elapsed;
         values[3] = sw.Elapsed.Ticks;
+        normRecord = null;
 
         GC.Collect();
         sw.Reset();
         sw.Start();
-        IEnumerable<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)> normTuples = 
-            connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList();
+        var normNamedTuples = connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query).ToList();
+        sw.Stop();
+        var normNamedTuplesElapsed = sw.Elapsed;
+        values[4] = sw.Elapsed.Ticks;
+        normNamedTuples = null;
+
+        GC.Collect();
+        sw.Reset();
+        sw.Start();
+        var normTuples = connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList();
         sw.Stop();
         var normTuplesElapsed = sw.Elapsed;
-        values[4] = sw.Elapsed.Ticks;
+        values[5] = sw.Elapsed.Ticks;
+        normTuples = null;
 
         GC.Collect();
         sw.Reset();
@@ -128,21 +141,26 @@ void RunSerializationBenchmarks()
         }
         sw.Stop();
         var rawDataReaderElapsed = sw.Elapsed;
-        values[5] = sw.Elapsed.Ticks;
+        values[6] = sw.Elapsed.Ticks;
+        rawReader = null;
+        GC.Collect();
 
         list.Add(values);
-        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|{normTuplesElapsed}|{rawDataReaderElapsed}|");
+        Console.WriteLine($"|{i+1}|{dapperPocoElapsed}|{dapperRecordElapsed}|{normPocoElapsed}|{normRecordElapsed}|{normNamedTuplesElapsed}|{normTuplesElapsed}|{rawDataReaderElapsed}|");
     }
 
     var dapperPocoAvg = new TimeSpan((long)list.Select(v => v[0]).Average());
     var dapperRecordAvg = new TimeSpan((long)list.Select(v => v[1]).Average());
     var normPocoAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
     var normRecordAvg = new TimeSpan((long)list.Select(v => v[3]).Average());
-    var normTuplesAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
-    var rawDataReaderAvg = new TimeSpan((long)list.Select(v => v[5]).Average());
+    var normNamedTuplesAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
+    var normTuplesAvg = new TimeSpan((long)list.Select(v => v[5]).Average());
+    var rawDataReaderAvg = new TimeSpan((long)list.Select(v => v[6]).Average());
 
-    Console.WriteLine($"|AVG|{dapperPocoAvg}|{dapperRecordAvg}|{normPocoAvg}|{normRecordAvg}|{normTuplesAvg}|{rawDataReaderAvg}|");
+    Console.WriteLine($"|**AVG**|**{dapperPocoAvg}**|**{dapperRecordAvg}**|**{normPocoAvg}**|**{normRecordAvg}**|**{normNamedTuplesAvg}**|**{normTuplesAvg}**|**{rawDataReaderAvg}**|");
     Console.WriteLine();
+    Console.WriteLine("Finished. Press enter to continue...");
+    Console.ReadLine();
 }
 
 #pragma warning disable CS8321 // Local function is declared but never used
@@ -179,7 +197,7 @@ void RunLinqExpBenchmarks()
         GC.Collect();
         sw.Reset();
         sw.Start();
-        var normRecord = connection.Query<PocoClass>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
+        var normRecord = connection.Read<PocoClass>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
         sw.Stop();
         var normRecordElapsed = sw.Elapsed;
         values[2] = sw.Elapsed.Ticks;

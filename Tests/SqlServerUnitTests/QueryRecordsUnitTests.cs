@@ -10,11 +10,10 @@ using Xunit;
 
 namespace SqlServerUnitTests
 {
-    public record TestRecord(int Id, string Foo, DateTime Day, bool? Bool, string Bar);
-
     [Collection("SqlClientDatabase")]
     public class QueryRecordsUnitTests
     {
+        private record TestRecord(int Id, string Foo, DateTime Day, bool? Bool, string Bar);
         private readonly SqlClientFixture fixture;
 
         private const string Query = @"
@@ -30,7 +29,7 @@ namespace SqlServerUnitTests
             this.fixture = fixture;
         }
 
-        private void AssertTestRecord(IList<TestRecord> result)
+        private static void AssertTestRecord(IList<TestRecord> result)
         {
             Assert.Equal(3, result.Count);
 

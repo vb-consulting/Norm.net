@@ -15,6 +15,21 @@ namespace Norm
         private static PropertyInfo[] properties = null;
         private static readonly object delegateLocker = new object();
         private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
+        private static (Type type, bool complex, bool valueTuple) metadata = default;
+        private static readonly object metadataLocker = new object();
+        private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
+           new Type[]
+           {
+                        typeof(ValueTuple<>),
+                        typeof(ValueTuple<,>),
+                        typeof(ValueTuple<,,>),
+                        typeof(ValueTuple<,,,>),
+                        typeof(ValueTuple<,,,,>),
+                        typeof(ValueTuple<,,,,,>),
+                        typeof(ValueTuple<,,,,,,>),
+                        typeof(ValueTuple<,,,,,,,>)
+           });
+
 
         ///<summary>
         ///    Return cached property info array
@@ -33,8 +48,7 @@ namespace Norm
                 {
                     return properties;
                 }
-                properties = type.GetProperties();
-                return properties;
+                return properties = type.GetProperties();
             }
         }
 
@@ -64,8 +78,7 @@ namespace Norm
                     hashes.Add(name);
                     result[name] = i++;
                 }
-                names = result;
-                return names;
+                return names = result;
             }
         }
 
@@ -82,10 +95,9 @@ namespace Norm
                     return ctorInfo;
                 }
                 var defaultCtor = type.GetConstructors()[0];
-                ctorInfo = (
+                return ctorInfo = (
                     (T)defaultCtor.Invoke(Enumerable.Repeat<object>(default, defaultCtor.GetParameters().Length).ToArray()),
                     (Func<T, object>)Delegate.CreateDelegate(typeof(Func<T, object>), type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)));
-                return ctorInfo;
             }
         }
 
@@ -106,46 +118,68 @@ namespace Norm
                 {
                     return delegateCache;
                 }
-                delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
-                return delegateCache;
+                return delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
             }
         }
 
-        internal static (Type type, bool complex) IsSimpleType()
+        internal static (Type type, bool complex, bool valueTuple) GetMetadata()
         {
-            var type = typeof(T);
-            if (type.IsPrimitive)
+            if (metadata.type != null)
             {
-                return (type, true);
+                return metadata;
             }
-            TypeCode code;
-            if (type.IsArray)
+            lock (metadataLocker)
             {
-                code = Type.GetTypeCode(type.GetElementType());
+                if (metadata.type != null)
+                {
+                    return metadata;
+                }
+                var type = typeof(T);
+                var simple = (type, true, false);
+                if (type.IsPrimitive)
+                {
+                    return metadata = simple;
+                }
+                TypeCode code;
+                if (type.IsArray)
+                {
+                    code = Type.GetTypeCode(type.GetElementType());
+                }
+                else
+                {
+                    if (type.IsGenericType)
+                    {
+                        if (ValueTupleTypes.Contains(type.GetGenericTypeDefinition()))
+                        {
+                            return metadata = (type, true, true);
+                        }
+                        code = Type.GetTypeCode(type.GenericTypeArguments[0]);
+                    }
+                    else
+                    {
+                        code = Type.GetTypeCode(type);
+                    }
+                }
+                return metadata = code switch
+                {
+                    TypeCode.Int32 => simple,
+                    TypeCode.DateTime => simple,
+                    TypeCode.String => simple,
+                    TypeCode.Boolean => simple,
+                    TypeCode.Byte => simple,
+                    TypeCode.Char => simple,
+                    TypeCode.Decimal => simple,
+                    TypeCode.Double => simple,
+                    TypeCode.Int16 => simple,
+                    TypeCode.Int64 => simple,
+                    TypeCode.SByte => simple,
+                    TypeCode.Single => simple,
+                    TypeCode.UInt16 => simple,
+                    TypeCode.UInt32 => simple,
+                    TypeCode.UInt64 => simple,
+                    _ => (type, false, false),
+                };
             }
-            else
-            {
-                code = Nullable.GetUnderlyingType(type) != null ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
-            }
-            return code switch
-            {
-                TypeCode.Int32 => (type, true),
-                TypeCode.DateTime => (type, true),
-                TypeCode.String => (type, true),
-                TypeCode.Boolean => (type, true),
-                TypeCode.Byte => (type, true),
-                TypeCode.Char => (type, true),
-                TypeCode.Decimal => (type, true),
-                TypeCode.Double => (type, true),
-                TypeCode.Int16 => (type, true),
-                TypeCode.Int64 => (type, true),
-                TypeCode.SByte => (type, true),
-                TypeCode.Single => (type, true),
-                TypeCode.UInt16 => (type, true),
-                TypeCode.UInt32 => (type, true),
-                TypeCode.UInt64 => (type, true),
-                _ => (type, false),
-            };
         }
     }
 }

@@ -13,9 +13,7 @@ namespace Norm
     {
         public static DbCommand SetCommandParameters(this DbCommand cmd, string command, CommandType type, int? timeout)
         {
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandText = command;
-#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandType = type;
             if (timeout != null)
             {
@@ -161,9 +159,7 @@ namespace Norm
                 prevIndex = index + len;
             }
             command.Append(old.Substring(prevIndex, old.Length - prevIndex - 1));
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandText = command.ToString();
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             return cmd;
         }
 
@@ -191,7 +187,7 @@ namespace Norm
                     break;
                 index++;
                 var endOf = command.IndexOfAny(NonCharacters, index);
-                var name = endOf == -1 ? command.Substring(index) : command[index..endOf];
+                var name = endOf == -1 ? command[index..] : command[index..endOf];
                 if (skip != null && skip.Contains(name))
                 {
                     continue;
@@ -242,9 +238,7 @@ namespace Norm
                 prevIndex = index + len;
             }
             command.Append(old.Substring(prevIndex, old.Length - prevIndex - 1));
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             cmd.CommandText = command.ToString();
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             return cmd;
         }
     }

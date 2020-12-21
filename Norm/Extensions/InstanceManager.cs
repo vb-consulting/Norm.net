@@ -9,12 +9,7 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        private static readonly ConditionalWeakTable<DbConnection, Norm> Table;
-
-        static NormExtensions()
-        {
-            Table = new ConditionalWeakTable<DbConnection, Norm>();
-        }
+        private static readonly ConditionalWeakTable<DbConnection, Norm> Table = new ConditionalWeakTable<DbConnection, Norm>();
 
         internal static Norm GetNoOrmInstance(this DbConnection connection)
         {

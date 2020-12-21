@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
 
 namespace Norm.Interfaces
@@ -7,7 +8,8 @@ namespace Norm.Interfaces
         INormExecute, 
         INormExecuteAsync,
         INormRead,
-        INormReadAsync
+        INormReadAsync,
+        INormMultiple
     {
         ///<summary>
         ///     returns DbConnection for this instance
@@ -25,12 +27,12 @@ namespace Norm.Interfaces
         INorm As(CommandType type);
         ///<summary>
         ///     Set command type to StoredProcedure for the connection commands and return Norm instance.
-        ///
+        ///</summary>
         ///<returns>Norm instance.</returns>
         INorm AsProcedure();
         ///<summary>
         ///     Set command type to Text for the connection commands and return Norm instance.
-        ///
+        ///</summary>
         ///<returns>Norm instance.</returns>
         INorm AsText();
         ///<summary>
@@ -42,7 +44,6 @@ namespace Norm.Interfaces
         ///<summary>
         ///     Sets the next command in prepared mode by calling Prepare for the next command.
         ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance.</returns>
         INorm Prepared();
         ///<summary>

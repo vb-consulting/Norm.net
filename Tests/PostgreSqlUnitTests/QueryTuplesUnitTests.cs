@@ -229,5 +229,175 @@ namespace PostgreSqlUnitTests
                 ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, DbType.Int32)).ToListAsync();
             AssertSingleTestClass(result2);
         }
+
+        [Fact]
+        public void Six_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6)>("select 1, 2, 3, 4, 5, 6").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+        }
+
+
+        [Fact]
+        public void Seven_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7)>("select 1, 2, 3, 4, 5, 6, 7").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+        }
+
+        [Fact]
+        public void Eight_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8)>("select 1, 2, 3, 4, 5, 6, 7, 8").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+        }
+
+        [Fact]
+        public void Nine_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+        }
+
+        [Fact]
+        public void Ten_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+            Assert.Equal(10, t.i10);
+        }
+
+        [Fact]
+        public void Eleven_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+            Assert.Equal(10, t.i10);
+            Assert.Equal(11, t.i11);
+        }
+
+        [Fact]
+        public void Twelve_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+            Assert.Equal(10, t.i10);
+            Assert.Equal(11, t.i11);
+            Assert.Equal(12, t.i12);
+        }
+
+        [Fact]
+        public void Thirteen_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+            Assert.Equal(10, t.i10);
+            Assert.Equal(11, t.i11);
+            Assert.Equal(12, t.i12);
+            Assert.Equal(13, t.i13);
+        }
+
+        [Fact]
+        public void Fourteen_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14").Single();
+
+            Assert.Equal(1, t.i1);
+            Assert.Equal(2, t.i2);
+            Assert.Equal(3, t.i3);
+            Assert.Equal(4, t.i4);
+            Assert.Equal(5, t.i5);
+            Assert.Equal(6, t.i6);
+            Assert.Equal(7, t.i7);
+            Assert.Equal(8, t.i8);
+            Assert.Equal(9, t.i9);
+            Assert.Equal(10, t.i10);
+            Assert.Equal(11, t.i11);
+            Assert.Equal(12, t.i12);
+            Assert.Equal(13, t.i13);
+            Assert.Equal(14, t.i14);
+        }
+
+        [Fact]
+        public void Fifteen_Tuples_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            Assert.Throws<ArgumentException>(() => connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15").Single());
+        }
     }
 }

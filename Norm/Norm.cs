@@ -25,7 +25,6 @@ namespace Norm
         private bool usingPostgresFormatParamsMode;
         private readonly bool convertsDbNull;
         private readonly DatabaseType dbType;
-        private static readonly Type StringType = typeof(string);
 
         public DbConnection Connection { get; }
 
@@ -227,24 +226,97 @@ namespace Norm
             return cmd;
         }
 
-        private bool CheckDbNull<T>() => (!convertsDbNull || typeof(T) == StringType);
-
-        private T GetFieldValue<T>(DbDataReader reader, int ordinal)
+        public DbCommand CreateCommand(string command)
         {
-            if (CheckDbNull<T>())
-            {
-                return reader.IsDBNull(ordinal) ? default : reader.GetFieldValue<T>(ordinal);
-            }
-            return reader.GetFieldValue<T>(ordinal);
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            return Prepare(cmd);
         }
 
-        private async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal)
+        public async ValueTask<DbCommand> CreateCommandAsync(string command)
         {
-            if (CheckDbNull<T>())
-            {
-                return await reader.IsDBNullAsync(ordinal) ? default : await reader.GetFieldValueAsync<T>(ordinal);
-            }
-            return await reader.GetFieldValueAsync<T>(ordinal);
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            return await PrepareAsync(cmd);
+        }
+
+        public DbCommand CreateCommand(string command, params object[] parameters)
+        {
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParameters(cmd, parameters);
+            return cmd;
+        }
+
+        public async ValueTask<DbCommand> CreateCommandAsync(string command, params object[] parameters)
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await AddParametersAsync(cmd, parameters);
+            return cmd;
+        }
+
+        public DbCommand CreateCommand(string command, params (string name, object value)[] parameters)
+        {
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParameters(cmd, parameters);
+            return cmd;
+        }
+
+        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value)[] parameters)
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await AddParametersAsync(cmd, parameters);
+            return cmd;
+        }
+
+        public DbCommand CreateCommand(string command, params (string name, object value, DbType type)[] parameters)
+        {
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParameters(cmd, parameters);
+            return cmd;
+        }
+
+        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value, DbType type)[] parameters)
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync();
+            await AddParametersAsync(cmd, parameters);
+            return cmd;
+        }
+
+        public DbCommand CreateCommand(string command, params (string name, object value, object type)[] parameters)
+        {
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            Connection.EnsureIsOpen();
+            AddParametersUnknownType(cmd, parameters);
+            return cmd;
+        }
+
+        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value, object type)[] parameters)
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            SetCommand(cmd, command);
+            await Connection.EnsureIsOpenAsync();
+            await AddParametersUnknownTypeAsync(cmd, parameters);
+            return cmd;
         }
     }
 }
