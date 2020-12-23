@@ -7,107 +7,714 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
+        internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, 
+            Type type1)
         {
-            type ??= typeof(T);
-            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-            if (ctorInfo.Item1 == null)
+            var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+
+            foreach (var t in tuples)
             {
-                throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
-            }
-            foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
-            {
-                yield return t;
+                yield return t.MapInstance(type1, TypeCache<T>.CreateInstance(ctorInfo1));
             }
         }
 
-        internal static IEnumerable<T> MapValueTuple<T>(this IEnumerable<(string name, object value)[]> tuples, Type type = null)
+        internal static IEnumerable<(T1, T2)> Map<T1, T2>(this IEnumerable<(string name, object value)[]> tuples, 
+            Type type1, 
+            Type type2)
         {
-            type ??= typeof(T);
-            ConstructorInfo defaultCtor = type.GetConstructors()[0];
-            ParameterInfo[] ctorParams = defaultCtor.GetParameters();
-            var len = ctorParams.Length;
-            if (len < 8)
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            
+            foreach (var t in tuples)
             {
-                foreach (var t in tuples)
-                {
-                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).ToArray());
-                }
-            }
-            else
-            {
-                var lastCtor = ctorParams[7].ParameterType.GetConstructors()[0];
-                if (lastCtor.GetParameters().Length > 7)
-                {
-                    throw new ArgumentException($"Too many named tuple members. Maximum is 14.");
-                }
-                foreach (var t in tuples)
-                {
-                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).Union(Enumerable.Repeat(lastCtor.Invoke(t.Skip(7).Select(t => t.value).ToArray()), 1)).ToArray());
-                }
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                yield return (t1, t2);
             }
         }
 
-        internal static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+        internal static IEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1, 
+            Type type2, 
+            Type type3)
         {
-            type ??= typeof(T);
-            var ctorInfo = TypeCache<T>.GetCtorInfo(type);
-            if (ctorInfo.Item1 == null)
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+
+            foreach (var t in tuples)
             {
-                throw new ArgumentException($"When mapping database results, feneric paramater for must be iether class, record or value tuple. Your type is {type.FullName}");
-            }
-            await foreach (var t in tuples.MapInternal<T>(type, ctorInfo))
-            {
-                yield return t;
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                yield return (t1, t2, t3);
             }
         }
 
-        internal static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+        internal static IEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1, 
+            Type type2, 
+            Type type3, 
+            Type type4)
         {
-            type ??= typeof(T);
-            ConstructorInfo defaultCtor = type.GetConstructors()[0];
-            ParameterInfo[] ctorParams = defaultCtor.GetParameters();
-            var len = ctorParams.Length;
-            if (len < 8)
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+
+            foreach (var t in tuples)
             {
-                await foreach (var t in tuples)
-                {
-                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).ToArray());
-                }
-            }
-            else
-            {
-                var lastCtor = ctorParams[7].ParameterType.GetConstructors()[0];
-                if (lastCtor.GetParameters().Length > 7)
-                {
-                    throw new ArgumentException($"Too many named tuple members. Maximum is 14.");
-                }
-                await foreach (var t in tuples)
-                {
-                    yield return (T)defaultCtor.Invoke(t.Take(7).Select(t => t.value).Union(Enumerable.Repeat(lastCtor.Invoke(t.Skip(7).Select(t => t.value).ToArray()), 1)).ToArray());
-                }
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                yield return (t1, t2, t3, t4);
             }
         }
 
-        private static IEnumerable<T> MapInternal<T>(
-            this IEnumerable<(string name, object value)[]> tuples, Type type, (T instance, Func<T, object> clone) ctorInfo)
+        internal static IEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1, 
+            Type type2, 
+            Type type3, 
+            Type type4, 
+            Type type5)
         {
-            foreach (var tuple in tuples)
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+
+            foreach (var t in tuples)
             {
-                yield return tuple.MapInstance(type, TypeCache<T>.CreateInstance(ctorInfo));
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                yield return (t1, t2, t3, t4, t5);
             }
         }
 
-        private static async IAsyncEnumerable<T> MapInternal<T>(
-            this IAsyncEnumerable<(string name, object value)[]> tuples, Type type, (T instance, Func<T, object> clone) ctorInfo)
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6)
         {
-            await foreach (var tuple in tuples)
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+
+            foreach (var t in tuples)
             {
-                yield return tuple.MapInstance(type, TypeCache<T>.CreateInstance(ctorInfo));
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                yield return (t1, t2, t3, t4, t5, t6);
             }
         }
 
-        private static T MapInstance<T>(this (string name, object value)[] tuple, Type type, T instance)
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7);
+            }
+        }
+
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7, 
+            Type type8)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8);
+            }
+        }
+
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8, 
+            Type type9)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
+            }
+        }
+
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
+            }
+        }
+
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10,
+            Type type11)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                var t11 = t.MapInstance(type11, TypeCache<T11>.CreateInstance(ctorInfo11), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
+            }
+        }
+
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10,
+            Type type11,
+            Type type12)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+            var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
+
+            foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                var t11 = t.MapInstance(type11, TypeCache<T11>.CreateInstance(ctorInfo11), ref used);
+                var t12 = t.MapInstance(type12, TypeCache<T12>.CreateInstance(ctorInfo12), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
+            }
+        }
+
+
+        internal static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1)
+        {
+            var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+
+            await foreach (var t in tuples)
+            {
+                yield return t.MapInstance(type1, TypeCache<T>.CreateInstance(ctorInfo1));
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2)> Map<T1, T2>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                yield return (t1, t2);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                yield return (t1, t2, t3);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                yield return (t1, t2, t3, t4);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                yield return (t1, t2, t3, t4, t5);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                yield return (t1, t2, t3, t4, t5, t6);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10,
+            Type type11)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                var t11 = t.MapInstance(type11, TypeCache<T11>.CreateInstance(ctorInfo11), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
+            }
+        }
+
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
+            Type type5,
+            Type type6,
+            Type type7,
+            Type type8,
+            Type type9,
+            Type type10,
+            Type type11,
+            Type type12)
+        {
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+            var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
+
+            await foreach (var t in tuples)
+            {
+                var used = new HashSet<ushort>(t.Length);
+                var t1 = t.MapInstance(type1, TypeCache<T1>.CreateInstance(ctorInfo1), ref used);
+                var t2 = t.MapInstance(type2, TypeCache<T2>.CreateInstance(ctorInfo2), ref used);
+                var t3 = t.MapInstance(type3, TypeCache<T3>.CreateInstance(ctorInfo3), ref used);
+                var t4 = t.MapInstance(type4, TypeCache<T4>.CreateInstance(ctorInfo4), ref used);
+                var t5 = t.MapInstance(type5, TypeCache<T5>.CreateInstance(ctorInfo5), ref used);
+                var t6 = t.MapInstance(type6, TypeCache<T6>.CreateInstance(ctorInfo6), ref used);
+                var t7 = t.MapInstance(type7, TypeCache<T7>.CreateInstance(ctorInfo7), ref used);
+                var t8 = t.MapInstance(type8, TypeCache<T8>.CreateInstance(ctorInfo8), ref used);
+                var t9 = t.MapInstance(type9, TypeCache<T9>.CreateInstance(ctorInfo9), ref used);
+                var t10 = t.MapInstance(type10, TypeCache<T10>.CreateInstance(ctorInfo10), ref used);
+                var t11 = t.MapInstance(type11, TypeCache<T11>.CreateInstance(ctorInfo11), ref used);
+                var t12 = t.MapInstance(type12, TypeCache<T12>.CreateInstance(ctorInfo12), ref used);
+                yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
+            }
+        }
+
+        private static T MapInstance<T>(this (string name, object value)[] tuple,
+            Type type,
+            T instance)
         {
             ushort i = 0;
             var properties = TypeCache<T>.GetProperties(type);
@@ -139,6 +746,50 @@ namespace Norm
                     continue;
                 }
                 InvokeSet(method, nullable, code, instance, tuple[index].value, isArray);
+            }
+            return instance;
+        }
+
+        private static T MapInstance<T>(this (string name, object value)[] tuple, 
+            Type type, 
+            T instance,
+            ref HashSet<ushort> used)
+        {
+            ushort i = 0;
+            var properties = TypeCache<T>.GetProperties(type);
+            var delegates = TypeCache<T>.GetDelegates(properties.Length);
+            Dictionary<string, ushort> names = null;
+            foreach (var property in properties)
+            {
+                var (method, nullable, code, isArray, index) = delegates[i];
+                if (method == null)
+                {
+                    var propType = property.PropertyType;
+                    nullable = Nullable.GetUnderlyingType(propType) != null;
+                    (method, code, isArray) = CreateDelegate<T>(property, nullable);
+
+                    var name = property.Name.ToLower();
+                    if (names == null)
+                    {
+                        names = TypeCache<T>.GetNames(tuple);
+                    }
+                    if (!names.TryGetValue(name, out index))
+                    {
+                        index = ushort.MaxValue;
+                    }
+                    if (used.Contains(index))
+                    {
+                        continue;
+                    }
+                    delegates[i] = (method, nullable, code, isArray, index);
+                }
+                i++;
+                if (index == ushort.MaxValue)
+                {
+                    continue;
+                }
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray);
+                used.Add(index);
             }
             return instance;
         }

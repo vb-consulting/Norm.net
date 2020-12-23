@@ -15,7 +15,7 @@ namespace Norm
         private static PropertyInfo[] properties = null;
         private static readonly object delegateLocker = new object();
         private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
-        private static (Type type, bool complex, bool valueTuple) metadata = default;
+        private static (Type type, bool simple, bool valueTuple) metadata = default;
         private static readonly object metadataLocker = new object();
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
            new Type[]
@@ -29,6 +29,10 @@ namespace Norm
                         typeof(ValueTuple<,,,,,,>),
                         typeof(ValueTuple<,,,,,,,>)
            });
+
+        private static readonly object valueTupleCtorInfoLocker = new object();
+        private static (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) 
+            ValueTupleCtorInfo = default;
 
 
         ///<summary>
@@ -122,7 +126,7 @@ namespace Norm
             }
         }
 
-        internal static (Type type, bool complex, bool valueTuple) GetMetadata()
+        internal static (Type type, bool simple, bool valueTuple) GetMetadata()
         {
             if (metadata.type != null)
             {
@@ -179,6 +183,40 @@ namespace Norm
                     TypeCode.UInt64 => simple,
                     _ => (type, false, false),
                 };
+            }
+        }
+
+        internal static (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) GetValueTupleCtorInfo(Type type)
+        {
+            if (ValueTupleCtorInfo.defaultCtor != null)
+            {
+                return ValueTupleCtorInfo;
+            }
+            lock (valueTupleCtorInfoLocker)
+            {
+                if (ValueTupleCtorInfo.defaultCtor != null)
+                {
+                    return ValueTupleCtorInfo;
+                }
+
+                ConstructorInfo defaultCtor = type.GetConstructors()[0];
+                ParameterInfo[] ctorParams = defaultCtor.GetParameters();
+                var len = ctorParams.Length;
+                if (len < 8)
+                {
+                    return ValueTupleCtorInfo = (defaultCtor, len, null, 0);
+                }
+                else
+                {
+                    var lastCtor = ctorParams[7].ParameterType.GetConstructors()[0];
+                    var lastLen = lastCtor.GetParameters().Length;
+                    if (lastLen > 7)
+                    {
+                        throw new NormValueTupleTooLongException();
+                    }
+                    return ValueTupleCtorInfo = (defaultCtor, len, lastCtor, lastLen);
+                }
+                
             }
         }
     }

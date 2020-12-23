@@ -79,7 +79,7 @@ namespace Norm
             {
                 if (cmd.CommandType == CommandType.StoredProcedure)
                 {
-                    throw new ArgumentException("Cannot use positional parameters that are not DbParameter type with command type StoredProcedure. Use named parameters instead.");
+                    throw new NormPositionalParametersWithStoredProcedureException();
                 }
                 cmd.AddParamWithValue(name, values[paramIndex++]);
             }

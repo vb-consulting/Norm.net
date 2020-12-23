@@ -82,7 +82,7 @@ namespace Norm
             prepared = true;
             if (prepared && usingPostgresFormatParamsMode)
             {
-                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on prepared statements.");
+                throw new NormCannotUsePostgresFormatParamsModeOnPreparedStatementException();
             }
             return this;
         }
@@ -92,11 +92,11 @@ namespace Norm
             this.usingPostgresFormatParamsMode = true;
             if (dbType != DatabaseType.Pg)
             {
-                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on connection other than PostgreSQL.");
+                throw new NormCannotUsePostgresFormatParamsModeWhenNotPostgreSqlException();
             }
             if (prepared && usingPostgresFormatParamsMode)
             {
-                throw new ArgumentException("Cannot set UsingPostgresFormatParamsMode on prepared statements.");
+                throw new NormCannotUsePostgresFormatParamsModeOnPreparedStatementException();
             }
             return this;
         }

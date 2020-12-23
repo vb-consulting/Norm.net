@@ -397,7 +397,7 @@ namespace PostgreSqlUnitTests
         public void Fifteen_Tuples_Test_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            Assert.Throws<ArgumentException>(() => connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15").Single());
+            Assert.Throws<NormValueTupleTooLongException>(() => connection.Read<(int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)>("select 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15").Single());
         }
     }
 }
