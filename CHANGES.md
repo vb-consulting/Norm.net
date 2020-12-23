@@ -139,8 +139,7 @@ For example, following query returns two result sets with different names:
 ```csharp
 public Queires = @"
     select 1 as id1, 'foo1' as foo1, 'bar1' as bar1; 
-    select 2 as id2, 'foo2' as foo2, 'bar2' as bar2
-";
+    select 2 as id2, 'foo2' as foo2, 'bar2' as bar2";
 ```
  
 Mapping to a record type example:
@@ -152,7 +151,6 @@ using var multiple = connection.Multiple(Queires);
 var result1 = multiple.Read<Record1>();
 multiple.Next();
 var result2 = multiple.Read<Record2>();
-";
 ```
  
 - Extension `Multiple` executes a command with multiple select statements and returns a disposable object.
@@ -166,7 +164,6 @@ while (multiple.Next())
 {
     var result = multiple.Read<MyStructure>();
 }
-";
 ```
  
 - Extension `Multiple` receives command with parameters same way as any other method that executes sql:
@@ -179,7 +176,7 @@ using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2"), ("
 // - or -
 using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", DbType.String), ("id1", 1, DbType.Int32));
 // - or -
-ussing var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", SqlDbType.VarChar), ("id1", 1, SqlDbType.Int));
+using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", SqlDbType.VarChar), ("id1", 1, SqlDbType.Int));
  
 ```
  
@@ -192,7 +189,6 @@ using var multiple = await connection.MultipleAsync(Queires);
 var result1 = await multiple.ReadAsync<Record1>().SingleAsync();
 await multiple.NextAsync();
 var result2 = await multiple.ReadAsync<Record2>().SingleAsync();
-";
 ```
  
 ### Improvements and bugfixes
