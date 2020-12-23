@@ -1,5 +1,45 @@
 # Version history
 
+## 3.1.0
+
+#### 1) Support for multiple mappings from the same command
+
+Norm can now map to multiple instances from the same command. Example:
+
+```csharp
+record Record1(int Id1, int Id2);
+record Record2(int Id3, int Id4);
+
+//...
+var sql = "select 1 as id1, 2 as id2, 3 as id3, 4 as id4";
+var (record1, record2) = connection.Read<Record1, Record2>(sql).Single();
+
+Console.WriteLine(record1.Id1); // outputs 1
+Console.WriteLine(record1.Id2); // outputs 2
+Console.WriteLine(record2.Id3); // outputs 3
+Console.WriteLine(record2.Id4); // outputs 4
+```
+
+This also works with named tuples. Example:
+
+```csharp
+var sql = "select 1 as id1, 2 as id2, 3 as id3, 4 as id4";
+var (record1, record2) = connection.Read<(int Id1, int Id2), (int Id3, int Id4)>(sql).Single();
+
+Console.WriteLine(record1.Id1); // outputs 1
+Console.WriteLine(record1.Id2); // outputs 2
+Console.WriteLine(record2.Id3); // outputs 3
+Console.WriteLine(record2.Id4); // outputs 4
+```
+
+Multiple mapping works for all `Read` and `ReadAsync` overloads (up to 12 multiple mappings).
+
+#### 2) Other improvements
+
+- Named tuples mapping massivly improved with much better perfomances (on pair with Dapper).
+- Named tuples now allow mapping with less named tuple members then result in query.
+- Better error handling: Added NormException as base Exception for all known Exceptions.
+
 ## 3.0.0
  
 ### Breaking changes

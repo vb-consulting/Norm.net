@@ -748,7 +748,7 @@ namespace Norm
                 {
                     p[i - start] = tuple[i].value;
                 }
-                start = ctorInfo.defaultCtorLen;
+                start = start + ctorInfo.defaultCtorLen;
                 return (T)ctorInfo.defaultCtor.Invoke(p);
             }
             else
@@ -764,7 +764,7 @@ namespace Norm
                     lp[i - start] = tuple[ctorInfo.defaultCtorLen + i - 1].value;
                 }
                 p[ctorInfo.defaultCtorLen - 1] = ctorInfo.lastCtor.Invoke(lp);
-                start = ctorInfo.defaultCtorLen + ctorInfo.lastCtorLen - 1;
+                start = start + ctorInfo.defaultCtorLen + ctorInfo.lastCtorLen - 1;
                 return (T)ctorInfo.defaultCtor.Invoke(p);
             }
         }

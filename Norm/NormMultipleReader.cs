@@ -188,7 +188,7 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return Read().Map<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return Read().MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
@@ -212,7 +212,7 @@ namespace Norm
             var t4 = TypeCache<T4>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
+                return Read().MapValueTuple<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple)
             {
@@ -238,7 +238,7 @@ namespace Norm
             var t5 = TypeCache<T5>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple)
             {
@@ -266,7 +266,7 @@ namespace Norm
             var t6 = TypeCache<T6>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple)
             {
@@ -296,7 +296,7 @@ namespace Norm
             var t7 = TypeCache<T7>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple)
             {
@@ -328,7 +328,7 @@ namespace Norm
             var t8 = TypeCache<T8>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple)
             {
@@ -362,7 +362,7 @@ namespace Norm
             var t9 = TypeCache<T9>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple)
             {
@@ -398,7 +398,7 @@ namespace Norm
             var t10 = TypeCache<T10>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple)
             {
@@ -436,7 +436,7 @@ namespace Norm
             var t11 = TypeCache<T11>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple && t11.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple)
             {
@@ -473,10 +473,10 @@ namespace Norm
             var t9 = TypeCache<T9>.GetMetadata();
             var t10 = TypeCache<T10>.GetMetadata();
             var t11 = TypeCache<T11>.GetMetadata();
-            var t12 = TypeCache<T11>.GetMetadata();
+            var t12 = TypeCache<T12>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple && t11.valueTuple && t12.valueTuple)
             {
-                return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
+                return Read().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple && !t12.simple)
             {
@@ -552,7 +552,7 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
@@ -576,7 +576,7 @@ namespace Norm
             var t4 = TypeCache<T4>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple)
             {
@@ -602,7 +602,7 @@ namespace Norm
             var t5 = TypeCache<T5>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple)
             {
@@ -630,7 +630,7 @@ namespace Norm
             var t6 = TypeCache<T6>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple)
             {
@@ -660,7 +660,7 @@ namespace Norm
             var t7 = TypeCache<T7>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple)
             {
@@ -692,7 +692,7 @@ namespace Norm
             var t8 = TypeCache<T8>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple)
             {
@@ -726,7 +726,7 @@ namespace Norm
             var t9 = TypeCache<T9>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple)
             {
@@ -762,7 +762,7 @@ namespace Norm
             var t10 = TypeCache<T10>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple)
             {
@@ -800,7 +800,7 @@ namespace Norm
             var t11 = TypeCache<T11>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple && t11.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple)
             {
@@ -837,10 +837,10 @@ namespace Norm
             var t9 = TypeCache<T9>.GetMetadata();
             var t10 = TypeCache<T10>.GetMetadata();
             var t11 = TypeCache<T11>.GetMetadata();
-            var t12 = TypeCache<T11>.GetMetadata();
+            var t12 = TypeCache<T12>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple && t4.valueTuple && t5.valueTuple && t6.valueTuple && t7.valueTuple && t8.valueTuple && t9.valueTuple && t10.valueTuple && t11.valueTuple && t12.valueTuple)
             {
-                return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
+                return ReadAsync().MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple && !t12.simple)
             {

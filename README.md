@@ -29,7 +29,7 @@ Console.WriteLine(result.bar); // outputs "foo"
  
 ### `Trustworthy and Reliable`
  
-- 320+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
+- 350+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite`, and `MySql`.
  
 - [`Source links`](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) are included in the package. That means that you can [Step Into] the source code when debugging to see exactly what it does.
  
@@ -76,10 +76,10 @@ var records = connection.Read<MyRecord>("select id, foo, bar from table");
 // Map results to class
 var classes = connection.Read<MyClass>("select id, foo, bar from table");
  
-// Map single values to tuple and deconstruct to three variables
+// Map single values to a tuple and deconstruct to three variables
 var (id, foo, bar) = connection.Read<int, string, string>("select id, foo, bar from table").Single();
  
-// Map to named tuple:
+// Map to a named tuple (id, foo, bar):
 var tuple = connection.Read(int id, string foo, string bar)>("select id, foo, bar from table").Single();
  
 // Asynchronously stream values directly from database
@@ -101,7 +101,7 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
  
 ## Testing
  
-320+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite` and `MySql`.
+350+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite` and `MySql`.
  
 ![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
  
