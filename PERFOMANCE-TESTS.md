@@ -1,184 +1,224 @@
 # PERFOMANCE BENCHMARKS
-
-[Benchmark code](https://github.com/vb-consulting/Norm.net/tree/master/BenchmarksConsole) is included in the project, you can run it manually to repeat these tests.
-
-Query used for testing doesn't use any tables and it runs on the local PostgreSQL server. 
-It generates series of 1 million records an returns 10 fields of various types for each record:
-
-```sql
-select 
-    i as id1, 
-    'foo' || i::text as foo1, 
-    'bar' || i::text as bar1, 
-    ('2000-01-01'::date) + (i::text || ' days')::interval as datetime1, 
-    i+1 as id2, 
-    'foo' || (i+1)::text as foo2, 
-    'bar' || (i+1)::text as bar2, 
-    ('2000-01-01'::date) + ((i+1)::text || ' days')::interval as datetime2,
-    'long_foo_bar_' || (i+2)::text as longfoobar, -- dapper doesn't understands the snake case
-    (i % 2)::boolean as isfoobar
-from generate_series(1, 1000000) as i
-```
-
-Results are serialized to Plain Old CLR Object (POCO) class and to Record stucture:
-
-```csharp
-class PocoClass
-{
-    public int Id1 { get; set; }
-    public string Foo1 { get; set; }
-    public string Bar1 { get; set; }
-    public DateTime DateTime1 { get; set; }
-    public int Id2 { get; set; }
-    public string Foo2 { get; set; }
-    public string Bar2 { get; set; }
-    public DateTime DateTime2 { get; set; }
-    public string LongFooBar { get; set; }
-    public bool IsFooBar { get; set; }
-}
-
-record Record(int Id1, string Foo1, string Bar1, DateTime DateTime1, int Id2, string Foo2, string Bar2, DateTime DateTime2, string LongFooBar, bool IsFooBar);
-```
-
-Norm also tests serialziation to enumerable of named tuples:
-
-```csharp
-IEnumerable<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)> normTuples = 
-    connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList();
-```
-
-All results are in seconds.
+ 
+- You can run manual tests by building and running this [project](https://github.com/vb-consulting/Norm.net/tree/master/BenchmarksConsole).
+ 
+- Query used for testing returns **1 million records** from local test PostgreSQL server, **10 fields** of various types wide. 
+ 
+- Tests for Dapper and Norm will serialize to one **class** and one **record** structure.
+ 
+- Tests for Norm will also do serialization of **tuples** tuple values, named tuples. Since it is the only library that supports that.
+ 
+- **Raw data reader** performance tests are included for comparison.
 
 ## Test 1
+ 
+### Dapper Buffered Query Class and Record Tests
 
-Serialization to `PocoClass` and `Record` by Dapper and Norm.
+These tests measure the Dapper **buffered query** (default behavior) performance for **record** and **class**.
+ 
+The buffered query will trigger the iteration immediately and return the already serialized list.
+ 
+- **`Query<class>`** averages in **03,87 seconds** with average memory consuption of **316523 KB**
+ 
+- **`Query<record>`** averages in **03,86 seconds** with average memory consuption of **316684 KB**
+ 
+Conclusion: 
 
-### Round 1 
-
-|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|Raw DataReader|
-|-|-----------|-------------|---------|-----------|-----------|--------------|
-|1|05.8025930|03.9257842|03.4476872|03.4005168|03.4962855|03.4492357|
-|2|06.0066571|04.6297992|03.9375367|03.9628754|03.9636546|03.4815188|
-|3|04.1079661|04.4479405|03.4918979|03.4874563|03.4739197|03.4373477|
-|4|03.8241052|03.9440888|03.5481203|03.4962378|03.5970963|03.4345607|
-|5|03.9227889|03.8672537|03.5270855|03.5670758|03.4530075|03.4396712|
-|6|03.9365109|03.9009880|03.4277436|03.5154730|03.4948439|03.4314255|
-|7|03.8137786|03.9517794|03.6711828|03.4599004|03.5232537|03.4174293|
-|8|03.9162212|03.8381552|03.5453183|03.5335635|03.4950666|03.4791826|
-|9|03.8746262|03.9102678|03.5650245|03.4378088|03.4469888|03.4470586|
-|10|03.9304067|03.9217274|03.4046821|03.5152450|03.4661721|03.5199039|
-|**AVG**|**04.3135653**|**04.0337784**|**03.5566278**|**03.5376152**|**03.5410288**|**03.4537334**|
-
-
-### Round 2
-
-|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|Raw DataReader|
-|-|-----------|-------------|---------|-----------|-----------|--------------|
-|1|05.1507459|04.0248490|03.4553928|03.4898228|03.4454819|03.6652173|
-|2|03.8679590|04.0432841|03.3844195|03.4338807|03.3805373|03.4049319|
-|3|03.9244829|04.0776852|03.5146225|03.5266683|03.9178342|03.5860509|
-|4|04.0532428|04.0481091|03.4690038|03.5427280|03.4087373|03.4170472|
-|5|04.0205996|04.0320517|03.7435097|03.6744232|03.5223342|03.6735942|
-|6|03.9704174|04.0875421|03.6742348|03.6363717|03.4841327|03.4487219|
-|7|03.9078427|04.0042793|03.7572632|03.8503936|03.4338911|03.5015400|
-|8|03.9751321|03.9914152|03.6897327|03.6256718|03.6632366|03.7008167|
-|9|03.9691990|03.9920399|03.6869331|03.7483528|03.5136311|03.5418013|
-|10|03.8893251|04.1737140|03.7143296|03.6263200|03.6535762|03.5511610|
-|**AVG**|**04.0728946**|**04.0474969**|**03.6089441**|**03.6154632**|**03.5423392**|**03.5490882**|
-
-### Round 3
-
-|#|Dapper POCO|Dapper RECORD|Norm POCO|Norm RECORD|Norm TUPLES|Raw DataReader|
-|-|-----------|-------------|---------|-----------|-----------|--------------|
-|1|04.3101856|03.9383326|03.4970278|03.2741134|03.3867993|03.3934763|
-|2|03.8855439|03.9815244|03.3784879|03.4931214|03.4527211|03.3811276|
-|3|03.9293713|04.0181483|03.4456998|03.4370836|03.3915271|03.5341020|
-|4|04.0463935|04.0129422|03.4920009|03.4510810|03.5107734|03.4544545|
-|5|03.9404838|04.0350873|03.4238162|03.4790497|03.6978646|03.6568042|
-|6|04.0305185|04.0876946|03.5131145|03.4918386|03.5281288|03.5323353|
-|7|04.0004984|04.0684690|03.5778807|03.4949941|03.5268483|03.5704475|
-|8|04.0807761|04.0637439|03.4821100|03.4778834|03.4859002|03.5175608|
-|9|03.9361910|04.0815588|03.7447562|03.4814912|03.5394205|03.4657830|
-|10|03.9584394|04.1086788|03.5203725|03.5346357|03.4802855|03.5114095|
-|**AVG**|**04.0118401**|**04.0396179**|**03.5075266**|**03.4615292**|**03.5000268**|**03.5017500**|
-
-
-Serialization to named tuples enumerable doesn't use any mapping logic (no reflection and no caching) and
-it is fast as raw data reader.
-
-Results indicate that mapping to POCO or Record are indistinguishable from raw data reader. They seem to be just as fast.
+- As expected **results are similar**, there are no significant differences between those two executions.
 
 ## Test 2
+ 
+### Dapper Unbuffered Query Class and Record Tests
 
-These tests will convert serialized results to `Dictionary<int, DateTime>`
-where the key is populated by field `Id1` and value is `DateTime1` field from results.
+These tests measure Dapper **unbuffered query** performances for **record** and **class**.
 
-- Dapper record query will seralize to record and use LINQ to convert to dictionary:
+Unbuffered queries in Dapper (with parameter ` buffered: false`) do not return a list, 
+but rather **generate enumerator that yields results**, similar to Norm default and only behavior.
 
-```cshap
-connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
-```
+The resulting enumerator is returned very fast, but, it is still not a list as the first test result. 
 
-- Norm tuples will not serialize at all, it will use tuple array results and reference fields by index:
+To emulate the same type of results, we must convert generated enumeration to a list with **`ToList` LINQ** call.
 
-```cshap
-connection.Read(query).ToDictionary(t => t[0].value, t => (DateTime)t[3].value);
-```
+- Unbuffered **`Query<class>`** averages in **03.81 seconds** with average memory consuption of **316623 KB**
 
-- Norm record query will serialize to record and use LINQ to convert to the dictionary, same as Dapper. 
-However, Norm generates iterators internally instead of list, so iteration should occur only once and difference should be slightly higher:
+- Unbuffered **`Query<record>`** averages in **03.88 seconds** with average memory consuption of **316726 KB**
+ 
+Conclusion: 
 
-```cshap
-connection.Query<Record>(query).ToDictionary(r => r.Id1, r => r.DateTime1);
-```
+- As expected **results are similar**, there are no significant differences between those two executions. 
 
-### Round 1 
+- There is also **no difference between buffered and unbuffered** versions. Both versions are doing exactly one iteration to generate a return list that consumes most of the resources.
 
-|#|Dapper POCO to Dict|Norm TUPLES to Dict|Norm POCO to Dict|
-|-|-------------------|-------------------|-----------------|
-|1|04.8561901|03.5874758|03.3690820|
-|2|03.9389593|03.6437820|03.6143264|
-|3|03.9447737|03.4281739|03.4413731|
-|4|04.1336856|03.6695639|03.8774125|
-|5|03.9277426|03.7429747|03.4478531|
-|6|03.9239840|03.4986394|03.4742715|
-|7|03.9278891|03.5207011|03.4864901|
-|8|03.9129620|03.6693034|03.7005085|
-|9|03.9398544|03.6987456|03.6902129|
-|10|03.9375266|03.7351398|03.6683761|
-|**AVG**|**04.0443567**|**03.6194499**|**03.5769906**|
+## Test 3
 
-### Round 2
+### Norm Read Class and Record Tests
 
-|#|Dapper POCO to Dict|Norm TUPLES to Dict|Norm POCO to Dict|
-|-|-------------------|-------------------|-----------------|
-|1|04.6227946|06.1475540|03.5079053|
-|2|04.1975670|03.6359537|03.7032145|
-|3|04.6909435|03.5011946|03.6465795|
-|4|04.0098895|03.7077762|03.7844054|
-|5|05.5719534|03.7498396|03.9638440|
-|6|04.2072972|03.6434484|03.6408465|
-|7|04.1836771|03.9141761|03.7007655|
-|8|05.2606700|04.0035003|03.6510496|
-|9|03.9552342|03.5369438|03.4982962|
-|10|03.9153144|03.5190601|03.5410003|
-|**AVG**|**04.4615340**|**03.9359446**|**03.6637906**|
+These tests measure Norm read performances for **record** and **class**.
+ 
+Norm default and only behavior are the same as Dapper unbuffered behavior (with parameter ` buffered: false`).
 
-### Round 3
+It does not return a list,  but rather **generate an enumerator that yields results**.
 
-|#|Dapper POCO to Dict|Norm TUPLES to Dict|Norm POCO to Dict|
-|-|-------------------|-------------------|-----------------|
-|1|04.4954343|03.4703449|03.4129177|
-|2|04.1256940|03.6523199|03.5715662|
-|3|03.9646072|03.4536014|03.5365319|
-|4|03.8964883|03.4867826|03.4791681|
-|5|03.9772121|03.5229636|03.5298906|
-|6|03.9594684|03.5044716|03.5415191|
-|7|03.9338210|03.5131341|03.3827119|
-|8|04.4390730|03.6169347|03.5215499|
-|9|03.9517431|03.4543346|03.6411662|
-|10|04.0103395|03.5382665|03.5217174|
-|**AVG**|**04.0753880**|**03.5213153**|**03.5138739**|
+The resulting enumerator is returned very fast, but, it is still not a list, therefore, results must be converted to a list with `ToList` LINQ call to emulate in previous tests.
+ 
+- `Read<class>` averages in **03.48 seconds** with average memory consuption of **317415 KB**
+ 
+- `Read<record>` averages in **03.42 seconds** with average memory consuption of **316394 KB**
 
+Conclusion: 
+ 
+- Norm serialization to list is **slightly faster**
 
-Difference is slightly higher this time because Norm builds internal enumerator and skips unneccessary iteration.
+- **03.48 seconds** vs **03,87 seconds** and **03,81 seconds** for class tests
+
+- **03.42 seconds** vs **03,86 seconds**  and **03.88 seconds** for record tests
+
+- Memory consumption is virtually the same in all cases, there is no difference here.
+
+## Test 4
+
+### Norm Read Values and Tuples vs Raw Data Reader Tests
+
+These tests measure different types of Norm read functionality, currently not present in Dapper:
+ 
+1) Values `connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList()`:
+ 
+Instead of class or a record, we can use actual resulting types in type parameters. This **returns tuple** with these types.
+ 
+2) Tuples: `connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query).ToList();`
+ 
+Using a named tuple as a generic parameter, that, again, returns the **named tuple** as result.
+ 
+There is also a **raw data reader** for comparison that iterates the data reader and populates the list with results.
+ 
+- `Read<values>` averages in **03.45 seconds** with average memory consuption of **295535 KB**
+ 
+- `Read<tuple>` averages in **03.82 seconds** with average memory consuption of **298520 KB**
+ 
+- Raw data reader averages in **03.41 seconds** with average memory consumption of **315778 KB**
+
+Conclusion:
+ 
+- Norm Read operation now has **slightly lower memory consumption.** This might be because it Norm in these tests doesn't create a list of instances but a list of tuple values.
+ 
+- Norm `Read<values>` is faster than Dapper serialization to instances and roughly the same as Norm serialization to instances.
+
+- Norm `Read<tuple>` is slightly slower, because of the complicated way how the long tuples are created. Still, performing Similiar as Dapper class serialization.
+
+- Raw data reader performances are similar to Norm performances (except for tuples serialization). 
+
+- Memory consumption is similar to other tests where serialization to instances was used.
+
+## Test 5
+
+### Dapper Query and Iteration (Buffered and Unbuffered) vs Norm Read and Iteration Tests
+
+This set of tests will emulate a typical application scenario in two steps:
+ 
+1) Get the data with the read or query command. This step is usually performed in the Data Access Layer (DAL).
+ 
+2) Iterate through the result set fetched with the read or the query command in the previous step. This step is usually performed in the service layer or UI layer where you would typically render the UI or generate service results.
+ 
+These tests also demonstrate the difference in execution between Dapper buffered execution (default) vs Dapper unbuffered and Norm read execution.
+ 
+Dapper buffered execution (default) will iterate the result set two times: 
+ 
+1) First time on the first step, to generate the resulting list
+ 
+2) Second in the second step, which is actual data iteration
+ 
+This should give an advantage in performances to Dapper unbuffered and Norm read executions.
+ 
+- Dapper Buffered Query operation averages in **03.92 seconds**, iteration in **00.01 seconds** with total in **03.93 seconds**.
+ 
+- Dapper Unbuffered Query operation averages in **00.0000076 seconds**, iteration in **03.44 seconds** with total in **03.44 seconds**.
+ 
+- Norm Read operation averages in **00.0000117 seconds**, iteration in **03.40 seconds** with total in **03.40 seconds**.
+ 
+Conclusion:
+
+- In this tests, Dapper Unbuffered is slightly faster than the Dapper Buffered version. It is the same as Norm Read. This is a bit surprising because previous Buffered vs Unbuffered tests didn't show that.
+ 
+- Buffered iteration step is fast, but not as nearly as fast as Dapper Unbuffered and Norm Read enumerator generation. However, values are still small and if we would add some actual work in iteration proportional difference would be even smaller until it fades in irrelevance.
+
+## Test Run Outputs
+
+### Test 1: Dapper Buffered Query Class and Record Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|04.3551435|315822,03125|03.8481814|316452,71875|
+|2|03.9158743|316532,375|03.9516047|316678|
+|3|03.7933986|316596,65625|03.7770713|316714,21875|
+|4|03.8546169|316605,0625|03.8060569|316718,28125|
+|5|03.6912606|316608,96875|03.8742957|316714,3125|
+|6|03.7836010|316609,125|03.7913233|316714,21875|
+|7|03.8511723|316617|03.7922655|316714,375|
+|8|03.8261262|316613,125|03.8048938|316710,25|
+|9|03.8032572|316609,0625|03.8469629|316710,34375|
+|10|03.8356530|316612,6875|04.1084095|316714,21875|
+|**AVG**|**03.8710103**|**316522,625**|**03.8601065**|**316684,09375**|
+
+### Test 2: Dapper Unbuffered Query Class and Record Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|03.8763397|316620,75|03.8088003|316722,34375|
+|2|03.7857128|316613|03.9138215|316714,1875|
+|3|03.7760241|316612,96875|03.9169103|316726,34375|
+|4|03.8084005|316620,75|03.9407015|316722,3125|
+|5|03.7284074|316624,65625|03.9023819|316722,21875|
+|6|03.7696535|316628,65625|03.8010464|316734,28125|
+|7|03.7638654|316628,90625|03.8417820|316734|
+|8|03.7722935|316632,75|03.8738278|316730,15625|
+|9|04.0929321|316625,0625|03.9226825|316730,3125|
+|10|03.7519075|316628,8125|03.9124436|316726,21875|
+|**AVG**|**03.8125536**|**316623,625**|**03.8834397**|**316726,25**|
+
+### Test 3: Norm Read Class and Record Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|03.4378821|319466,15625|03.4369100|315152,4375|
+|2|03.3386022|318091,46875|03.4542863|315782,125|
+|3|03.4450170|315090,4375|03.4136544|318070,40625|
+|4|03.4415087|319712,5625|03.3664374|315005,03125|
+|5|03.5266046|314816,1875|03.3918234|318054,28125|
+|6|03.4394083|319681,25|03.3998279|315133,5625|
+|7|03.4295879|318014,71875|03.4527482|315594,3125|
+|8|03.8369312|314890,8125|03.5015365|318000,4375|
+|9|03.4442191|319624,5625|03.4464827|315164,0625|
+|10|03.4863456|314760,9375|03.3555425|317990,4375|
+|**AVG**|**03.4826106**|**317414,90625**|**03.4219249**|**316394,71875**|
+
+### Test 4: Norm Read Values and Tuples vs Raw Data Reader Tests
+
+|#|Values Elapsed Sec|Values Allocated KB|Tuples Elapsed Sec|Tuples Allocated KB|Raw Reader Elapsed Sec|Raw Reader Allocated KB|
+|-|------------------|-------------------|------------------|-------------------|----------------------|-----------------------|
+|1|03.4647316|295725,65625|03.8299178|298619,15625|03.4334312|315798,34375|
+|2|03.4491284|295531,6875|03.7554375|298644,4375|03.4056276|315802,71875|
+|3|03.4305626|295532,375|03.9020512|298474,0625|03.4216978|315787,6875|
+|4|03.3663587|295517,5625|03.7420979|298455,46875|03.4311730|315790,375|
+|5|03.6447902|295525,65625|04.0520082|298639,4375|03.4735854|315809,46875|
+|6|03.4686309|295535,875|03.7608538|298563,5|03.4166460|315797,28125|
+|7|03.4436824|295530,9375|03.7199345|298404,5625|03.4085614|315746,1875|
+|8|03.4172634|295479,4375|03.7602589|298560,78125|03.3557720|315754,0625|
+|9|03.3761650|295486,53125|03.8912301|298458,25|03.3642760|315756,1875|
+|10|03.4087460|295480,125|03.8027448|298382,15625|03.4019519|315738,25|
+|**AVG**|**03.4470059**|**295534,59375**|**03.8216534**|**298520,1875**|**03.4112722**|**315778,0625**|
+
+### Dapper Query and Iteration (Buffered and Unbuffered) vs Norm Read and Iteration Tests
+
+|#|Dapper Buffered Query|Dapper Buffered Iteration|Daper Buffered Total|Dapper Unbuffered Query|Dapper Unbuffered Iteration|Daper Unbuffered Total|Norm Read|Norm Iteration|Norm Total|
+|-|---------------------|-------------------------|--------------------|-----------------------|---------------------------|----------------------|---------|--------------|----------|
+|1|04.0194343|00.0100554|04.0294897|00.0000042|03.6281924|03.6281966|00.0000678|03.3713733|03.3714411|
+|2|03.9522461|00.0129960|03.9652421|00.0000218|03.3593254|03.3593472|00.0000049|03.4322681|03.4322730|
+|3|03.8694808|00.0103090|03.8797898|00.0000044|03.3198512|03.3198556|00.0000048|03.4333911|03.4333959|
+|4|03.8975773|00.0098227|03.9074000|00.0000042|03.4170909|03.4170951|00.0000053|03.3037566|03.3037619|
+|5|03.9607433|00.0098192|03.9705625|00.0000035|03.3932201|03.3932236|00.0000051|03.4006465|03.4006516|
+|6|03.8312938|00.0097832|03.8410770|00.0000214|03.4004915|03.4005129|00.0000058|03.4435005|03.4435063|
+|7|04.1863949|00.0109422|04.1973371|00.0000052|03.7033899|03.7033951|00.0000056|03.4464947|03.4465003|
+|8|03.8750935|00.0097846|03.8848781|00.0000035|03.4337888|03.4337923|00.0000080|03.3967465|03.3967545|
+|9|03.8290565|00.0090333|03.8380898|00.0000035|03.4008843|03.4008878|00.0000051|03.3945239|03.3945290|
+|10|03.8103166|00.0098211|03.8201377|00.0000043|03.3881201|03.3881244|00.0000049|03.3899330|03.3899379|
+|**AVG**|**03.9231637**|**00.0102366**|**03.9334003**|**00.0000076**|**03.4444354**|**03.4444430**|**00.0000117**|**03.4012634**|**03.4012751**|
