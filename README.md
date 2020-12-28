@@ -8,7 +8,7 @@ _The fastest database mapper for .NET Standard 2.1_
  
 ### `Modern and Fast`
  
-- Maps to [`built-in` values](https://github.com/vb-consulting/Norm.net/wiki/3.1.-Working-with-built-in-type-parameters), 
+- Maps to [basic, built-in types (int, string, etc)](https://github.com/vb-consulting/Norm.net/wiki/3.1.-Working-with-built-in-type-parameters), 
 [`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/3.3.-Working-with-tuple-type-parameters), 
 [`records`](https://github.com/vb-consulting/Norm.net/wiki/3.2.-Working-with-class-and-record-type-parameters) or 
 [`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/3.2.-Working-with-class-and-record-type-parameters) to map the results from your databases. In fact, it will map to pretty much anything.
