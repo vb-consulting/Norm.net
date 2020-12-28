@@ -174,7 +174,7 @@ namespace BenchmarksConsole
 
                 sw.Reset();
                 sw.Start();
-                var normRead = connection.Read<PocoClass>(query);
+                var normRead = connection.ReadAsync<PocoClass>(query);
                 sw.Stop();
 
                 var normReadElapsed = sw.Elapsed;
@@ -182,7 +182,7 @@ namespace BenchmarksConsole
 
                 sw.Reset();
                 sw.Start();
-                foreach (var row in normRead)
+                await foreach (var row in normRead)
                 {
                     // do something
                 }
