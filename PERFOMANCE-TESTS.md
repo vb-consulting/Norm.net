@@ -10,6 +10,38 @@
  
 - **Raw data reader** performance tests are included for comparison.
 
+## Aggregated Results
+
+|Operation|Average Time in Sec.|Average Memory Consuption in KB|
+|---------|-----------------------|-------------------------------|
+|Buffered Dapper `Query<class>`|03,87|316523|
+|Buffered Dapper `Query<record>`|03,86|316684|
+|Buffered Dapper `QueryAsync<class>`|03,81|332336|
+|Buffered Dapper `QueryAsync<record>`|03,85|316922|
+|Buffered Dapper `Query<class>`|03,81|316623|
+|Buffered Dapper `Query<record>`|03,88|316726|
+|Buffered Dapper `QueryAsync<class>`|N/A|N/A|
+|Buffered Dapper `QueryAsync<record>`|N/A|N/A|
+|Norm `Read<class>`|03,48|317415|
+|Norm `Read<record>`|03,42|316394|
+|Norm `ReadAsync<record>`|03,48|315927|
+|Norm `ReadAsync<record>`|03,49|315805|
+|Norm `Read<built-in types>`|03,45|295535|
+|Norm `Read<tuple>`|03,82|298520|
+|Raw Data Reader|03,41|315778|
+|Norm `ReadAsync<built-in types>`|03,88|295190|
+|Norm `ReadAsync<tuple>`|03,96|297957|
+|Raw Data Reader Async|03,35|411875|
+
+|Operation|Execution Sec.|Iteration Sec.|Total Sec.|Average Memory Consuption in KB|
+|---------|-----------------------------|----------|-------------------------------|
+|Buffered Dapper `Query`|03.92|00.01|03.93| - |
+|Unbuffered Dapper `Query`|00.0000076|03.44|03.44| - |
+|Norm `Read`|00.0000117|03.40|03.40| - |
+|Buffered Dapper `QueryAsync`|03.84|00.01|03.85| 317566 |
+|Unbuffered Dapper `QueryAsync`|N/A|N/A|N/A|N/A|
+|Norm `ReadAsync`|00.0003567|03.20|03.20| 315642 |
+
 ## Test 1
  
 ### Dapper Buffered Query Class and Record Tests
@@ -21,10 +53,16 @@ The buffered query will trigger the iteration immediately and return the already
 - **`Query<class>`** averages in **03,87 seconds** with average memory consuption of **316523 KB**
  
 - **`Query<record>`** averages in **03,86 seconds** with average memory consuption of **316684 KB**
+
+- **`QueryAsync<class>`** averages in **03,81 seconds** with average memory consuption of **332336 KB**
+ 
+- **`QueryAsync<record>`** averages in **03,85 seconds** with average memory consuption of **316922 KB**
  
 Conclusion: 
 
 - As expected **results are similar**, there are no significant differences between those two executions.
+
+- Also, there is no differnce between sync and async version.
 
 ## Test 2
  
@@ -42,12 +80,16 @@ To emulate the same type of results, we must convert generated enumeration to a 
 - Unbuffered **`Query<class>`** averages in **03.81 seconds** with average memory consuption of **316623 KB**
 
 - Unbuffered **`Query<record>`** averages in **03.88 seconds** with average memory consuption of **316726 KB**
+
+- Unbuffered **`QueryAsync`** version is not supported in Dapper.
  
 Conclusion: 
 
 - As expected **results are similar**, there are no significant differences between those two executions. 
 
 - There is also **no difference between buffered and unbuffered** versions. Both versions are doing exactly one iteration to generate a return list that consumes most of the resources.
+
+- Async version is not supported.
 
 ## Test 3
 
@@ -65,6 +107,10 @@ The resulting enumerator is returned very fast, but, it is still not a list, the
  
 - `Read<record>` averages in **03.42 seconds** with average memory consuption of **316394 KB**
 
+- `ReadAsync<class>` averages in **03.48 seconds** with average memory consuption of **315927 KB**
+
+- `ReadAsync<record>` averages in **03.49 seconds** with average memory consuption of **315805 KB**
+  
 Conclusion: 
  
 - Norm serialization to list is **slightly faster**
@@ -72,6 +118,10 @@ Conclusion:
 - **03.48 seconds** vs **03,87 seconds** and **03,81 seconds** for class tests
 
 - **03.42 seconds** vs **03,86 seconds**  and **03.88 seconds** for record tests
+
+- **03.48 seconds** vs **03,81 seconds** (unbuffered async unsupported in Dapper). 
+
+- **03.49 seconds** vs **03,85 seconds** (unbuffered async unsupported in Dapper).
 
 - Memory consumption is virtually the same in all cases, there is no difference here.
 
@@ -81,7 +131,7 @@ Conclusion:
 
 These tests measure different types of Norm read functionality, currently not present in Dapper:
  
-1) Values `connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList()`:
+1) Values (built-in types) `connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList()`:
  
 Instead of class or a record, we can use actual resulting types in type parameters. This **returns tuple** with these types.
  
@@ -91,23 +141,33 @@ Using a named tuple as a generic parameter, that, again, returns the **named tup
  
 There is also a **raw data reader** for comparison that iterates the data reader and populates the list with results.
  
-- `Read<values>` averages in **03.45 seconds** with average memory consuption of **295535 KB**
+- `Read<built-in types>` averages in **03.45 seconds** with average memory consuption of **295535 KB**
  
 - `Read<tuple>` averages in **03.82 seconds** with average memory consuption of **298520 KB**
  
 - Raw data reader averages in **03.41 seconds** with average memory consumption of **315778 KB**
 
+- `ReadAsync<built-in types>` averages in **03.88 seconds** with average memory consuption of **295190 KB**
+ 
+- `ReadAsync<tuple>` averages in **03.96 seconds** with average memory consuption of **297957 KB**
+ 
+- Raw data reader async averages in **03.35 seconds** with average memory consumption of **411875 KB**
+
 Conclusion:
  
 - Norm Read operation now has **slightly lower memory consumption.** This might be because it Norm in these tests doesn't create a list of instances but a list of tuple values.
  
-- Norm `Read<values>` is faster than Dapper serialization to instances and roughly the same as Norm serialization to instances.
+- Norm `Read<built-in types>` is faster than Dapper serialization to instances and roughly the same as Norm serialization to instances.
 
 - Norm `Read<tuple>` is slightly slower, because of the complicated way how the long tuples are created. Still, performing Similiar as Dapper class serialization.
 
+- Async versions `ReadAsync<built-in types>` and `ReadAsync<tuples>` are slightly slower and they are the same as Dappers.
+
 - Raw data reader performances are similar to Norm performances (except for tuples serialization). 
 
-- Memory consumption is similar to other tests where serialization to instances was used.
+- Raw data reader async appears to be fastest by small margin but with unusually high memory consuption (around one third higher).
+
+- Other memory consumptions is similar to other tests where serialization to instances was used.
 
 ## Test 5
 
@@ -130,16 +190,24 @@ Dapper buffered execution (default) will iterate the result set two times:
 This should give an advantage in performances to Dapper unbuffered and Norm read executions.
  
 - Dapper Buffered Query operation averages in **03.92 seconds**, iteration in **00.01 seconds** with total in **03.93 seconds**.
+
+- Dapper Buffered QueryAsync operation averages in **03.84 seconds**, iteration in **00.01 seconds** with total in **03.85 seconds**.
  
 - Dapper Unbuffered Query operation averages in **00.0000076 seconds**, iteration in **03.44 seconds** with total in **03.44 seconds**.
+
+- Dapper Buffered QueryAsync is not supported.
  
 - Norm Read operation averages in **00.0000117 seconds**, iteration in **03.40 seconds** with total in **03.40 seconds**.
+
+- Norm Read Async operation averages in **00.0003567 seconds**, iteration in **03.20 seconds** with total in **03.20 seconds**.
  
 Conclusion:
 
-- In this tests, Dapper Unbuffered is slightly faster than the Dapper Buffered version. It is the same as Norm Read. This is a bit surprising because previous Buffered vs Unbuffered tests didn't show that.
+- In these tests, Dapper Unbuffered is slightly faster than the Dapper Buffered version. It is the same as Norm Read. This is a bit surprising because previous Buffered vs Unbuffered tests didn't show that.
  
 - Buffered iteration step is fast, but not as nearly as fast as Dapper Unbuffered and Norm Read enumerator generation. However, values are still small and if we would add some actual work in iteration proportional difference would be even smaller until it fades in irrelevance.
+
+- Unbuffered Dapper Async is not supported, and Norm Async is same as Dapper Unbuffered and faster then Dapper Buffered.
 
 ## Test Run Outputs
 
@@ -222,3 +290,74 @@ Conclusion:
 |9|03.8290565|00.0090333|03.8380898|00.0000035|03.4008843|03.4008878|00.0000051|03.3945239|03.3945290|
 |10|03.8103166|00.0098211|03.8201377|00.0000043|03.3881201|03.3881244|00.0000049|03.3899330|03.3899379|
 |**AVG**|**03.9231637**|**00.0102366**|**03.9334003**|**00.0000076**|**03.4444354**|**03.4444430**|**00.0000117**|**03.4012634**|**03.4012751**|
+
+## Async Tests Outputs
+
+## Dapper Buffered Query Class and Record Async Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|00:00:03.8893827|479045,84375|00:00:03.6552850|315984,53125|
+|2|00:00:03.5857168|315933,78125|00:00:03.7994569|315971,5|
+|3|00:00:03.7164507|315932,5|00:00:03.7309075|315971,4375|
+|4|00:00:03.7878422|315857,75|00:00:03.6802020|315957,71875|
+|5|00:00:03.8093724|315941,625|00:00:03.9992026|316498,125|
+|6|00:00:03.7755876|315918,65625|00:00:04.0282673|319977,28125|
+|7|00:00:03.9067539|315940,4375|00:00:03.9522494|316501,4375|
+|8|00:00:03.9091274|315931,09375|00:00:03.8735317|315873,8125|
+|9|00:00:03.9571722|316922,875|00:00:03.9445057|316507,75|
+|10|00:00:03.7992153|315930,625|00:00:03.8492803|319980,78125|
+|**AVG**|**00:00:03.8136621**|**332335,53125**|**00:00:03.8512888**|**316922,4375**|
+
+## Dapper Unbuffered Query Class and Record Async Tests
+
+Unsupported.
+
+## Norm Read Class and Record Async Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|00:00:03.4456945|316495,8125|00:00:03.5193685|316243,96875|
+|2|00:00:03.6113696|316288,5625|00:00:03.2919276|315866|
+|3|00:00:03.6135184|316348,65625|00:00:03.3879824|315613,46875|
+|4|00:00:03.4414767|315379,875|00:00:03.4361594|315819,9375|
+|5|00:00:03.5314651|315752,5625|00:00:03.5261258|315529,9375|
+|6|00:00:03.5767883|315782,09375|00:00:03.4300437|315686,875|
+|7|00:00:03.3635103|315718,59375|00:00:03.6113887|316114,375|
+|8|00:00:03.3538976|315698,875|00:00:03.3770096|315806,9375|
+|9|00:00:03.3517790|315700,75|00:00:03.9268139|315677,71875|
+|10|00:00:03.5524809|316099,8125|00:00:03.3685393|315687,21875|
+|**AVG**|**00:00:03.4841980**|**315926,5625**|**00:00:03.4875358**|**315804,65625**|
+
+## Norm Read Values and Tuples vs Raw Data Reader Async Tests
+
+|#|Values Elapsed Sec|Values Allocated KB|Tuples Elapsed Sec|Tuples Allocated KB|Raw Reader Elapsed Sec|Raw Reader Allocated KB|
+|-|------------------|-------------------|------------------|-------------------|----------------------|-----------------------|
+|1|00:00:03.8857619|294843,46875|00:00:04.0364624|297986,28125|00:00:03.2808635|438010,125|
+|2|00:00:03.8230726|295442,875|00:00:04.2547485|297961,5625|00:00:03.5681573|440755,8125|
+|3|00:00:03.9360897|295510,8125|00:00:03.8958301|297790,5|00:00:03.3733968|428613,6875|
+|4|00:00:03.8789857|295111,3125|00:00:03.8797397|297987,6875|00:00:03.3247153|314770,875|
+|5|00:00:03.8228497|295124,53125|00:00:03.9585140|298069,5625|00:00:03.3118912|433585,25|
+|6|00:00:03.8502468|295173,0625|00:00:03.8726656|298013,875|00:00:03.2931011|431839,78125|
+|7|00:00:03.9492621|295173,46875|00:00:03.8491664|298008,375|00:00:03.3289791|438236,09375|
+|8|00:00:03.9286667|295085,21875|00:00:04.0542113|298014,0625|00:00:03.3294143|440311,4375|
+|9|00:00:03.8894652|295531,5625|00:00:03.8762145|297816,3125|00:00:03.3242860|437828,84375|
+|10|00:00:03.8474220|294903,75|00:00:03.9099232|297918,84375|00:00:03.3709866|314784,59375|
+|**AVG**|**00:00:03.8811822**|**295190**|**00:00:03.9587475**|**297956,71875**|**00:00:03.3505791**|**411873,65625**|
+
+## Dapper Buffered Query and Iteration vs Norm Read and Iteration Async Tests
+
+|#|Dapper Buffered Query|Dapper Buffered Iteration|Daper Buffered Total|Dapper Buffered Allocated KB|Norm Read|Norm Iteration|Norm Total|Norm Allocated KB|
+|-|---------------------|-------------------------|--------------------|----------------------------|---------|--------------|----------|-----------------|
+|1|00:00:03.8236503|00:00:00.0095296|00:00:03.8331799|319181,25|00:00:00.0033425|00:00:03.1587000|00:00:03.1620425|315630,78125|
+|2|00:00:03.9058993|00:00:00.0097007|00:00:03.9156000|320981,8125|00:00:00.0000530|00:00:03.0898322|00:00:03.0898852|315631,25|
+|3|00:00:03.8312420|00:00:00.0093620|00:00:03.8406040|316905,875|00:00:00.0000149|00:00:03.0917059|00:00:03.0917208|315639,59375|
+|4|00:00:03.6923733|00:00:00.0096969|00:00:03.7020702|316965|00:00:00.0000788|00:00:03.3937753|00:00:03.3938541|315634,1875|
+|5|00:00:03.9104662|00:00:00.0095077|00:00:03.9199739|316889,75|00:00:00.0000136|00:00:03.2199033|00:00:03.2199169|315641,96875|
+|6|00:00:03.9745393|00:00:00.0092819|00:00:03.9838212|317018,875|00:00:00.0000262|00:00:03.2137809|00:00:03.2138071|315651,5|
+|7|00:00:03.7513513|00:00:00.0095772|00:00:03.7609285|316944,625|00:00:00.0000090|00:00:03.1819506|00:00:03.1819596|315650,6875|
+|8|00:00:03.9221105|00:00:00.0093874|00:00:03.9314979|316960,5|00:00:00.0000093|00:00:03.2503355|00:00:03.2503448|315647,75|
+|9|00:00:03.6956532|00:00:00.0104931|00:00:03.7061463|316944,125|00:00:00.0000086|00:00:03.2223068|00:00:03.2223154|315645,84375|
+|10|00:00:03.9203320|00:00:00.0095580|00:00:03.9298900|316883,875|00:00:00.0000117|00:00:03.1968850|00:00:03.1968967|315643,9375|
+|**AVG**|**00:00:03.8427617**|**00:00:00.0096094**|**00:00:03.8523711**|**317567,5625**|**00:00:00.0003567**|**00:00:03.2019175**|**00:00:03.2022743**|**315641,75**|
+
