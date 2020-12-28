@@ -8,12 +8,12 @@ _The fastest database mapper for .NET Standard 2.1_
  
 ### `Modern and Fast`
  
-- Uses [`tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#iterate-a-two-value-tuples-int-and-string-example), 
-[`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/4.-Read-extension#create-a-named-tuples-enumeration-and-get-the-highest-value-example), 
-[`records`]() or 
-[`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/5.-Query-extension#map-to-class-instances-example) to map the results from your databases. In fact, it will map to pretty much anything.
+- Maps to [`built-in` values](https://github.com/vb-consulting/Norm.net/wiki/3.1.-Working-with-built-in-type-parameters), 
+[`named tuples`](https://github.com/vb-consulting/Norm.net/wiki/3.3.-Working-with-tuple-type-parameters), 
+[`records`](https://github.com/vb-consulting/Norm.net/wiki/3.2.-Working-with-class-and-record-type-parameters) or 
+[`plain old classes`](https://github.com/vb-consulting/Norm.net/wiki/3.2.-Working-with-class-and-record-type-parameters) to map the results from your databases. In fact, it will map to pretty much anything.
  
-- Uses async enumerables and powerful [`asynchronous database streaming`](https://github.com/vb-consulting/Norm.net/wiki/8.-Asynchronous-programming#readasync-and-queryasync)
+- Uses async enumerables and powerful [`asynchronous database streaming`](https://github.com/vb-consulting/Norm.net/wiki/5.-Asynchronous-programming)
  
 - Very fast mapping. [`performances indistinguishable from the raw data reader`](https://github.com/vb-consulting/Norm.net#performances).
  
@@ -43,8 +43,8 @@ Console.WriteLine(result.bar); // outputs "foo"
  
 ### `Lightweight`
  
-- Only two main extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.-Execute-extension) and 
-[`Read`](https://github.com/vb-consulting/Norm.net/wiki/3.-Single-extension). That's all it takes. There is no learning curve at all.
+- Only three main extensions - [`Execute`](https://github.com/vb-consulting/Norm.net/wiki/2.1.-Execute(command,-params)-connection-extension), 
+[`Read`](https://github.com/vb-consulting/Norm.net/wiki/2.2.-Read(command,-params)-connection-extensions) and [Multiple](https://github.com/vb-consulting/Norm.net/wiki/2.3.-Multiple(command,-params)-connection-extension). That's all it takes. There is no learning curve at all.
  
 - No need for extra configuration or any special attributes.
  
