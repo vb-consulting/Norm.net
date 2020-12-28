@@ -13,15 +13,15 @@
 ## Aggregated Results
 
 |Operation|Average Time in Sec.|Average Memory Consuption in KB|
-|---------|-----------------------|-------------------------------|
+|---------|-----------------------|----------------------------|
 |Buffered Dapper `Query<class>`|03,87|316523|
 |Buffered Dapper `Query<record>`|03,86|316684|
 |Buffered Dapper `QueryAsync<class>`|03,81|332336|
 |Buffered Dapper `QueryAsync<record>`|03,85|316922|
 |Buffered Dapper `Query<class>`|03,81|316623|
 |Buffered Dapper `Query<record>`|03,88|316726|
-|Buffered Dapper `QueryAsync<class>`|N/A|N/A|
-|Buffered Dapper `QueryAsync<record>`|N/A|N/A|
+|Buffered Dapper `QueryAsync<class>`|Not Available|Not Available|
+|Buffered Dapper `QueryAsync<record>`|Not Available|Not Available|
 |Norm `Read<class>`|03,48|317415|
 |Norm `Read<record>`|03,42|316394|
 |Norm `ReadAsync<record>`|03,48|315927|
@@ -33,14 +33,15 @@
 |Norm `ReadAsync<tuple>`|03,96|297957|
 |Raw Data Reader Async|03,35|411875|
 
+
 |Operation|Execution Sec.|Iteration Sec.|Total Sec.|Average Memory Consuption in KB|
-|---------|-----------------------------|----------|-------------------------------|
-|Buffered Dapper `Query`|03.92|00.01|03.93| - |
-|Unbuffered Dapper `Query`|00.0000076|03.44|03.44| - |
-|Norm `Read`|00.0000117|03.40|03.40| - |
-|Buffered Dapper `QueryAsync`|03.84|00.01|03.85| 317566 |
-|Unbuffered Dapper `QueryAsync`|N/A|N/A|N/A|N/A|
-|Norm `ReadAsync`|00.0003567|03.20|03.20| 315642 |
+|---------|--------------|--------------|----------|-------------------------------|
+|Buffered Dapper `Query`|03.92|00.01|03.93|Not Measured|
+|Unbuffered Dapper `Query`|00.0000076|03.44|03.44|Not Measured|
+|Norm `Read`|00.0000117|03.40|03.40|Not Measured|
+|Buffered Dapper `QueryAsync`|03.84|00.01|03.85|317566|
+|Unbuffered Dapper `QueryAsync`|Not Available|Not Available|Not Available|Not Available|
+|Norm `ReadAsync`|00.0003567|03.20|03.20|315642|
 
 ## Test 1
  
