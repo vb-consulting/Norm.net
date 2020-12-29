@@ -1,6 +1,6 @@
 # **`Norm Micro-ORM`**
  
-_The fastest database mapper for .NET Standard 2.1_
+_Database mapper for .NET Standard 2.1_
  
 ![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
  
@@ -96,9 +96,7 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 - See detailed performance benchmarks compared to **Dapper** at [performance tests page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md).
  
 - To run [beckmark console](https://github.com/vb-consulting/Norm.net/blob/master/BenchmarksConsole/Program.cs) manually, configure local testing for [PostgreSQL unit tests project](https://github.com/vb-consulting/Norm.net/tree/master/Tests/PostgreSqlUnitTests) first. See instructions for local testing bellow.
- 
-- Technical deep-dive article with explanation: [What Makes Norm Micro ORM for .NET Fast As Raw DataReader](https://dev.to/vbilopav/what-makes-norm-micro-orm-for-net-fast-as-raw-datareader-5eoa)
- 
+  
 ## Testing
  
 350+ automated tests for `SqlServer`, `PostgreSQL`, `SQLite` and `MySql`.
