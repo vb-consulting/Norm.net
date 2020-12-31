@@ -105,8 +105,8 @@ namespace OracleUnitTests
             // switch position
             var result2 = connection.Read<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                new NpgsqlParameter("foo", "foo1"),
-                new NpgsqlParameter("id", 1)).ToList();
+                new OracleParameter("foo", "foo1"),
+                new OracleParameter("id", 1)).ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -139,11 +139,11 @@ namespace OracleUnitTests
         public void Query_Param4_Sync()
         {
             using var connection = new OracleConnection(fixture.ConnectionString);
-            var result1 = connection.Read<TestClass>($"{Query} where id = @id", ("id", 1, NpgsqlDbType.Integer)).ToList();
+            var result1 = connection.Read<TestClass>($"{Query} where id = @id", ("id", 1, OracleDbType.Integer)).ToList();
             // switch position
             var result2 = connection.Read<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, NpgsqlDbType.Integer)).ToList();
+                ("foo", "foo1", OracleDbType.Varchar), ("id", 1, OracleDbType.Integer)).ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -154,7 +154,7 @@ namespace OracleUnitTests
             using var connection = new OracleConnection(fixture.ConnectionString);
             var result2 = connection.Read<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, DbType.Int32)).ToList();
+                ("foo", "foo1", OracleDbType.Varchar), ("id", 1, DbType.Int32)).ToList();
             AssertSingleTestClass(result2);
         }
 
@@ -182,13 +182,13 @@ namespace OracleUnitTests
             using var connection = new OracleConnection(fixture.ConnectionString);
             var result1 = await connection.ReadAsync<TestClass>(
                 $"{Query} where id = @id",
-                new NpgsqlParameter("id", 1)).ToListAsync();
+                new OracleParameter("id", 1)).ToListAsync();
 
             // switch position
             var result2 = await connection.ReadAsync<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                new NpgsqlParameter("foo", "foo1"),
-                new NpgsqlParameter("id", 1)).ToListAsync();
+                new OracleParameter("foo", "foo1"),
+                new OracleParameter("id", 1)).ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -221,11 +221,11 @@ namespace OracleUnitTests
         public async Task Query_Param4_Async()
         {
             using var connection = new OracleConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<TestClass>($"{Query} where id = @id", ("id", 1, NpgsqlDbType.Integer)).ToListAsync();
+            var result1 = await connection.ReadAsync<TestClass>($"{Query} where id = @id", ("id", 1, OracleDbType.Integer)).ToListAsync();
             // switch position
             var result2 = await connection.ReadAsync<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, NpgsqlDbType.Integer)).ToListAsync();
+                ("foo", "foo1", OracleDbType.Varchar), ("id", 1, OracleDbType.Integer)).ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -236,7 +236,7 @@ namespace OracleUnitTests
             using var connection = new OracleConnection(fixture.ConnectionString);
             var result2 = await connection.ReadAsync<TestClass>(
                 $"{Query} where id = @id and foo = @foo",
-                ("foo", "foo1", NpgsqlDbType.Varchar), ("id", 1, DbType.Int32)).ToListAsync();
+                ("foo", "foo1", OracleDbType.Varchar), ("id", 1, DbType.Int32)).ToListAsync();
             AssertSingleTestClass(result2);
         }
         */
