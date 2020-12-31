@@ -1,0 +1,6 @@
+{
+  "db": {
+    "Default": "User Id=system;Password=admin;Data Source=localhost:1521/orcl",
+    "TestDatabase": "norm_oracle_unit_tests"
+  }
+}
