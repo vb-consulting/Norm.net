@@ -16,24 +16,18 @@ namespace OracleUnitTests
 
         class TestClass
         {
-            public int Id { get; private set; }
+            public decimal Id { get; private set; }
             public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
+            public DateTime? Day { get; private set; }
             public string Bar { get; private set; }
         }
 
         private const string Query = @"
-        with cte
-        as
-        (
-            select 1 as id, 'foo1' as foo, '1977-05-19' as day, true as null, null as bar from dual
-            union all
-            select 2 as id, 'foo2' as foo, '1978-05-19' as day, false as null, 'bar2' as bar from dual
-            union all
-            select 3 as id, 'foo3' as foo, '1979-05-19' as day, null as null, 'bar3' as bar from dual
-        )
-        select * from cte;";
+            SELECT CAST(1 AS INT) AS id, 'foo1' AS foo, TO_DATE('1977-05-19', 'YYYY-MM-DD') AS day, null AS bar FROM DUAL
+            UNION ALL
+            SELECT CAST(2 AS INT) AS id, 'foo2' AS foo, TO_DATE('1978-05-19', 'YYYY-MM-DD') AS day, 'bar2' AS bar FROM DUAL
+            UNION ALL
+            SELECT CAST(3 AS INT) AS id, 'foo3' AS foo, null AS day, 'bar3' AS bar FROM DUAL";
 
         public QueryUnitTests(OracleSqlFixture fixture)
         {
@@ -54,25 +48,11 @@ namespace OracleUnitTests
 
             Assert.Equal(new DateTime(1977, 5, 19), result[0].Day);
             Assert.Equal(new DateTime(1978, 5, 19), result[1].Day);
-            Assert.Equal(new DateTime(1979, 5, 19), result[2].Day);
-
-            Assert.Equal(true, result[0].Bool);
-            Assert.Equal(false, result[1].Bool);
-            Assert.Null(result[2].Bool);
+            Assert.Null(result[2].Day);
 
             Assert.Null(result[0].Bar);
             Assert.Equal("bar2", result[1].Bar);
             Assert.Equal("bar3", result[2].Bar);
-        }
-
-        private void AssertSingleTestClass(IList<TestClass> result)
-        {
-            Assert.Equal(1, result.Count);
-            Assert.Equal(1, result[0].Id);
-            Assert.Equal("foo1", result[0].Foo);
-            Assert.Equal(new DateTime(1977, 5, 19), result[0].Day);
-            Assert.Equal(true, result[0].Bool);
-            Assert.Null(result[0].Bar);
         }
 
         [Fact]
