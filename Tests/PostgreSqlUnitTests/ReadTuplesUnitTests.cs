@@ -389,5 +389,41 @@ namespace PostgreSqlUnitTests
             Assert.Equal(11, t.Item11);
             Assert.Equal(12, t.Item12);
         }
+
+        [Fact]
+        public async Task ReadAsync_Regression_Issue1()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var q = @"
+            select * from (
+            values 
+                ('foo1', interval '1 days', interval '2 days', 'bar1', true),
+                ('foo2', null, null, 'bar2', false)
+            ) t(foo, interval1, interval2, bar, bool)
+            ";
+            var t = await connection.ReadAsync<string, TimeSpan?, TimeSpan?, string, bool>(q).ToListAsync();
+
+            Assert.Equal("foo1", t[0].Item1);
+            Assert.Equal(TimeSpan.FromDays(1), t[0].Item2);
+            Assert.Equal(TimeSpan.FromDays(2), t[0].Item3);
+            Assert.Equal("bar1", t[0].Item4);
+            Assert.True(t[0].Item5);
+
+            Assert.Equal("foo2", t[1].Item1);
+            Assert.Null(t[1].Item2);
+            Assert.Null(t[1].Item3);
+            Assert.Equal("bar2", t[1].Item4);
+            Assert.False(t[1].Item5);
+        }
+
+        [Fact]
+        public async Task ReadAsync_Regression_Issue1_Array()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = await connection.ReadAsync<TimeSpan[]>("select ARRAY[interval '1 days', interval '2 days']").SingleAsync();
+
+            Assert.Equal(new TimeSpan[] { TimeSpan.FromDays(1), TimeSpan.FromDays(2) }, t);
+        }
     }
 }

@@ -1,5 +1,11 @@
 # Version history
 
+## 3.1.1
+
+#### Fix support for `TimeSpan` type
+
+`TimeSpan` type maps to PostgreSQL `interval` type.
+
 ## 3.1.0
 
 #### 1) Support for multiple mappings from the same command

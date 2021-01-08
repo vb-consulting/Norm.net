@@ -127,7 +127,7 @@ namespace PostgreSqlUnitTests
             var result1 = connection.Read<TestClass>($"{Query} where id = @id", ("id", 1, DbType.Int32)).ToList();
             // switch position
             var result2 = connection.Read<TestClass>(
-                $"{Query} where id = @id and foo = @foo", 
+                $"{Query} where id = @id and foo = @foo",
                 ("foo", "foo1", DbType.String), ("id", 1, DbType.Int32)).ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
@@ -288,6 +288,56 @@ namespace PostgreSqlUnitTests
                 Task.Factory.StartNew(task),
                 Task.Factory.StartNew(task),
                 Task.Factory.StartNew(task));
+        }
+
+        class Regression_Issue1
+        {
+            public string Foo { get; set; }
+            public TimeSpan? Interval1 { get; set; }
+            public TimeSpan? Interval2 { get; set; }
+            public string Bar { get; set; }
+            public bool Bool { get; set; }
+        }
+
+        [Fact]
+        public async Task ReadAsync_Regression_Issue1()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var q = @"
+            select * from (
+            values 
+                ('foo1', interval '1 days', interval '2 days', 'bar1', true),
+                ('foo2', null, null, 'bar2', false)
+            ) t(foo, interval1, interval2, bar, bool)
+            ";
+            var t = await connection.ReadAsync<Regression_Issue1>(q).ToListAsync();
+
+            Assert.Equal("foo1", t[0].Foo);
+            Assert.Equal(TimeSpan.FromDays(1), t[0].Interval1);
+            Assert.Equal(TimeSpan.FromDays(2), t[0].Interval2);
+            Assert.Equal("bar1", t[0].Bar);
+            Assert.True(t[0].Bool);
+
+            Assert.Equal("foo2", t[1].Foo);
+            Assert.Null(t[1].Interval1);
+            Assert.Null(t[1].Interval2);
+            Assert.Equal("bar2", t[1].Bar);
+            Assert.False(t[1].Bool);
+        }
+
+        class Regression_Issue1_Array
+        {
+            public TimeSpan[] IntervalArray { get; set; }
+        }
+
+        [Fact]
+        public async Task ReadAsync_Regression_Issue1_Array()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var t = await connection.ReadAsync<Regression_Issue1_Array>("select ARRAY[interval '1 days', interval '2 days'] as intervalArray").SingleAsync();
+
+            Assert.Equal(new TimeSpan[] { TimeSpan.FromDays(1), TimeSpan.FromDays(2) }, t.IntervalArray);
         }
     }
 }
