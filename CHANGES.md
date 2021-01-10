@@ -1,5 +1,9 @@
 # Version history
 
+## 3.1.2
+
+Fix rare cache issue not updating cache when `TimeSpan` is resolved.
+
 ## 3.1.1
 
 #### Fix support for `TimeSpan` type

@@ -167,7 +167,7 @@ namespace Norm
                         code = Type.GetTypeCode(type.GenericTypeArguments[0]);
                         if (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType)
                         {
-                            return simple;
+                            return metadata = simple;
                         }
                     }
                     else
@@ -175,7 +175,7 @@ namespace Norm
                         code = Type.GetTypeCode(type);
                         if (code == TypeCode.Object && type == TimeSpanType)
                         {
-                            return simple;
+                            return metadata = simple;
                         }
                     }
                 }
