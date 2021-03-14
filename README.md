@@ -80,7 +80,7 @@ var classes = connection.Read<MyClass>("select id, foo, bar from table");
 var (id, foo, bar) = connection.Read<int, string, string>("select id, foo, bar from table").Single();
  
 // Map to a named tuple (id, foo, bar):
-var tuple = connection.Read(int id, string foo, string bar)>("select id, foo, bar from table").Single();
+var tuple = connection.Read<(int id, string foo, string bar)>("select id, foo, bar from table").Single();
  
 // Asynchronously stream values directly from database
 await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("select id, foo, bar from table"))
