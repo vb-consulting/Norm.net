@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Norm.Interfaces;
 
 namespace Norm
@@ -6,6 +7,13 @@ namespace Norm
     public partial class Norm
     {
         public INorm Execute(string command)
+        {
+            using var cmd = CreateCommand(command);
+            cmd.ExecuteNonQuery();
+            return this;
+        }
+
+        public INorm ExecuteFormat(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             cmd.ExecuteNonQuery();

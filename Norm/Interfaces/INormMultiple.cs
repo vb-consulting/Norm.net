@@ -14,6 +14,12 @@ namespace Norm.Interfaces
         ///<returns>Disposable INormMultipleReader instance.</returns>
         INormMultipleReader Multiple(string command);
         ///<summary>
+        ///     Parse interpolated (formattable) command as database parameters, execute SQL command and return disposable reader object for multiple result sets.
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>Disposable INormMultipleReader instance.</returns>
+        INormMultipleReader MultipleFormat(FormattableString command);
+        ///<summary>
         ///     Execute SQL command with positional parameter values and return disposable reader object for multiple result sets..
         ///</summary>
         ///<param name="command">SQL command text.</param>
@@ -50,6 +56,12 @@ namespace Norm.Interfaces
         ///<param name="command">SQL command text.</param>
         ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
         ValueTask<INormMultipleReader> MultipleAsync(string command);
+        ///<summary>
+        ///     Parse interpolated (formattable) command as database parameters, execute SQL command asynchronously and return disposable reader object for multiple result sets.
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
+        ValueTask<INormMultipleReader> MultipleFormatAsync(FormattableString command);
         ///<summary>
         ///     Execute SQL command asynchronously with positional parameter values and return disposable reader object for multiple result sets..
         ///</summary>

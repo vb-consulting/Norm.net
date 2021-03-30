@@ -16,7 +16,23 @@ namespace Norm
             return new NormMultipleMultipleReader(cmd.ExecuteReader(), cancellationToken, convertsDbNull);
         }
 
+        public INormMultipleReader MultipleFormat(FormattableString command)
+        {
+            using var cmd = CreateCommand(command);
+            return new NormMultipleMultipleReader(cmd.ExecuteReader(), cancellationToken, convertsDbNull);
+        }
+
         public async ValueTask<INormMultipleReader> MultipleAsync(string command)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            if (cancellationToken.HasValue)
+            {
+                return new NormMultipleMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, convertsDbNull);
+            }
+            return new NormMultipleMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, convertsDbNull);
+        }
+
+        public async ValueTask<INormMultipleReader> MultipleFormatAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)

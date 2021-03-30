@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using Norm.Interfaces;
 
@@ -7,6 +8,13 @@ namespace Norm
     public partial class Norm
     {
         public async ValueTask<INorm> ExecuteAsync(string command)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            return this;
+        }
+
+        public async ValueTask<INorm> ExecuteFormatAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);

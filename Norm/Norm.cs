@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Norm.Interfaces;
@@ -317,6 +318,34 @@ namespace Norm
             await Connection.EnsureIsOpenAsync();
             await AddParametersUnknownTypeAsync(cmd, parameters);
             return cmd;
+        }
+
+        private DbCommand CreateCommand(FormattableString command)
+        {
+            var args = command.GetArguments();
+            var commandString = string.Format(command.Format, args.Select((p, idx) => 
+            {
+                if (p is DbParameter dbParameter)
+                {
+                    dbParameter.ParameterName = $"p{idx}";
+                }
+                return $"@p{idx}"; 
+            }).ToArray());
+            return CreateCommand(commandString, args);
+        }
+
+        private async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
+        {
+            var args = command.GetArguments();
+            var commandString = string.Format(command.Format, args.Select((p, idx) =>
+            {
+                if (p is DbParameter dbParameter)
+                {
+                    dbParameter.ParameterName = $"p{idx}";
+                }
+                return $"@p{idx}";
+            }).ToArray());
+            return await CreateCommandAsync(commandString, args);
         }
     }
 }

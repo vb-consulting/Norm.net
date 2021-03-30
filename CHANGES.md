@@ -1,5 +1,9 @@
 # Version history
 
+## 3.2.0
+
+Support for the `FormattableString` commands.
+
 ## 3.1.0
 
 #### 1) Support for multiple mappings from the same command

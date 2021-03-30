@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace Norm.Interfaces
@@ -11,6 +12,12 @@ namespace Norm.Interfaces
         ///<param name="command">SQL command text.</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         ValueTask<INorm> ExecuteAsync(string command);
+        ///<summary>
+        ///     Parse interpolated (formattable) command as database parameters and execute resulting SQL asynchronously.
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
+        ValueTask<INorm> ExecuteFormatAsync(FormattableString command);
         ///<summary>
         ///      Execute SQL command asynchronously with positional parameter values.
         ///</summary>

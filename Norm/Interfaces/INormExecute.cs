@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace Norm.Interfaces
 {
@@ -10,6 +11,13 @@ namespace Norm.Interfaces
         ///<param name="command">SQL command text.</param>
         ///<returns>Norm instance.</returns>
         INorm Execute(string command);
+        ///<summary>
+        ///     Parse interpolated (formattable) command as database parameters and execute resulting SQL.
+        ///</summary>
+        ///<param name="connection">DbConnection instance</param>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>Norm instance.</returns>
+        INorm ExecuteFormat(FormattableString command);
         ///<summary>
         ///     Execute SQL command with positional parameter values.
         ///</summary>
