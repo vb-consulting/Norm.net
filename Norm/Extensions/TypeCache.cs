@@ -14,7 +14,7 @@ namespace Norm
         private static readonly object propertiesLocker = new object();
         private static PropertyInfo[] properties = null;
         private static readonly object delegateLocker = new object();
-        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] delegateCache = null;
+        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegateCache = null;
         private static (Type type, bool simple, bool valueTuple) metadata = default;
         private static readonly object metadataLocker = new object();
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
@@ -110,7 +110,7 @@ namespace Norm
             return (T)info.clone.Invoke(info.instance);
         }
 
-        internal static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[] GetDelegates(int len)
+        internal static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] GetDelegates(int len)
         {
             if (delegateCache != null)
             {
@@ -122,9 +122,11 @@ namespace Norm
                 {
                     return delegateCache;
                 }
-                return delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index)[len];
+                return delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[len];
             }
         }
+
+        private static Type TimeSpanType = typeof(TimeSpan);
 
         internal static (Type type, bool simple, bool valueTuple) GetMetadata()
         {
@@ -147,7 +149,12 @@ namespace Norm
                 TypeCode code;
                 if (type.IsArray)
                 {
-                    code = Type.GetTypeCode(type.GetElementType());
+                    var elementType = type.GetElementType();
+                    code = Type.GetTypeCode(elementType);
+                    if (code == TypeCode.Object && elementType == TimeSpanType)
+                    {
+                        return simple;
+                    }
                 }
                 else
                 {
@@ -158,12 +165,21 @@ namespace Norm
                             return metadata = (type, true, true);
                         }
                         code = Type.GetTypeCode(type.GenericTypeArguments[0]);
+                        if (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType)
+                        {
+                            return metadata = simple;
+                        }
                     }
                     else
                     {
                         code = Type.GetTypeCode(type);
+                        if (code == TypeCode.Object && type == TimeSpanType)
+                        {
+                            return metadata = simple;
+                        }
                     }
                 }
+                
                 return metadata = code switch
                 {
                     TypeCode.Int32 => simple,

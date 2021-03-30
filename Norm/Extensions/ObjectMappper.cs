@@ -722,12 +722,12 @@ namespace Norm
             Dictionary<string, ushort> names = null;
             foreach (var property in properties)
             {
-                var (method, nullable, code, isArray, index) = delegates[i];
+                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
                 if (method == null)
                 {
                     var propType = property.PropertyType;
                     nullable = Nullable.GetUnderlyingType(propType) != null;
-                    (method, code, isArray) = CreateDelegate<T>(property, nullable);
+                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property, nullable);
 
                     var name = property.Name.ToLower();
                     if (names == null)
@@ -738,17 +738,19 @@ namespace Norm
                     {
                         index = ushort.MaxValue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index);
+                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
                 }
                 i++;
                 if (index == ushort.MaxValue)
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray);
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
             }
             return instance;
         }
+
+        private static Type TimeSpanType = typeof(TimeSpan);
 
         private static T MapInstance<T>(this (string name, object value)[] tuple, 
             Type type, 
@@ -761,12 +763,12 @@ namespace Norm
             Dictionary<string, ushort> names = null;
             foreach (var property in properties)
             {
-                var (method, nullable, code, isArray, index) = delegates[i];
+                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
                 if (method == null)
                 {
                     var propType = property.PropertyType;
                     nullable = Nullable.GetUnderlyingType(propType) != null;
-                    (method, code, isArray) = CreateDelegate<T>(property, nullable);
+                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property, nullable);
 
                     var name = property.Name.ToLower();
                     if (names == null)
@@ -781,20 +783,20 @@ namespace Norm
                     {
                         continue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index);
+                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
                 }
                 i++;
                 if (index == ushort.MaxValue)
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray);
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
                 used.Add(index);
             }
             return instance;
         }
 
-        private static (Delegate method, TypeCode code, bool isArray) CreateDelegate<T>(PropertyInfo property, bool nullable)
+        private static (Delegate method, TypeCode code, bool isArray, bool isTimespan) CreateDelegate<T>(PropertyInfo property, bool nullable)
         {
             TypeCode code;
             bool isArray;
@@ -802,31 +804,40 @@ namespace Norm
             if (type.IsArray)
             {
                 isArray = true;
-                code = Type.GetTypeCode(type.GetElementType());
+                var elementType = type.GetElementType();
+                code = Type.GetTypeCode(elementType);
+                if (code == TypeCode.Object && elementType == TimeSpanType)
+                {
+                    return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, true);
+                }
             }
             else
             {
                 isArray = false;
                 code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
+                if (code == TypeCode.Object && (type == TimeSpanType || type.GenericTypeArguments[0] == TimeSpanType))
+                {
+                    return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, true);
+                }
             }
 
             return code switch
             {
-                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray),
-                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray),
-                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray),
-                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray),
-                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray),
-                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray),
-                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray),
-                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray),
-                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray),
-                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray),
-                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray),
-                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray),
-                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray),
-                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray),
-                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray),
+                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray, false),
+                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray, false),
+                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray, false),
+                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray, false),
+                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray, false),
+                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray, false),
+                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray, false),
+                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray, false),
+                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray, false),
+                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray, false),
+                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray, false),
+                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray, false),
+                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, false),
+                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, false),
+                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, false),
                 _ => throw new NotImplementedException($"TypeCode {code} not implemnted"),
             };
         }
@@ -843,8 +854,16 @@ namespace Norm
                 Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
         }
 
-        private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray)
+        private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, bool isTimespan)
         {
+            if (isTimespan)
+            {
+                if (isArray)
+                {
+                    InvokeSetValue<T, TimeSpan[]>(method, instance, value);
+                }
+                else InvokeSetStruct<T, TimeSpan>(method, nullable, instance, value);
+            }
             switch (code)
             {
                 case TypeCode.Int32:
