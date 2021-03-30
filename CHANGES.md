@@ -18,7 +18,9 @@ Now can be written as
 connection.ReadFormat($"select {1}, {2}");
 ```
 
-Where arguments can be any object value that will be parsed to database parameter, or valid `DbParameter` instance. For example:
+Where arguments can be any object value that will be parsed to database parameter, or valid `DbParameter` instance. 
+
+For example:
 
 ```csharp
 connection.ReadFormat($"select {new SqlParameter("", 1)}, {new SqlParameter("", 1)}");
@@ -27,7 +29,7 @@ connection.ReadFormat($"select {new SqlParameter("", 1)}, {new SqlParameter("", 
 You can even mix parameter values and `DbParameter` instances:
 
 ```csharp
-connection.ReadFormat($"select {1}, {new SqlParameter("", 1)}");
+connection.ReadFormat($"select {1}, {new SqlParameter("", 2)}");
 ```
 
 Notes:
