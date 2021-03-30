@@ -27,8 +27,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlUnitTests", "Tests\MyS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConfig", "Tests\TestConfig\TestConfig.csproj", "{475C4241-476E-4417-8A8F-EFD9CD9E8021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OracleUnitTests", "Tests\OracleUnitTests\OracleUnitTests.csproj", "{F9B166E1-034B-417F-B335-5A028CC4BFF9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,10 +61,6 @@ Global
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9B166E1-034B-417F-B335-5A028CC4BFF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9B166E1-034B-417F-B335-5A028CC4BFF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9B166E1-034B-417F-B335-5A028CC4BFF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9B166E1-034B-417F-B335-5A028CC4BFF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,7 +71,6 @@ Global
 		{30E74B88-DA1E-4DEB-B67F-E23EBE1FB303} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{9F453EA2-995B-49F8-B001-7E11F0E03607} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
-		{F9B166E1-034B-417F-B335-5A028CC4BFF9} = {ED89C5F8-56A1-453B-B3D3-111F5C54EB8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {640D1BA9-B36A-414D-8FFB-F6500FCF8E6E}
