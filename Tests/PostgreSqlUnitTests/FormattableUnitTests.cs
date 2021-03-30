@@ -242,5 +242,45 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo2", result2.Foo2);
             Assert.Equal("bar2", result2.Bar2);
         }
+
+        [Fact]
+        public void Read_Format_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            
+            Assert.Equal(new (string name, object value)[]{("1", 1), ("2", 2)}, connection.ReadFormat($"select {1} as \"1\", {2} as \"2\"").Single());
+            Assert.Equal(1, connection.ReadFormat<int>($"select {1}").Single());
+            Assert.Equal((1, 2), connection.ReadFormat<int, int>($"select {1}, {2}").Single());
+            Assert.Equal((1, 2, 3), connection.ReadFormat<int, int, int>($"select {1}, {2}, {3}").Single());
+            Assert.Equal((1, 2, 3, 4), connection.ReadFormat<int, int, int, int>($"select {1}, {2}, {3}, {4}").Single());
+            Assert.Equal((1, 2, 3, 4, 5), connection.ReadFormat<int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6), connection.ReadFormat<int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7), connection.ReadFormat<int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8), connection.ReadFormat<int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9), connection.ReadFormat<int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), connection.ReadFormat<int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), connection.ReadFormat<int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}").Single());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), connection.ReadFormat<int, int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}").Single());
+        }
+
+        [Fact]
+        public async Task Read_Format_Test_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            Assert.Equal(new (string name, object value)[] { ("1", 1), ("2", 2) }, await connection.ReadFormatAsync($"select {1} as \"1\", {2} as \"2\"").SingleAsync());
+            Assert.Equal(1, await connection.ReadFormatAsync<int>($"select {1}").SingleAsync());
+            Assert.Equal((1, 2), await connection.ReadFormatAsync<int, int>($"select {1}, {2}").SingleAsync());
+            Assert.Equal((1, 2, 3), await connection.ReadFormatAsync<int, int, int>($"select {1}, {2}, {3}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4), await connection.ReadFormatAsync<int, int, int, int>($"select {1}, {2}, {3}, {4}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5), await connection.ReadFormatAsync<int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6), await connection.ReadFormatAsync<int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7), await connection.ReadFormatAsync<int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}").SingleAsync());
+            Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}").SingleAsync());
+        }
     }
 }

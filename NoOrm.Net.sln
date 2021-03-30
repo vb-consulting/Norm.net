@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build-test-publish.yml = .github\workflows\build-test-publish.yml
 		CHANGES.md = CHANGES.md
+		.github\FUNDING.yml = .github\FUNDING.yml
 		PERFOMANCE-TESTS.md = PERFOMANCE-TESTS.md
 		README.md = README.md
 	EndProjectSection

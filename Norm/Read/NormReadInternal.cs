@@ -17,7 +17,27 @@ namespace Norm
             }
         }
 
+        private IEnumerable<T> ReadInternal<T>(FormattableString command, Func<DbDataReader, T> readerAction)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return readerAction(reader);
+            }
+        }
+
         private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return reader.ToArray();
+            }
+        }
+
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = cmd.ExecuteReader();

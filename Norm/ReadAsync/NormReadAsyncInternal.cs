@@ -29,7 +29,29 @@ namespace Norm
                 }
             }
         }
-        
+
+        private async IAsyncEnumerable<T> ReadInternalAsync<T>(FormattableString command, Func<DbDataReader, Task<T>> readerAction)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return await readerAction(reader);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return await readerAction(reader);
+                }
+            }
+        }
+
         private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params object[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
@@ -133,6 +155,28 @@ namespace Norm
             else
             {
                 await using var reader = await  cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return reader.ToArray();
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return reader.ToArray();
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
                     yield return reader.ToArray();

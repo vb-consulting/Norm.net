@@ -2,7 +2,34 @@
 
 ## 3.2.0
 
-Support for the `FormattableString` commands.
+**Support for the `FormattableString` commands.**
+
+Now each method that receives a command also have a version that can receive `FormattableString` instead of string, where format arguments are parsed as valid database parameters to avoid injection.
+
+For example, before:
+
+```csharp
+connection.Read("select @p1, @p2", 1, 2);
+```
+
+Now can be written as 
+
+```csharp
+connection.ReadFormat($"select {1}, {2}");
+```
+
+This applies to all extensions that receive a command string. New method extensions are:
+
+```
+ReadFormat
+ReadFormatAsync
+ExecuteFormat
+ExecuteFormatAsync
+MultipleFormat
+MultipleFormatAsync
+```
+
+See unit tests [here](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/FormattableUnitTests.cs).
 
 ## 3.1.2
 
