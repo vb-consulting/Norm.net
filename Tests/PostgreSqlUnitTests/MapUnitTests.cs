@@ -225,5 +225,27 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar2", result[1].Bar);
             Assert.Equal("bar3", result[2].Bar);
         }
+
+        [Fact]
+        public void Map_And_Ignore_Not_Mapped_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<TestClass>(@"
+                            select *
+                            from (
+                            values 
+                                (1, 'foo1', '1977-05-19'::date, true),
+                                (2, 'foo2', '1978-05-19'::date, false),
+                                (3, 'foo3', '1979-05-19'::date, null)
+                            ) t(id, foo, day, bool)").ToList();
+
+            
+            Assert.Equal(3, result.Count);
+
+            // TestClass.Bar is not mapped, it is always default (null)
+            Assert.Null(result[0].Bar);
+            Assert.Null(result[0].Bar);
+            Assert.Null(result[0].Bar);
+        }
     }
 }
