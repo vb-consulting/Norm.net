@@ -18,6 +18,24 @@ Now can be written as
 connection.ReadFormat($"select {1}, {2}");
 ```
 
+Where arguments can be any object value that will be parsed to database parameter, or valid `DbParameter` instance. 
+
+For example:
+
+```csharp
+connection.ReadFormat($"select {new SqlParameter("", 1)}, {new SqlParameter("", 1)}");
+```
+
+You can even mix parameter values and `DbParameter` instances:
+
+```csharp
+connection.ReadFormat($"select {1}, {new SqlParameter("", 2)}");
+```
+
+Notes:
+- You can use `DbParameter` instances to set parameter types more precisely.
+- When using `DbParameter` instances name of the parameter is irelevant, argument parser will asign a new name. In examples above, name is left blank.
+
 This applies to all extensions that receive a command string. New method extensions are:
 
 ```
