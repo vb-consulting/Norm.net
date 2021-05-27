@@ -838,7 +838,7 @@ namespace Norm
                 TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, false),
                 TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, false),
                 TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, false),
-                _ => throw new NotImplementedException($"TypeCode {code} not implemnted"),
+                _ => throw new NotImplementedException($"TypeCode {code} not implemented"),
             };
         }
 

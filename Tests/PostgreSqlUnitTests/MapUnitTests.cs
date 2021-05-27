@@ -247,5 +247,78 @@ namespace PostgreSqlUnitTests
             Assert.Null(result[0].Bar);
             Assert.Null(result[0].Bar);
         }
+
+        private record DateTimeRecord(DateTime? LockoutEnd);
+        private record DateTimeRecordOffset(DateTimeOffset? LockoutEnd);
+
+        [Fact]
+        public void Map_DateTime_And_DateTimeOffset_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            // Map normal DateTimeRecord record
+            var result1 = connection.Read<DateTimeRecord>(@"
+                            select *
+                            from (
+                            values 
+                                ('1977-05-19'::timestamp),
+                                (null),
+                                ('1979-05-19'::timestamp)
+                            ) t(lock_out_end)").ToList();
+
+            // Should map ok
+            Assert.Equal(3, result1.Count);
+            Assert.Equal(new DateTime(1977, 5, 19), result1[0].LockoutEnd);
+            Assert.Null(result1[1].LockoutEnd);
+            Assert.Equal(new DateTime(1979, 5, 19), result1[2].LockoutEnd);
+
+            // Try to map DateTimeRecordOffset
+            var result2 = connection.Read<DateTimeRecordOffset>(@"
+                            select *
+                            from (
+                            values 
+                                ('1977-05-19'::timestamp),
+                                (null),
+                                ('1979-05-19'::timestamp)
+                            ) t(lock_out_end)");
+
+            // should yield not implemented exception
+            Assert.Throws<NotImplementedException>(() => result2.ToList());
+
+            // Map to DateTimeRecordOffset by using Select projection from DateTime? value
+            var result3 = connection.Read<DateTime?>(@"
+                            select *
+                            from (
+                            values 
+                                ('1977-05-19'::timestamp),
+                                (null),
+                                ('1979-05-19'::timestamp)
+                            ) t(lock_out_end)")
+                .Select(d => d == null ? new DateTimeRecordOffset(null) : new DateTimeRecordOffset(new DateTimeOffset(d.Value)))
+                .ToList();
+
+            Assert.Equal(3, result3.Count);
+            Assert.Equal(new DateTimeOffset(new DateTime(1977, 5, 19)), result3[0].LockoutEnd);
+            Assert.Null(result3[1].LockoutEnd);
+            Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result3[2].LockoutEnd);
+
+            // Map to DateTimeRecordOffset by using Select projection from DateTimeRecord record
+            var result4 = connection.Read<DateTimeRecord>(@"
+                            select *
+                            from (
+                            values 
+                                ('1977-05-19'::timestamp),
+                                (null),
+                                ('1979-05-19'::timestamp)
+                            ) t(lock_out_end)")
+                .Select(d => d.LockoutEnd == null ? new DateTimeRecordOffset(null) : new DateTimeRecordOffset(new DateTimeOffset(d.LockoutEnd.Value)))
+                .ToList();
+
+            Assert.Equal(3, result4.Count);
+            Assert.Equal(new DateTimeOffset(new DateTime(1977, 5, 19)), result4[0].LockoutEnd);
+            Assert.Null(result4[1].LockoutEnd);
+            Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result4[2].LockoutEnd);
+
+        }
     }
 }
