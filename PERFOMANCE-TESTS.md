@@ -29,6 +29,8 @@
 
 ### Norm
 
+|Operation|Average Time in Sec.|Average Memory Consuption in KB|
+|---------|-----------------------|----------------------------|
 |Norm `Read<class>`|04.15|317470|
 |Norm `Read<record>`|04.16|316289|
 |Norm `Read<built-in types>`|04.22|295535|
