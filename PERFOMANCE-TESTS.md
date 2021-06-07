@@ -1,5 +1,7 @@
 # PERFOMANCE BENCHMARKS
  
+ - This is aggreated results based on the latest version [3.3.0](https://github.com/vb-consulting/Norm.net/blob/master/CHANGES.md#330)
+ 
 - You can run manual tests by building and running this [project](https://github.com/vb-consulting/Norm.net/tree/master/BenchmarksConsole).
  
 - Query used for testing returns **1 million records** from local test PostgreSQL server, **10 fields** of various types wide. 
@@ -12,352 +14,200 @@
 
 ## Aggregated Results
 
+### Dapper
+
 |Operation|Average Time in Sec.|Average Memory Consuption in KB|
 |---------|-----------------------|----------------------------|
-|Buffered Dapper `Query<class>`|03,87|316523|
-|Buffered Dapper `Query<record>`|03,86|316684|
-|Buffered Dapper `QueryAsync<class>`|03,81|332336|
-|Buffered Dapper `QueryAsync<record>`|03,85|316922|
-|Buffered Dapper `Query<class>`|03,81|316623|
-|Buffered Dapper `Query<record>`|03,88|316726|
-|Buffered Dapper `QueryAsync<class>`|Not Available|Not Available|
-|Buffered Dapper `QueryAsync<record>`|Not Available|Not Available|
-|Norm `Read<class>`|03,48|317415|
-|Norm `Read<record>`|03,42|316394|
-|Norm `ReadAsync<record>`|03,48|315927|
-|Norm `ReadAsync<record>`|03,49|315805|
-|Norm `Read<built-in types>`|03,45|295535|
-|Norm `Read<tuple>`|03,82|298520|
-|Raw Data Reader|03,41|315778|
-|Norm `ReadAsync<built-in types>`|03,88|295190|
-|Norm `ReadAsync<tuple>`|03,96|297957|
-|Raw Data Reader Async|03,35|411875|
+|Buffered Dapper `Query<class>`|04.73|316421|
+|Buffered Dapper `Query<record>`|04.73|316631|
+|Unbuffered Dapper `Query<class>`|04.75|316619|
+|Unbuffered Dapper `Query<record>`|04.82|316721|
+|Async Buffered Dapper `QueryAsync<class>`|05.36|316023|
+|Async Buffered Dapper `QueryAsync<record>`|05.12|316258|
+|Async Unbuffered Dapper `QueryAsync<class>`|Not Available|Not Available|
+|Async Unbuffered Dapper `QueryAsync<record>`|Not Available|Not Available|
 
+### Norm
 
-|Operation|Execution Sec.|Iteration Sec.|Total Sec.|Average Memory Consuption in KB|
-|---------|--------------|--------------|----------|-------------------------------|
-|Buffered Dapper `Query`|03.92|00.01|03.93|Not Measured|
-|Unbuffered Dapper `Query`|00.0000076|03.44|03.44|Not Measured|
-|Norm `Read`|00.0000117|03.40|03.40|Not Measured|
-|Buffered Dapper `QueryAsync`|03.77|00.01|03.78|317204|
-|Unbuffered Dapper `QueryAsync`|Not Available|Not Available|Not Available|Not Available|
-|Norm `ReadAsync`|00.0004506|03.27|03.27|316643|
+|Norm `Read<class>`|04.15|317470|
+|Norm `Read<record>`|04.16|316289|
+|Norm `Read<built-in types>`|04.22|295535|
+|Norm `Read<tuple>`|04.63|298594|
+|Norm `ReadAsync<class>`|04.51|315917|
+|Norm `ReadAsync<record>`|04.39|315862|
+|Norm `ReadAsync<built-in types>`|05.28|295416|
+|Norm `ReadAsync<tuple>`|05.16|298594|
 
-## Test 1
- 
-### Dapper Buffered Query Class and Record Tests
+### Raw Data Reader
 
-These tests measure the Dapper **buffered query** (default behavior) performance for **record** and **class**.
- 
-The buffered query will trigger the iteration immediately and return the already serialized list.
- 
-- **`Query<class>`** averages in **03,87 seconds** with average memory consuption of **316523 KB**
- 
-- **`Query<record>`** averages in **03,86 seconds** with average memory consuption of **316684 KB**
+|Operation|Average Time in Sec.|Average Memory Consuption in KB|
+|---------|-----------------------|----------------------------|
+|Raw Data Reader|04.17|315765|
+|Raw Data Reader Async|04.60|411821|
 
-- **`QueryAsync<class>`** averages in **03,81 seconds** with average memory consuption of **332336 KB**
- 
-- **`QueryAsync<record>`** averages in **03,85 seconds** with average memory consuption of **316922 KB**
- 
-Conclusion: 
+### Raw Data Reader
 
-- As expected **results are similar**, there are no significant differences between those two executions.
+|Operation|Execution Sec.|Iteration Sec.|Total Sec.|
+|---------|--------------|--------------|----------|
+|Buffered Dapper `Query`|04.6706588|00.0110987|04.6817576|
+|Unbuffered Dapper `Query`|00.0000042|04.0699669|4.0699711|
+|Norm `Read`|00.0000125|00:04.0358505|04.0358631|
 
-- Also, there is no differnce between sync and async version.
+## Full outoput
 
-## Test 2
- 
-### Dapper Unbuffered Query Class and Record Tests
-
-These tests measure Dapper **unbuffered query** performances for **record** and **class**.
-
-Unbuffered queries in Dapper (with parameter ` buffered: false`) do not return a list, 
-but rather **generate enumerator that yields results**, similar to Norm default and only behavior.
-
-The resulting enumerator is returned very fast, but, it is still not a list as the first test result. 
-
-To emulate the same type of results, we must convert generated enumeration to a list with **`ToList` LINQ** call.
-
-- Unbuffered **`Query<class>`** averages in **03.81 seconds** with average memory consuption of **316623 KB**
-
-- Unbuffered **`Query<record>`** averages in **03.88 seconds** with average memory consuption of **316726 KB**
-
-- Unbuffered **`QueryAsync`** version is not supported in Dapper.
- 
-Conclusion: 
-
-- As expected **results are similar**, there are no significant differences between those two executions. 
-
-- There is also **no difference between buffered and unbuffered** versions. Both versions are doing exactly one iteration to generate a return list that consumes most of the resources.
-
-- Async version is not supported.
-
-## Test 3
-
-### Norm Read Class and Record Tests
-
-These tests measure Norm read performances for **record** and **class**.
- 
-Norm default and only behavior are the same as Dapper unbuffered behavior (with parameter ` buffered: false`).
-
-It does not return a list,  but rather **generate an enumerator that yields results**.
-
-The resulting enumerator is returned very fast, but, it is still not a list, therefore, results must be converted to a list with `ToList` LINQ call to emulate in previous tests.
- 
-- `Read<class>` averages in **03.48 seconds** with average memory consuption of **317415 KB**
- 
-- `Read<record>` averages in **03.42 seconds** with average memory consuption of **316394 KB**
-
-- `ReadAsync<class>` averages in **03.48 seconds** with average memory consuption of **315927 KB**
-
-- `ReadAsync<record>` averages in **03.49 seconds** with average memory consuption of **315805 KB**
-  
-Conclusion: 
- 
-- Norm serialization to list is **slightly faster**
-
-- **03.48 seconds** vs **03,87 seconds** and **03,81 seconds** for class tests
-
-- **03.42 seconds** vs **03,86 seconds**  and **03.88 seconds** for record tests
-
-- **03.48 seconds** vs **03,81 seconds** (unbuffered async unsupported in Dapper). 
-
-- **03.49 seconds** vs **03,85 seconds** (unbuffered async unsupported in Dapper).
-
-- Memory consumption is virtually the same in all cases, there is no difference here.
-
-## Test 4
-
-### Norm Read Values and Tuples vs Raw Data Reader Tests
-
-These tests measure different types of Norm read functionality, currently not present in Dapper:
- 
-1) Values (built-in types) `connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query).ToList()`:
- 
-Instead of class or a record, we can use actual resulting types in type parameters. This **returns tuple** with these types.
- 
-2) Tuples: `connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query).ToList();`
- 
-Using a named tuple as a generic parameter, that, again, returns the **named tuple** as result.
- 
-There is also a **raw data reader** for comparison that iterates the data reader and populates the list with results.
- 
-- `Read<built-in types>` averages in **03.45 seconds** with average memory consuption of **295535 KB**
- 
-- `Read<tuple>` averages in **03.82 seconds** with average memory consuption of **298520 KB**
- 
-- Raw data reader averages in **03.41 seconds** with average memory consumption of **315778 KB**
-
-- `ReadAsync<built-in types>` averages in **03.88 seconds** with average memory consuption of **295190 KB**
- 
-- `ReadAsync<tuple>` averages in **03.96 seconds** with average memory consuption of **297957 KB**
- 
-- Raw data reader async averages in **03.35 seconds** with average memory consumption of **411875 KB**
-
-Conclusion:
- 
-- Norm Read operation now has **slightly lower memory consumption.** This might be because it Norm in these tests doesn't create a list of instances but a list of tuple values.
- 
-- Norm `Read<built-in types>` is faster than Dapper serialization to instances and roughly the same as Norm serialization to instances.
-
-- Norm `Read<tuple>` is slightly slower, because of the complicated way how the long tuples are created. Still, performing Similiar as Dapper class serialization.
-
-- Async versions `ReadAsync<built-in types>` and `ReadAsync<tuples>` are slightly slower and they are the same as Dappers.
-
-- Raw data reader performances are similar to Norm performances (except for tuples serialization). 
-
-- Raw data reader async appears to be fastest by small margin but with unusually high memory consuption (around one third higher).
-
-- Other memory consumptions is similar to other tests where serialization to instances was used.
-
-## Test 5
-
-### Dapper Query and Iteration (Buffered and Unbuffered) vs Norm Read and Iteration Tests
-
-This set of tests will emulate a typical application scenario in two steps:
- 
-1) Get the data with the read or query command. This step is usually performed in the Data Access Layer (DAL).
- 
-2) Iterate through the result set fetched with the read or the query command in the previous step. This step is usually performed in the service layer or UI layer where you would typically render the UI or generate service results.
- 
-These tests also demonstrate the difference in execution between Dapper buffered execution (default) vs Dapper unbuffered and Norm read execution.
- 
-Dapper buffered execution (default) will iterate the result set two times: 
- 
-1) First time on the first step, to generate the resulting list
- 
-2) Second in the second step, which is actual data iteration
- 
-This should give an advantage in performances to Dapper unbuffered and Norm read executions.
- 
-- Dapper Buffered Query operation averages in **03.92 seconds**, iteration in **00.01 seconds** with total in **03.93 seconds**.
-
-- Dapper Buffered QueryAsync operation averages in **03.77 seconds**, iteration in **00.01 seconds** with total in **03.78 seconds**.
- 
-- Dapper Unbuffered Query operation averages in **00.0000076 seconds**, iteration in **03.44 seconds** with total in **03.44 seconds**.
-
-- Dapper Buffered QueryAsync is not supported.
- 
-- Norm Read operation averages in **00.0000117 seconds**, iteration in **03.40 seconds** with total in **03.40 seconds**.
-
-- Norm Read Async operation averages in **00.0004506 seconds**, iteration in **03.27 seconds** with total in **03.27 seconds**.
- 
-Conclusion:
-
-- In these tests, Dapper Unbuffered is slightly faster than the Dapper Buffered version. It is the same as Norm Read. This is a bit surprising because previous Buffered vs Unbuffered tests didn't show that.
- 
-- Buffered iteration step is fast, but not as nearly as fast as Dapper Unbuffered and Norm Read enumerator generation. However, values are still small and if we would add some actual work in iteration proportional difference would be even smaller until it fades in irrelevance.
-
-- Unbuffered Dapper Async is not supported, and Norm Async is same as Dapper Unbuffered and faster then Dapper Buffered.
-
-## Test Run Outputs
-
-### Test 1: Dapper Buffered Query Class and Record Tests
+## Dapper Buffered Query Class and Record Tests
 
 |#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
 |-|-----------------|------------------|------------------|-------------------|
-|1|04.3551435|315822,03125|03.8481814|316452,71875|
-|2|03.9158743|316532,375|03.9516047|316678|
-|3|03.7933986|316596,65625|03.7770713|316714,21875|
-|4|03.8546169|316605,0625|03.8060569|316718,28125|
-|5|03.6912606|316608,96875|03.8742957|316714,3125|
-|6|03.7836010|316609,125|03.7913233|316714,21875|
-|7|03.8511723|316617|03.7922655|316714,375|
-|8|03.8261262|316613,125|03.8048938|316710,25|
-|9|03.8032572|316609,0625|03.8469629|316710,34375|
-|10|03.8356530|316612,6875|04.1084095|316714,21875|
-|**AVG**|**03.8710103**|**316522,625**|**03.8601065**|**316684,09375**|
+|1|00:00:05.6310108|314967,625|00:00:05.3506185|316075,1875|
+|2|00:00:05.5515596|316411,125|00:00:04.8649076|316573,59375|
+|3|00:00:04.4815337|316589,125|00:00:04.7914827|316710,4375|
+|4|00:00:04.4604016|316604,78125|00:00:04.7014680|316710,3125|
+|5|00:00:04.5129115|316605,0625|00:00:04.6054455|316714,34375|
+|6|00:00:04.3990568|316604,75|00:00:04.6210649|316698,125|
+|7|00:00:04.4499862|316605,03125|00:00:04.5714955|316702,3125|
+|8|00:00:04.4607912|316604,78125|00:00:04.5539887|316702,1875|
+|9|00:00:05.0244033|316605|00:00:04.5775757|316706,40625|
+|10|00:00:04.3469075|316608,75|00:00:04.6469697|316718,375|
+|**AVG**|**00:00:04.7318562**|**316420,59375**|**00:00:04.7285016**|**316631,125**|
 
-### Test 2: Dapper Unbuffered Query Class and Record Tests
+Finished.
 
-|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
-|-|-----------------|------------------|------------------|-------------------|
-|1|03.8763397|316620,75|03.8088003|316722,34375|
-|2|03.7857128|316613|03.9138215|316714,1875|
-|3|03.7760241|316612,96875|03.9169103|316726,34375|
-|4|03.8084005|316620,75|03.9407015|316722,3125|
-|5|03.7284074|316624,65625|03.9023819|316722,21875|
-|6|03.7696535|316628,65625|03.8010464|316734,28125|
-|7|03.7638654|316628,90625|03.8417820|316734|
-|8|03.7722935|316632,75|03.8738278|316730,15625|
-|9|04.0929321|316625,0625|03.9226825|316730,3125|
-|10|03.7519075|316628,8125|03.9124436|316726,21875|
-|**AVG**|**03.8125536**|**316623,625**|**03.8834397**|**316726,25**|
-
-### Test 3: Norm Read Class and Record Tests
+## Dapper Unbuffered Query Class and Record Tests
 
 |#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
 |-|-----------------|------------------|------------------|-------------------|
-|1|03.4378821|319466,15625|03.4369100|315152,4375|
-|2|03.3386022|318091,46875|03.4542863|315782,125|
-|3|03.4450170|315090,4375|03.4136544|318070,40625|
-|4|03.4415087|319712,5625|03.3664374|315005,03125|
-|5|03.5266046|314816,1875|03.3918234|318054,28125|
-|6|03.4394083|319681,25|03.3998279|315133,5625|
-|7|03.4295879|318014,71875|03.4527482|315594,3125|
-|8|03.8369312|314890,8125|03.5015365|318000,4375|
-|9|03.4442191|319624,5625|03.4464827|315164,0625|
-|10|03.4863456|314760,9375|03.3555425|317990,4375|
-|**AVG**|**03.4826106**|**317414,90625**|**03.4219249**|**316394,71875**|
+|1|00:00:05.0006351|316616,6875|00:00:04.9587250|316710,3125|
+|2|00:00:04.6856230|316608,75|00:00:04.5553561|316710,40625|
+|3|00:00:04.4480673|316612,875|00:00:04.4980200|316709,3125|
+|4|00:00:04.4709353|316616,96875|00:00:04.5251482|316726,375|
+|5|00:00:04.5916318|316629,0625|00:00:04.6020007|316722|
+|6|00:00:04.9391954|316625,0625|00:00:04.4890533|316730,125|
+|7|00:00:04.5521332|316621,0625|00:00:04.3971885|316721,875|
+|8|00:00:05.1765387|316620,8125|00:00:06.1096672|316730,125|
+|9|00:00:05.0073158|316621|00:00:05.2058884|316726,125|
+|10|00:00:04.6486373|316617,03125|00:00:04.9253677|316718,21875|
+|**AVG**|**00:00:04.7520712**|**316618,9375**|**00:00:04.8266415**|**316720,5**|
 
-### Test 4: Norm Read Values and Tuples vs Raw Data Reader Tests
+Finished.
+
+## Norm Read Class and Record Tests
+
+|#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
+|-|-----------------|------------------|------------------|-------------------|
+|1|00:00:04.1500564|319063,0625|00:00:04.1114617|315011,15625|
+|2|00:00:04.1686808|318235,09375|00:00:04.4546956|315760,8125|
+|3|00:00:04.5335468|314865,1875|00:00:04.2991128|317972,625|
+|4|00:00:04.2405044|319672,0625|00:00:04.1123502|315211,53125|
+|5|00:00:04.1280374|314769,3125|00:00:04.1033139|317945,75|
+|6|00:00:04.0589647|319511,8125|00:00:04.0313037|314985,59375|
+|7|00:00:03.9884230|314698,53125|00:00:04.0060108|317927,5|
+|8|00:00:04.1520674|319608,8125|00:00:03.9869169|315106,4375|
+|9|00:00:03.9976178|314778,71875|00:00:04.0776939|317957,53125|
+|10|00:00:04.0645577|319495,5625|00:00:04.4001249|315013,875|
+|**AVG**|**00:00:04.1482456**|**317469,8125**|**00:00:04.1582984**|**316289,28125**|
+
+Finished.
+
+## Norm Read Values and Tuples vs Raw Data Reader Tests
 
 |#|Values Elapsed Sec|Values Allocated KB|Tuples Elapsed Sec|Tuples Allocated KB|Raw Reader Elapsed Sec|Raw Reader Allocated KB|
 |-|------------------|-------------------|------------------|-------------------|----------------------|-----------------------|
-|1|03.4647316|295725,65625|03.8299178|298619,15625|03.4334312|315798,34375|
-|2|03.4491284|295531,6875|03.7554375|298644,4375|03.4056276|315802,71875|
-|3|03.4305626|295532,375|03.9020512|298474,0625|03.4216978|315787,6875|
-|4|03.3663587|295517,5625|03.7420979|298455,46875|03.4311730|315790,375|
-|5|03.6447902|295525,65625|04.0520082|298639,4375|03.4735854|315809,46875|
-|6|03.4686309|295535,875|03.7608538|298563,5|03.4166460|315797,28125|
-|7|03.4436824|295530,9375|03.7199345|298404,5625|03.4085614|315746,1875|
-|8|03.4172634|295479,4375|03.7602589|298560,78125|03.3557720|315754,0625|
-|9|03.3761650|295486,53125|03.8912301|298458,25|03.3642760|315756,1875|
-|10|03.4087460|295480,125|03.8027448|298382,15625|03.4019519|315738,25|
-|**AVG**|**03.4470059**|**295534,59375**|**03.8216534**|**298520,1875**|**03.4112722**|**315778,0625**|
+|1|00:00:04.4139476|295025,59375|00:00:04.5898900|298534,6875|00:00:03.8239500|315769,8125|
+|2|00:00:03.9671122|295507,40625|00:00:04.3642048|298620,0625|00:00:03.8398289|315762,21875|
+|3|00:00:03.7969043|295475,0625|00:00:04.3850439|298591,53125|00:00:04.0075249|315757,1875|
+|4|00:00:04.0928829|295489,53125|00:00:04.4749192|298559,46875|00:00:03.9834856|315749,53125|
+|5|00:00:04.3407086|295475,9375|00:00:04.7849196|298553,34375|00:00:04.2036251|315755,6875|
+|6|00:00:04.7852900|295496,6875|00:00:04.7447656|298680,125|00:00:03.9772048|315792,84375|
+|7|00:00:04.1251115|295495,375|00:00:04.8177038|298577,125|00:00:04.4251197|315753,375|
+|8|00:00:04.3311900|295476,75|00:00:04.8172286|298596,625|00:00:04.7801025|315763,6875|
+|9|00:00:04.3390783|295485,46875|00:00:04.7628989|298621,59375|00:00:04.2860882|315788,75|
+|10|00:00:04.0258750|295488,34375|00:00:04.5410404|298603,71875|00:00:04.4464591|315758,09375|
+|**AVG**|**00:00:04.2218100**|**295441,625**|**00:00:04.6282614**|**298593,84375**|**00:00:04.1773388**|**315765,125**|
 
-### Dapper Query and Iteration (Buffered and Unbuffered) vs Norm Read and Iteration Tests
+Finished.
+
+## Dapper Query and Iteration (Buffered and Unbuffered) vs Norm Read and Iteration Tests
 
 |#|Dapper Buffered Query|Dapper Buffered Iteration|Daper Buffered Total|Dapper Unbuffered Query|Dapper Unbuffered Iteration|Daper Unbuffered Total|Norm Read|Norm Iteration|Norm Total|
-|-|---------------------|-------------------------|--------------------|-----------------------|---------------------------|----------------------|---------|--------------|----------|
-|1|04.0194343|00.0100554|04.0294897|00.0000042|03.6281924|03.6281966|00.0000678|03.3713733|03.3714411|
-|2|03.9522461|00.0129960|03.9652421|00.0000218|03.3593254|03.3593472|00.0000049|03.4322681|03.4322730|
-|3|03.8694808|00.0103090|03.8797898|00.0000044|03.3198512|03.3198556|00.0000048|03.4333911|03.4333959|
-|4|03.8975773|00.0098227|03.9074000|00.0000042|03.4170909|03.4170951|00.0000053|03.3037566|03.3037619|
-|5|03.9607433|00.0098192|03.9705625|00.0000035|03.3932201|03.3932236|00.0000051|03.4006465|03.4006516|
-|6|03.8312938|00.0097832|03.8410770|00.0000214|03.4004915|03.4005129|00.0000058|03.4435005|03.4435063|
-|7|04.1863949|00.0109422|04.1973371|00.0000052|03.7033899|03.7033951|00.0000056|03.4464947|03.4465003|
-|8|03.8750935|00.0097846|03.8848781|00.0000035|03.4337888|03.4337923|00.0000080|03.3967465|03.3967545|
-|9|03.8290565|00.0090333|03.8380898|00.0000035|03.4008843|03.4008878|00.0000051|03.3945239|03.3945290|
-|10|03.8103166|00.0098211|03.8201377|00.0000043|03.3881201|03.3881244|00.0000049|03.3899330|03.3899379|
-|**AVG**|**03.9231637**|**00.0102366**|**03.9334003**|**00.0000076**|**03.4444354**|**03.4444430**|**00.0000117**|**03.4012634**|**03.4012751**|
+|-|---------------------|-------------------------|--------------------|-----------------------|---------------------------|----------------------|------------------------|----------|
+|1|00:00:04.8877930|00:00:00.0108566|00:00:04.8986496|00:00:00.0000040|00:00:03.9925983|00:00:03.9926023|00:00:00.0000714|00:00:04.0011282|00:00:04.0011996|
+|2|00:00:04.5712092|00:00:00.0108427|00:00:04.5820519|00:00:00.0000050|00:00:03.9804194|00:00:03.9804244|00:00:00.0000084|00:00:03.8663445|00:00:03.8663529|
+|3|00:00:04.6649903|00:00:00.0115116|00:00:04.6765019|00:00:00.0000043|00:00:04.2339209|00:00:04.2339252|00:00:00.0000065|00:00:03.9438936|00:00:03.9439001|
+|4|00:00:04.4971524|00:00:00.0114426|00:00:04.5085950|00:00:00.0000041|00:00:04.2764552|00:00:04.2764593|00:00:00.0000067|00:00:03.8992139|00:00:03.8992206|
+|5|00:00:04.6727978|00:00:00.0109663|00:00:04.6837641|00:00:00.0000040|00:00:04.0773232|00:00:04.0773272|00:00:00.0000045|00:00:04.2885464|00:00:04.2885509|
+|6|00:00:05.0123443|00:00:00.0108277|00:00:05.0231720|00:00:00.0000044|00:00:04.1014316|00:00:04.1014360|00:00:00.0000048|00:00:03.9820006|00:00:03.9820054|
+|7|00:00:04.6175502|00:00:00.0104982|00:00:04.6280484|00:00:00.0000040|00:00:04.1091065|00:00:04.1091105|00:00:00.0000072|00:00:04.1666759|00:00:04.1666831|
+|8|00:00:04.5998781|00:00:00.0114823|00:00:04.6113604|00:00:00.0000042|00:00:04.0330921|00:00:04.0330963|00:00:00.0000049|00:00:04.1027614|00:00:04.1027663|
+|9|00:00:04.5484793|00:00:00.0113852|00:00:04.5598645|00:00:00.0000045|00:00:03.9282791|00:00:03.9282836|00:00:00.0000059|00:00:04.1086032|00:00:04.1086091|
+|10|00:00:04.6343943|00:00:00.0111740|00:00:04.6455683|00:00:00.0000038|00:00:03.9670427|00:00:03.9670465|00:00:00.0000054|00:00:03.9993382|00:00:03.9993436|
+|**AVG**|**00:00:04.6706588**|**00:00:00.0110987**|**00:00:04.6817576**|**00:00:00.0000042**|**00:00:04.0699669**|**00:00:04.0699711**|**00:00:00.0000125**|**00:00:04.0358505**|**00:00:04.0358631**|
 
-## Async Tests Outputs
+Finished.
 
 ## Dapper Buffered Query Class and Record Async Tests
 
 |#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
 |-|-----------------|------------------|------------------|-------------------|
-|1|00:00:03.8893827|479045,84375|00:00:03.6552850|315984,53125|
-|2|00:00:03.5857168|315933,78125|00:00:03.7994569|315971,5|
-|3|00:00:03.7164507|315932,5|00:00:03.7309075|315971,4375|
-|4|00:00:03.7878422|315857,75|00:00:03.6802020|315957,71875|
-|5|00:00:03.8093724|315941,625|00:00:03.9992026|316498,125|
-|6|00:00:03.7755876|315918,65625|00:00:04.0282673|319977,28125|
-|7|00:00:03.9067539|315940,4375|00:00:03.9522494|316501,4375|
-|8|00:00:03.9091274|315931,09375|00:00:03.8735317|315873,8125|
-|9|00:00:03.9571722|316922,875|00:00:03.9445057|316507,75|
-|10|00:00:03.7992153|315930,625|00:00:03.8492803|319980,78125|
-|**AVG**|**00:00:03.8136621**|**332335,53125**|**00:00:03.8512888**|**316922,4375**|
+|1|00:00:05.0320826|316904,375|00:00:04.6728727|315918,15625|
+|2|00:00:04.6297666|315924,96875|00:00:04.7394996|315953,875|
+|3|00:00:04.9233846|315910,03125|00:00:06.6221741|315853,9375|
+|4|00:00:05.5048006|315939,625|00:00:04.9855506|315874,75|
+|5|00:00:06.9209051|315937,375|00:00:04.7536667|315878,9375|
+|6|00:00:06.0181269|316004,9375|00:00:05.4877950|316423,5|
+|7|00:00:05.3816363|315834,59375|00:00:05.0020204|315884,9375|
+|**AVG**|**00:00:05.3751082**|**316023**|**00:00:05.1225245**|**316258,15625**|
 
-## Dapper Unbuffered Query Class and Record Async Tests
-
-Unsupported.
+Finished.
 
 ## Norm Read Class and Record Async Tests
 
 |#|Class Elapsed Sec|Class Allocated KB|Record Elapsed Sec|Record Allocated KB|
 |-|-----------------|------------------|------------------|-------------------|
-|1|00:00:03.4456945|316495,8125|00:00:03.5193685|316243,96875|
-|2|00:00:03.6113696|316288,5625|00:00:03.2919276|315866|
-|3|00:00:03.6135184|316348,65625|00:00:03.3879824|315613,46875|
-|4|00:00:03.4414767|315379,875|00:00:03.4361594|315819,9375|
-|5|00:00:03.5314651|315752,5625|00:00:03.5261258|315529,9375|
-|6|00:00:03.5767883|315782,09375|00:00:03.4300437|315686,875|
-|7|00:00:03.3635103|315718,59375|00:00:03.6113887|316114,375|
-|8|00:00:03.3538976|315698,875|00:00:03.3770096|315806,9375|
-|9|00:00:03.3517790|315700,75|00:00:03.9268139|315677,71875|
-|10|00:00:03.5524809|316099,8125|00:00:03.3685393|315687,21875|
-|**AVG**|**00:00:03.4841980**|**315926,5625**|**00:00:03.4875358**|**315804,65625**|
+|1|00:00:04.2608920|316495,3125|00:00:04.4594942|315878,15625|
+|2|00:00:04.4650937|315712,78125|00:00:04.2513025|315806,5625|
+|3|00:00:05.0550348|315731,375|00:00:04.4927675|315688,375|
+|4|00:00:04.3202923|315765,5|00:00:04.3829591|316145,625|
+|5|00:00:04.2521650|315840,3125|00:00:04.1660828|315485,625|
+|6|00:00:04.4653331|315885,78125|00:00:04.4866012|315938,65625|
+|7|00:00:04.4746869|315894,71875|00:00:04.5320292|315947,625|
+|8|00:00:04.4077792|315609,1875|00:00:04.1521577|315915,375|
+|9|00:00:04.4607108|315909,78125|00:00:04.4217146|315905,53125|
+|10|00:00:04.9791072|316323,0625|00:00:04.5044459|315906,40625|
+|**AVG**|**00:00:04.5141095**|**315916,78125**|**00:00:04.3849554**|**315861,78125**|
+
+Finished.
 
 ## Norm Read Values and Tuples vs Raw Data Reader Async Tests
 
 |#|Values Elapsed Sec|Values Allocated KB|Tuples Elapsed Sec|Tuples Allocated KB|Raw Reader Elapsed Sec|Raw Reader Allocated KB|
 |-|------------------|-------------------|------------------|-------------------|----------------------|-----------------------|
-|1|00:00:03.8857619|294843,46875|00:00:04.0364624|297986,28125|00:00:03.2808635|438010,125|
-|2|00:00:03.8230726|295442,875|00:00:04.2547485|297961,5625|00:00:03.5681573|440755,8125|
-|3|00:00:03.9360897|295510,8125|00:00:03.8958301|297790,5|00:00:03.3733968|428613,6875|
-|4|00:00:03.8789857|295111,3125|00:00:03.8797397|297987,6875|00:00:03.3247153|314770,875|
-|5|00:00:03.8228497|295124,53125|00:00:03.9585140|298069,5625|00:00:03.3118912|433585,25|
-|6|00:00:03.8502468|295173,0625|00:00:03.8726656|298013,875|00:00:03.2931011|431839,78125|
-|7|00:00:03.9492621|295173,46875|00:00:03.8491664|298008,375|00:00:03.3289791|438236,09375|
-|8|00:00:03.9286667|295085,21875|00:00:04.0542113|298014,0625|00:00:03.3294143|440311,4375|
-|9|00:00:03.8894652|295531,5625|00:00:03.8762145|297816,3125|00:00:03.3242860|437828,84375|
-|10|00:00:03.8474220|294903,75|00:00:03.9099232|297918,84375|00:00:03.3709866|314784,59375|
-|**AVG**|**00:00:03.8811822**|**295190**|**00:00:03.9587475**|**297956,71875**|**00:00:03.3505791**|**411873,65625**|
+|1|00:00:05.3662994|295227,875|00:00:05.1579002|298241,53125|00:00:04.2645770|497539,125|
+|2|00:00:05.2301945|295401,25|00:00:05.3218048|298236,03125|00:00:04.4684496|444731,3125|
+|3|00:00:05.0367320|295414,15625|00:00:04.7914298|298224,125|00:00:04.2080447|498298,125|
+|4|00:00:04.9281670|295353,3125|00:00:05.0225668|298229,6875|00:00:04.5742709|447153,84375|
+|5|00:00:04.9379865|295509,03125|00:00:04.9530233|298217,25|00:00:05.3584288|314949,90625|
+|6|00:00:06.1643464|295624,75|00:00:05.5421934|298109,625|00:00:04.5320794|314800,125|
+|7|00:00:05.1834609|295483|00:00:05.1187556|298198,75|00:00:04.4167411|314778,9375|
+|8|00:00:05.3636320|295313,625|00:00:05.4172342|298345,84375|00:00:05.2387259|314947,5|
+|9|00:00:05.4612913|295665,59375|00:00:05.2968639|298230,875|00:00:04.2387840|473439,75|
+|10|00:00:05.1929509|295165,1875|00:00:04.9845276|298409,75|00:00:04.6951096|497572|
+|**AVG**|**00:00:05.2865060**|**295415,78125**|**00:00:05.1606299**|**298244,34375**|**00:00:04.5995211**|**411821,0625**|
+
+Finished.
 
 ## Dapper Buffered Query and Iteration vs Norm Read and Iteration Async Tests
 
 |#|Dapper Buffered Query|Dapper Buffered Iteration|Daper Buffered Total|Dapper Buffered Allocated KB|Norm Read|Norm Iteration|Norm Total|Norm Allocated KB|
 |-|---------------------|-------------------------|--------------------|----------------------------|---------|--------------|----------|-----------------|
-|1|00:00:04.0072973|00:00:00.0099347|00:00:04.0172320|320141,65625|00:00:00.0042399|00:00:03.2086745|00:00:03.2129144|316606,09375|
-|2|00:00:03.5331119|00:00:00.0100392|00:00:03.5431511|316883,21875|00:00:00.0000347|00:00:03.1837007|00:00:03.1837354|316634,59375|
-|3|00:00:03.5683016|00:00:00.0099549|00:00:03.5782565|316879,1875|00:00:00.0000148|00:00:03.2197745|00:00:03.2197893|316723,71875|
-|4|00:00:03.8135815|00:00:00.0096125|00:00:03.8231940|316867,5|00:00:00.0000761|00:00:03.2608473|00:00:03.2609234|316707,53125|
-|5|00:00:03.7110017|00:00:00.0098746|00:00:03.7208763|316879,1875|00:00:00.0000117|00:00:03.2740578|00:00:03.2740695|316636|
-|6|00:00:03.7032523|00:00:00.0098470|00:00:03.7130993|316872|00:00:00.0000138|00:00:03.2487663|00:00:03.2487801|316684,6875|
-|7|00:00:03.7037587|00:00:00.0096510|00:00:03.7134097|316879,125|00:00:00.0000111|00:00:03.2913648|00:00:03.2913759|316669,03125|
-|8|00:00:03.7432314|00:00:00.0096929|00:00:03.7529243|316879,84375|00:00:00.0000129|00:00:03.2564298|00:00:03.2564427|316581,9375|
-|9|00:00:04.0890372|00:00:00.0115389|00:00:04.1005761|316883,25|00:00:00.0000775|00:00:03.5007075|00:00:03.5007850|316501,40625|
-|10|00:00:03.8379973|00:00:00.0099516|00:00:03.8479489|316875,21875|00:00:00.0000143|00:00:03.2997327|00:00:03.2997470|316686,6875|
-|**AVG**|**00:00:03.7710570**|**00:00:00.0100097**|**00:00:03.7810668**|**317204,03125**|**00:00:00.0004506**|**00:00:03.2744055**|**00:00:03.2748562**|**316643,15625**|
+|1|00:00:05.3405277|00:00:00.0160665|00:00:05.3565942|316033,625|00:00:00.0000134|00:00:04.5220110|00:00:04.5220244|316620,875|
+|2|00:00:05.0230621|00:00:00.0126700|00:00:05.0357321|316871,78125|00:00:00.0000144|00:00:04.5414506|00:00:04.5414650|316820,6875|
+|3|00:00:05.0524136|00:00:00.0125665|00:00:05.0649801|316867,59375|00:00:00.0000154|00:00:04.5369731|00:00:04.5369885|316589|
+|4|00:00:05.6981626|00:00:00.0123305|00:00:05.7104931|316875,96875|00:00:00.0000231|00:00:04.5318229|00:00:04.5318460|316797,875|
+|5|00:00:04.7987837|00:00:00.0117279|00:00:04.8105116|316871,625|00:00:00.0000149|00:00:04.2026862|00:00:04.2027011|316718,0625|
+|6|00:00:04.8236177|00:00:00.0100432|00:00:04.8336609|316867,625|00:00:00.0000154|00:00:04.1059336|00:00:04.1059490|316798,4375|
+|7|00:00:04.8700998|00:00:00.0112614|00:00:04.8813612|316867,71875|00:00:00.0000146|00:00:04.2160020|00:00:04.2160166|316766,3125|
+|8|00:00:04.7856579|00:00:00.0106616|00:00:04.7963195|316875,71875|00:00:00.0000080|00:00:04.2750856|00:00:04.2750936|316749,9375|
+|9|00:00:04.8657819|00:00:00.0117465|00:00:04.8775284|316876,03125|00:00:00.0000142|00:00:04.6467425|00:00:04.6467567|316783|
+|10|00:00:04.7884131|00:00:00.0105040|00:00:04.7989171|316876,0625|00:00:00.0000128|00:00:04.2041415|00:00:04.2041543|316422,5625|
+|**AVG**|**00:00:05.0046520**|**00:00:00.0119578**|**00:00:05.0166098**|**316788,375**|**00:00:00.0000146**|**00:00:04.3782849**|**00:00:04.3782995**|**316706,6875**|
