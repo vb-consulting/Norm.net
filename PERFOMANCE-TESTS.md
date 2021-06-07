@@ -47,7 +47,7 @@
 |Raw Data Reader|04.17|315765|
 |Raw Data Reader Async|04.60|411821|
 
-### Raw Data Reader
+### Dapper Buffered and Unbuffered vs Norm execution and iteration
 
 |Operation|Execution Sec.|Iteration Sec.|Total Sec.|
 |---------|--------------|--------------|----------|
