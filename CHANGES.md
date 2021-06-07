@@ -8,7 +8,9 @@ Separated overload methods into separate files by using partials for easier main
 
 ### Fixed very rare race condition bug that raised an index out of bounds exception when mapping in parallel same class to different queries.
 
-This bug fix required a redesign of the entire mapping mechanism which is now even more optimized and uses even less memory cache. Benchmarks coming soon.
+This bug fix required a redesign of the entire mapping mechanism which is now even more optimized and uses even less memory cache. 
+
+Benchmarks are available on the [benchmarks page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md#aggregated-results)
 
 Following [unit test](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/MapUnitTests.cs#L312) demonstrates the bug condition. 
 
