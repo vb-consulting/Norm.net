@@ -13,7 +13,16 @@ namespace BenchmarksConsole
     {
         public NormReadTests(NpgsqlConnection connection) : base(connection) { }
 
-        public void Run(int runs = 10, int records = 1000000)
+        public TimeSpan NormPocoElapsedSync { get; private set; }
+        public double NormPocoKbSync { get; private set; }
+        public TimeSpan NormPocoElapsedAsync { get; private set; }
+        public double NormPocoKbAsync { get; private set; }
+        public TimeSpan NormRecordElapsedSync { get; private set; }
+        public double NormRecordKbSync { get; private set; }
+        public TimeSpan NormRecordElapsedAsync { get; private set; }
+        public double NormRecordKbAsync { get; private set; }
+
+        public void Run(int runs = Config.Runs, int records = Config.Records)
         {
             Console.WriteLine("## Norm Read Class and Record Tests");
             Console.WriteLine();
@@ -62,13 +71,19 @@ namespace BenchmarksConsole
             var normRecordAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
             var normRecordBytesAvg = (long)list.Select(v => v[3]).Average();
 
+            NormPocoElapsedSync = normPocoElapsedAvg;
+            NormPocoKbSync = Kb(normPocoBytesAvg);
+
+            NormRecordElapsedSync = normRecordAvg;
+            NormRecordKbSync = Kb(normRecordBytesAvg);
+
             Console.WriteLine($"|**AVG**|**{normPocoElapsedAvg}**|**{Kb(normPocoBytesAvg)}**|**{normRecordAvg}**|**{Kb(normRecordBytesAvg)}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();
         }
 
-        public async ValueTask RunAsync(int runs = 10, int records = 1000000)
+        public async ValueTask RunAsync(int runs = Config.Runs, int records = Config.Records)
         {
             Console.WriteLine("## Norm Read Class and Record Async Tests");
             Console.WriteLine();
@@ -117,7 +132,13 @@ namespace BenchmarksConsole
             var normRecordAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
             var normRecordBytesAvg = (long)list.Select(v => v[3]).Average();
 
-            Console.WriteLine($"|**AVG**|**{normPocoElapsedAvg}**|**{Kb(normPocoBytesAvg)}**|**{normRecordAvg}**|**{Kb(normRecordBytesAvg)}**|");
+            NormPocoElapsedAsync = normPocoElapsedAvg;
+            NormPocoKbAsync = Kb(normPocoBytesAvg);
+
+            NormRecordElapsedAsync = normRecordAvg;
+            NormRecordKbAsync = Kb(normRecordBytesAvg);
+
+            Console.WriteLine($"|**AVG**|**{NormPocoElapsedAsync}**|**{NormPocoKbAsync}**|**{NormRecordElapsedAsync}**|**{NormRecordKbAsync}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();

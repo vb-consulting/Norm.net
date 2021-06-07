@@ -13,7 +13,16 @@ namespace BenchmarksConsole
     {
         public DapperUnbufferedQueryTests(NpgsqlConnection connection) : base(connection) { }
 
-        public void Run(int runs = 10, int records = 1000000)
+        public TimeSpan DapperPocoElapsedSync { get; private set; }
+        public double DapperPocoKbSync { get; private set; }
+        public TimeSpan DapperPocoElapsedAsync { get; private set; }
+        public double DapperPocoKbAsync { get; private set; }
+        public TimeSpan DapperRecordElapsedSync { get; private set; }
+        public double DapperRecordKbSync { get; private set; }
+        public TimeSpan DapperRecordElapsedAsync { get; private set; }
+        public double DapperRecordKbAsync { get; private set; }
+
+        public void Run(int runs = Config.Runs, int records = Config.Records)
         {
             Console.WriteLine("## Dapper Unbuffered Query Class and Record Tests");
             Console.WriteLine();
@@ -62,13 +71,19 @@ namespace BenchmarksConsole
             var dapperRecordAvg = new TimeSpan((long)list.Select(v => v[2]).Average());
             var dapperRecordBytesAvg = (long)list.Select(v => v[3]).Average();
 
-            Console.WriteLine($"|**AVG**|**{dapperPocoElapsedAvg}**|**{Kb(dapperPocoBytesAvg)}**|**{dapperRecordAvg}**|**{Kb(dapperRecordBytesAvg)}**|");
+            DapperPocoElapsedSync = dapperPocoElapsedAvg;
+            DapperPocoKbSync = Kb(dapperPocoBytesAvg);
+
+            DapperRecordElapsedSync = dapperRecordAvg;
+            DapperRecordKbSync = Kb(dapperRecordBytesAvg);
+
+            Console.WriteLine($"|**AVG**|**{DapperPocoElapsedSync}**|**{DapperPocoKbSync}**|**{DapperRecordElapsedSync}**|**{DapperRecordKbSync}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();
         }
 
-        public async ValueTask RunAsync(int runs = 10, int records = 1000000)
+        public async ValueTask RunAsync(int runs = Config.Runs, int records = Config.Records)
         {
             throw new NotImplementedException("unsuported functionality");
         }

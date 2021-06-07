@@ -13,7 +13,22 @@ namespace BenchmarksConsole
     {
         public NormReadValuesTests(NpgsqlConnection connection) : base(connection) { }
 
-        public void Run(int runs = 10, int records = 1000000)
+        public TimeSpan NormBuiltInElapsedSync { get; private set; }
+        public double NormBuiltInKbSync { get; private set; }
+        public TimeSpan NormBuiltInElapsedAsync { get; private set; }
+        public double NormBuiltInKbAsync { get; private set; }
+
+        public TimeSpan NormTuplesElapsedSync { get; private set; }
+        public double NormTuplesKbSync { get; private set; }
+        public TimeSpan NormTuplesElapsedAsync { get; private set; }
+        public double NormTuplesKbAsync { get; private set; }
+
+        public TimeSpan RawElapsedSync { get; private set; }
+        public double RawKbSync { get; private set; }
+        public TimeSpan RawElapsedAsync { get; private set; }
+        public double RawKbAsync { get; private set; }
+
+        public void Run(int runs = Config.Runs, int records = Config.Records)
         {
             Console.WriteLine("## Norm Read Values and Tuples vs Raw Data Reader Tests");
             Console.WriteLine();
@@ -103,13 +118,20 @@ namespace BenchmarksConsole
             var rawReaderAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
             var rawReaderBytesAvg = (long)list.Select(v => v[5]).Average();
 
-            Console.WriteLine($"|**AVG**|**{normValuesElapsedAvg}**|**{Kb(normValuesBytesAvg)}**|**{normTuplesAvg}**|**{Kb(normTuplesBytesAvg)}**|**{rawReaderAvg}**|**{Kb(rawReaderBytesAvg)}**|");
+            NormBuiltInElapsedSync = normValuesElapsedAvg;
+            NormBuiltInKbSync = Kb(normValuesBytesAvg);
+            NormTuplesElapsedSync = normTuplesAvg;
+            NormTuplesKbSync = Kb(normTuplesBytesAvg);
+            RawElapsedSync = rawReaderAvg;
+            RawKbSync = Kb(rawReaderBytesAvg);
+
+            Console.WriteLine($"|**AVG**|**{NormBuiltInElapsedSync}**|**{NormBuiltInKbSync}**|**{NormTuplesElapsedSync}**|**{NormTuplesKbSync}**|**{RawElapsedSync}**|**{RawKbSync}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();
         }
 
-        public async ValueTask RunAsync(int runs = 10, int records = 1000000)
+        public async ValueTask RunAsync(int runs = Config.Runs, int records = Config.Records)
         {
             Console.WriteLine("## Norm Read Values and Tuples vs Raw Data Reader Async Tests");
             Console.WriteLine();
@@ -199,7 +221,14 @@ namespace BenchmarksConsole
             var rawReaderAvg = new TimeSpan((long)list.Select(v => v[4]).Average());
             var rawReaderBytesAvg = (long)list.Select(v => v[5]).Average();
 
-            Console.WriteLine($"|**AVG**|**{normValuesElapsedAvg}**|**{Kb(normValuesBytesAvg)}**|**{normTuplesAvg}**|**{Kb(normTuplesBytesAvg)}**|**{rawReaderAvg}**|**{Kb(rawReaderBytesAvg)}**|");
+            NormBuiltInElapsedAsync = normValuesElapsedAvg;
+            NormBuiltInKbAsync = Kb(normValuesBytesAvg);
+            NormTuplesElapsedAsync = normTuplesAvg;
+            NormTuplesKbAsync = Kb(normTuplesBytesAvg);
+            RawElapsedAsync = rawReaderAvg;
+            RawKbAsync = Kb(rawReaderBytesAvg);
+
+            Console.WriteLine($"|**AVG**|**{NormBuiltInElapsedAsync}**|**{NormBuiltInKbAsync}**|**{NormTuplesElapsedAsync}**|**{NormTuplesKbAsync}**|**{RawElapsedAsync}**|**{RawKbAsync}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();

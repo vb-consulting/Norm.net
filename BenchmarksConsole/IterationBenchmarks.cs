@@ -14,7 +14,19 @@ namespace BenchmarksConsole
     {
         public IterationBenchmarks(NpgsqlConnection connection) : base(connection) { }
 
-        public void Run(int runs = 10, int records = 1000000)
+        public TimeSpan DapperQueryAvg { get; private set; }
+        public TimeSpan DapperIterationAvg { get; private set; }
+        public TimeSpan DapperTotalAvg { get; private set; }
+
+        public TimeSpan DapperBufferedQueryAvg { get; private set; }
+        public TimeSpan DapperBufferedIterationAvg { get; private set; }
+        public TimeSpan DapperBufferedTotalAvg { get; private set; }
+
+        public TimeSpan NormReadAvg { get; private set; }
+        public TimeSpan NormIterationAvg { get; private set; }
+        public TimeSpan NormTotalAvg { get; private set; }
+
+        public void Run(int runs = Config.Runs, int records = Config.Records)
         {
 
             var sw = new Stopwatch();
@@ -24,7 +36,7 @@ namespace BenchmarksConsole
             Console.WriteLine();
 
             Console.WriteLine("|#|Dapper Buffered Query|Dapper Buffered Iteration|Daper Buffered Total|Dapper Unbuffered Query|Dapper Unbuffered Iteration|Daper Unbuffered Total|Norm Read|Norm Iteration|Norm Total|");
-            Console.WriteLine("|-|---------------------|-------------------------|--------------------|-----------------------|---------------------------|----------------------|------------------------|----------|");
+            Console.WriteLine("|-|---------------------|-------------------------|--------------------|-----------------------|---------------------------|----------------------|---------|--------------|----------|");
 
             var list = new List<long[]>();
 
@@ -123,13 +135,25 @@ namespace BenchmarksConsole
             var normIterationAvg = new TimeSpan((long)list.Select(v => v[7]).Average());
             var normTotalAvg = new TimeSpan((long)list.Select(v => v[8]).Average());
 
+            DapperQueryAvg = dapperQueryAvg;
+            DapperIterationAvg = dapperIterationAvg;
+            DapperTotalAvg = dapperTotalAvg;
+
+            DapperBufferedQueryAvg = dapperBufferedQueryAvg;
+            DapperBufferedIterationAvg = dapperBufferedIterationAvg;
+            DapperBufferedTotalAvg = dapperBufferedTotalAvg;
+
+            NormReadAvg = normReadAvg;
+            NormIterationAvg = normIterationAvg;
+            NormTotalAvg = normTotalAvg;
+
             Console.WriteLine($"|**AVG**|**{dapperQueryAvg}**|**{dapperIterationAvg}**|**{dapperTotalAvg}**|**{dapperBufferedQueryAvg}**|**{dapperBufferedIterationAvg}**|**{dapperBufferedTotalAvg}**|**{normReadAvg}**|**{normIterationAvg}**|**{normTotalAvg}**|");
             Console.WriteLine();
             Console.WriteLine("Finished.");
             Console.WriteLine();
         }
 
-        public async ValueTask RunAsync(int runs = 10, int records = 1000000)
+        public async ValueTask RunAsync(int runs = Config.Runs, int records = Config.Records)
         {
             var sw = new Stopwatch();
             var query = GetQuery(records);
