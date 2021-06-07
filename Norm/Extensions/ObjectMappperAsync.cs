@@ -5,14 +5,14 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
-        internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, 
+        internal static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1)
         {
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
             var props = TypeCache<T>.GetProperties(type1);
-            Dictionary<string, ushort> names = null; 
+            Dictionary<string, ushort> names = null;
             var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -23,18 +23,19 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2)> Map<T1, T2>(this IEnumerable<(string name, object value)[]> tuples, 
-            Type type1, 
+        internal static async IAsyncEnumerable<(T1, T2)> Map<T1, T2>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
             Type type2)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             Dictionary<string, ushort> names = null;
             var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
             var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -49,9 +50,9 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IEnumerable<(string name, object value)[]> tuples,
-            Type type1, 
-            Type type2, 
+        internal static async IAsyncEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
             Type type3)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
@@ -65,7 +66,7 @@ namespace Norm
             var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
             var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
             var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -82,10 +83,10 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IEnumerable<(string name, object value)[]> tuples,
-            Type type1, 
-            Type type2, 
-            Type type3, 
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
             Type type4)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
@@ -102,7 +103,7 @@ namespace Norm
             var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
             var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
             var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -121,11 +122,11 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IEnumerable<(string name, object value)[]> tuples,
-            Type type1, 
-            Type type2, 
-            Type type3, 
-            Type type4, 
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+            Type type1,
+            Type type2,
+            Type type3,
+            Type type4,
             Type type5)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
@@ -145,7 +146,7 @@ namespace Norm
             var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
             var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
             var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -166,7 +167,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -180,6 +181,7 @@ namespace Norm
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -193,7 +195,7 @@ namespace Norm
             var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
             var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
             var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -216,7 +218,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -232,6 +234,7 @@ namespace Norm
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -247,7 +250,7 @@ namespace Norm
             var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
             var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
             var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -272,14 +275,14 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
             Type type4,
             Type type5,
             Type type6,
-            Type type7, 
+            Type type7,
             Type type8)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
@@ -290,6 +293,7 @@ namespace Norm
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -307,7 +311,7 @@ namespace Norm
             var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
             var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
             var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -330,11 +334,12 @@ namespace Norm
                 var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
                 var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
                 var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
+
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -342,7 +347,7 @@ namespace Norm
             Type type5,
             Type type6,
             Type type7,
-            Type type8, 
+            Type type8,
             Type type9)
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
@@ -354,6 +359,7 @@ namespace Norm
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -373,7 +379,7 @@ namespace Norm
             var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
             var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
             var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -402,7 +408,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -424,6 +430,7 @@ namespace Norm
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -445,7 +452,7 @@ namespace Norm
             var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
             var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
             var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -476,7 +483,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -500,6 +507,7 @@ namespace Norm
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -523,7 +531,7 @@ namespace Norm
             var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
             var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
             var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props11.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
@@ -556,7 +564,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<(string name, object value)[]> tuples,
+        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -582,6 +590,7 @@ namespace Norm
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
             var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
+
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
@@ -607,13 +616,12 @@ namespace Norm
             var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
             var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props11.Length];
             var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props12.Length];
-            foreach (var t in tuples)
+            await foreach (var t in tuples)
             {
                 if (names == null)
                 {
                     names = GetNamesDictFromTuple(t);
                 }
-                var used = new HashSet<ushort>(t.Length);
                 var i1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var i2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var i3 = TypeCache<T3>.CreateInstance(ctorInfo3);
@@ -626,6 +634,7 @@ namespace Norm
                 var i10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var i11 = TypeCache<T11>.CreateInstance(ctorInfo11);
                 var i12 = TypeCache<T12>.CreateInstance(ctorInfo12);
+                var used = new HashSet<ushort>(t.Length);
                 var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
                 var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
                 var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);

@@ -1,0 +1,237 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+namespace Norm
+{
+    public static partial class NormExtensions
+    {
+        private static T MapInstance<T>(this (string name, object value)[] tuple,
+            ref (Type type, string name, PropertyInfo info)[] properties,
+            ref T instance,
+            ref Dictionary<string, ushort> names,
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegates)
+        {
+            ushort i = 0;
+
+            foreach (var property in properties)
+            {
+                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
+                if (method == null)
+                {
+                    nullable = Nullable.GetUnderlyingType(property.type) != null;
+                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property.info, nullable);
+                    if (!names.TryGetValue(property.name, out index))
+                    {
+                        index = ushort.MaxValue;
+                    }
+                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
+                }
+                i++;
+                if (index == ushort.MaxValue)
+                {
+                    continue;
+                }
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
+            }
+            return instance;
+        }
+
+        private static Type TimeSpanType = typeof(TimeSpan);
+
+        private static T MapInstance<T>(this (string name, object value)[] tuple,
+            ref (Type type, string name, PropertyInfo info)[] properties,
+            ref T instance,
+            ref Dictionary<string, ushort> names,
+            ref HashSet<ushort> used,
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegates)
+        {
+            ushort i = 0;
+            foreach (var property in properties)
+            {
+                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
+                if (method == null)
+                {
+                    nullable = Nullable.GetUnderlyingType(property.type) != null;
+                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property.info, nullable);
+                    if (!names.TryGetValue(property.name, out index))
+                    {
+                        index = ushort.MaxValue;
+                    }
+                    if (used.Contains(index))
+                    {
+                        continue;
+                    }
+                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
+                }
+                i++;
+                if (index == ushort.MaxValue)
+                {
+                    continue;
+                }
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
+                used.Add(index);
+            }
+            return instance;
+        }
+
+        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
+        {
+            if (tuple == null)
+            {
+                return null;
+            }
+            var hashes = new HashSet<string>();
+            var result = new Dictionary<string, ushort>();
+            ushort i = 0;
+            foreach (var t in tuple)
+            {
+                var name = string.Concat(t.name.ToLower().Replace("_", ""));
+                if (hashes.Contains(name))
+                {
+                    i++;
+                    continue;
+                }
+                hashes.Add(name);
+                result[name] = i++;
+            }
+            return result;
+        }
+
+        private static (Delegate method, TypeCode code, bool isArray, bool isTimespan) CreateDelegate<T>(PropertyInfo property, bool nullable)
+        {
+            TypeCode code;
+            bool isArray;
+            var type = property.PropertyType;
+            if (type.IsArray)
+            {
+                isArray = true;
+                var elementType = type.GetElementType();
+                code = Type.GetTypeCode(elementType);
+                if (code == TypeCode.Object && elementType == TimeSpanType)
+                {
+                    return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, true);
+                }
+            }
+            else
+            {
+                isArray = false;
+                code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
+                if (code == TypeCode.Object && (type == TimeSpanType || type.GenericTypeArguments[0] == TimeSpanType))
+                {
+                    return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, true);
+                }
+            }
+
+            return code switch
+            {
+                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray, false),
+                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray, false),
+                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray, false),
+                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray, false),
+                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray, false),
+                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray, false),
+                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray, false),
+                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray, false),
+                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray, false),
+                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray, false),
+                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray, false),
+                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray, false),
+                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, false),
+                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, false),
+                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, false),
+                _ => throw new NotImplementedException($"TypeCode {code} not implemented"),
+            };
+        }
+
+        private static Delegate CreateDelegateValue<T, TProp>(PropertyInfo property)
+        {
+            return Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
+        }
+
+        private static Delegate CreateDelegateStruct<T, TProp>(PropertyInfo property, bool nullable) where TProp : struct
+        {
+            return nullable ?
+                Delegate.CreateDelegate(typeof(Action<T, TProp?>), property.GetSetMethod(true)) :
+                Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
+        }
+
+        private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, bool isTimespan)
+        {
+            if (isTimespan)
+            {
+                if (isArray)
+                {
+                    InvokeSetValue<T, TimeSpan[]>(method, instance, value);
+                }
+                else InvokeSetStruct<T, TimeSpan>(method, nullable, instance, value);
+            }
+            switch (code)
+            {
+                case TypeCode.Int32:
+                    if (isArray) InvokeSetValue<T, int[]>(method, instance, value); else InvokeSetStruct<T, int>(method, nullable, instance, value);
+                    break;
+                case TypeCode.DateTime:
+                    if (isArray) InvokeSetValue<T, DateTime[]> (method, instance, value); else InvokeSetStruct<T, DateTime>(method, nullable, instance, value);
+                    break;
+                case TypeCode.String:
+                    if (isArray) InvokeSetValue<T, string[]>(method, instance, value); else InvokeSetValue<T, string>(method, instance, value);
+                    break;
+                case TypeCode.Boolean:
+                    if (isArray) InvokeSetValue<T, bool[]>(method, instance, value); else InvokeSetStruct<T, bool>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Byte:
+                    if (isArray) InvokeSetValue<T, byte[]>(method, instance, value); else InvokeSetStruct<T, byte>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Char:
+                    if (isArray) InvokeSetValue<T, char[]>(method, instance, value); else InvokeSetStruct<T, char>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Decimal:
+                    if (isArray) InvokeSetValue<T, decimal[]>(method, instance, value); else InvokeSetStruct<T, decimal>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Double:
+                    if (isArray) InvokeSetValue<T, double[]>(method, instance, value); else InvokeSetStruct<T, double>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Int16:
+                    if (isArray) InvokeSetValue<T, short[]>(method, instance, value); else InvokeSetStruct<T, short>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Int64:
+                    if (isArray) InvokeSetValue<T, long[]>(method, instance, value); else InvokeSetStruct<T, long>(method, nullable, instance, value);
+                    break;
+                case TypeCode.SByte:
+                    if (isArray) InvokeSetValue<T, sbyte[]>(method, instance, value); else InvokeSetStruct<T, sbyte>(method, nullable, instance, value);
+                    break;
+                case TypeCode.Single:
+                    if (isArray) InvokeSetValue<T, float[]>(method, instance, value); else InvokeSetStruct<T, float>(method, nullable, instance, value);
+                    break;
+                case TypeCode.UInt16:
+                    if (isArray) InvokeSetValue<T, ushort[]>(method, instance, value); else InvokeSetStruct<T, ushort>(method, nullable, instance, value);
+                    break;
+                case TypeCode.UInt32:
+                    if (isArray) InvokeSetValue<T, uint[]>(method, instance, value); else InvokeSetStruct<T, uint>(method, nullable, instance, value);
+                    break;
+                case TypeCode.UInt64:
+                    if (isArray) InvokeSetValue<T, ulong[]>(method, instance, value); else InvokeSetStruct<T, ulong>(method, nullable, instance, value);
+                    break;
+            }
+        }
+
+        private static void InvokeSetValue<T, TProp>(Delegate method, T instance, object value)
+        {
+            ((Action<T, TProp>)method).Invoke(instance, (TProp)value);
+        }
+
+        private static void InvokeSetStruct<T, TProp>(Delegate method, bool nullable, T instance, object value) where TProp : struct
+        {
+            if (nullable)
+            {
+                ((Action<T, TProp?>)method).Invoke(instance, (TProp?)value);
+            }
+            else
+            {
+                ((Action<T, TProp>)method).Invoke(instance, (TProp)value);
+            }
+        }
+    }
+}

@@ -239,7 +239,7 @@ namespace PostgreSqlUnitTests
                                 (3, 'foo3', '1979-05-19'::date, null)
                             ) t(id, foo, day, bool)").ToList();
 
-            
+
             Assert.Equal(3, result.Count);
 
             // TestClass.Bar is not mapped, it is always default (null)
@@ -319,6 +319,41 @@ namespace PostgreSqlUnitTests
             Assert.Null(result4[1].LockoutEnd);
             Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result4[2].LockoutEnd);
 
+        }
+
+        [Fact]
+        public void Test_Map_SameClass_DifferentQuery_Parallel_Sync()
+        {
+            var task1 = new Action(() =>
+            {
+                using var connection = new NpgsqlConnection(fixture.ConnectionString);
+                var result1 = connection.Read<TestClass>(@"
+                            select *
+                            from (
+                            values 
+                                (1, 'foo1', '1977-05-19'::date),
+                                (2, 'foo2', '1978-05-19'::date),
+                                (3, 'foo3', '1979-05-19'::date)
+                            ) t(id, foo, day)").ToList();
+            });
+
+            var task2 = new Action(() =>
+            {
+                using var connection = new NpgsqlConnection(fixture.ConnectionString);
+                var result2 = connection.Read<TestClass>(@"
+                            select *
+                            from (
+                            values 
+                                (1, 'foo1', '1977-05-19'::date, true, null),
+                                (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
+                                (3, 'foo3', '1979-05-19'::date, null, 'bar3')
+                            ) t(id, foo, day, bool, bar)").ToList();
+            });
+
+            Task.WaitAll(
+                Task.Factory.StartNew(task1), Task.Factory.StartNew(task1), Task.Factory.StartNew(task1),
+                Task.Factory.StartNew(task2), Task.Factory.StartNew(task2), Task.Factory.StartNew(task2)
+                );
         }
     }
 }

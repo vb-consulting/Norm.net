@@ -7,17 +7,17 @@ using var fixture = new PostgreSqlFixture();
 using var connection = new NpgsqlConnection(fixture.ConnectionString);
 connection.Open();
 
-//new DapperBufferedQueryTests(connection).Run();
-//new DapperUnbufferedQueryTests(connection).Run();
-//new NormReadTests(connection).Run();
-//new NormReadValuesTests(connection).Run();
-//new IterationBenchmarks(connection).Run();
+new DapperBufferedQueryTests(connection).Run();
+new DapperUnbufferedQueryTests(connection).Run();
+new NormReadTests(connection).Run();
+new NormReadValuesTests(connection).Run();
+new IterationBenchmarks(connection).Run();
 
 
-//new DapperBufferedQueryTests(connection).RunAsync().GetAwaiter().GetResult();
+new DapperBufferedQueryTests(connection).RunAsync().GetAwaiter().GetResult();
 //new DapperUnbufferedQueryTests(connection).RunAsync().GetAwaiter().GetResult();
-//new NormReadTests(connection).RunAsync().GetAwaiter().GetResult();
-//new NormReadValuesTests(connection).RunAsync().GetAwaiter().GetResult();
+new NormReadTests(connection).RunAsync().GetAwaiter().GetResult();
+new NormReadValuesTests(connection).RunAsync().GetAwaiter().GetResult();
 new IterationBenchmarks(connection).RunAsync().GetAwaiter().GetResult();
 
 public class PocoClass

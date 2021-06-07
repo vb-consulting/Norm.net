@@ -1,5 +1,11 @@
 # Version history
 
+## 3.2.1
+
+- Internal improvement: separated overload methods into separate files by using partials for easier maintenance.
+
+- 
+
 ## 3.2.0
 
 **Support for the `FormattableString` commands.**

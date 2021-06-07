@@ -9,12 +9,8 @@ namespace Norm
     {
         private static readonly object ctorLocker = new object();
         private static (T, Func<T, object>) ctorInfo = default;
-        private static readonly object nameLocker = new object();
-        private static Dictionary<string, ushort> names = null;
         private static readonly object propertiesLocker = new object();
-        private static PropertyInfo[] properties = null;
-        private static readonly object delegateLocker = new object();
-        private static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegateCache = null;
+        private static (Type type, string name, PropertyInfo info)[] properties = null;
         private static (Type type, bool simple, bool valueTuple) metadata = default;
         private static readonly object metadataLocker = new object();
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
@@ -34,13 +30,7 @@ namespace Norm
         private static (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) 
             ValueTupleCtorInfo = default;
 
-
-        ///<summary>
-        ///    Return cached property info array
-        ///</summary>
-        ///<param name="type">Type for properties to be returned</param>
-        ///<returns>PropertyInfo array</returns>
-        public static PropertyInfo[] GetProperties(Type type)
+        public static (Type type, string name, PropertyInfo info)[] GetProperties(Type type)
         {
             if (properties != null)
             {
@@ -52,37 +42,14 @@ namespace Norm
                 {
                     return properties;
                 }
-                return properties = type.GetProperties();
-            }
-        }
-
-        internal static Dictionary<string, ushort> GetNames((string name, object value)[] tuple)
-        {
-            if (names != null)
-            {
-                return names;
-            }
-            lock (nameLocker)
-            {
-                if (names != null)
+                var props = type.GetProperties();
+                var result = new (Type type, string name, PropertyInfo info)[props.Length];
+                short i = 0;
+                foreach(var p in props)
                 {
-                    return names;
+                    result[i++] = (p.PropertyType, p.Name.ToLower(), p);
                 }
-                var hashes = new HashSet<string>();
-                var result = new Dictionary<string, ushort>();
-                ushort i = 0;
-                foreach (var t in tuple)
-                {
-                    var name = string.Concat(t.name.ToLower().Replace("_", ""));
-                    if (hashes.Contains(name))
-                    {
-                        i++;
-                        continue;
-                    }
-                    hashes.Add(name);
-                    result[name] = i++;
-                }
-                return names = result;
+                return properties = result;
             }
         }
 
@@ -108,22 +75,6 @@ namespace Norm
         internal static T CreateInstance((T instance, Func<T, object> clone) info)
         {
             return (T)info.clone.Invoke(info.instance);
-        }
-
-        internal static (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] GetDelegates(int len)
-        {
-            if (delegateCache != null)
-            {
-                return delegateCache;
-            }
-            lock (delegateLocker)
-            {
-                if (delegateCache != null)
-                {
-                    return delegateCache;
-                }
-                return delegateCache = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[len];
-            }
         }
 
         private static Type TimeSpanType = typeof(TimeSpan);
