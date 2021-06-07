@@ -10,7 +10,7 @@ Separated overload methods into separate files by using partials for easier main
 
 This bug fix required a redesign of the entire mapping mechanism which is now even more optimized and uses even less memory cache. Benchmarks coming soon.
 
-Following [unit test] demonstrates the bug condition. 
+Following [unit test](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/MapUnitTests.cs#L312) demonstrates the bug condition. 
 
 ## Added support fof the `DateTimeOffset` type. 
 
