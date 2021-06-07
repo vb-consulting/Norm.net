@@ -7,54 +7,56 @@ namespace Norm
 {
     public static partial class NormExtensions
     {
+        private static Type TimeSpanType = typeof(TimeSpan);
+        private static Type DateTimeOffsetType = typeof(DateTimeOffset);
+        private enum StructType { None, TimeSpan, DateTimeOffset }
+
         private static T MapInstance<T>(this (string name, object value)[] tuple,
             ref (Type type, string name, PropertyInfo info)[] properties,
             ref T instance,
             ref Dictionary<string, ushort> names,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegates)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
         {
             ushort i = 0;
 
             foreach (var property in properties)
             {
-                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
+                var (method, nullable, code, isArray, index, structType) = delegates[i];
                 if (method == null)
                 {
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
-                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property.info, nullable);
+                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     if (!names.TryGetValue(property.name, out index))
                     {
                         index = ushort.MaxValue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
+                    delegates[i] = (method, nullable, code, isArray, index, structType);
                 }
                 i++;
                 if (index == ushort.MaxValue)
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
             }
             return instance;
         }
-
-        private static Type TimeSpanType = typeof(TimeSpan);
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
             ref (Type type, string name, PropertyInfo info)[] properties,
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[] delegates)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
         {
             ushort i = 0;
             foreach (var property in properties)
             {
-                var (method, nullable, code, isArray, index, isTimespan) = delegates[i];
+                var (method, nullable, code, isArray, index, structType) = delegates[i];
                 if (method == null)
                 {
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
-                    (method, code, isArray, isTimespan) = CreateDelegate<T>(property.info, nullable);
+                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     if (!names.TryGetValue(property.name, out index))
                     {
                         index = ushort.MaxValue;
@@ -63,14 +65,14 @@ namespace Norm
                     {
                         continue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index, isTimespan);
+                    delegates[i] = (method, nullable, code, isArray, index, structType);
                 }
                 i++;
                 if (index == ushort.MaxValue)
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, isTimespan);
+                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
                 used.Add(index);
             }
             return instance;
@@ -99,7 +101,7 @@ namespace Norm
             return result;
         }
 
-        private static (Delegate method, TypeCode code, bool isArray, bool isTimespan) CreateDelegate<T>(PropertyInfo property, bool nullable)
+        private static (Delegate method, TypeCode code, bool isArray, StructType structType) CreateDelegate<T>(PropertyInfo property, bool nullable)
         {
             TypeCode code;
             bool isArray;
@@ -109,38 +111,52 @@ namespace Norm
                 isArray = true;
                 var elementType = type.GetElementType();
                 code = Type.GetTypeCode(elementType);
-                if (code == TypeCode.Object && elementType == TimeSpanType)
+                if (code == TypeCode.Object)
                 {
-                    return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, true);
+                    if (elementType == TimeSpanType)
+                    {
+                        return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, StructType.TimeSpan);
+                    }
+                    if (elementType == DateTimeOffsetType)
+                    {
+                        return (CreateDelegateValue<T, DateTimeOffset[]>(property), code, isArray, StructType.DateTimeOffset);
+                    }
                 }
             }
             else
             {
                 isArray = false;
                 code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
-                if (code == TypeCode.Object && (type == TimeSpanType || type.GenericTypeArguments[0] == TimeSpanType))
+                if (code == TypeCode.Object)
                 {
-                    return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, true);
+                    if (type == TimeSpanType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == TimeSpanType))
+                    {
+                        return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, StructType.TimeSpan);
+                    }
+                    if (type == DateTimeOffsetType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == DateTimeOffsetType))
+                    {
+                        return (CreateDelegateStruct<T, DateTimeOffset>(property, nullable), code, isArray, StructType.DateTimeOffset);
+                    }
                 }
             }
 
             return code switch
             {
-                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray, false),
-                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray, false),
-                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray, false),
-                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray, false),
-                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray, false),
-                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray, false),
-                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray, false),
-                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray, false),
-                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray, false),
-                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray, false),
-                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray, false),
-                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray, false),
-                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, false),
-                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, false),
-                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, false),
+                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray, StructType.None),
+                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray, StructType.None),
+                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray, StructType.None),
+                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray, StructType.None),
+                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray, StructType.None),
+                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, StructType.None),
                 _ => throw new NotImplementedException($"TypeCode {code} not implemented"),
             };
         }
@@ -157,15 +173,47 @@ namespace Norm
                 Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
         }
 
-        private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, bool isTimespan)
+        private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, StructType structType)
         {
-            if (isTimespan)
+            if (structType == StructType.TimeSpan)
             {
                 if (isArray)
                 {
                     InvokeSetValue<T, TimeSpan[]>(method, instance, value);
                 }
                 else InvokeSetStruct<T, TimeSpan>(method, nullable, instance, value);
+            }
+            if (structType == StructType.DateTimeOffset)
+            {
+                if (isArray)
+                {
+                    DateTime[] values = (DateTime[])value;
+                    DateTimeOffset[] result = new DateTimeOffset[values.Length];
+                    short idx = 0;
+                    foreach(var dt in values)
+                    {
+                        result[idx++] = new DateTimeOffset(dt);
+                    }
+                    InvokeSetValue<T, DateTimeOffset[]>(method, instance, result);
+                }
+                else
+                {
+                    if (nullable)
+                    {
+                        if (value == null)
+                        {
+                            ((Action<T, DateTimeOffset?>)method).Invoke(instance, null);
+                        }
+                        else
+                        {
+                            ((Action<T, DateTimeOffset?>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                        }
+                    }
+                    else
+                    {
+                        ((Action<T, DateTimeOffset>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                    }
+                }
             }
             switch (code)
             {

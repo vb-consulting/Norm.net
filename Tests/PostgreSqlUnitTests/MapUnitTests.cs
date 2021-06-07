@@ -272,19 +272,6 @@ namespace PostgreSqlUnitTests
             Assert.Null(result1[1].LockoutEnd);
             Assert.Equal(new DateTime(1979, 5, 19), result1[2].LockoutEnd);
 
-            // Try to map DateTimeRecordOffset
-            var result2 = connection.Read<DateTimeRecordOffset>(@"
-                            select *
-                            from (
-                            values 
-                                ('1977-05-19'::timestamp),
-                                (null),
-                                ('1979-05-19'::timestamp)
-                            ) t(lock_out_end)");
-
-            // should yield not implemented exception
-            Assert.Throws<NotImplementedException>(() => result2.ToList());
-
             // Map to DateTimeRecordOffset by using Select projection from DateTime? value
             var result3 = connection.Read<DateTime?>(@"
                             select *

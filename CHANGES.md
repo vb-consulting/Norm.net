@@ -1,10 +1,15 @@
 # Version history
 
-## 3.2.1
+## 3.3.0
 
 - Internal improvement: separated overload methods into separate files by using partials for easier maintenance.
 
-- 
+- Fix race condition bug that raises index out of bounds that occurred when mapping in the parallel same class on different queries.
+
+This bug fix required a redesign of the entire mapping mechanism which is now slightly optimized and uses less cache.
+
+
+
 
 ## 3.2.0
 

@@ -78,6 +78,7 @@ namespace Norm
         }
 
         private static Type TimeSpanType = typeof(TimeSpan);
+        private static Type DateTimeOffsetType = typeof(DateTimeOffset);
 
         internal static (Type type, bool simple, bool valueTuple) GetMetadata()
         {
@@ -102,7 +103,8 @@ namespace Norm
                 {
                     var elementType = type.GetElementType();
                     code = Type.GetTypeCode(elementType);
-                    if (code == TypeCode.Object && elementType == TimeSpanType)
+                    if ( (code == TypeCode.Object && elementType == TimeSpanType) 
+                        || (code == TypeCode.Object && elementType == DateTimeOffsetType) )
                     {
                         return simple;
                     }
@@ -116,7 +118,8 @@ namespace Norm
                             return metadata = (type, true, true);
                         }
                         code = Type.GetTypeCode(type.GenericTypeArguments[0]);
-                        if (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType)
+                        if ( (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType) 
+                            || (code == TypeCode.Object && type.GenericTypeArguments[0] == DateTimeOffsetType) )
                         {
                             return metadata = simple;
                         }
@@ -124,7 +127,8 @@ namespace Norm
                     else
                     {
                         code = Type.GetTypeCode(type);
-                        if (code == TypeCode.Object && type == TimeSpanType)
+                        if ( (code == TypeCode.Object && type == TimeSpanType)
+                            || (code == TypeCode.Object && type == DateTimeOffsetType) )
                         {
                             return metadata = simple;
                         }

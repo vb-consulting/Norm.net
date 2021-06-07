@@ -339,5 +339,76 @@ namespace PostgreSqlUnitTests
 
             Assert.Equal(new TimeSpan[] { TimeSpan.FromDays(1), TimeSpan.FromDays(2) }, t.IntervalArray);
         }
+
+
+        class OffsetTestClass
+        {
+            public DateTimeOffset Offset { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
+
+        [Fact]
+        public void Test_DateTimeOffsetType_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<OffsetTestClass>(@"select ""Offset"", ""Offset"" as Timestamp
+                            from(
+                            values
+                                ('1977-05-19'::timestamp),
+                                ('1978-05-19'::timestamp),
+                                ('1979-05-19'::timestamp)
+                            ) t(""Offset"")").ToList();
+
+            Assert.Equal(new DateTimeOffset(new DateTime(1977, 5, 19)), result[0].Offset);
+            Assert.Equal(new DateTimeOffset(new DateTime(1978, 5, 19)), result[1].Offset);
+            Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result[2].Offset);
+
+            Assert.Equal(new DateTime(1977, 5, 19), result[0].Timestamp);
+            Assert.Equal(new DateTime(1978, 5, 19), result[1].Timestamp);
+            Assert.Equal(new DateTime(1979, 5, 19), result[2].Timestamp);
+        }
+
+        class OffsetTestClassNullable
+        {
+            public DateTimeOffset? Offset { get; set; }
+            public DateTime? Timestamp { get; set; }
+        }
+
+        [Fact]
+        public void Test_DateTimeOffsetNullableType_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<OffsetTestClassNullable>(@"select ""Offset"", ""Offset"" as Timestamp
+                            from(
+                            values
+                                ('1977-05-19'::timestamp),
+                                (null),
+                                ('1979-05-19'::timestamp)
+                            ) t(""Offset"")").ToList();
+
+            Assert.Equal(new DateTimeOffset(new DateTime(1977, 5, 19)), result[0].Offset);
+            Assert.Null(result[1].Offset);
+            Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result[2].Offset);
+
+            Assert.Equal(new DateTime(1977, 5, 19), result[0].Timestamp);
+            Assert.Null(result[1].Timestamp);
+            Assert.Equal(new DateTime(1979, 5, 19), result[2].Timestamp);
+        }
+
+        class OffsetArrayClass
+        {
+            public DateTimeOffset[] OffsetArray { get; set; }
+        }
+
+        [Fact]
+        public void Test_DateTimeOffset_Array_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<OffsetArrayClass>(@"select ARRAY['1977-05-19'::timestamp, '1978-05-19'::timestamp, '1979-05-19'::timestamp] as offset_array").ToList();
+
+            Assert.Equal(new DateTimeOffset(new DateTime(1977, 5, 19)), result[0].OffsetArray[0]);
+            Assert.Equal(new DateTimeOffset(new DateTime(1978, 5, 19)), result[0].OffsetArray[1]);
+            Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result[0].OffsetArray[2]);
+        }
     }
 }

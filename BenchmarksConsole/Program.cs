@@ -3,6 +3,7 @@ using Npgsql;
 using PostgreSqlUnitTests;
 using BenchmarksConsole;
 
+
 using var fixture = new PostgreSqlFixture();
 using var connection = new NpgsqlConnection(fixture.ConnectionString);
 connection.Open();
@@ -19,6 +20,12 @@ new DapperBufferedQueryTests(connection).RunAsync().GetAwaiter().GetResult();
 new NormReadTests(connection).RunAsync().GetAwaiter().GetResult();
 new NormReadValuesTests(connection).RunAsync().GetAwaiter().GetResult();
 new IterationBenchmarks(connection).RunAsync().GetAwaiter().GetResult();
+
+class TestClass
+{
+    public DateTimeOffset Offset { get; set; }
+    public DateTime Timestamp { get; set; }
+}
 
 public class PocoClass
 {

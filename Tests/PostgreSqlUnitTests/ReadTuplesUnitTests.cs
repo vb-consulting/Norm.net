@@ -418,12 +418,94 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public async Task ReadAsync_Regression_Issue1_NamedTuples()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var q = @"
+            select * from (
+            values 
+                ('foo1', interval '1 days', interval '2 days', 'bar1', true),
+                ('foo2', null, null, 'bar2', false)
+            ) t(foo, interval1, interval2, bar, bool)
+            ";
+            var t = await connection.ReadAsync<(string s1, TimeSpan? ts1, TimeSpan? ts2, string s2, bool b)>(q).ToListAsync();
+
+            Assert.Equal("foo1", t[0].s1);
+            Assert.Equal(TimeSpan.FromDays(1), t[0].ts1);
+            Assert.Equal(TimeSpan.FromDays(2), t[0].ts2);
+            Assert.Equal("bar1", t[0].s2);
+            Assert.True(t[0].b);
+
+            Assert.Equal("foo2", t[1].s1);
+            Assert.Null(t[1].ts1);
+            Assert.Null(t[1].ts2);
+            Assert.Equal("bar2", t[1].s2);
+            Assert.False(t[1].b);
+        }
+
+        [Fact]
+        public void Read_Regression_Issue1_NamedTuples()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var q = @"
+            select * from (
+            values 
+                ('foo1', interval '1 days', interval '2 days', 'bar1', true),
+                ('foo2', null, null, 'bar2', false)
+            ) t(foo, interval1, interval2, bar, bool)
+            ";
+            var t = connection.Read<(string s1, TimeSpan? ts1, TimeSpan? ts2, string s2, bool b)>(q).ToList();
+
+            Assert.Equal("foo1", t[0].s1);
+            Assert.Equal(TimeSpan.FromDays(1), t[0].ts1);
+            Assert.Equal(TimeSpan.FromDays(2), t[0].ts2);
+            Assert.Equal("bar1", t[0].s2);
+            Assert.True(t[0].b);
+
+            Assert.Equal("foo2", t[1].s1);
+            Assert.Null(t[1].ts1);
+            Assert.Null(t[1].ts2);
+            Assert.Equal("bar2", t[1].s2);
+            Assert.False(t[1].b);
+        }
+
+        [Fact]
         public async Task ReadAsync_Regression_Issue1_Array()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var t = await connection.ReadAsync<TimeSpan[]>("select ARRAY[interval '1 days', interval '2 days']").SingleAsync();
 
             Assert.Equal(new TimeSpan[] { TimeSpan.FromDays(1), TimeSpan.FromDays(2) }, t);
+        }
+
+        [Fact]
+        public void Test_DateTimeOffsetType_Tuples_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            // DateTimeOffset type is not supported type for tuples
+            Assert.Throws<InvalidCastException>(() => connection.Read<DateTimeOffset, DateTime>(@"select ""Offset"", ""Offset"" as Timestamp
+                            from(
+                            values
+                                ('1977-05-19'::timestamp),
+                                ('1978-05-19'::timestamp),
+                                ('1979-05-19'::timestamp)
+                            ) t(""Offset"")").ToList());
+        }
+
+        [Fact]
+        public void Test_DateTimeOffsetType_ValueTuples_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            // DateTimeOffset type is not supported type for named tuples
+            Assert.Throws<ArgumentException>(() => connection.Read<(DateTimeOffset dto, DateTime dt)>(@"select ""Offset"", ""Offset"" as Timestamp
+                            from(
+                            values
+                                ('1977-05-19'::timestamp),
+                                ('1978-05-19'::timestamp),
+                                ('1979-05-19'::timestamp)
+                            ) t(""Offset"")").ToList());
         }
     }
 }

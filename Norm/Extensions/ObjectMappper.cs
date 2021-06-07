@@ -11,7 +11,7 @@ namespace Norm
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
             var props = TypeCache<T>.GetProperties(type1);
             Dictionary<string, ushort> names = null; 
-            var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props.Length];
+            var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -32,8 +32,8 @@ namespace Norm
             var props1 = TypeCache<T1>.GetProperties(type1);
             var props2 = TypeCache<T2>.GetProperties(type2);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -62,9 +62,9 @@ namespace Norm
             var props2 = TypeCache<T2>.GetProperties(type2);
             var props3 = TypeCache<T3>.GetProperties(type3);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -98,10 +98,10 @@ namespace Norm
             var props3 = TypeCache<T3>.GetProperties(type3);
             var props4 = TypeCache<T4>.GetProperties(type4);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -140,11 +140,11 @@ namespace Norm
             var props4 = TypeCache<T4>.GetProperties(type4);
             var props5 = TypeCache<T5>.GetProperties(type5);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -187,12 +187,12 @@ namespace Norm
             var props5 = TypeCache<T5>.GetProperties(type5);
             var props6 = TypeCache<T6>.GetProperties(type6);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -240,13 +240,13 @@ namespace Norm
             var props6 = TypeCache<T6>.GetProperties(type6);
             var props7 = TypeCache<T7>.GetProperties(type7);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -299,14 +299,14 @@ namespace Norm
             var props7 = TypeCache<T7>.GetProperties(type7);
             var props8 = TypeCache<T8>.GetProperties(type8);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -364,15 +364,15 @@ namespace Norm
             var props8 = TypeCache<T8>.GetProperties(type8);
             var props9 = TypeCache<T9>.GetProperties(type9);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -435,16 +435,16 @@ namespace Norm
             var props9 = TypeCache<T9>.GetProperties(type9);
             var props10 = TypeCache<T10>.GetProperties(type10);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -512,17 +512,17 @@ namespace Norm
             var props10 = TypeCache<T10>.GetProperties(type10);
             var props11 = TypeCache<T11>.GetProperties(type11);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props11.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
+            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props11.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -595,18 +595,18 @@ namespace Norm
             var props11 = TypeCache<T11>.GetProperties(type11);
             var props12 = TypeCache<T12>.GetProperties(type12);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props10.Length];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props11.Length];
-            var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, bool isTimespan)[props12.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
+            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props11.Length];
+            var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props12.Length];
             foreach (var t in tuples)
             {
                 if (names == null)
