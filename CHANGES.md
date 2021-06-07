@@ -2,13 +2,26 @@
 
 ## 3.3.0
 
-- Internal improvement: separated overload methods into separate files by using partials for easier maintenance.
+### Internal improvement
 
-- Fix race condition bug that raises index out of bounds that occurred when mapping in the parallel same class on different queries.
+Separated overload methods into separate files by using partials for easier maintenance.
 
-This bug fix required a redesign of the entire mapping mechanism which is now slightly optimized and uses less cache.
+### Fixed very rare race condition bug that raised an index out of bounds exception when mapping in parallel same class to different queries.
 
+This bug fix required a redesign of the entire mapping mechanism which is now even more optimized and uses even less memory cache. Benchmarks coming soon.
 
+Following [unit test] demonstrates the bug condition. 
+
+## Added support fof the `DateTimeOffset` type. 
+
+You can map your database datetime types to `DateTimeOffset` type properly. See the following unit tests:
+
+- [Test_DateTimeOffsetType_Sync](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/QueryUnitTests.cs#L351) - map a class with a `DateTimeOffset` type
+- [Test_DateTimeOffsetNullableType_Sync](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/QueryUnitTests.cs#L378) - map a class with a nullable `DateTimeOffset` type
+- [Test_DateTimeOffset_Array_Sync](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/QueryUnitTests.cs#L404) - map an array field of the `DateTimeOffset` type
+
+Note:
+ `DateTimeOffset` is not supported for when mapping tupleas and named tuples. See [here](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/ReadTuplesUnitTests.cs#L484) and [here](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/ReadTuplesUnitTests.cs#L498). Reason is that it would have big impact on mapping mechanism in terms of perfomances. If you still want to use `DateTimeOffset` tuples with Norm, please map to the DateTime first and use `Select` to re-map into something else, like  `DateTimeOffset`. See example [here](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/MapUnitTests.cs#L293). `Select` method provides an additional mapping logic without any perfomance impact.
 
 
 ## 3.2.0
