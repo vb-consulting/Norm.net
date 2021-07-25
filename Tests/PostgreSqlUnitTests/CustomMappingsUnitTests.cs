@@ -98,7 +98,7 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
             connection.Execute(@"create extension if not exists ""uuid-ossp""");
-              
+
             var result = connection
                 .Read(@"select 
                     uuid_generate_v4() id1,
@@ -134,5 +134,154 @@ namespace PostgreSqlUnitTests
             Assert.Equal(result.GuidId14.ToString(), result.StringId14);
         }
 
+        class CustomMapTestClass
+        {
+            public string Str1 { get; set; }
+            public Guid Guid1 { get; set; }
+            public string Str2 { get; set; }
+            public Guid Guid2 { get; set; }
+        }
+
+        [Fact]
+        public void Test_Custom_Mapping_Tuples_Handler()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            SqlMapper.AddTypeByTuples(row => new CustomMapTestClass
+            {
+                Str1 = row.First(r => r.name == "id1").value.ToString(),
+                Guid1 = (Guid)row.First(r => r.name == "id1").value,
+                Str2 = row.First(r => r.name == "id2").value.ToString(),
+                Guid2 = (Guid)row.First(r => r.name == "id2").value
+            });
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+            var result = connection
+                .Read<CustomMapTestClass>("select uuid_generate_v4() id1, uuid_generate_v4() id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(result[0].Guid1.ToString(), result[0].Str1);
+            Assert.Equal(result[0].Guid2.ToString(), result[0].Str2);
+        }
+
+        [Fact]
+        public void Test_Custom_Mapping_Values_Handler()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            SqlMapper.AddTypeByValues(row => new CustomMapTestClass
+            {
+                Str1 = row[0].ToString(),
+                Guid1 = (Guid)row[0],
+                Str2 = row[1].ToString(),
+                Guid2 = (Guid)row[1]
+            });
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+            var result = connection
+                .Read<CustomMapTestClass>("select uuid_generate_v4() id1, uuid_generate_v4() id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(result[0].Guid1.ToString(), result[0].Str1);
+            Assert.Equal(result[0].Guid2.ToString(), result[0].Str2);
+        }
+
+        [Fact]
+        public void Test_Custom_Mapping_Dict_Handler()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            SqlMapper.AddTypeByDict(row => new CustomMapTestClass
+            {
+                Str1 = row["id1"].ToString(),
+                Guid1 = (Guid)row["id1"],
+                Str2 = row["id2"].ToString(),
+                Guid2 = (Guid)row["id2"]
+            });
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+            var result = connection
+                .Read<CustomMapTestClass>("select uuid_generate_v4() id1, uuid_generate_v4() id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(result[0].Guid1.ToString(), result[0].Str1);
+            Assert.Equal(result[0].Guid2.ToString(), result[0].Str2);
+        }
+
+        class GuidClass
+        {
+            public Guid Id1 { get; set; }
+            public Guid Id2 { get; set; }
+        }
+
+        [Fact]
+        public void Test_Guids_Mapping()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+
+            var result = connection
+                .Read<GuidClass>("select '2f5814c8-94a5-43ca-9436-573df999bb50'::uuid id1, '73fe0dfe-05a2-479b-adda-31e7d662b677'::uuid id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(new Guid("2f5814c8-94a5-43ca-9436-573df999bb50"), result[0].Id1);
+            Assert.Equal(new Guid("73fe0dfe-05a2-479b-adda-31e7d662b677"), result[0].Id2);
+        }
+
+        class GuidArrayClass
+        {
+            public Guid[] Guids { get; set; }
+        }
+
+        [Fact]
+        public void Test_Guids_Array_Mapping()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+
+            var result = connection
+                .Read<GuidArrayClass>("select array['2f5814c8-94a5-43ca-9436-573df999bb50'::uuid, '73fe0dfe-05a2-479b-adda-31e7d662b677'::uuid] guids")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(2, result[0].Guids.Length);
+            Assert.Equal(new Guid("2f5814c8-94a5-43ca-9436-573df999bb50"), result[0].Guids[0]);
+            Assert.Equal(new Guid("73fe0dfe-05a2-479b-adda-31e7d662b677"), result[0].Guids[1]);
+        }
+
+        [Fact]
+        public void Test_Guids_Mapping_Tuple_Values()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+
+            var result = connection
+                .Read<Guid, Guid>("select '2f5814c8-94a5-43ca-9436-573df999bb50'::uuid id1, '73fe0dfe-05a2-479b-adda-31e7d662b677'::uuid id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(new Guid("2f5814c8-94a5-43ca-9436-573df999bb50"), result[0].Item1);
+            Assert.Equal(new Guid("73fe0dfe-05a2-479b-adda-31e7d662b677"), result[0].Item2);
+        }
+
+        [Fact]
+        public void Test_Guids_Mapping_Named_Tuple_Values()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+
+            var result = connection
+                .Read<(Guid id1, Guid id2)>("select '2f5814c8-94a5-43ca-9436-573df999bb50'::uuid id1, '73fe0dfe-05a2-479b-adda-31e7d662b677'::uuid id2")
+                .ToList();
+
+            Assert.Single(result);
+            Assert.Equal(new Guid("2f5814c8-94a5-43ca-9436-573df999bb50"), result[0].id1);
+            Assert.Equal(new Guid("73fe0dfe-05a2-479b-adda-31e7d662b677"), result[0].id2);
+        }
     }
 }

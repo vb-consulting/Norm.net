@@ -9,7 +9,8 @@ namespace Norm
     {
         private static Type TimeSpanType = typeof(TimeSpan);
         private static Type DateTimeOffsetType = typeof(DateTimeOffset);
-        private enum StructType { None, TimeSpan, DateTimeOffset }
+        private static Type GuidType = typeof(Guid);
+        private enum StructType { None, TimeSpan, DateTimeOffset, Guid }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
             ref (Type type, string name, PropertyInfo info)[] properties,
@@ -117,6 +118,10 @@ namespace Norm
                     {
                         return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, StructType.TimeSpan);
                     }
+                    if (elementType == GuidType)
+                    {
+                        return (CreateDelegateValue<T, Guid[]>(property), code, isArray, StructType.Guid);
+                    }
                     if (elementType == DateTimeOffsetType)
                     {
                         return (CreateDelegateValue<T, DateTimeOffset[]>(property), code, isArray, StructType.DateTimeOffset);
@@ -132,6 +137,10 @@ namespace Norm
                     if (type == TimeSpanType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == TimeSpanType))
                     {
                         return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, StructType.TimeSpan);
+                    }
+                    if (type == GuidType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == GuidType))
+                    {
+                        return (CreateDelegateStruct<T, Guid>(property, nullable), code, isArray, StructType.Guid);
                     }
                     if (type == DateTimeOffsetType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == DateTimeOffsetType))
                     {
@@ -182,6 +191,14 @@ namespace Norm
                     InvokeSetValue<T, TimeSpan[]>(method, instance, value);
                 }
                 else InvokeSetStruct<T, TimeSpan>(method, nullable, instance, value);
+            }
+            if (structType == StructType.Guid)
+            {
+                if (isArray)
+                {
+                    InvokeSetValue<T, Guid[]>(method, instance, value);
+                }
+                else InvokeSetStruct<T, Guid>(method, nullable, instance, value);
             }
             if (structType == StructType.DateTimeOffset)
             {

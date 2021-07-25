@@ -1,5 +1,104 @@
 # Version history
 
+## 3.3.1
+
+### Native `Guid` type mapping.
+
+Native mapping for all types that generate `Guid` type on data reader is now properly mapped.
+
+This applies to classes, records, value types, and named types.
+
+Mapping of PostgreSQL UUID Arrays to `Guid[]` type is also supported, only for classes and records. 
+
+### Global mapping handlers
+
+It's now possible to define global mappings for certain class/record types.
+
+New static class `SqlMapper` in `Norm` namespace defines four methods for global mapping:
+
+```csharp
+namespace Norm
+{
+    public static class SqlMapper
+    {
+        /// <summary>
+        /// Define global custom mapping for class type by defining a row handler with name and value tuple array.
+        /// </summary>
+        /// <typeparam name="T">Class type that will register for custom mapping.</typeparam>
+        /// <param name="handler">Function handler that sends a name and value tuple array as aparameter for each row.</param>
+        public static void AddTypeByTuples<T>(Func<(string name, object value)[], T> handler) where T : class { ... }
+
+        /// <summary>
+        /// Define global custom mapping for class type by defining a row handler with value array.
+        /// </summary>
+        /// <typeparam name="T">Class type that will register for custom mapping.</typeparam>
+        /// <param name="handler">Function handler that sends a value array as aparameter for each row.</param>
+        public static void AddTypeByValues<T>(Func<object[], T> handler) where T : class { ... }
+
+        /// <summary>
+        /// Define global custom mapping for class type by defining a row handler with dictionary of names and values.
+        /// </summary>
+        /// <typeparam name="T">Class type that will register for custom mapping.</typeparam>
+        /// <param name="handler">Function handler that sends a dictionary of names and values as aparameter for each row.</param>
+        public static void AddTypeByDict<T>(Func<IDictionary<string, object>, T> handler) where T : class { ... }
+    }
+}
+
+```
+
+For example, if we have a query that returns two GUIDs (id1, and id2) and we want to map to the class that has four fields, one string and one Guid for each value:
+
+```csharp
+class CustomMapTestClass
+{
+    public string Str1 { get; set; }
+    public Guid Guid1 { get; set; }
+    public string Str2 { get; set; }
+    public Guid Guid2 { get; set; }
+}
+```
+
+To register this class for global custom mapping:
+
+```csharp
+// add global mapper by using name and value tuples array:
+SqlMapper.AddTypeByTuples(row => new CustomMapTestClass
+{
+    Str1 = row.First(r => r.name == "id1").value.ToString(),
+    Guid1 = (Guid)row.First(r => r.name == "id1").value,
+    Str2 = row.First(r => r.name == "id2").value.ToString(),
+    Guid2 = (Guid)row.First(r => r.name == "id2").value
+});
+
+// add global mapper by using values array:
+SqlMapper.AddTypeByValues(row => new CustomMapTestClass
+{
+    Str1 = row[0].ToString(),
+    Guid1 = (Guid)row[0],
+    Str2 = row[1].ToString(),
+    Guid2 = (Guid)row[1]
+});
+
+// add global mapper by using dictionary of names and values:
+SqlMapper.AddTypeByDict(row => new CustomMapTestClass
+{
+    Str1 = row["id1"].ToString(),
+    Guid1 = (Guid)row["id1"],
+    Str2 = row["id2"].ToString(),
+    Guid2 = (Guid)row["id2"]
+});
+```
+
+Each time we try to map to this registered type, this global mapper will be used: `connection.Read<CustomMapTestClass>("select uuid_generate_v4() id1, uuid_generate_v4() id2").ToList();`.
+
+**Important notes on this implementation:**
+
+- `SqlMapper` static methods are not thread-safe. They are supposed to be called once on program startup.
+- Multiple mappings on the same type will not throw any error or exception. Last registered mapping will be used. But, don't do that, it's stupid.
+- Only classes and record mappings are supported. There is a generic constraint preventing you to do this on named tuples.
+- Mappings on multiple classes are not supported because of performances impact reasons. For example mapping `connection.Read<Class1, Class2>(query).ToList();` will not use global mapping handler and will fall back to default mapping.
+- There is also a custom mapping technique that doesn't require global registration and relays on static extensions. See this example here: [https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/CustomMappingsUnitTests.cs#L96](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/CustomMappingsUnitTests.cs#L96)
+
 ## 3.3.0
 
 ### Internal improvement

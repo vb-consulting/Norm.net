@@ -27,8 +27,12 @@ namespace Norm
            });
 
         private static readonly object valueTupleCtorInfoLocker = new object();
-        private static (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) 
+        private static (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen)
             ValueTupleCtorInfo = default;
+
+        internal static Func<(string name, object value)[], T> CustomMapTuples { get; set; }
+        internal static Func<object[], T> CustomMapValues { get; set; }
+        internal static Func<IDictionary<string, object>, T> CustomMapDict { get; set; }
 
         public static (Type type, string name, PropertyInfo info)[] GetProperties(Type type)
         {
@@ -78,6 +82,7 @@ namespace Norm
         }
 
         private static Type TimeSpanType = typeof(TimeSpan);
+        private static Type GuidType = typeof(Guid);
         private static Type DateTimeOffsetType = typeof(DateTimeOffset);
 
         internal static (Type type, bool simple, bool valueTuple) GetMetadata()
@@ -103,7 +108,8 @@ namespace Norm
                 {
                     var elementType = type.GetElementType();
                     code = Type.GetTypeCode(elementType);
-                    if ( (code == TypeCode.Object && elementType == TimeSpanType) 
+                    if ( (code == TypeCode.Object && elementType == TimeSpanType)
+                        || (code == TypeCode.Object && elementType == GuidType)
                         || (code == TypeCode.Object && elementType == DateTimeOffsetType) )
                     {
                         return simple;
@@ -118,7 +124,8 @@ namespace Norm
                             return metadata = (type, true, true);
                         }
                         code = Type.GetTypeCode(type.GenericTypeArguments[0]);
-                        if ( (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType) 
+                        if ( (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType)
+                            || (code == TypeCode.Object && type.GenericTypeArguments[0] == GuidType)
                             || (code == TypeCode.Object && type.GenericTypeArguments[0] == DateTimeOffsetType) )
                         {
                             return metadata = simple;
@@ -128,6 +135,7 @@ namespace Norm
                     {
                         code = Type.GetTypeCode(type);
                         if ( (code == TypeCode.Object && type == TimeSpanType)
+                            || (code == TypeCode.Object && type == GuidType)
                             || (code == TypeCode.Object && type == DateTimeOffsetType) )
                         {
                             return metadata = simple;

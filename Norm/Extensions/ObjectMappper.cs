@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Norm
 {
@@ -8,18 +9,42 @@ namespace Norm
         internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, 
             Type type1)
         {
-            var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
-            var props = TypeCache<T>.GetProperties(type1);
-            Dictionary<string, ushort> names = null; 
-            var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props.Length];
-            foreach (var t in tuples)
+            if (TypeCache<T>.CustomMapTuples != null)
             {
-                if (names == null)
+                foreach (var t in tuples)
                 {
-                    names = GetNamesDictFromTuple(t);
+                    yield return TypeCache<T>.CustomMapTuples(t);
                 }
-                var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                yield return t.MapInstance(ref props, ref i1, ref names, ref delegates);
+            }
+            else if (TypeCache<T>.CustomMapValues != null)
+            {
+                foreach (var t in tuples)
+                {
+                    yield return TypeCache<T>.CustomMapValues(t.Select(r => r.value).ToArray());
+                }
+            }
+            else if (TypeCache<T>.CustomMapDict != null)
+            {
+                foreach (var t in tuples)
+                {
+                    yield return TypeCache<T>.CustomMapDict(t.ToDictionary(r => r.name, r => r.value));
+                }
+            }
+            else
+            {
+                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+                var props = TypeCache<T>.GetProperties(type1);
+                Dictionary<string, ushort> names = null;
+                var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props.Length];
+                foreach (var t in tuples)
+                {
+                    if (names == null)
+                    {
+                        names = GetNamesDictFromTuple(t);
+                    }
+                    var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                    yield return t.MapInstance(ref props, ref i1, ref names, ref delegates);
+                }
             }
         }
 
