@@ -1,4 +1,94 @@
-# Version history
+# Version history and release notes
+
+## 3.3.2
+
+Added an ability to pass a standard POCO object as a parameter and parse each property as a named parameter by the property name.
+
+For example:
+
+```csharp
+ class PocoClassParams
+ {
+     public string StrValue { get; set; } = "str";
+     public int IntValue { get; set; } = 999;
+     public bool BoolValue { get; set; } = true;
+     public DateTime DateTimeValue { get; set; } = new DateTime(1977, 5, 19);
+     public string NullValue { get; set; } = null;
+ }
+
+//...
+
+using var connection = new NpgsqlConnection(fixture.ConnectionString);
+var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+        "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", new PocoClassParams())
+    .Single();
+
+Assert.Equal("str", s);
+Assert.Equal(999, i);
+Assert.True(b);
+Assert.Equal(new DateTime(1977, 5, 19), d);
+Assert.Null(@null);
+```
+
+In this example, there is only one parameter passed to a `Read` method command.
+
+Each property is parsed as an actual database parameter by name correctly to the following parameters:`@StrValue`, `@IntValue`, `@BoolValue`, `@DateTimeValue`, `@NullValue` respectively.
+
+This is a requested feature because there are many situations when parameters that we need to send to a command are already in some type of object instance, like web requests, and similar. In that situation, previously we would pass each parameter individually. So, now, we can simply pass an object instance.
+
+We can also mix this approach with positional parameters. For example:
+
+```csharp
+ class PocoClassParams
+ {
+     public string StrValue { get; set; } = "str";
+     public int IntValue { get; set; } = 999;
+     public bool BoolValue { get; set; } = true;
+     public DateTime DateTimeValue { get; set; } = new DateTime(1977, 5, 19);
+     public string NullValue { get; set; } = null;
+ }
+
+//...
+
+var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
+        "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
+        new PocoClassParams(), "pos1")
+    .Single();
+
+Assert.Equal("str", s);
+Assert.Equal(999, i);
+Assert.True(b);
+Assert.Equal(new DateTime(1977, 5, 19), d);
+Assert.Null(@null);
+Assert.Equal("pos1", p1);
+```
+
+The first parameter is a class instance that has 5 properties and each property is mapped by name, and the second parameter is a string literal which is mapped by the position.
+
+In the case of positional the parameters, name of the parameter (in this case `@pos1`) is irrelevant since they are mapped by the position, not by name.
+
+The parser will first add parameters from the class instance, and what is left is mapped by the position.
+That means that if we place positional parameter first, it will work just as same:
+
+```csharp
+var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
+        "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
+        "pos1", new PocoClassParams())
+    .Single();
+```
+
+Also, we can mix this approach with the actual database parameters, for example:
+
+```csharp
+var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
+        "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
+        new NpgsqlParameter("pos1", "pos1"), new PocoClassParams())
+    .Single();
+```
+
+In this case, all parameters were mapped by name, not by position.
+
+Parameters from the object instance by property name, and the parameter from database parameter by parameter name.
 
 ## 3.3.1
 

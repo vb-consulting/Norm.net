@@ -14,7 +14,7 @@ namespace Norm
         public NormPositionalParametersWithStoredProcedureException() : 
             base("Cannot use positional parameters that are not DbParameter type with command type StoredProcedure. Use named parameters instead.") { }
     }
-
+    
     public class NormValueTupleTooLongException : NormException
     {
         public NormValueTupleTooLongException() :

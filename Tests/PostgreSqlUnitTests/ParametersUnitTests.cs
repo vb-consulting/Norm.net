@@ -225,5 +225,165 @@ namespace PostgreSqlUnitTests
             Assert.Equal(2, result[1]);
             Assert.Equal(3, result[2]);
         }
+
+        class PocoClassParams
+        {
+            public string StrValue { get; set; } = "str";
+            public int IntValue { get; set; } = 999;
+            public bool BoolValue { get; set; } = true;
+            public DateTime DateTimeValue { get; set; } = new DateTime(1977, 5, 19);
+            public string NullValue { get; set; } = null;
+        }
+        
+        [Fact]
+        public void PocoClassParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", new PocoClassParams())
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+        
+        [Fact]
+        public void PocoClassParams_Positional_Mixed_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
+                    new PocoClassParams(), "pos1")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+
+            string p2;
+            (s, i, b, d, @null, p1, p2) = connection.Read<string, int, bool, DateTime, string, string, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2", 
+                    new PocoClassParams(), "pos1", "pos2")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            Assert.Equal("pos2", p2);
+            
+            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
+                    new PocoClassParams(), "pos1")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            
+            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
+                    "pos1", new PocoClassParams())
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            
+            (p1, s, i, b, d, @null, p2) = connection.Read<string, string, int, bool, DateTime, string, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2", 
+                    "pos1", new PocoClassParams(), "pos2")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            Assert.Equal("pos2", p2);
+        }
+        
+                [Fact]
+        public void PocoClassParams_DbParams_Mixed_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
+                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+
+            string p2;
+            (s, i, b, d, @null, p1, p2) = connection.Read<string, int, bool, DateTime, string, string, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2", 
+                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"), new NpgsqlParameter("pos2", "pos2"))
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            Assert.Equal("pos2", p2);
+            
+            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
+                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            
+            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
+                    new NpgsqlParameter("pos1", "pos1"), new PocoClassParams())
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            
+            (p1, s, i, b, d, @null, p2) = connection.Read<string, string, int, bool, DateTime, string, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2", 
+                    new NpgsqlParameter("pos1", "pos1"), new PocoClassParams(), new NpgsqlParameter("pos2", "pos2"))
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+            Assert.Equal("pos1", p1);
+            Assert.Equal("pos2", p2);
+        }
     }
 }

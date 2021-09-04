@@ -112,7 +112,7 @@ namespace Norm
             var ctorInfo3 = TypeCache<T3>.GetValueTupleCtorInfo(type3);
             var ctorInfo4 = TypeCache<T4>.GetValueTupleCtorInfo(type4);
             var ctorInfo5 = TypeCache<T5>.GetValueTupleCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T5>.GetValueTupleCtorInfo(type6);
+            var ctorInfo6 = TypeCache<T6>.GetValueTupleCtorInfo(type6);
 
             foreach (var t in tuples)
             {

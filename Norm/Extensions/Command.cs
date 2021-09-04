@@ -55,17 +55,34 @@ namespace Norm
         {
             var command = cmd.CommandText;
             var valueList = new List<object>();
-            var nameList = new List<string>();
+            var names = new HashSet<string>(parameters.Length);
             foreach (var p in parameters)
             {
                 if (p is DbParameter dbParameter)
                 {
                     cmd.Parameters.Add(dbParameter);
-                    nameList.Add(dbParameter.ParameterName);
+                    names.Add(dbParameter.ParameterName);
                 }
                 else
                 {
-                    valueList.Add(p);
+                    if (p == null)
+                    {
+                        valueList.Add(p);
+                        continue;
+                    }
+                    var type = p.GetType();
+                    var meta = type.GetMetadata();
+                    if (meta.simple)
+                    {
+                        valueList.Add(p);
+                        continue;
+                    }
+
+                    foreach (var prop in type.GetProperties())
+                    {
+                        cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
+                        names.Add(prop.Name);
+                    }
                 }
             }
             var values = valueList.ToArray();
@@ -73,7 +90,7 @@ namespace Norm
             {
                 return cmd;
             }
-            var names = nameList.ToArray();
+
             var paramIndex = 0;
             foreach (var name in EnumerateParams(command, names).Select(t => t.name).Distinct())
             {
@@ -178,7 +195,7 @@ namespace Norm
 
         private const string ParamPrefix = "@";
 
-        private static IEnumerable<(string name, int index, int count)> EnumerateParams(string command, string[] skip = null)
+        private static IEnumerable<(string name, int index, int count)> EnumerateParams(string command, ICollection<string> skip = null)
         {
             for (var index = 0; ; index += ParamPrefix.Length)
             {
