@@ -1,5 +1,15 @@
 # Version history and release notes
 
+## 3.3.3
+
+BUGFIX
+
+MS SQL Server uses `@@` syntax for global values. For example `@@rowcount` or `@@error`.
+
+When using positional parameters in a query that uses these `@@` global variables, parser `@@` is recognized as a parameter, which is wrong.
+
+Now, all `@@` values are ignored.
+
 ## 3.3.2
 
 Added an ability to pass a standard POCO object as a parameter and parse each property as a named parameter by the property name.

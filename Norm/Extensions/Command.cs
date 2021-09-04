@@ -202,6 +202,14 @@ namespace Norm
                 index = command.IndexOf(ParamPrefix, index, StringComparison.Ordinal);
                 if (index == -1)
                     break;
+                if (index == command.Length-1)
+                    break;
+                // skip sqlservers @@ variables
+                if (command[index + 1] == '@')
+                {
+                    index += 2;
+                    continue;
+                }
                 index++;
                 var endOf = command.IndexOfAny(NonCharacters, index);
                 var name = endOf == -1 ? command[index..] : command[index..endOf];

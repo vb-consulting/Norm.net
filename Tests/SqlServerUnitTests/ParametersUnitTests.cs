@@ -127,5 +127,25 @@ namespace SqlServerUnitTests
 
             Assert.Equal("I am output value returned from procedure", p.Value);
         }
+
+        [Fact]
+        public void Positional_Parameters_When_Using_RowCount_Test()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            var (v1, v2, rc) = connection.Read<string, string, int>("select @v1, @v2, @@rowcount", "v1", "v2").Single();
+            Assert.Equal("v1", v1);
+            Assert.Equal("v2", v2);
+            Assert.Equal(0, rc);
+            
+            (rc, v1, v2) = connection.Read<int, string, string>("select @@rowcount, @v1, @v2", "v1", "v2").Single();
+            Assert.Equal("v1", v1);
+            Assert.Equal("v2", v2);
+            Assert.Equal(1, rc);
+            
+            (v1, rc, v2) = connection.Read<string, int, string>("select @v1, @@rowcount, @v2", "v1", "v2").Single();
+            Assert.Equal("v1", v1);
+            Assert.Equal("v2", v2);
+            Assert.Equal(1, rc);
+        }
     }
 }
