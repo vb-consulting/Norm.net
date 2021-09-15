@@ -51,6 +51,36 @@ namespace SqlServerUnitTests
             Assert.Equal("foo2", result2.Foo2);
             Assert.Equal("bar2", result2.Bar2);
         }
+        
+        [Fact]
+        public void MapSecond_Sync()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            using var multiple = connection.Multiple(Queires);
+
+            var next = multiple.Next();
+            var result = multiple.Read<Record2>().Single();
+            
+            Assert.True(next);
+            Assert.Equal(2, result.Id2);
+            Assert.Equal("foo2", result.Foo2);
+            Assert.Equal("bar2", result.Bar2);
+        }
+
+        [Fact]
+        public async Task MapSecond_Async()
+        {
+            await using var connection = new SqlConnection(fixture.ConnectionString);
+            using var multiple = await connection.MultipleAsync(Queires);
+
+            var next = await multiple.NextAsync();
+            var result = await multiple.ReadAsync<Record2>().SingleAsync();
+            
+            Assert.True(next);
+            Assert.Equal(2, result.Id2);
+            Assert.Equal("foo2", result.Foo2);
+            Assert.Equal("bar2", result.Bar2);
+        }
 
         [Fact]
         public void MapTwoRecords_PositionalParams_Sync()

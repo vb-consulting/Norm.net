@@ -27,6 +27,7 @@ namespace Norm
                 {
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
                     (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
+
                     if (!names.TryGetValue(property.name, out index))
                     {
                         index = ushort.MaxValue;
@@ -38,7 +39,10 @@ namespace Norm
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                if (method != null)
+                {
+                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                }
             }
             return instance;
         }
@@ -73,7 +77,10 @@ namespace Norm
                 {
                     continue;
                 }
-                InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                if (method != null)
+                {
+                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                }
                 used.Add(index);
             }
             return instance;
@@ -172,14 +179,32 @@ namespace Norm
 
         private static Delegate CreateDelegateValue<T, TProp>(PropertyInfo property)
         {
-            return Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
+            var setter = property.GetSetMethod(true);
+            if (setter == null)
+            {
+                return null;
+            }
+            if (setter.IsPrivate)
+            {
+                return null;
+            }
+            return Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
         }
 
         private static Delegate CreateDelegateStruct<T, TProp>(PropertyInfo property, bool nullable) where TProp : struct
         {
+            var setter = property.GetSetMethod(true);
+            if (setter == null)
+            {
+                return null;
+            }
+            if (setter.IsPrivate)
+            {
+                return null;
+            }
             return nullable ?
-                Delegate.CreateDelegate(typeof(Action<T, TProp?>), property.GetSetMethod(true)) :
-                Delegate.CreateDelegate(typeof(Action<T, TProp>), property.GetSetMethod(true));
+                Delegate.CreateDelegate(typeof(Action<T, TProp?>), setter) :
+                Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
         }
 
         private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, StructType structType)

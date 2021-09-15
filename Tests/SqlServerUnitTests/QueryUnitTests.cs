@@ -17,11 +17,11 @@ namespace SqlServerUnitTests
 
         class TestClass
         {
-            public int Id { get; private set; }
-            public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
-            public string Bar { get; private set; }
+            public int Id { get; set; }
+            public string Foo { get; set; }
+            public DateTime Day { get; set; }
+            public bool? Bool { get; set; }
+            public string Bar { get; set; }
         }
 
         private const string Query = @"

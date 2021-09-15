@@ -23,6 +23,24 @@ namespace PostgreSqlUnitTests
             public string Bar { get; init; }
         }
 
+        class TestClassPrivateFields
+        {
+            public int Id { get; private set; }
+            public string Foo { get; private set; }
+            public DateTime Day { get; private set; }
+            public bool? Bool { get; private set; }
+            public string Bar { get; private set; }
+        }
+
+        class TestClassSettersOnly
+        {
+            public int Id { get; }
+            public string Foo { get; }
+            public DateTime Day { get; }
+            public bool? Bool { get; }
+            public string Bar { get; }
+        }
+
         class SnakeCaseMapTestClass
         {
             public int MyId { get; init; }
@@ -34,11 +52,11 @@ namespace PostgreSqlUnitTests
 
         class ArraysTestClass
         {
-            public int[] Id { get; private set; }
-            public string[] Foo { get; private set; }
-            public DateTime[] Day { get; private set; }
-            public bool[] Bool { get; private set; }
-            public string[] Bar { get; private set; }
+            public int[] Id { get; set; }
+            public string[] Foo { get; set; }
+            public DateTime[] Day { get; set; }
+            public bool[] Bool { get; set; }
+            public string[] Bar { get; set; }
         }
 
         class TestClassChangedPosition
@@ -112,12 +130,78 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar3", result[2].Bar);
         }
 
+        private void AssertTestClassPrivateFields(IList<TestClassPrivateFields> result)
+        {
+            Assert.Equal(3, result.Count);
+
+            Assert.Equal(default, result[0].Id);
+            Assert.Equal(default, result[1].Id);
+            Assert.Equal(default, result[2].Id);
+
+            Assert.Equal(default, result[0].Foo);
+            Assert.Equal(default, result[1].Foo);
+            Assert.Equal(default, result[2].Foo);
+
+            Assert.Equal(default, result[0].Day);
+            Assert.Equal(default, result[1].Day);
+            Assert.Equal(default, result[2].Day);
+
+            Assert.Equal(default, result[0].Bool);
+            Assert.Equal(default, result[1].Bool);
+            Assert.Equal(default, result[2].Bool);
+
+            Assert.Equal(default, result[0].Bar);
+            Assert.Equal(default, result[1].Bar);
+            Assert.Equal(default, result[2].Bar);
+        }
+
+        private void AssertTestClassSettersOnly(IList<TestClassSettersOnly> result)
+        {
+            Assert.Equal(3, result.Count);
+
+            Assert.Equal(default, result[0].Id);
+            Assert.Equal(default, result[1].Id);
+            Assert.Equal(default, result[2].Id);
+
+            Assert.Equal(default, result[0].Foo);
+            Assert.Equal(default, result[1].Foo);
+            Assert.Equal(default, result[2].Foo);
+
+            Assert.Equal(default, result[0].Day);
+            Assert.Equal(default, result[1].Day);
+            Assert.Equal(default, result[2].Day);
+
+            Assert.Equal(default, result[0].Bool);
+            Assert.Equal(default, result[1].Bool);
+            Assert.Equal(default, result[2].Bool);
+
+            Assert.Equal(default, result[0].Bar);
+            Assert.Equal(default, result[1].Bar);
+            Assert.Equal(default, result[2].Bar);
+        }
+
         [Fact]
         public void Map_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var result = connection.Read<TestClass>(Query).ToList();
             AssertTestClass(result);
+        }
+
+        [Fact]
+        public void Map_PrivateFields_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<TestClassPrivateFields>(Query).ToList();
+            AssertTestClassPrivateFields(result);
+        }
+
+        [Fact]
+        public void Map_SettersOnly_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<TestClassSettersOnly>(Query).ToList();
+            AssertTestClassSettersOnly(result);
         }
 
         [Fact]

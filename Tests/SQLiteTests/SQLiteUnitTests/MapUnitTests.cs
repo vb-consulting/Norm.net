@@ -16,20 +16,20 @@ namespace SQLiteUnitTests
 
         class TestClass
         {
-            public long Id { get; private set; }
-            public string Foo { get; private set; }
-            public string Day { get; private set; }
-            public long? Bool { get; private set; }
-            public string Bar { get; private set; }
+            public long Id { get; set; }
+            public string Foo { get; set; }
+            public string Day { get; set; }
+            public long? Bool { get; set; }
+            public string Bar { get; set; }
         }
 
         class TestClass2
         {
-            public long Id { get; private set; }
-            public string Foo { get; private set; }
-            public DateTime Day { get; private set; }
-            public bool? Bool { get; private set; }
-            public string Bar { get; private set; }
+            public long Id { get; set; }
+            public string Foo { get; set; }
+            public DateTime Day { get; set; }
+            public bool? Bool { get; set; }
+            public string Bar { get; set; }
         }
 
         private const string Query = @"

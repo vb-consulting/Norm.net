@@ -1,5 +1,19 @@
 # Version history and release notes
 
+## 3.3.4
+
+- Breaking change:
+
+Mapping to properties with private setters is not permitted any more. 
+
+Because it does not make any sense to do so. You want to have ability to have property that is ignored by the mapper and set the value yourself.
+
+All private fields will be ignored.
+
+- Properties without getter are also ignored, mapper will not throw an error.
+
+
+
 ## 3.3.3
 
 BUGFIX

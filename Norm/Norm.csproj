@@ -13,12 +13,12 @@
     <Description>Fast, Modern and Extendible C# Data Access Library</Description>
     <Copyright>VB-Consulting</Copyright>
     <PackageTags>Norm;norm;data acceess;orm;no-orm;micro-orm;sql</PackageTags>
-    <Version>3.3.1</Version>
-    <AssemblyVersion>3.3.1.0</AssemblyVersion>
+    <Version>3.3.4</Version>
+    <AssemblyVersion>3.3.4.0</AssemblyVersion>
     <PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/CHANGES.md</PackageReleaseNotes>
     <PackageId>Norm.net</PackageId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <FileVersion>3.3.1.0</FileVersion>
+    <FileVersion>3.3.4.0</FileVersion>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
