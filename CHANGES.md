@@ -21,7 +21,7 @@ public class MyClass
 
 There is no reason to map protected properties since, by design and intent, they are expected to be mapped by derived classes not by library.
 
-Additionally, full list of example files in one place is provided. See here -> [EXAMPLES]()
+Additionally, full list of example files in one place is provided. See here -> [EXAMPLES](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md)
 
 ## 3.3.4
 
