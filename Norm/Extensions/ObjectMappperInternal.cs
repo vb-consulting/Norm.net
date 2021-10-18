@@ -198,13 +198,13 @@ namespace Norm
             {
                 return null;
             }
-            if (setter.IsPrivate)
+            if (setter.IsPublic)
             {
-                return null;
+                return nullable ?
+                    Delegate.CreateDelegate(typeof(Action<T, TProp?>), setter) :
+                    Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
             }
-            return nullable ?
-                Delegate.CreateDelegate(typeof(Action<T, TProp?>), setter) :
-                Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
+            return null;
         }
 
         private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, StructType structType)

@@ -1,5 +1,28 @@
 # Version history and release notes
 
+## 3.3.5
+
+Small inconsistency fix: **class instance properties with protected access modifiers will not be mapped any more.**
+
+Only instance properties with public setters are mapped for now on:
+
+```csharp
+public class MyClass
+{
+    public int Value1 { get; set; }             // mapped
+    public int Value2 { get; init; }            // mapped
+    public int Value3;                          // not mapped, no public setter found
+    public int Value4 { get; }                  // not mapped, no public setter found
+    public int Value5 { get; private set; }     // not mapped, setter is private
+    public int Value6 { get; protected set; }   // not mapped, setter is protected
+    public int Value6 { get; internal set; }    // not mapped, setter is internal
+}
+```
+
+There is no reason to map protected properties since, by design and intent, they are expected to be mapped by derived classes not by library.
+
+Additionally, full list of example files in one place is provided. See here -> [EXAMPLES]()
+
 ## 3.3.4
 
 - Breaking change:
@@ -11,8 +34,6 @@ Because it does not make any sense to do so. You want to have ability to have pr
 All private fields will be ignored.
 
 - Properties without getter are also ignored, mapper will not throw an error.
-
-
 
 ## 3.3.3
 

@@ -410,5 +410,32 @@ namespace PostgreSqlUnitTests
             Assert.Equal(new DateTimeOffset(new DateTime(1978, 5, 19)), result[0].OffsetArray[1]);
             Assert.Equal(new DateTimeOffset(new DateTime(1979, 5, 19)), result[0].OffsetArray[2]);
         }
+
+        public class MyClassWithPrivateSetters
+        {
+            public int Value1 { get; set; }
+            public int Value2 { get; set; }
+            public int Value3;
+            public int Value4 { get; }
+            public int Value5 { get; private set; }
+            public int Value6 { get; protected set; }
+            public int Value7 { get; internal set; }
+            public int Value8 { get; init; }
+        }
+
+        [Fact]
+        public void Test_Private_Setters_Skip_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<MyClassWithPrivateSetters>(@"select 1 as value1, 2 as value2, 3 as value3, 4 as value4, 5 as value5, 6 as value6, 7 as value7, 8 as value8").First();
+            Assert.Equal(1, result.Value1);
+            Assert.Equal(2, result.Value2);
+            Assert.Equal(0, result.Value3);
+            Assert.Equal(0, result.Value4);
+            Assert.Equal(0, result.Value5);
+            Assert.Equal(0, result.Value6);
+            Assert.Equal(0, result.Value7);
+            Assert.Equal(8, result.Value8);
+        }
     }
 }
