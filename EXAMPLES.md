@@ -1,47 +1,46 @@
 # Norm.net Data Access at a glance
 
-- Prerequisites and Notes
-- Execution
-  - Simple execution
-  - Chaining calls
-- Single row mappings
-  - Single value
-  - Multiple value mappings
-  - ARRAY types (PostgreSQL only)
-  - Named tuples
-  - Multiple named tuples
-  - Named Tuples with ARRAY types (PostgreSQL only)
-  - Class instance properties
-  - Class instance properties mapping with different naming styles (different case, snake case)
-  - Ignored class instance properties
-  - Multiple class instances
-  - Multiple class instances with the same name
-  - Class instances and map ARRAY types (PostgreSQL only)
-  - Record instances
-- Multiple values
-  - Iterations
-  - Mapping to lists and array
-  - Mapping to a dictionary
-  - Mapping to a dictionary using named tuples
-  - Using GroupBy with the class instances
-- Batching multiple commands
-- Database command Parameters
-  - Using formattable strings to supply parameters
-  - Using formattable strings to supply native database parameters
-  - Simple parameters by position
-  - Simple parameters by position and native database parameters
-  - Mixing simple parameters by position and native database parameters
-  - Passing class instance and mapping values to parameters
-  - Mixing class instance, database native, and simple parameters
-  - Mapping parameters by specific name
-  - Mapping parameters by specific name and specific database type
-  - Mapping parameters by specific name and specific custom database type
-- Command object parameters
-  - Executing stored procedure (or function) command type
-  - Command type
-  - Command timeout
-  - Passing the cancellation token
-  - Prepared statements
+- [Prerequisites and Notes](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#prerequisites-and-notes)
+- [Execution](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#execution)
+  - [Simple execution](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-execution)
+  - [Chaining calls](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#chaining-calls)
+- [Single row mappings](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#single-row-mappings)
+  - [Single value](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#single-value)
+  - [Multiple value mappings](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-value-mappings)
+  - [ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#array-types-postgresql-only)
+  - [Named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#named-tuples)
+  - [Multiple named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-named-tuples)
+  - [Named Tuples with ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#named-tuples-with-array-types-postgresql-only)
+  - [Class instance properties](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instance-properties)
+  - [Class instance properties mapping with different naming styles (different case, snake case)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instance-properties-mapping-with-different-naming-styles-different-case-snake-case)
+  - [Ignored class instance properties](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#ignored-class-instance-properties)
+  - [Multiple class instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-class-instances)
+  - [Multiple class instances with the same name](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-class-instances-with-the-same-name)
+  - [Class instances and map ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instances-and-map-array-types-postgresql-only)
+  - [Record instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#record-instances)
+- [Multiple values](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-values)
+  - [Iterations](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#iterations)
+  - [Mapping to lists and array](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-lists-and-array)
+  - [Mapping to a dictionary](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-a-dictionary)
+  - [Mapping to a dictionary using named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-a-dictionary-using-named-tuples)
+  - [Using GroupBy with the class instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-groupby-with-the-class-instances)
+- [Batching multiple commands](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#batching-multiple-commands)
+- [Database command Parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#database-command-parameters)
+  - [Using formattable strings to supply parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-formattable-strings-to-supply-parameters)
+  - [Using formattable strings to supply native database parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-formattable-strings-to-supply-native-database-parameters)
+  - [Simple parameters by position](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position)
+  - [Simple parameters by position and native database parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position-and-native-database-parameters)
+  - [Passing class instance and mapping values to parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-class-instance-and-mapping-values-to-parameters)
+  - [Mixing class instance, database native, and simple parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mixing-class-instance-database-native-and-simple-parameters)
+  - [Mapping parameters by specific name](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name)
+  - [Mapping parameters by specific name and specific database type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name-and-specific-database-type)
+  - [Mapping parameters by specific name and specific custom database type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name-and-specific-custom-database-type)
+- [Command object parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-object-parameters)
+  - [Executing stored procedure (or function) command type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#executing-stored-procedure-or-function-command-type)
+  - [Command type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-type)
+  - [Command timeout](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-timeout)
+  - [Passing the cancellation token](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-the-cancellation-token)
+  - [Prepared statements](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#prepared-statements)
 
 ## Prerequisites and Notes
 
@@ -433,7 +432,7 @@ public class MyClass
     // other properties
 }
 
-var grouped = connection.ReadMyClass>(sql).GroupBy(g => g.Key);
+var grouped = connection.Read<MyClass>(sql).GroupBy(g => g.Key);
 ```
 
 ## Batching multiple commands
