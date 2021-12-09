@@ -1,5 +1,11 @@
 # Version history and release notes
 
+## 3.3.6
+
+- Internal optimizations and improvements to mapper code.
+
+- New perfomance benchmarks, now using standard BenchmarkDotNet library. See [benchmarks page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md)
+
 ## 3.3.5
 
 Small inconsistency fix: **class instance properties with protected access modifiers will not be mapped any more.**
@@ -244,7 +250,7 @@ Separated overload methods into separate files by using partials for easier main
 
 This bug fix required a redesign of the entire mapping mechanism which is now even more optimized and uses even less memory cache. 
 
-Benchmarks are available on the [benchmarks page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md#aggregated-results)
+Benchmarks are available on the [benchmarks page](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md)
 
 Following [unit test](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/MapUnitTests.cs#L312) demonstrates the bug condition. 
 
