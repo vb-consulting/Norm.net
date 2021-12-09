@@ -1,6 +1,0 @@
-{
-  "db": {
-    "Default": "Data Source=localhost;port=3306;User Id=root;password=root",
-    "TestDatabase": "norm_mysql_unit_tests"
-  }
-}
