@@ -14,7 +14,6 @@ namespace Norm.Interfaces
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters and execute resulting SQL.
         ///</summary>
-        ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>Norm instance.</returns>
         INorm ExecuteFormat(FormattableString command);

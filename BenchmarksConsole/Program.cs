@@ -2,6 +2,10 @@
 using Npgsql;
 using PostgreSqlUnitTests;
 using BenchmarksConsole;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+//CollectionsMarshal.AsSpan(tuples);
 
 
 using var fixture = new PostgreSqlFixture();

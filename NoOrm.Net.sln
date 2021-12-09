@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSqlUnitTests", "Tests\PostgreSqlUnitTests\PostgreSqlUnitTests.csproj", "{F38A7FDB-78B7-4040-8ACC-29123FE525EF}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlUnitTests", "Tests\MySqlUnitTests\MySqlUnitTests.csproj", "{9F453EA2-995B-49F8-B001-7E11F0E03607}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConfig", "Tests\TestConfig\TestConfig.csproj", "{475C4241-476E-4417-8A8F-EFD9CD9E8021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks6", "Benchmarks6\Benchmarks6.csproj", "{617241EB-02A1-4643-B98C-0E57EA327BAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{475C4241-476E-4417-8A8F-EFD9CD9E8021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{617241EB-02A1-4643-B98C-0E57EA327BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{617241EB-02A1-4643-B98C-0E57EA327BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{617241EB-02A1-4643-B98C-0E57EA327BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{617241EB-02A1-4643-B98C-0E57EA327BAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
