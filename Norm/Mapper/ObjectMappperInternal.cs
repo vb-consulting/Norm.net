@@ -13,14 +13,13 @@ namespace Norm
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
-            ref (Type type, string name, PropertyInfo info)[] properties,
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
         {
             ushort i = 0;
 
-            foreach (var property in properties)
+            foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType) = delegates[i];
                 if (method == null)
@@ -48,14 +47,13 @@ namespace Norm
         }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
-            ref (Type type, string name, PropertyInfo info)[] properties,
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
         {
             ushort i = 0;
-            foreach (var property in properties)
+            foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType) = delegates[i];
                 if (method == null)

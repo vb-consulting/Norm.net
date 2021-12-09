@@ -33,9 +33,8 @@ namespace Norm
             else
             {
                 var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
-                var props = TypeCache<T>.GetProperties(type1);
                 Dictionary<string, ushort> names = null;
-                var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props.Length];
+                var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T>.GetPropertiesLength()];
                 foreach (var t in tuples)
                 {
                     if (names == null)
@@ -43,7 +42,7 @@ namespace Norm
                         names = GetNamesDictFromTuple(t);
                     }
                     var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                    yield return t.MapInstance(ref props, ref i1, ref names, ref delegates);
+                    yield return t.MapInstance(ref i1, ref names, ref delegates);
                 }
             }
         }
@@ -54,11 +53,10 @@ namespace Norm
         {
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -68,8 +66,8 @@ namespace Norm
                 var used = new HashSet<ushort>(t.Length);
                 var i1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var i2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
                 yield return (t1, t2);
             }
         }
@@ -83,13 +81,10 @@ namespace Norm
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
             var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
 
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -100,9 +95,9 @@ namespace Norm
                 var i1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var i2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var i3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
                 yield return (t1, t2, t3);
             }
         }
@@ -118,15 +113,11 @@ namespace Norm
             var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
 
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -138,10 +129,10 @@ namespace Norm
                 var i2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var i3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var i4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
                 yield return (t1, t2, t3, t4);
             }
         }
@@ -159,17 +150,12 @@ namespace Norm
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
 
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -182,11 +168,11 @@ namespace Norm
                 var i3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var i4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var i5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
                 yield return (t1, t2, t3, t4, t5);
             }
         }
@@ -205,19 +191,14 @@ namespace Norm
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -231,12 +212,12 @@ namespace Norm
                 var i4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var i5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var i6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
                 yield return (t1, t2, t3, t4, t5, t6);
             }
         }
@@ -257,21 +238,15 @@ namespace Norm
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -286,13 +261,13 @@ namespace Norm
                 var i5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var i6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var i7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
                 yield return (t1, t2, t3, t4, t5, t6, t7);
             }
         }
@@ -315,23 +290,16 @@ namespace Norm
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
-            var props8 = TypeCache<T8>.GetProperties(type8);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -347,14 +315,14 @@ namespace Norm
                 var i6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var i7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var i8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
-                var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
+                var t8 = t.MapInstance(ref i8, ref names, ref used, ref delegates8);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
         }
@@ -379,25 +347,17 @@ namespace Norm
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
-            var props8 = TypeCache<T8>.GetProperties(type8);
-            var props9 = TypeCache<T9>.GetProperties(type9);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -414,15 +374,15 @@ namespace Norm
                 var i7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var i8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var i9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
-                var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
-                var t9 = t.MapInstance(ref props9, ref i9, ref names, ref used, ref delegates9);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
+                var t8 = t.MapInstance(ref i8, ref names, ref used, ref delegates8);
+                var t9 = t.MapInstance(ref i9, ref names, ref used, ref delegates9);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             }
         }
@@ -449,27 +409,18 @@ namespace Norm
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
-            var props8 = TypeCache<T8>.GetProperties(type8);
-            var props9 = TypeCache<T9>.GetProperties(type9);
-            var props10 = TypeCache<T10>.GetProperties(type10);
+;
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -487,16 +438,16 @@ namespace Norm
                 var i8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var i9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var i10 = TypeCache<T10>.CreateInstance(ctorInfo10);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
-                var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
-                var t9 = t.MapInstance(ref props9, ref i9, ref names, ref used, ref delegates9);
-                var t10 = t.MapInstance(ref props10, ref i10, ref names, ref used, ref delegates10);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
+                var t8 = t.MapInstance(ref i8, ref names, ref used, ref delegates8);
+                var t9 = t.MapInstance(ref i9, ref names, ref used, ref delegates9);
+                var t10 = t.MapInstance(ref i10, ref names, ref used, ref delegates10);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
             }
         }
@@ -525,29 +476,19 @@ namespace Norm
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
-            var props8 = TypeCache<T8>.GetProperties(type8);
-            var props9 = TypeCache<T9>.GetProperties(type9);
-            var props10 = TypeCache<T10>.GetProperties(type10);
-            var props11 = TypeCache<T11>.GetProperties(type11);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props11.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
+            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T11>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -566,17 +507,17 @@ namespace Norm
                 var i9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var i10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var i11 = TypeCache<T11>.CreateInstance(ctorInfo11);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
-                var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
-                var t9 = t.MapInstance(ref props9, ref i9, ref names, ref used, ref delegates9);
-                var t10 = t.MapInstance(ref props10, ref i10, ref names, ref used, ref delegates10);
-                var t11 = t.MapInstance(ref props11, ref i11, ref names, ref used, ref delegates11);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
+                var t8 = t.MapInstance(ref i8, ref names, ref used, ref delegates8);
+                var t9 = t.MapInstance(ref i9, ref names, ref used, ref delegates9);
+                var t10 = t.MapInstance(ref i10, ref names, ref used, ref delegates10);
+                var t11 = t.MapInstance(ref i11, ref names, ref used, ref delegates11);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
             }
         }
@@ -607,31 +548,20 @@ namespace Norm
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
             var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
-            var props1 = TypeCache<T1>.GetProperties(type1);
-            var props2 = TypeCache<T2>.GetProperties(type2);
-            var props3 = TypeCache<T3>.GetProperties(type3);
-            var props4 = TypeCache<T4>.GetProperties(type4);
-            var props5 = TypeCache<T5>.GetProperties(type5);
-            var props6 = TypeCache<T6>.GetProperties(type6);
-            var props7 = TypeCache<T7>.GetProperties(type7);
-            var props8 = TypeCache<T8>.GetProperties(type8);
-            var props9 = TypeCache<T9>.GetProperties(type9);
-            var props10 = TypeCache<T10>.GetProperties(type10);
-            var props11 = TypeCache<T11>.GetProperties(type11);
-            var props12 = TypeCache<T12>.GetProperties(type12);
+
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props1.Length];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props2.Length];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props3.Length];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props4.Length];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props5.Length];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props6.Length];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props7.Length];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props8.Length];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props9.Length];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props10.Length];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props11.Length];
-            var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[props12.Length];
+            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
+            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
+            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
+            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
+            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T11>.GetPropertiesLength()];
+            var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T12>.GetPropertiesLength()];
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -651,18 +581,18 @@ namespace Norm
                 var i10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var i11 = TypeCache<T11>.CreateInstance(ctorInfo11);
                 var i12 = TypeCache<T12>.CreateInstance(ctorInfo12);
-                var t1 = t.MapInstance(ref props1, ref i1, ref names, ref used, ref delegates1);
-                var t2 = t.MapInstance(ref props2, ref i2, ref names, ref used, ref delegates2);
-                var t3 = t.MapInstance(ref props3, ref i3, ref names, ref used, ref delegates3);
-                var t4 = t.MapInstance(ref props4, ref i4, ref names, ref used, ref delegates4);
-                var t5 = t.MapInstance(ref props5, ref i5, ref names, ref used, ref delegates5);
-                var t6 = t.MapInstance(ref props6, ref i6, ref names, ref used, ref delegates6);
-                var t7 = t.MapInstance(ref props7, ref i7, ref names, ref used, ref delegates7);
-                var t8 = t.MapInstance(ref props8, ref i8, ref names, ref used, ref delegates8);
-                var t9 = t.MapInstance(ref props9, ref i9, ref names, ref used, ref delegates9);
-                var t10 = t.MapInstance(ref props10, ref i10, ref names, ref used, ref delegates10);
-                var t11 = t.MapInstance(ref props11, ref i11, ref names, ref used, ref delegates11);
-                var t12 = t.MapInstance(ref props12, ref i12, ref names, ref used, ref delegates12);
+                var t1 = t.MapInstance(ref i1, ref names, ref used, ref delegates1);
+                var t2 = t.MapInstance(ref i2, ref names, ref used, ref delegates2);
+                var t3 = t.MapInstance(ref i3, ref names, ref used, ref delegates3);
+                var t4 = t.MapInstance(ref i4, ref names, ref used, ref delegates4);
+                var t5 = t.MapInstance(ref i5, ref names, ref used, ref delegates5);
+                var t6 = t.MapInstance(ref i6, ref names, ref used, ref delegates6);
+                var t7 = t.MapInstance(ref i7, ref names, ref used, ref delegates7);
+                var t8 = t.MapInstance(ref i8, ref names, ref used, ref delegates8);
+                var t9 = t.MapInstance(ref i9, ref names, ref used, ref delegates9);
+                var t10 = t.MapInstance(ref i10, ref names, ref used, ref delegates10);
+                var t11 = t.MapInstance(ref i11, ref names, ref used, ref delegates11);
+                var t12 = t.MapInstance(ref i12, ref names, ref used, ref delegates12);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
             }
         }

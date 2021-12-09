@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Npgsql;
 using PostgreSqlUnitTests;
-using DapperQuery = Dapper.SqlMapper;
+//using DapperQuery = Dapper.SqlMapper;
+using Dapper;
 using Norm;
 
 namespace Benchmarks6
@@ -54,7 +55,7 @@ namespace Benchmarks6
         private NpgsqlConnection connection = default!;
         private PostgreSqlFixture fixture = default!;
 
-        [Params(10, 1_000, 10_000, 100_000)]
+        [Params(10, 1_000, 10_000, 100_000, 1_000_000)]
         public int Records { get; set; }
 
         [GlobalSetup]
@@ -75,7 +76,7 @@ namespace Benchmarks6
         [Benchmark(Baseline = true)]
         public void Dapper()
         {
-            foreach(var i in DapperQuery.Query<PocoClass>(connection, query))
+            foreach (var i in connection.Query<PocoClass>(query))
             {
             }
         }
@@ -83,7 +84,7 @@ namespace Benchmarks6
         [Benchmark()]
         public void Dapper_Buffered_False()
         {
-            foreach (var i in DapperQuery.Query<PocoClass>(connection, query, buffered: false))
+            foreach (var i in connection.Query<PocoClass>(query, buffered: false))
             {
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 // ReSharper disable StaticMemberInGenericType
 
 namespace Norm
@@ -11,33 +12,46 @@ namespace Norm
         private static readonly object CtorLocker = new object();
         private static (T, Func<T, object>) _ctorInfo;
         private static readonly object PropertiesLocker = new object();
+        private static int? _propertiesLen;
         private static volatile (Type type, string name, PropertyInfo info)[] _properties;
 
         internal static Func<(string name, object value)[], T> CustomMapTuples { get; set; }
         internal static Func<object[], T> CustomMapValues { get; set; }
         internal static Func<IDictionary<string, object>, T> CustomMapDict { get; set; }
 
-        public static (Type type, string name, PropertyInfo info)[] GetProperties(Type type)
+        public static Span<(Type type, string name, PropertyInfo info)> GetProperties()
         {
             if (_properties != null)
             {
-                return _properties;
+                return new Span<(Type type, string name, PropertyInfo info)>(_properties, 0, _properties.Length);
             }
             lock (PropertiesLocker)
             {
                 if (_properties != null)
                 {
-                    return _properties;
+                    return new Span<(Type type, string name, PropertyInfo info)>(_properties, 0, _properties.Length);
                 }
-                var props = type.GetProperties();
-                var result = new (Type type, string name, PropertyInfo info)[props.Length];
+                var props = typeof(T).GetProperties();
+                _propertiesLen = props.Length;
+                var result = new (Type type, string name, PropertyInfo info)[_propertiesLen.Value];
                 short i = 0;
                 foreach(var p in props)
                 {
                     result[i++] = (p.PropertyType, p.Name.ToLower(), p);
                 }
-                return _properties = result;
+                _properties = result; 
+                return new Span<(Type type, string name, PropertyInfo info)>(_properties, 0, _properties.Length);
             }
+        }
+
+        public static int GetPropertiesLength()
+        {
+            if (_propertiesLen.HasValue)
+            {
+                return _propertiesLen.Value;
+            }
+            GetProperties();
+            return _propertiesLen.Value;
         }
 
         internal static (T, Func<T, object>) GetCtorInfo(Type type)
