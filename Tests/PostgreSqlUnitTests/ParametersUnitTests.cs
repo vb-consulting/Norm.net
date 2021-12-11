@@ -385,5 +385,92 @@ namespace PostgreSqlUnitTests
             Assert.Equal("pos1", p1);
             Assert.Equal("pos2", p2);
         }
+
+        /*
+        class PocoClassParams
+        {
+            public string StrValue { get; set; } = "str";
+            public int IntValue { get; set; } = 999;
+            public bool BoolValue { get; set; } = true;
+            public DateTime DateTimeValue { get; set; } = new DateTime(1977, 5, 19);
+            public string NullValue { get; set; } = null;
+        }
+         * */
+
+        [Fact]
+        public void Anonymous_Params_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", new { 
+                        StrValue = "str",
+                        IntValue = 999,
+                        BoolValue = true,
+                        DateTimeValue = new DateTime(1977, 5, 19),
+                        NullValue = (string)null,
+                    })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Anonymous_Params_CaseMistmatch_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", new
+                    {
+                        strValue = "str",
+                        intValue = 999,
+                        boolValue = true,
+                        dateTimeValue = new DateTime(1977, 5, 19),
+                        nullValue = (string)null,
+                    })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Anonymous_Params_ShortVersion_Test()
+        {
+            var strValue = "str";
+            var intValue = 999;
+            var boolValue = true;
+            var dateTimeValue = new DateTime(1977, 5, 19);
+            var nullValue = (string)null;
+
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
+                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
+                    new {strValue, intValue, boolValue, dateTimeValue, nullValue,})
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Positional_Params_Error_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var exception = Assert.Throws<NormParametersException>(() => 
+                connection.Read<int, int>("select @p, @p", 1, 2).Single());
+
+            Assert.Equal("Parameter name \"p\" appears more than once. Parameter names must be unique.", exception.Message);
+        }
     }
 }

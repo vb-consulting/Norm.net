@@ -9,6 +9,13 @@ namespace Norm
         public NormException(string message) : base(message) { }
     }
 
+    public class NormParametersException : NormException
+    {
+        public NormParametersException(string name) :
+            base($"Parameter name \"{name}\" appears more than once. Parameter names must be unique.")
+        { }
+    }
+
     public class NormPositionalParametersWithStoredProcedureException : NormException
     {
         public NormPositionalParametersWithStoredProcedureException() : 

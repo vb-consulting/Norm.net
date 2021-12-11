@@ -31,6 +31,7 @@
   - [Simple parameters by position](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position)
   - [Simple parameters by position and native database parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position-and-native-database-parameters)
   - [Passing class instance and mapping values to parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-class-instance-and-mapping-values-to-parameters)
+  - [Passing anonymous class instance and mapping values to parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-anonymous-class-instance-and-mapping-values-to-parameters)
   - [Mixing class instance, database native, and simple parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mixing-class-instance-database-native-and-simple-parameters)
   - [Mapping parameters by specific name](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name)
   - [Mapping parameters by specific name and specific database type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name-and-specific-database-type)
@@ -533,6 +534,21 @@ public class MyClass
 var instance = new MyClass{ Param1 = "value1", Param2 = "value2", Param3 = "value3" };
 
 connection.Read<T>("select @Param1, @Param2, @Param3", instance);
+```
+
+### Passing anonymous class instance and mapping values to parameters
+
+```csharp
+public class MyClass
+{
+    public string Param1 { get; set; }
+    public string Param2 { get; set; }
+    public string Param3 { get; set; }
+}
+
+var instance = new MyClass{ Param1 = "value1", Param2 = "value2", Param3 = "value3" };
+
+connection.Read<T>("select @Param1, @Param2, @Param3", new { param1 = "value1", param2 = "value2", param3 = "value3" });
 ```
 
 ### Mixing class instance, database native, and simple parameters

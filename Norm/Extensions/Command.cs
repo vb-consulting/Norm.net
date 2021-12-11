@@ -56,6 +56,15 @@ namespace Norm
             var command = cmd.CommandText;
             var valueList = new List<object>();
             var names = new HashSet<string>(parameters.Length);
+
+            void AddPropValues(Type type, object p)
+            {
+                foreach (var prop in type.GetProperties())
+                {
+                    cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
+                    names.Add(prop.Name);
+                }
+            }
             foreach (var p in parameters)
             {
                 if (p is DbParameter dbParameter)
@@ -71,6 +80,13 @@ namespace Norm
                         continue;
                     }
                     var type = p.GetType();
+
+                    if (type.IsAnonymousType())
+                    {
+                        AddPropValues(type, p);
+                        continue;
+                    }
+
                     var meta = type.GetMetadata();
                     if (meta.simple)
                     {
@@ -78,11 +94,7 @@ namespace Norm
                         continue;
                     }
 
-                    foreach (var prop in type.GetProperties())
-                    {
-                        cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
-                        names.Add(prop.Name);
-                    }
+                    AddPropValues(type, p);
                 }
             }
             var values = valueList.ToArray();
@@ -92,13 +104,19 @@ namespace Norm
             }
 
             var paramIndex = 0;
-            foreach (var name in EnumerateParams(command, names).Select(t => t.name).Distinct())
+            var used = new HashSet<string>(values.Length);
+            foreach (var name in EnumerateParams(command, names).Select(t => t.name))
             {
+                if (used.Contains(name))
+                {
+                    throw new NormParametersException(name);
+                }
                 if (cmd.CommandType == CommandType.StoredProcedure)
                 {
                     throw new NormPositionalParametersWithStoredProcedureException();
                 }
                 cmd.AddParamWithValue(name, values[paramIndex++]);
+                used.Add(name);
             }
             return cmd;
         }

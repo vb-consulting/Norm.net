@@ -1,5 +1,27 @@
 # Version history and release notes
 
+## 3.3.7
+
+- Added support anonymous class instance parameters:
+
+```csharp
+connection.Execute("update table set name = @name where id = @id", new {name = name, id = id});
+```
+
+or shorter:
+
+```csharp
+connection.Execute("update table set name = @name where id = @id", new {name, id});
+```
+
+- Situations where unintentionally by mistake - query has multiple parameters with the same name when using parameters by position, like this:
+
+```csharp
+connection.Execute("update table set name = @name where id = @id and parentId = @id", name, id);
+```
+
+New exception is now raised: `NormParametersException` with message `Parameter name {name} appears more than once. Parameter names must be unique.`
+
 ## 3.3.6
 
 - Internal optimizations and improvements to mapper code.

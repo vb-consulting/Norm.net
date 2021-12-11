@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Norm
 {
@@ -22,6 +24,18 @@ namespace Norm
                 typeof(ValueTuple<,,,,,,>),
                 typeof(ValueTuple<,,,,,,,>)
             });
+
+        internal static bool IsAnonymousType(this Type type)
+        {
+            if (Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
+                && type.IsGenericType && type.Name.Contains("AnonymousType")
+                && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+                && type.Attributes.HasFlag(TypeAttributes.NotPublic))
+            {
+                return true;
+            }
+            return false;
+        }
 
         internal static (Type type, bool simple, bool valueTuple) GetMetadata(this Type type)
         {
