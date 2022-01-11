@@ -437,5 +437,25 @@ namespace PostgreSqlUnitTests
             Assert.Equal(0, result.Value7);
             Assert.Equal(8, result.Value8);
         }
+
+        public class MyRefClass
+        {
+            public int Value2 { get; set; }
+        }
+
+        public class MyClassWithVirtualRef
+        {
+            public int Value1 { get; set; }
+            public virtual MyRefClass Ref { get; set; }
+        }
+
+        [Fact]
+        public void Test_Class_With_Virtual_Ref_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<MyClassWithVirtualRef>(@"select 1 as value1").First();
+            Assert.Equal(1, result.Value1);
+            Assert.Null(result.Ref);
+        }
     }
 }

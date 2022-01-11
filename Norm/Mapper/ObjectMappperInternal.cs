@@ -109,6 +109,10 @@ namespace Norm
 
         private static (Delegate method, TypeCode code, bool isArray, StructType structType) CreateDelegate<T>(PropertyInfo property, bool nullable)
         {
+            if (property.GetMethod.IsVirtual)
+            {
+                return (null, TypeCode.Empty, false, StructType.None);
+            }
             TypeCode code;
             bool isArray;
             var type = property.PropertyType;
