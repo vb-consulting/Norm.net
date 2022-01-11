@@ -1,5 +1,32 @@
 # Version history and release notes
 
+## 3.3.9
+
+- Everything from 3.3.8 is only true where property is class type of object and it is not string:
+
+```cs
+
+public class BaseRef
+{
+}
+
+public class MyRefClass : BaseRef
+{
+}
+
+
+public class MyClassWithVirtualRef
+{
+    public int Value1 { get; set; } // maps, normal property
+    public virtual BaseRef Ref1 { get; set; } // does not map, virtual class
+    public virtual MyRefClass Ref2 { get; set; } // does not map, virtual class
+    public virtual int VirtualValue { get; set; } // maps, not class type
+    public virtual DateTime Date { get; set; } // maps, not class type
+    public virtual string Str { get; set; } // maps, class type but string
+    public virtual Guid Guid { get; set; } // maps, not class type
+}
+```
+
 ## 3.3.8
 
 - Skip mappings for virtaul properties when mapping class or records.

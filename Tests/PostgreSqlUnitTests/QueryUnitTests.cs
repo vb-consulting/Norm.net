@@ -438,7 +438,12 @@ namespace PostgreSqlUnitTests
             Assert.Equal(8, result.Value8);
         }
 
-        public class MyRefClass
+
+        public class BaseMyRefClass
+        {
+        }
+
+        public class MyRefClass : BaseMyRefClass
         {
             public int Value2 { get; set; }
         }
@@ -446,16 +451,34 @@ namespace PostgreSqlUnitTests
         public class MyClassWithVirtualRef
         {
             public int Value1 { get; set; }
-            public virtual MyRefClass Ref { get; set; }
+            public virtual BaseMyRefClass Ref1 { get; set; }
+            public virtual MyRefClass Ref2 { get; set; }
+            public virtual int VirtualValue { get; set; }
+            public virtual DateTime Date { get; set; }
+            public virtual string Str { get; set; }
+            public virtual Guid Guid { get; set; }
         }
 
         [Fact]
         public void Test_Class_With_Virtual_Ref_Sync()
         {
+            var guid = Guid.NewGuid().ToString();
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read<MyClassWithVirtualRef>(@"select 1 as value1").First();
+            connection.Execute(@"create extension if not exists ""uuid-ossp""");
+            var result = connection.Read<MyClassWithVirtualRef>(@$"
+                select 
+                    1 as Value1, 
+                    2 as VirtualValue, 
+                    '2022-01-01'::timestamp as Date, 
+                    'str' as Str, 
+                    '{guid}'::uuid as Guid").First();
             Assert.Equal(1, result.Value1);
-            Assert.Null(result.Ref);
+            Assert.Null(result.Ref1);
+            Assert.Null(result.Ref2);
+            Assert.Equal(2, result.VirtualValue);
+            Assert.Equal(new DateTime(2022, 1, 1), result.Date);
+            Assert.Equal("str", result.Str);
+            Assert.Equal(guid, result.Guid.ToString());
         }
     }
 }

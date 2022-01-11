@@ -10,6 +10,7 @@ namespace Norm
         private static Type TimeSpanType = typeof(TimeSpan);
         private static Type DateTimeOffsetType = typeof(DateTimeOffset);
         private static Type GuidType = typeof(Guid);
+
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
@@ -109,13 +110,17 @@ namespace Norm
 
         private static (Delegate method, TypeCode code, bool isArray, StructType structType) CreateDelegate<T>(PropertyInfo property, bool nullable)
         {
+            var type = property.PropertyType;
             if (property.GetMethod.IsVirtual)
             {
-                return (null, TypeCode.Empty, false, StructType.None);
+                if (type.IsClass && type != StringType)
+                {
+                    return (null, TypeCode.Empty, false, StructType.None);
+                }
             }
             TypeCode code;
             bool isArray;
-            var type = property.PropertyType;
+            
             if (type.IsArray)
             {
                 isArray = true;
