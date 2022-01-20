@@ -11,7 +11,7 @@ namespace Norm
         private static Type DateTimeOffsetType = typeof(DateTimeOffset);
         private static Type GuidType = typeof(Guid);
 
-        private enum StructType { None, TimeSpan, DateTimeOffset, Guid }
+        private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
@@ -23,7 +23,7 @@ namespace Norm
             foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType) = delegates[i];
-                if (method == null)
+                if (method == null && structType != StructType.Enum)
                 {
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
                     (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
@@ -42,6 +42,24 @@ namespace Norm
                 if (method != null)
                 {
                     InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                }
+                else if (structType == StructType.Enum)
+                {
+                    if (nullable)
+                    {
+                        if (tuple[index].value == null)
+                        {
+                            property.info.SetValue(instance, null);
+                        }
+                        else
+                        {
+                            property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)tuple[index].value));
+                        }
+                    }
+                    else
+                    {
+                        property.info.SetValue(instance, Enum.Parse(property.type, (string)tuple[index].value));
+                    }
                 }
             }
             return instance;
@@ -120,12 +138,17 @@ namespace Norm
             }
             TypeCode code;
             bool isArray;
-            
+
+
             if (type.IsArray)
             {
                 isArray = true;
                 var elementType = type.GetElementType();
                 code = Type.GetTypeCode(elementType);
+                if (type.IsEnum || (nullable && type.GenericTypeArguments[0].IsEnum))
+                {
+                    return (null, code, isArray, StructType.Enum);
+                }
                 if (code == TypeCode.Object)
                 {
                     if (elementType == TimeSpanType)
@@ -146,6 +169,10 @@ namespace Norm
             {
                 isArray = false;
                 code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
+                if (type.IsEnum || (nullable && type.GenericTypeArguments[0].IsEnum))
+                {
+                    return (null, code, isArray, StructType.Enum);
+                }
                 if (code == TypeCode.Object)
                 {
                     if (type == TimeSpanType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == TimeSpanType))

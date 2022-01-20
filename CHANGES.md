@@ -1,5 +1,37 @@
 # Version history and release notes
 
+## 3.3.10
+
+- Class instance mapper now supports mapping to enums. Example:
+
+```csharp
+public class TestEnumClass 
+{ 
+    public TestEnum Item1 { get; set; }
+    public TestEnum? Item2 { get; set; }
+}
+
+using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+var result = connection.Read<TestEnumClass>(@"
+            select *
+            from (
+            values 
+                ('Value1', 'Value1'),
+                ('Value2', null),
+                ('Value3', 'Value3')
+            ) t(Item1, Item2)").ToArray();
+
+Assert.Equal(3, result.Length);
+Assert.Equal(TestEnum.Value1, result[0].Item1);
+Assert.Equal(TestEnum.Value1, result[0].Item2);
+Assert.Equal(TestEnum.Value2, result[1].Item1);
+Assert.Null(result[1].Item2);
+Assert.Equal(TestEnum.Value3, result[2].Item1);
+Assert.Equal(TestEnum.Value3, result[2].Item2);
+```
+- Mapping to enums from tuples and named tuples is still not supported in this version.
+
 ## 3.3.9
 
 - Everything from 3.3.8 is only true where property is class type of object and it is not string:

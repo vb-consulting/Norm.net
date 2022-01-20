@@ -426,5 +426,61 @@ namespace PostgreSqlUnitTests
                 Task.Factory.StartNew(task2), Task.Factory.StartNew(task2), Task.Factory.StartNew(task2)
                 );
         }
+
+        public enum TestEnum { Value1, Value2, Value3 }
+
+        public class TestEnumClass 
+        { 
+            public TestEnum Item1 { get; set; }
+            public TestEnum? Item2 { get; set; }
+        }
+
+        [Fact]
+        public void Map_Enum_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var result = connection.Read<TestEnumClass>(@"
+                            select *
+                            from (
+                            values 
+                                ('Value1', 'Value1'),
+                                ('Value2', null),
+                                ('Value3', 'Value3')
+                            ) t(Item1, Item2)").ToArray();
+
+            Assert.Equal(3, result.Length);
+            Assert.Equal(TestEnum.Value1, result[0].Item1);
+            Assert.Equal(TestEnum.Value1, result[0].Item2);
+            Assert.Equal(TestEnum.Value2, result[1].Item1);
+            Assert.Null(result[1].Item2);
+            Assert.Equal(TestEnum.Value3, result[2].Item1);
+            Assert.Equal(TestEnum.Value3, result[2].Item2);
+        }
+
+        /*
+        [Fact]
+        public void Map_Enum_Values_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var result = connection.Read<TestEnum, TestEnum?>(@"
+                            select *
+                            from (
+                            values 
+                                ('Value1', 'Value1'),
+                                ('Value2', null),
+                                ('Value3', 'Value3')
+                            ) t(Item1, Item2)").ToArray();
+
+            Assert.Equal(3, result.Length);
+            Assert.Equal(TestEnum.Value1, result[0].Item1);
+            Assert.Equal(TestEnum.Value1, result[0].Item2);
+            Assert.Equal(TestEnum.Value2, result[1].Item1);
+            Assert.Null(result[1].Item2);
+            Assert.Equal(TestEnum.Value3, result[2].Item1);
+            Assert.Equal(TestEnum.Value3, result[2].Item2);
+        }
+        */
     }
 }
