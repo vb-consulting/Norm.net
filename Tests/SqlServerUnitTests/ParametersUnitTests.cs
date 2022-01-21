@@ -147,5 +147,18 @@ namespace SqlServerUnitTests
             Assert.Equal("v2", v2);
             Assert.Equal(1, rc);
         }
+
+        [Fact]
+        public void NoParams_Test()
+        {
+            var test = "test";
+            using var connection = new SqlConnection(fixture.ConnectionString);
+            connection.Execute(@"
+
+                declare @msg varchar(max);
+                set @msg = 'wtf';
+
+            ", test);
+        }
     }
 }

@@ -228,9 +228,19 @@ namespace Norm
                     index += 2;
                     continue;
                 }
+                
                 index++;
                 var endOf = command.IndexOfAny(NonCharacters, index);
                 var name = endOf == -1 ? command[index..] : command[index..endOf];
+                if (index - 9 > 0 && string.Equals(command[(index - 9)..(index - 2)], "declare", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (skip == null)
+                    {
+                        skip = new HashSet<string>();
+                    }
+                    skip.Add(name);
+                    continue;
+                }
                 if (skip != null && skip.Contains(name))
                 {
                     continue;

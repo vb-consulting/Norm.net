@@ -1,5 +1,9 @@
 # Version history and release notes
 
+## 3.3.11
+
+- Fix rare SQL Server parsing bug that caused "Norm.NormParametersException : Parameter name "ErrorMessage" appears more than once. Parameter names must be unique.", when mixing parameters and local script variables.
+
 ## 3.3.10
 
 - Class instance mapper now supports mapping to enums. Example:
@@ -30,7 +34,10 @@ Assert.Null(result[1].Item2);
 Assert.Equal(TestEnum.Value3, result[2].Item1);
 Assert.Equal(TestEnum.Value3, result[2].Item2);
 ```
+Remarks:
+
 - Mapping to enums from tuples and named tuples is still not supported in this version.
+- Database value must be string type (text, char, varchar, etc) to be able to be mapped to enum type.
 
 ## 3.3.9
 
