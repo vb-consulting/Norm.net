@@ -98,6 +98,24 @@ namespace Norm
                 {
                     InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
                 }
+                else if (structType == StructType.Enum)
+                {
+                    if (nullable)
+                    {
+                        if (tuple[index].value == null)
+                        {
+                            property.info.SetValue(instance, null);
+                        }
+                        else
+                        {
+                            property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)tuple[index].value));
+                        }
+                    }
+                    else
+                    {
+                        property.info.SetValue(instance, Enum.Parse(property.type, (string)tuple[index].value));
+                    }
+                }
                 used.Add(index);
             }
             return instance;
@@ -131,7 +149,7 @@ namespace Norm
             var type = property.PropertyType;
             if (property.GetMethod.IsVirtual)
             {
-                if (type.IsClass && type != StringType)
+                if (type.IsGenericType || (type.IsClass && type != StringType))
                 {
                     return (null, TypeCode.Empty, false, StructType.None);
                 }

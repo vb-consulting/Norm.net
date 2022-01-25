@@ -1,5 +1,9 @@
 # Version history and release notes
 
+## 3.3.13
+
+- Skip mappings for virtaul properties when mapping class or records now also applies to any generic type.
+
 ## 3.3.12
 
 - Mapping parameters from class instance or anonymous instance will only map paramerts for simple types.
