@@ -1,5 +1,9 @@
 # Version history and release notes
 
+## 3.3.12
+
+- Mapping parameters from class instance or anonymous instance will only map paramerts for simple types.
+
 ## 3.3.11
 
 - Fix rare SQL Server parsing bug that caused "Norm.NormParametersException : Parameter name "ErrorMessage" appears more than once. Parameter names must be unique.", when mixing parameters and local script variables.

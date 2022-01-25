@@ -61,8 +61,12 @@ namespace Norm
             {
                 foreach (var prop in type.GetProperties())
                 {
-                    cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
-                    names.Add(prop.Name);
+                    var propMeta = prop.PropertyType.GetMetadata();
+                    if (propMeta.simple)
+                    {
+                        cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
+                        names.Add(prop.Name);
+                    }
                 }
             }
             foreach (var p in parameters)
