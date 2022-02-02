@@ -17,8 +17,9 @@ namespace Norm
                 {
                     names = GetNamesDictFromTuple(t);
                 }
+                HashSet<ushort> used = null;
                 var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                yield return t.MapInstance(ref i1, ref names, ref delegates);
+                yield return t.MapInstance(ref i1, ref names, ref used, ref delegates);
             }
         }
 

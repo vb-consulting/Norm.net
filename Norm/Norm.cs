@@ -1,84 +1,71 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using Norm.Interfaces;
 
 namespace Norm
 {
-    public partial class Norm : INorm
+    public partial class Norm
     {
-        private enum DatabaseType
-        {
-            Ms,
-            Pg,
-            Lt,
-            My,
-            Other
-        }
-
-        private CommandType commandType;
-        private int? commandTimeout;
-        private CancellationToken? cancellationToken;
-        private bool prepared;
-        private bool usingPostgresFormatParamsMode;
-        private readonly bool convertsDbNull;
-        private readonly DatabaseType dbType;
-
+        ///<summary>
+        ///     returns DbConnection for this instance
+        ///</summary>
         public DbConnection Connection { get; }
 
-        internal Norm(
-            DbConnection connection, 
-            CommandType commandType = CommandType.Text, 
-            int? commandTimeout = null,
-            CancellationToken? cancellationToken = null,
-            bool prepared = false,
-            bool usingPostgresFormatParamsMode = false)
-        {
-            Connection = connection;
-            this.commandType = commandType;
-            this.commandTimeout = commandTimeout;
-            this.cancellationToken = cancellationToken;
-            this.prepared = prepared;
-            this.usingPostgresFormatParamsMode = usingPostgresFormatParamsMode;
-            var name = connection.GetType().Name;
-            (dbType, convertsDbNull) = name switch
-            {
-                "SqlConnection" => (DatabaseType.Ms, false),
-                "NpgsqlConnection" => (DatabaseType.Pg, true),
-                "SQLiteConnection" => (DatabaseType.Lt, false),
-                "MySqlConnection" => (DatabaseType.My, false),
-                _ => (DatabaseType.Other, false)
-            };
-        }
-
-        internal Norm Clone() => new Norm(Connection, commandType, commandTimeout, cancellationToken);
-
-        public INorm As(CommandType type)
+        ///<summary>
+        ///     Set command type for the connection commands and return Norm instance.
+        ///     Default command type for new instance is Text.
+        ///</summary>
+        ///<param name="type">
+        ///     One of the System.Data.CommandType values.
+        ///     Values are Text, StoredProcedure or TableDirect.
+        ///</param>
+        ///<returns>Norm instance.</returns>
+        public Norm As(CommandType type)
         {
             commandType = type;
             return this;
         }
 
-        public INorm AsProcedure() => As(CommandType.StoredProcedure);
+        ///<summary>
+        ///     Set command type to StoredProcedure for the connection commands and return Norm instance.
+        ///</summary>
+        ///<returns>Norm instance.</returns>
+        public Norm AsProcedure() => As(CommandType.StoredProcedure);
 
-        public INorm AsText() => As(CommandType.Text);
+        ///<summary>
+        ///     Set command type to Text for the connection commands and return Norm instance.
+        ///</summary>
+        ///<returns>Norm instance.</returns>
+        public Norm AsText() => As(CommandType.Text);
 
-        public INorm Timeout(int timeout)
+        ///<summary>
+        ///     Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
+        ///</summary>
+        ///<param name="timeout">Wait time in seconds.</param>
+        ///<returns>Norm instance.</returns>
+        public Norm Timeout(int timeout)
         {
             commandTimeout = timeout;
             return this;
         }
 
-        public INorm WithCancellationToken(CancellationToken token)
+        /// <summary>
+        /// Set CancellationToken used in asynchronously operations in chained Norm instance.
+        /// </summary>
+        /// <param name="token">CancellationToken used in asynchronously operations</param>
+        ///<returns>Norm instance.</returns>
+        public Norm WithCancellationToken(CancellationToken token)
         {
             this.cancellationToken = token;
             return this;
         }
 
-        public INorm Prepared()
+        ///<summary>
+        ///     Sets the next command in prepared mode by calling Prepare for the next command.
+        ///</summary>
+        ///<returns>Norm instance.</returns>
+        public Norm Prepared()
         {
             prepared = true;
             if (prepared && usingPostgresFormatParamsMode)
@@ -88,7 +75,14 @@ namespace Norm
             return this;
         }
 
-        public INorm UsingPostgresFormatParamsMode()
+        ///<summary>
+        ///     Next command will use PostgreSQL format function to parse parameter values.
+        ///     This allows for parametrized PostgreSQL scripts execution.
+        ///</summary>
+        ///
+        ///<returns>Norm instance.</returns>on.
+        ///<exception cref="ArgumentException">Connection is not PostgreSQL connection or command is in prepared mode.</exception>.
+        public Norm UsingPostgresFormatParamsMode()
         {
             this.usingPostgresFormatParamsMode = true;
             if (dbType != DatabaseType.Pg)
@@ -100,252 +94,6 @@ namespace Norm
                 throw new NormCannotUsePostgresFormatParamsModeOnPreparedStatementException();
             }
             return this;
-        }
-
-        private void SetCommand(DbCommand cmd, string command)
-        {
-            cmd.SetCommandParameters(command, commandType, commandTimeout);
-        }
-
-        private DbCommand Prepare(DbCommand cmd)
-        {
-            if (!prepared)
-            {
-                return cmd;
-            }
-            cmd.Prepare();
-            prepared = false;
-
-            return cmd;
-        }
-
-        private DbCommand AddParameters(DbCommand cmd, params object[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return Prepare(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return Prepare(cmd.AddParameters(parameters));
-        }
-
-        private DbCommand AddParameters(DbCommand cmd, params (string name, object value)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return Prepare(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return Prepare(cmd.AddParameters(parameters));
-        }
-
-        private DbCommand AddParameters(DbCommand cmd, params (string name, object value, DbType type)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return Prepare(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return Prepare(cmd.AddParameters(parameters));
-        }
-
-        private DbCommand AddParametersUnknownType(DbCommand cmd, params (string name, object value, object type)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return Prepare(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return Prepare(cmd.AddUnknownTypeParameters(parameters));
-        }
-
-        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params object[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return await PrepareAsync(cmd.AddParameters(parameters));
-        }
-
-        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params (string name, object value)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return await PrepareAsync(cmd.AddParameters(parameters));
-        }
-
-        private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params (string name, object value, DbType type)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return await PrepareAsync(cmd.AddParameters(parameters));
-        }
-
-        private async ValueTask<DbCommand> AddParametersUnknownTypeAsync(DbCommand cmd, params (string name, object value, object type)[] parameters)
-        {
-            if (usingPostgresFormatParamsMode)
-            {
-                usingPostgresFormatParamsMode = false;
-                return await PrepareAsync(cmd.AddPgFormatParameters(parameters));
-            }
-
-            return await PrepareAsync(cmd.AddUnknownTypeParameters(parameters));
-        }
-
-        private async ValueTask<DbCommand> PrepareAsync(DbCommand cmd)
-        {
-            if (!prepared)
-            {
-                return cmd;
-            }
-
-            if (cancellationToken.HasValue)
-            {
-                await cmd.PrepareAsync(cancellationToken.Value);
-            }
-            else
-            {
-                await cmd.PrepareAsync();
-            }
-            prepared = false;
-
-            return cmd;
-        }
-
-        public DbCommand CreateCommand(string command)
-        {
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            return Prepare(cmd);
-        }
-
-        public async ValueTask<DbCommand> CreateCommandAsync(string command)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            return await PrepareAsync(cmd);
-        }
-
-        public DbCommand CreateCommand(string command, params object[] parameters)
-        {
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            return cmd;
-        }
-
-        public async ValueTask<DbCommand> CreateCommandAsync(string command, params object[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersAsync(cmd, parameters);
-            return cmd;
-        }
-
-        public DbCommand CreateCommand(string command, params (string name, object value)[] parameters)
-        {
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            return cmd;
-        }
-
-        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            await AddParametersAsync(cmd, parameters);
-            return cmd;
-        }
-
-        public DbCommand CreateCommand(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParameters(cmd, parameters);
-            return cmd;
-        }
-
-        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await AddParametersAsync(cmd, parameters);
-            return cmd;
-        }
-
-        public DbCommand CreateCommand(string command, params (string name, object value, object type)[] parameters)
-        {
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            Connection.EnsureIsOpen();
-            AddParametersUnknownType(cmd, parameters);
-            return cmd;
-        }
-
-        public async ValueTask<DbCommand> CreateCommandAsync(string command, params (string name, object value, object type)[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            SetCommand(cmd, command);
-            await Connection.EnsureIsOpenAsync();
-            await AddParametersUnknownTypeAsync(cmd, parameters);
-            return cmd;
-        }
-
-        private DbCommand CreateCommand(FormattableString command)
-        {
-            var args = command.GetArguments();
-            var commandString = string.Format(command.Format, args.Select((p, idx) => 
-            {
-                if (p is DbParameter dbParameter)
-                {
-                    dbParameter.ParameterName = $"p{idx}";
-                }
-                return $"@p{idx}"; 
-            }).ToArray());
-            return CreateCommand(commandString, args);
-        }
-
-        private async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
-        {
-            var args = command.GetArguments();
-            var commandString = string.Format(command.Format, args.Select((p, idx) =>
-            {
-                if (p is DbParameter dbParameter)
-                {
-                    dbParameter.ParameterName = $"p{idx}";
-                }
-                return $"@p{idx}";
-            }).ToArray());
-            return await CreateCommandAsync(commandString, args);
         }
     }
 }

@@ -1,5 +1,92 @@
 # Version history and release notes
 
+## 3.4.0
+
+### Array mapping improvements
+
+- **Fixed bug with arrays mapping to named tuple values.**
+
+Now it's possible to map arrays to named tuples for database provedires that support arrays. Example:
+
+
+```csharp
+var result = connection.Read<(int[] i, string[] s)>(@"
+                select array_agg(i), array_agg(s)
+                from (
+                values 
+                    (1, 'foo1'),
+                    (2, 'foo2'),
+                    (3, 'foo3')
+                ) t(i, s)").ToArray();
+
+Assert.Single(result);
+
+Assert.Equal(1, result[0].i[0]);
+Assert.Equal(2, result[0].i[1]);
+Assert.Equal(3, result[0].i[2]);
+
+Assert.Equal("foo1", result[0].s[0]);
+Assert.Equal("foo2", result[0].s[1]);
+Assert.Equal("foo3", result[0].s[2]);
+```
+
+Maping arrays for simple values was always possible:
+
+```csharp
+var result = connection.Read<int[]>(@"
+    select array_agg(e) 
+    from ( values (1), (2), (3) ) t(e)
+").ToArray();
+
+Assert.Equal(1, result[0][0]);
+Assert.Equal(2, result[0][1]);
+Assert.Equal(3, result[0][2]);
+```
+
+Or, mapping arrays to nullable simple value arrays:
+
+
+```csharp
+var result = connection.Read<int?[]>(@"
+    select array_agg(e) 
+    from ( values (1), (null), (3) ) t(e)
+").ToArray();
+
+Assert.Equal(1, result[0][0]);
+Assert.Null(result[1]);
+Assert.Equal(3, result[0][2]);
+```
+
+Important:
+
+> Mapping nullable arrays to named tuples or to instance properties will not work.
+
+
+### Mapping enums in a class, ints and strings
+
+- Class instance: map enums from 
+  - From ints 
+  - From strings, 
+  - From nullable ints 
+  - From nullable strings
+  - From string arrays
+  - From int arrays
+  - NOT from nullable arrays (of string or ints)
+
+- Simple values: 
+  - From ints 
+  - From strings, 
+  - From nullable ints 
+  - From nullable strings
+  - NOT from arrays (nullable or otherwise of any type)
+
+- Named Tuples
+
+
+### Internal improvements, new benchmark tests
+
+
+
 ## 3.3.13
 
 - Skip mappings for virtaul properties when mapping class or records now also applies to any generic type.

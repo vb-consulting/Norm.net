@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Norm.Interfaces;
 
 namespace Norm
 {
@@ -31,21 +30,21 @@ namespace Norm
         ///     Values are Text, StoredProcedure or TableDirect.
         ///</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm As(this DbConnection connection, CommandType type) => 
+        public static Norm As(this DbConnection connection, CommandType type) => 
             connection.GetNoOrmInstance().Clone().As(type);
         ///<summary>
         ///     Set command type to StoredProcedure for the connection commands and return new Norm instance.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm AsProcedure(this DbConnection connection) => 
+        public static Norm AsProcedure(this DbConnection connection) => 
             connection.As(CommandType.StoredProcedure);
         ///<summary>
         ///     Set command type to Text for the connection commands and return new Norm instance.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm AsText(this DbConnection connection) => 
+        public static Norm AsText(this DbConnection connection) => 
             connection.As(CommandType.Text);
         ///<summary>
         ///     Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
@@ -53,7 +52,7 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="timeout">Wait time in seconds.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm Timeout(this DbConnection connection, int timeout) => 
+        public static Norm Timeout(this DbConnection connection, int timeout) => 
             connection.GetNoOrmInstance().Clone().Timeout(timeout);
         ///<summary>
         ///     Sets the default cancellation token for all asynchronous commands for the connection.
@@ -61,14 +60,14 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="cancellationToken">The token to monitor for cancellation requests.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken) =>
+        public static Norm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken) =>
             connection.GetNoOrmInstance().Clone().WithCancellationToken(cancellationToken);
         ///<summary>
         ///     Sets the next command in prepared mode by calling Prepare for the next command.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static INorm Prepared(this DbConnection connection) =>
+        public static Norm Prepared(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().Prepared();
         ///<summary>
         ///     Next command will use PostgreSQL format function to parse parameter values.
@@ -77,7 +76,7 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
         ///<exception cref="ArgumentException">Connection is not PostgreSQL connection or command is in prepared mode.</exception>
-        public static INorm UsingPostgresFormatParamsMode(this DbConnection connection) =>
+        public static Norm UsingPostgresFormatParamsMode(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().UsingPostgresFormatParamsMode();
     }
 }

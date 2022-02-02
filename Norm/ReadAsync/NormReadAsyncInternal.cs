@@ -148,7 +148,7 @@ namespace Norm
                 await using var reader = await  cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -157,7 +157,7 @@ namespace Norm
                 await using var reader = await  cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
         }
@@ -170,7 +170,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -179,7 +179,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -201,7 +201,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -223,7 +223,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -245,7 +245,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                     cancellationToken?.ThrowIfCancellationRequested();
                 }
             }
@@ -267,9 +267,40 @@ namespace Norm
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    yield return reader.ToArray();
+                    yield return ReadToArray(reader);
                 }
             }
+        }
+
+        internal async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, bool isString, Type type)
+        {
+            if (await reader.IsDBNullAsync(ordinal))
+            {
+                return default;
+            }
+
+            if (type.IsEnum || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum))
+            {
+                var fieldType = reader.GetFieldType(ordinal);
+                if (fieldType == TypeExt.StringType)
+                {
+                    if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
+                    {
+                        return (T)Enum.Parse(type.GenericTypeArguments[0], reader.GetString(ordinal));
+                    }
+                    return (T)Enum.Parse(type, reader.GetString(ordinal));
+                }
+                if (fieldType == TypeExt.IntType)
+                {
+                    if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
+                    {
+                        return (T)Enum.ToObject(type.GenericTypeArguments[0], reader.GetInt32(ordinal));
+                    }
+                    return (T)Enum.ToObject(type, reader.GetInt32(ordinal));
+                }
+            }
+
+            return await reader.GetFieldValueAsync<T>(ordinal);
         }
     }
 }

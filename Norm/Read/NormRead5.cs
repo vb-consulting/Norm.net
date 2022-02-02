@@ -7,6 +7,11 @@ namespace Norm
 {
     public partial class Norm
     {
+        ///<summary>
+        ///     Maps command results to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -25,15 +30,20 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        /// Parse interpolated (formattable) command as database parameters and map results to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> ReadFormat<T1, T2, T3, T4, T5>(FormattableString command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -52,15 +62,21 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with positional parameter values to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters objects array.</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command, params object[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -79,15 +95,21 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command,
             params (string name, object value)[] parameters)
         {
@@ -107,15 +129,21 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command,
             params (string name, object value, DbType type)[] parameters)
         {
@@ -135,15 +163,24 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)), parameters);
             }
             throw new NormMultipleMappingsException(); ;
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and custom type for each parameter to enumerator of five value tuples (T1, T2, T3, T4, T5).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuple array - (string name, object value, object type).
+        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
+        ///</param>
+        ///<returns>IEnumerable enumerator of five value tuples (T1, T2, T3, T4, T5).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command,
             params (string name, object value, object type)[] parameters)
         {
@@ -163,11 +200,11 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple)
             {
                 return ReadInternalUnknowParamsType(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

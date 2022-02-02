@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
-using Norm.Interfaces;
 
 namespace Norm
 {
@@ -13,8 +12,8 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text.</param>
-        ///<returns>Disposable INormMultipleReader instance.</returns>
-        public static INormMultipleReader Multiple(this DbConnection connection, string command)
+        ///<returns>Disposable NormMultipleReader instance.</returns>
+        public static NormMultipleReader Multiple(this DbConnection connection, string command)
         {
             return connection.GetNoOrmInstance().Multiple(command);
         }
@@ -23,8 +22,8 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        ///<returns>Disposable INormMultipleReader instance.</returns>
-        public static INormMultipleReader MultipleFormat(this DbConnection connection, FormattableString command)
+        ///<returns>Disposable NormMultipleReader instance.</returns>
+        public static NormMultipleReader MultipleFormat(this DbConnection connection, FormattableString command)
         {
             return connection.GetNoOrmInstance().MultipleFormat(command);
         }
@@ -34,8 +33,8 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array.</param>
-        ///<returns>Disposable INormMultipleReader instance.</returns>
-        public static INormMultipleReader Multiple(this DbConnection connection, string command, params object[] parameters)
+        ///<returns>Disposable NormMultipleReader instance.</returns>
+        public static NormMultipleReader Multiple(this DbConnection connection, string command, params object[] parameters)
         {
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
@@ -46,7 +45,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
         ///<returns>Same DbConnection instance.</returns>
-        public static INormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        public static NormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
@@ -56,8 +55,8 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>Disposable INormMultipleReader instance.</returns>
-        public static INormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
+        ///<returns>Disposable NormMultipleReader instance.</returns>
+        public static NormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
@@ -70,8 +69,8 @@ namespace Norm
         ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
         ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
         ///</param>
-        ///<returns>Disposable INormMultipleReader instance.</returns>
-        public static INormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        ///<returns>Disposable NormMultipleReader instance.</returns>
+        public static NormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
         {
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
@@ -80,8 +79,8 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text.</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleAsync(this DbConnection connection, string command)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command);
         }
@@ -90,8 +89,8 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleFormatAsync(this DbConnection connection, FormattableString command)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleFormatAsync(this DbConnection connection, FormattableString command)
         {
             return connection.GetNoOrmInstance().MultipleFormatAsync(command);
         }
@@ -101,8 +100,8 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array.</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleAsync(this DbConnection connection, string command, params object[] parameters)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params object[] parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }
@@ -112,8 +111,8 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }
@@ -123,8 +122,8 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }
@@ -137,8 +136,8 @@ namespace Norm
         ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
         ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
         ///</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable INormMultipleReader instance.</returns>
-        public static ValueTask<INormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }

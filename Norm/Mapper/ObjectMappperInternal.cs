@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,58 +17,6 @@ namespace Norm
         private static T MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
             ref Dictionary<string, ushort> names,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
-        {
-            ushort i = 0;
-
-            foreach (var property in TypeCache<T>.GetProperties())
-            {
-                var (method, nullable, code, isArray, index, structType) = delegates[i];
-                if (method == null && structType != StructType.Enum)
-                {
-                    nullable = Nullable.GetUnderlyingType(property.type) != null;
-                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
-
-                    if (!names.TryGetValue(property.name, out index))
-                    {
-                        index = ushort.MaxValue;
-                    }
-                    delegates[i] = (method, nullable, code, isArray, index, structType);
-                }
-                i++;
-                if (index == ushort.MaxValue)
-                {
-                    continue;
-                }
-                if (method != null)
-                {
-                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
-                }
-                else if (structType == StructType.Enum)
-                {
-                    if (nullable)
-                    {
-                        if (tuple[index].value == null)
-                        {
-                            property.info.SetValue(instance, null);
-                        }
-                        else
-                        {
-                            property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)tuple[index].value));
-                        }
-                    }
-                    else
-                    {
-                        property.info.SetValue(instance, Enum.Parse(property.type, (string)tuple[index].value));
-                    }
-                }
-            }
-            return instance;
-        }
-
-        private static T MapInstance<T>(this (string name, object value)[] tuple,
-            ref T instance,
-            ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
         {
@@ -81,44 +30,96 @@ namespace Norm
                     (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     if (!names.TryGetValue(property.name, out index))
                     {
-                        index = ushort.MaxValue;
+                        continue;
                     }
-                    if (used.Contains(index))
+                    if (used != null && used.Contains(index))
                     {
                         continue;
                     }
                     delegates[i] = (method, nullable, code, isArray, index, structType);
                 }
                 i++;
-                if (index == ushort.MaxValue)
-                {
-                    continue;
-                }
                 if (method != null)
                 {
                     InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
                 }
                 else if (structType == StructType.Enum)
                 {
-                    if (nullable)
+                    SetEnum(tuple[index].value, instance, property, nullable, isArray);
+                }
+                if (used != null)
+                {
+                    used.Add(index);
+                }
+            }
+            return instance;
+        }
+
+        private static void SetEnum<T>(
+            object value, 
+            T instance, 
+            (Type type, string name, PropertyInfo info) property, 
+            bool nullable,
+            bool isArray)
+        {
+            if (value == null)
+            {
+                property.info.SetValue(instance, null);
+                return;
+            }
+            var type = isArray ? value?.GetType().GetElementType() : value?.GetType();
+            if (nullable)
+            {
+                if (type == TypeExt.StringType)
+                {
+                    property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)value));
+                }
+                else
+                {
+                    property.info.SetValue(instance, Enum.ToObject(property.type.GenericTypeArguments[0], value));
+                }
+            }
+            else
+            {
+                if (type == TypeExt.StringType)
+                {
+                    if (isArray)
                     {
-                        if (tuple[index].value == null)
+                        var elementType = property.type.GetElementType();
+                        var valueArray = (object[])value;
+                        var enumArray = Array.CreateInstance(elementType, valueArray.Length);
+                        for(int i = 0; i < valueArray.Length; i++)
                         {
-                            property.info.SetValue(instance, null);
+                            enumArray.SetValue(Enum.Parse(elementType, (string)valueArray[i]), i);
                         }
-                        else
-                        {
-                            property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)tuple[index].value));
-                        }
+                        
+                        property.info.SetValue(instance, enumArray);
                     }
                     else
                     {
-                        property.info.SetValue(instance, Enum.Parse(property.type, (string)tuple[index].value));
+                        property.info.SetValue(instance, Enum.Parse(property.type, (string)value));
                     }
                 }
-                used.Add(index);
+                else
+                {
+                    if (isArray)
+                    {
+                        var elementType = property.type.GetElementType();
+                        var valueArray = (int[])value;
+                        var enumArray = Array.CreateInstance(elementType, valueArray.Length);
+                        for (int i = 0; i < valueArray.Length; i++)
+                        {
+                            enumArray.SetValue(Enum.ToObject(elementType, valueArray[i]), i);
+                        }
+
+                        property.info.SetValue(instance, enumArray);
+                    }
+                    else
+                    {
+                        property.info.SetValue(instance, Enum.ToObject(property.type, value));
+                    }
+                }
             }
-            return instance;
         }
 
         private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
@@ -149,7 +150,7 @@ namespace Norm
             var type = property.PropertyType;
             if (property.GetMethod.IsVirtual)
             {
-                if (type.IsGenericType || (type.IsClass && type != StringType))
+                if (type.IsGenericType || (type.IsClass && type != TypeExt.StringType))
                 {
                     return (null, TypeCode.Empty, false, StructType.None);
                 }
@@ -157,16 +158,17 @@ namespace Norm
             TypeCode code;
             bool isArray;
 
-
             if (type.IsArray)
             {
                 isArray = true;
                 var elementType = type.GetElementType();
                 code = Type.GetTypeCode(elementType);
-                if (type.IsEnum || (nullable && type.GenericTypeArguments[0].IsEnum))
+                
+                if (elementType.IsEnum || (nullable && elementType.GenericTypeArguments[0].IsEnum))
                 {
                     return (null, code, isArray, StructType.Enum);
                 }
+                
                 if (code == TypeCode.Object)
                 {
                     if (elementType == TimeSpanType)
@@ -187,10 +189,12 @@ namespace Norm
             {
                 isArray = false;
                 code = nullable ? Type.GetTypeCode(type.GenericTypeArguments[0]) : Type.GetTypeCode(type);
+                
                 if (type.IsEnum || (nullable && type.GenericTypeArguments[0].IsEnum))
                 {
                     return (null, code, isArray, StructType.Enum);
                 }
+                
                 if (code == TypeCode.Object)
                 {
                     if (type == TimeSpanType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == TimeSpanType))

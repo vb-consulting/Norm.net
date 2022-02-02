@@ -8,10 +8,13 @@ namespace Norm
 {
     public static class TypeExt
     {
-        private static readonly Type TimeSpanType = typeof(TimeSpan);
-        private static readonly Type GuidType = typeof(Guid);
-        private static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
-        
+        internal static readonly Type TimeSpanType = typeof(TimeSpan);
+        internal static readonly Type GuidType = typeof(Guid);
+        internal static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
+        internal static readonly Type StringType = typeof(string);
+        internal static readonly Type IntType = typeof(int);
+        internal static readonly Type NullableIntType = typeof(int?);
+
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
             new[]
             {
@@ -37,25 +40,19 @@ namespace Norm
             return false;
         }
 
-        internal static (Type type, bool simple, bool valueTuple) GetMetadata(this Type type)
+        internal static (Type type, bool simple, bool valueTuple, bool isString) GetMetadata(this Type type)
         {
-            var simple = (type, true, false);
+            var simpleNotString = (type, true, false, false);
+            var simpleString = (type, true, false, true);
             if (type.IsPrimitive)
             {
-                return simple;
+                return simpleNotString;
             }
 
             TypeCode code;
             if (type.IsArray)
             {
-                var elementType = type.GetElementType();
-                code = Type.GetTypeCode(elementType);
-                if (code == TypeCode.Object && elementType == TimeSpanType
-                    || code == TypeCode.Object && elementType == GuidType
-                    || code == TypeCode.Object && elementType == DateTimeOffsetType)
-                {
-                    return simple;
-                }
+                return simpleNotString;
             }
             else
             {
@@ -63,7 +60,7 @@ namespace Norm
                 {
                     if (ValueTupleTypes.Contains(type.GetGenericTypeDefinition()))
                     {
-                        return (type, true, true);
+                        return (type, true, true, false);
                     }
 
                     code = Type.GetTypeCode(type.GenericTypeArguments[0]);
@@ -71,7 +68,7 @@ namespace Norm
                         || code == TypeCode.Object && type.GenericTypeArguments[0] == GuidType
                         || code == TypeCode.Object && type.GenericTypeArguments[0] == DateTimeOffsetType)
                     {
-                        return simple;
+                        return simpleNotString;
                     }
                 }
                 else
@@ -81,29 +78,29 @@ namespace Norm
                         || code == TypeCode.Object && type == GuidType
                         || code == TypeCode.Object && type == DateTimeOffsetType)
                     {
-                        return simple;
+                        return simpleNotString;
                     }
                 }
             }
 
             return code switch
             {
-                TypeCode.Int32 => simple,
-                TypeCode.DateTime => simple,
-                TypeCode.String => simple,
-                TypeCode.Boolean => simple,
-                TypeCode.Byte => simple,
-                TypeCode.Char => simple,
-                TypeCode.Decimal => simple,
-                TypeCode.Double => simple,
-                TypeCode.Int16 => simple,
-                TypeCode.Int64 => simple,
-                TypeCode.SByte => simple,
-                TypeCode.Single => simple,
-                TypeCode.UInt16 => simple,
-                TypeCode.UInt32 => simple,
-                TypeCode.UInt64 => simple,
-                _ => (type, false, false),
+                TypeCode.Int32 => simpleNotString,
+                TypeCode.DateTime => simpleNotString,
+                TypeCode.String => simpleString,
+                TypeCode.Boolean => simpleNotString,
+                TypeCode.Byte => simpleNotString,
+                TypeCode.Char => simpleNotString,
+                TypeCode.Decimal => simpleNotString,
+                TypeCode.Double => simpleNotString,
+                TypeCode.Int16 => simpleNotString,
+                TypeCode.Int64 => simpleNotString,
+                TypeCode.SByte => simpleNotString,
+                TypeCode.Single => simpleNotString,
+                TypeCode.UInt16 => simpleNotString,
+                TypeCode.UInt32 => simpleNotString,
+                TypeCode.UInt64 => simpleNotString,
+                _ => (type, false, false, false),
             };
         }
     }

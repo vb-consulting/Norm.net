@@ -50,15 +50,6 @@ namespace PostgreSqlUnitTests
             public string MyBar { get; init; }
         }
 
-        class ArraysTestClass
-        {
-            public int[] Id { get; set; }
-            public string[] Foo { get; set; }
-            public DateTime[] Day { get; set; }
-            public bool[] Bool { get; set; }
-            public string[] Bar { get; set; }
-        }
-
         class TestClassChangedPosition
         {
             public string Bar { get; init; }
@@ -252,40 +243,6 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void Map_Array_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read<ArraysTestClass>(ArraysQuery).ToList();
-
-            Assert.Single(result);
-
-            Assert.Equal(1, result[0].Id[0]);
-            Assert.Equal(2, result[0].Id[1]);
-            Assert.Equal(3, result[0].Id[2]);
-            Assert.Equal(4, result[0].Id[3]);
-
-            Assert.Equal("foo1", result[0].Foo[0]);
-            Assert.Equal("foo2", result[0].Foo[1]);
-            Assert.Equal("foo3", result[0].Foo[2]);
-            Assert.Equal("foo4", result[0].Foo[3]);
-
-            Assert.Equal(new DateTime(1977, 5, 19), result[0].Day[0]);
-            Assert.Equal(new DateTime(1978, 5, 19), result[0].Day[1]);
-            Assert.Equal(new DateTime(1979, 5, 19), result[0].Day[2]);
-            Assert.Equal(new DateTime(1980, 5, 19), result[0].Day[3]);
-
-            Assert.True(result[0].Bool[0]);
-            Assert.False(result[0].Bool[1]);
-            Assert.True(result[0].Bool[2]);
-            Assert.False(result[0].Bool[3]);
-
-            Assert.Equal("bar1", result[0].Bar[0]);
-            Assert.Equal("bar2", result[0].Bar[1]);
-            Assert.Equal("bar3", result[0].Bar[2]);
-            Assert.Equal("bar4", result[0].Bar[3]);
-        }
-
-        [Fact]
         public void Map_Changed_Position_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
@@ -426,61 +383,5 @@ namespace PostgreSqlUnitTests
                 Task.Factory.StartNew(task2), Task.Factory.StartNew(task2), Task.Factory.StartNew(task2)
                 );
         }
-
-        public enum TestEnum { Value1, Value2, Value3 }
-
-        public class TestEnumClass 
-        { 
-            public TestEnum Item1 { get; set; }
-            public TestEnum? Item2 { get; set; }
-        }
-
-        [Fact]
-        public void Map_Enum_Test_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-
-            var result = connection.Read<TestEnumClass>(@"
-                            select *
-                            from (
-                            values 
-                                ('Value1', 'Value1'),
-                                ('Value2', null),
-                                ('Value3', 'Value3')
-                            ) t(Item1, Item2)").ToArray();
-
-            Assert.Equal(3, result.Length);
-            Assert.Equal(TestEnum.Value1, result[0].Item1);
-            Assert.Equal(TestEnum.Value1, result[0].Item2);
-            Assert.Equal(TestEnum.Value2, result[1].Item1);
-            Assert.Null(result[1].Item2);
-            Assert.Equal(TestEnum.Value3, result[2].Item1);
-            Assert.Equal(TestEnum.Value3, result[2].Item2);
-        }
-
-        /*
-        [Fact]
-        public void Map_Enum_Values_Test_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-
-            var result = connection.Read<TestEnum, TestEnum?>(@"
-                            select *
-                            from (
-                            values 
-                                ('Value1', 'Value1'),
-                                ('Value2', null),
-                                ('Value3', 'Value3')
-                            ) t(Item1, Item2)").ToArray();
-
-            Assert.Equal(3, result.Length);
-            Assert.Equal(TestEnum.Value1, result[0].Item1);
-            Assert.Equal(TestEnum.Value1, result[0].Item2);
-            Assert.Equal(TestEnum.Value2, result[1].Item1);
-            Assert.Null(result[1].Item2);
-            Assert.Equal(TestEnum.Value3, result[2].Item1);
-            Assert.Equal(TestEnum.Value3, result[2].Item2);
-        }
-        */
     }
 }

@@ -78,10 +78,10 @@ namespace Norm
             return (T)info.clone.Invoke(info.instance);
         }
 
-        private static (Type type, bool simple, bool valueTuple) _metadata;
+        private static (Type type, bool simple, bool valueTuple, bool isString) _metadata;
         private static readonly object MetadataLocker = new object();
 
-        internal static (Type type, bool simple, bool valueTuple) GetMetadata()
+        internal static (Type type, bool simple, bool valueTuple, bool isString) GetMetadata()
         {
             if (_metadata.type != null)
             {

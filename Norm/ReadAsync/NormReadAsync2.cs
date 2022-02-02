@@ -6,6 +6,11 @@ namespace Norm
 {
     public partial class Norm
     {
+        ///<summary>
+        ///     Maps command results to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -21,12 +26,17 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull), 
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)));
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type), 
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        /// Parse interpolated (formattable) command as database parameters and map command results to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadFormatAsync<T1, T2>(FormattableString command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -42,12 +52,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull),
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)));
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with positional parameter values to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters objects array.</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command, params object[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -63,12 +79,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull),
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)), parameters);
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
             params (string name, object value)[] parameters)
         {
@@ -85,12 +107,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull),
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)), parameters);
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and DbType type for each parameter to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
             params (string name, object value, DbType type)[] parameters)
         {
@@ -107,12 +135,21 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull),
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)), parameters);
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and custom type for each parameter to async enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuple array - (string name, object value, object type).
+        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
+        ///</param>
+        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
         public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
             params (string name, object value, object type)[] parameters)
         {
@@ -129,8 +166,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalUnknownParamsTypeAsync(command, async r => (
-                    await r.GetFieldValueAsync<T1>(0, convertsDbNull),
-                    await r.GetFieldValueAsync<T2>(1, convertsDbNull)), parameters);
+                    await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
+                    await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

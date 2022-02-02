@@ -7,6 +7,11 @@ namespace Norm
 {
     public partial class Norm
     {
+        ///<summary>
+        ///     Maps command results to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command)
         {
@@ -30,19 +35,24 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        /// Parse interpolated (formattable) command as database parameters and map results to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> ReadFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             FormattableString command)
         {
@@ -66,20 +76,25 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
-
+        ///<summary>
+        ///     Maps command results with named parameter values to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command, params object[] parameters)
         {
@@ -103,19 +118,25 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command, params (string name, object value)[] parameters)
         {
@@ -139,19 +160,25 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command, params (string name, object value, DbType type)[] parameters)
         {
@@ -175,19 +202,28 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and custom type for each parameter to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuple array - (string name, object value, object type).
+        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
+        ///</param>
+        ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command, params (string name, object value, object type)[] parameters)
         {
@@ -211,15 +247,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalUnknowParamsType(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull),
-                    r.GetFieldValue<T3>(2, convertsDbNull),
-                    r.GetFieldValue<T4>(3, convertsDbNull),
-                    r.GetFieldValue<T5>(4, convertsDbNull),
-                    r.GetFieldValue<T6>(5, convertsDbNull),
-                    r.GetFieldValue<T7>(6, convertsDbNull),
-                    r.GetFieldValue<T8>(7, convertsDbNull),
-                    r.GetFieldValue<T9>(8, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type),
+                    GetFieldValue<T3>(r, 2, t3.isString, t3.type),
+                    GetFieldValue<T4>(r, 3, t4.isString, t4.type),
+                    GetFieldValue<T5>(r, 4, t5.isString, t5.type),
+                    GetFieldValue<T6>(r, 5, t6.isString, t6.type),
+                    GetFieldValue<T7>(r, 6, t7.isString, t7.type),
+                    GetFieldValue<T8>(r, 7, t8.isString, t8.type),
+                    GetFieldValue<T9>(r, 8, t9.isString, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

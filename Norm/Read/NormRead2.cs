@@ -7,6 +7,11 @@ namespace Norm
 {
     public partial class Norm
     {
+        ///<summary>
+        ///     Maps command results to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -22,12 +27,17 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull), 
-                    r.GetFieldValue<T2>(1, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type), 
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        /// Parse interpolated (formattable) command as database parameters and map results to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> ReadFormat<T1, T2>(FormattableString command)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -43,12 +53,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull)));
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with positional parameter values to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters objects array.</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command, params object[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -64,12 +80,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command, params (string name, object value)[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -85,12 +107,18 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command, params (string name, object value, DbType type)[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -106,12 +134,21 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
 
+        ///<summary>
+        ///     Maps command results with named parameter values and custom type for each parameter to enumerator of two value tuples (T1, T2).
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">
+        ///     Parameters name, value and type tuple array - (string name, object value, object type).
+        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
+        ///</param>
+        ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
         public IEnumerable<(T1, T2)> Read<T1, T2>(string command, params (string name, object value, object type)[] parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
@@ -127,8 +164,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalUnknowParamsType(command, r => (
-                    r.GetFieldValue<T1>(0, convertsDbNull),
-                    r.GetFieldValue<T2>(1, convertsDbNull)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

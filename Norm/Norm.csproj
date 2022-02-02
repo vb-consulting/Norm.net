@@ -13,12 +13,12 @@
     <Description>Fast, Modern and Extendible C# Data Access Library</Description>
     <Copyright>VB-Consulting</Copyright>
     <PackageTags>Norm;norm;data acceess;orm;no-orm;micro-orm;sql</PackageTags>
-    <Version>3.3.13</Version>
-    <AssemblyVersion>3.3.13</AssemblyVersion>
+    <Version>3.4.0</Version>
+    <AssemblyVersion>3.4.0</AssemblyVersion>
     <PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/CHANGES.md</PackageReleaseNotes>
     <PackageId>Norm.net</PackageId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <FileVersion>3.3.13</FileVersion>
+    <FileVersion>3.4.0</FileVersion>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -26,7 +26,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
-    <PackageVersion>3.3.13</PackageVersion>
+    <PackageVersion>3.4.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
