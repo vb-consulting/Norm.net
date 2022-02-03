@@ -57,19 +57,6 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values DbType type for each parameter.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
-        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
-            return this;
-        }
-
-        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
         ///</summary>
         ///<param name="command">SQL command text.</param>

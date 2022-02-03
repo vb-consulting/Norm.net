@@ -100,30 +100,6 @@ namespace Norm
         }
 
         ///<summary>
-        /// Maps command results with named parameter values and DbType type for each parameter to async enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
-        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>.
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            var t1 = TypeCache<T>.GetMetadata();
-            if (t1.valueTuple)
-            {
-                return ReadAsync(command, parameters).MapValueTuple<T>(t1.type);
-            }
-            if (!t1.simple)
-            {
-                return ReadAsync(command, parameters).Map<T>(t1.type);
-            }
-
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
-        }
-
-        ///<summary>
         /// Maps command results with named parameter values and custom type for each parameter to async enumerator of single values of type T.
         /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
         /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.

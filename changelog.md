@@ -81,7 +81,9 @@ Important:
   - NOT from arrays (nullable or otherwise of any type)
 
 - Named Tuples
+  - None
 
+### Removed Global SqlMapper for Custom Mappings
 
 ### Internal improvements, new benchmark tests
 

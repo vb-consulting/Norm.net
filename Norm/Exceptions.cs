@@ -51,4 +51,12 @@ Classes with classes, records with records, value tuples with value tuple and si
 For example pappings `Read<Class, int>` or `Read<int, Class>` are not permitted.")
         { }
     }
+
+    public class NormWrongTypeParameterException : NormException
+    {
+        public NormWrongTypeParameterException(string name) :
+            base($"Command parameter with following name: \"{name}\" has invalid database type. Database types must be enum like DbType or custom custom database provider enum like SqlDbType, or its int representation.")
+        { }
+    }
+
 }

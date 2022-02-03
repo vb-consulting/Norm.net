@@ -53,18 +53,6 @@ namespace Norm
             return connection;
         }
         ///<summary>
-        ///     Execute SQL command with named parameter values and DbType type for each parameter.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>Same DbConnection instance.</returns>
-        public static DbConnection Execute(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
-        {
-            connection.GetNoOrmInstance().Execute(command, parameters);
-            return connection;
-        }
-        ///<summary>
         ///     Execute SQL command with named parameter values and custom type for each parameter.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>

@@ -115,34 +115,6 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Execute SQL command with named parameter values and DbType type for each parameter and return disposable reader object for multiple result sets..
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader Multiple(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
-        }
-
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values and DbType type for each parameter and return disposable reader object for multiple result sets..
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public async ValueTask<NormMultipleReader> MultipleAsync(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this);
-            }
-            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this);
-        }
-
-        ///<summary>
         ///     Execute SQL command with named parameter values and custom type for each parameter and return disposable reader object for multiple result sets..
         ///</summary>
         ///<param name="command">SQL command text.</param>

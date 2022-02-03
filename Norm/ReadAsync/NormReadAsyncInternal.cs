@@ -96,28 +96,6 @@ namespace Norm
             }
         }
 
-        private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                while (await reader.ReadAsync(cancellationToken.Value))
-                {
-                    yield return await readerAction(reader);
-                    cancellationToken?.ThrowIfCancellationRequested();
-                }
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    yield return await readerAction(reader);
-                }
-            }
-        }
-
         private async IAsyncEnumerable<T> ReadInternalUnknownParamsTypeAsync<T>(string command, Func<DbDataReader, Task<T>> readerAction, params (string name, object value, object type)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
@@ -207,28 +185,6 @@ namespace Norm
         }
 
         private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, params (string name, object value)[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                while (await reader.ReadAsync(cancellationToken.Value))
-                {
-                    yield return ReadToArray(reader);
-                    cancellationToken?.ThrowIfCancellationRequested();
-                }
-            }
-            else
-            {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    yield return ReadToArray(reader);
-                }
-            }
-        }
-
-        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, params (string name, object value, DbType type)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)

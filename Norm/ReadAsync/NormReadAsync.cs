@@ -51,18 +51,6 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Maps command results with named parameter values and DbType type for each parameter to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            params (string name, object value, DbType type)[] parameters)
-        {
-            return ReadToArrayInternalAsync(command, parameters);
-        }
-
-        ///<summary>
         ///     Maps command results with named parameter values and custom type for each parameter to async enumerator of name and value tuple arrays.
         ///</summary>
         ///<param name="command">SQL command text.</param>

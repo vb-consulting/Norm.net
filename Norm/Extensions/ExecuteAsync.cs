@@ -54,18 +54,6 @@ namespace Norm
             return connection;
         }
         ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values DbType type for each parameter.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
-        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
-        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
-        {
-            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
-            return connection;
-        }
-        ///<summary>
         ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>

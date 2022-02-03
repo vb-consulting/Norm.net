@@ -43,7 +43,12 @@ namespace Norm
             param.Value = value ?? DBNull.Value;
             if (type != null)
             {
-                var paramTypeName = type.GetType().Name;
+                var paramType = type.GetType();
+                if (!paramType.IsEnum && paramType != TypeExt.IntType)
+                {
+                    throw new NormWrongTypeParameterException(name);
+                }
+                var paramTypeName = paramType.Name;
                 var propertyInfo = param.GetType().GetProperty(paramTypeName);
                 propertyInfo.SetValue(param, type);
             }
@@ -138,19 +143,6 @@ namespace Norm
             return cmd;
         }
 
-        public static DbCommand AddParameters(this DbCommand cmd, params (string name, object value, DbType type)[] parameters)
-        {
-            foreach (var (name, value, type) in parameters)
-            {
-                if (name != null)
-                {
-                    cmd.AddParamWithValue(name, value, type);
-                }
-            }
-
-            return cmd;
-        }
-
         public static DbCommand AddUnknownTypeParameters(this DbCommand cmd, params (string name, object value, object type)[] parameters)
         {
             foreach (var (name, value, type) in parameters)
@@ -207,7 +199,7 @@ namespace Norm
             return cmd.AddPgFormatParametersFromHash(parameters.ToDictionary(p => p.name, p => p.value));
         }
 
-        public static DbCommand AddPgFormatParameters(this DbCommand cmd, params (string name, object value, DbType type)[] parameters)
+        public static DbCommand AddPgFormatParameters(this DbCommand cmd, params (string name, object value, object type)[] parameters)
         {
             return cmd.AddPgFormatParametersFromHash(parameters.ToDictionary(p => p.name, p => p.value));
         }

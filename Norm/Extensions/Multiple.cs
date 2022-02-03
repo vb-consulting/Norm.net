@@ -50,17 +50,6 @@ namespace Norm
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
         ///<summary>
-        ///     Execute SQL command with named parameter values and DbType type for each parameter and return disposable reader object for multiple result sets..
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>Disposable NormMultipleReader instance.</returns>
-        public static NormMultipleReader Multiple(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
-        {
-            return connection.GetNoOrmInstance().Multiple(command, parameters);
-        }
-        ///<summary>
         ///     Execute SQL command with named parameter values and custom type for each parameter and return disposable reader object for multiple result sets..
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
@@ -113,17 +102,6 @@ namespace Norm
         ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
         public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
-        {
-            return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
-        }
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values and DbType type for each parameter and return disposable reader object for multiple result sets..
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }

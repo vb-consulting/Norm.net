@@ -63,21 +63,6 @@ namespace Norm
         }
 
         ///<summary>
-        /// Maps command results with named parameter values and DbType type for each parameter to enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
-        ///<returns>IEnumerable enumerator of single values of type T.</returns>
-        public static IEnumerable<T> Read<T>(this DbConnection connection, string command, params (string name, object value, DbType type)[] parameters)
-        {
-            return connection.GetNoOrmInstance().Read<T>(command, parameters);
-        }
-
-        ///<summary>
         /// Maps command results with named parameter values and custom type for each parameter to enumerator of single values of type T.
         /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
         /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.

@@ -56,19 +56,6 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Execute SQL command with named parameter values and DbType type for each parameter.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuples array - (string name, object value, DbType type).</param>
-        ///<returns>Norm instance.</returns>
-        public Norm Execute(string command, params (string name, object value, DbType type)[] parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            cmd.ExecuteNonQuery();
-            return this;
-        }
-
-        ///<summary>
         ///     Execute SQL command with named parameter values and custom type for each parameter.
         ///</summary>
         ///<param name="command">SQL command text.</param>

@@ -104,32 +104,6 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
-        ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public IEnumerable<(string name, object value)[]> Read(string command,
-            params (string name, object value, DbType type)[] parameters)
-        {
-            return ReadToArrayInternal(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values and DbType type for each parameter to enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">Parameters name, value and type tuple array - (string name, object value, DbType type).</param>
-        ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public IEnumerable<(string name, object value)[]> Read(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params (string name, object value, DbType type)[] parameters)
-        {
-            return ReadToArrayInternal(command, readerCallback, parameters);
-        }
-
-        ///<summary>
         ///     Maps command results with named parameter values and custom type for each parameter to enumerator of name and value tuple arrays.
         ///</summary>
         ///<param name="command">SQL command text.</param>
