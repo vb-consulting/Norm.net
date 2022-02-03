@@ -17,11 +17,11 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadAsync(command).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadAsync(command).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command).Map<T1, T2>(t1.type, t2.type);
             }
             else if (t1.simple && t2.simple)
             {
@@ -70,11 +70,11 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
             else if (t1.simple && t2.simple)
             {
@@ -98,11 +98,11 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
             else if (t1.simple && t2.simple)
             {
@@ -129,11 +129,11 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
             else if (t1.simple && t2.simple)
             {

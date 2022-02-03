@@ -184,7 +184,7 @@ namespace Norm
             return result;
         }
 
-        internal (string name, object value)[] ReadToArray(DbDataReader reader, 
+        internal (string name, object value)[] ReadToArray(DbDataReader reader,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             var count = reader.FieldCount;
@@ -204,6 +204,30 @@ namespace Norm
                 v = reader.GetValue(index);
                 if (v == DBNull.Value) r = null; else r = v;
                 result[index] = (n, r);
+            }
+            return result;
+        }
+
+        internal (string name, object value, bool set)[] ReadToArrayWithSet(DbDataReader reader,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            var count = reader.FieldCount;
+            object v;
+            object r;
+            string n;
+            (string name, object value, bool set)[] result = new (string name, object value, bool set)[count];
+            for (var index = 0; index < count; index++)
+            {
+                n = reader.GetName(index);
+                var callback = readerCallback((n, index, reader));
+                if (callback != null)
+                {
+                    result[index] = (n, callback == DBNull.Value ? null : callback, true);
+                    continue;
+                }
+                v = reader.GetValue(index);
+                if (v == DBNull.Value) r = null; else r = v;
+                result[index] = (n, r, false);
             }
             return result;
         }
@@ -237,6 +261,18 @@ namespace Norm
             }
 
             return reader.GetFieldValue<T>(ordinal);
+        }
+
+        internal T GetFieldValue<T>(DbDataReader reader, int ordinal, Type type, 
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            var name = reader.GetName(ordinal);
+            var callback = readerCallback((name, ordinal, reader));
+            if (callback == null)
+            {
+                return GetFieldValue<T>(reader, ordinal, type);
+            }
+            return (T)(callback == DBNull.Value ? null : callback);
         }
     }
 }

@@ -85,6 +85,8 @@ Important:
 
 ### Removed Global SqlMapper for Custom Mappings
 
+### Removed DbType overloads
+
 ### Internal improvements, new benchmark tests
 
 

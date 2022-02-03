@@ -19,11 +19,11 @@ namespace Norm
             var t1 = TypeCache<T>.GetMetadata();
             if (t1.valueTuple)
             {
-                return ReadAsync(command).MapValueTuple<T>(t1.type);
+                return ReadToArrayInternalAsync(command).MapValueTuple<T>(t1.type);
             }
             if (!t1.simple)
             {
-                return ReadAsync(command).Map<T>(t1.type);
+                return ReadToArrayInternalAsync(command).Map<T>(t1.type);
             }
 
             return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
@@ -65,11 +65,11 @@ namespace Norm
             var t1 = TypeCache<T>.GetMetadata();
             if (t1.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T>(t1.type);
+                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T>(t1.type);
             }
             if (!t1.simple)
             {
-                return ReadAsync(command, parameters).Map<T>(t1.type);
+                return ReadToArrayInternalAsync(command, parameters).Map<T>(t1.type);
             }
 
             return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
@@ -89,11 +89,11 @@ namespace Norm
             var t1 = TypeCache<T>.GetMetadata();
             if (t1.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T>(t1.type);
+                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T>(t1.type);
             }
             if (!t1.simple)
             {
-                return ReadAsync(command, parameters).Map<T>(t1.type);
+                return ReadToArrayInternalAsync(command, parameters).Map<T>(t1.type);
             }
 
             return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
@@ -116,11 +116,11 @@ namespace Norm
             var t1 = TypeCache<T>.GetMetadata();
             if (t1.valueTuple)
             {
-                return ReadAsync(command, parameters).MapValueTuple<T>(t1.type);
+                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).MapValueTuple<T>(t1.type);
             }
             if (!t1.simple)
             {
-                return ReadAsync(command, parameters).Map<T>(t1.type);
+                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).Map<T>(t1.type);
             }
 
             return ReadInternalUnknownParamsTypeAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);

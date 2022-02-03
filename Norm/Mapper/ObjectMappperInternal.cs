@@ -55,10 +55,107 @@ namespace Norm
             return instance;
         }
 
+        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
+        {
+            if (tuple == null)
+            {
+                return null;
+            }
+            var hashes = new HashSet<string>();
+            var result = new Dictionary<string, ushort>();
+            ushort i = 0;
+            foreach (var t in tuple)
+            {
+                var name = string.Concat(t.name.ToLower().Replace("_", ""));
+                if (hashes.Contains(name))
+                {
+                    i++;
+                    continue;
+                }
+                hashes.Add(name);
+                result[name] = i++;
+            }
+            return result;
+        }
+
+        /********************************************************************************************************/
+        private static T MapInstance<T>(this (string name, object value, bool set)[] tuple,
+            ref T instance,
+            ref Dictionary<string, ushort> names,
+            ref HashSet<ushort> used,
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
+        {
+            ushort i = 0;
+            foreach (var property in TypeCache<T>.GetProperties())
+            {
+                var (method, nullable, code, isArray, index, structType) = delegates[i];
+                if (method == null)
+                {
+                    nullable = Nullable.GetUnderlyingType(property.type) != null;
+                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
+                    if (!names.TryGetValue(property.name, out index))
+                    {
+                        continue;
+                    }
+                    if (used != null && used.Contains(index))
+                    {
+                        continue;
+                    }
+                    delegates[i] = (method, nullable, code, isArray, index, structType);
+                }
+                i++;
+                var current = tuple[index];
+                if (current.set)
+                {
+                    property.info.SetValue(instance, current.value);
+                }
+                else
+                {
+                    if (method != null)
+                    {
+                        InvokeSet(method, nullable, code, instance, current.value, isArray, structType);
+                    }
+                    else if (structType == StructType.Enum)
+                    {
+                        SetEnum(current.value, instance, property, nullable, isArray);
+                    }
+                }
+                if (used != null)
+                {
+                    used.Add(index);
+                }
+            }
+            return instance;
+        }
+
+        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value, bool set)[] tuple)
+        {
+            if (tuple == null)
+            {
+                return null;
+            }
+            var hashes = new HashSet<string>();
+            var result = new Dictionary<string, ushort>();
+            ushort i = 0;
+            foreach (var t in tuple)
+            {
+                var name = string.Concat(t.name.ToLower().Replace("_", ""));
+                if (hashes.Contains(name))
+                {
+                    i++;
+                    continue;
+                }
+                hashes.Add(name);
+                result[name] = i++;
+            }
+            return result;
+        }
+        /********************************************************************************************************/
+
         private static void SetEnum<T>(
-            object value, 
-            T instance, 
-            (Type type, string name, PropertyInfo info) property, 
+            object value,
+            T instance,
+            (Type type, string name, PropertyInfo info) property,
             bool nullable,
             bool isArray)
         {
@@ -88,11 +185,11 @@ namespace Norm
                         var elementType = property.type.GetElementType();
                         var valueArray = (object[])value;
                         var enumArray = Array.CreateInstance(elementType, valueArray.Length);
-                        for(int i = 0; i < valueArray.Length; i++)
+                        for (int i = 0; i < valueArray.Length; i++)
                         {
                             enumArray.SetValue(Enum.Parse(elementType, (string)valueArray[i]), i);
                         }
-                        
+
                         property.info.SetValue(instance, enumArray);
                     }
                     else
@@ -120,29 +217,6 @@ namespace Norm
                     }
                 }
             }
-        }
-
-        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
-        {
-            if (tuple == null)
-            {
-                return null;
-            }
-            var hashes = new HashSet<string>();
-            var result = new Dictionary<string, ushort>();
-            ushort i = 0;
-            foreach (var t in tuple)
-            {
-                var name = string.Concat(t.name.ToLower().Replace("_", ""));
-                if (hashes.Contains(name))
-                {
-                    i++;
-                    continue;
-                }
-                hashes.Add(name);
-                result[name] = i++;
-            }
-            return result;
         }
 
         private static (Delegate method, TypeCode code, bool isArray, StructType structType) CreateDelegate<T>(PropertyInfo property, bool nullable)
