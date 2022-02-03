@@ -15,10 +15,6 @@ namespace Norm
         private static int? _propertiesLen;
         private static volatile (Type type, string name, PropertyInfo info)[] _properties;
 
-        internal static Func<(string name, object value)[], T> CustomMapTuples { get; set; }
-        internal static Func<object[], T> CustomMapValues { get; set; }
-        internal static Func<IDictionary<string, object>, T> CustomMapDict { get; set; }
-
         public static Span<(Type type, string name, PropertyInfo info)> GetProperties()
         {
             if (_properties != null)

@@ -27,8 +27,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type), 
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)));
+                    GetFieldValue<T1>(r, 0, t1.type), 
+                    GetFieldValue<T2>(r, 1, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
@@ -53,8 +53,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)));
+                    GetFieldValue<T1>(r, 0, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.type)));
             }
             throw new NormMultipleMappingsException();
         }
@@ -80,8 +80,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
@@ -107,8 +107,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
@@ -134,8 +134,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
@@ -164,8 +164,8 @@ namespace Norm
             else if (t1.simple && t2.simple)
             {
                 return ReadInternalUnknowParamsType(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.isString, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.isString, t2.type)), parameters);
+                    GetFieldValue<T1>(r, 0, t1.type),
+                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

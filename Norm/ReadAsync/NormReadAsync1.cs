@@ -26,7 +26,7 @@ namespace Norm
                 return ReadAsync(command).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type));
+            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
         }
 
         ///<summary>
@@ -48,7 +48,7 @@ namespace Norm
                 return ReadFormatAsync(command).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type));
+            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
         }
 
         ///<summary>
@@ -72,7 +72,7 @@ namespace Norm
                 return ReadAsync(command, parameters).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type), parameters);
+            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
         }
 
         ///<summary>
@@ -96,7 +96,7 @@ namespace Norm
                 return ReadAsync(command, parameters).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type), parameters);
+            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
         }
 
         ///<summary>
@@ -120,7 +120,7 @@ namespace Norm
                 return ReadAsync(command, parameters).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type), parameters);
+            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
         }
 
         ///<summary>
@@ -147,7 +147,7 @@ namespace Norm
                 return ReadAsync(command, parameters).Map<T>(t1.type);
             }
 
-            return ReadInternalUnknownParamsTypeAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.isString, t1.type), parameters);
+            return ReadInternalUnknownParamsTypeAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
         }
     }
 }

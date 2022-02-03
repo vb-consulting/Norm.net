@@ -37,6 +37,17 @@ namespace Norm
             }
         }
 
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
         private IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
@@ -44,6 +55,17 @@ namespace Norm
             while (reader.Read())
             {
                 yield return ReadToArray(reader);
+            }
+        }
+
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
             }
         }
 
@@ -67,7 +89,20 @@ namespace Norm
             }
         }
 
-        private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value)[] parameters)
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params object[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
+        private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, 
+            params (string name, object value)[] parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
@@ -77,13 +112,26 @@ namespace Norm
             }
         }
 
-        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, params (string name, object value)[] parameters)
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, 
+            params (string name, object value)[] parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 yield return ReadToArray(reader);
+            }
+        }
+
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value)[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
             }
         }
 
@@ -97,13 +145,26 @@ namespace Norm
             }
         }
 
-        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, params (string name, object value, DbType type)[] parameters)
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, 
+            params (string name, object value, DbType type)[] parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 yield return ReadToArray(reader);
+            }
+        }
+
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value, DbType type)[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
             }
         }
 
@@ -127,6 +188,18 @@ namespace Norm
             }
         }
 
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternalUnknowParamsType(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value, object type)[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
         internal (string name, object value)[] ReadToArray(DbDataReader reader)
         {
             var count = reader.FieldCount;
@@ -144,7 +217,31 @@ namespace Norm
             return result;
         }
 
-        internal T GetFieldValue<T>(DbDataReader reader, int ordinal, bool isString, Type type)
+        internal (string name, object value)[] ReadToArray(DbDataReader reader, 
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            var count = reader.FieldCount;
+            object v;
+            object r;
+            string n;
+            (string name, object value)[] result = new (string name, object value)[count];
+            for (var index = 0; index < count; index++)
+            {
+                n = reader.GetName(index);
+                var callback = readerCallback((n, index, reader));
+                if (callback != null)
+                {
+                    result[index] = (n, callback == DBNull.Value ? null : callback);
+                    continue;
+                }
+                v = reader.GetValue(index);
+                if (v == DBNull.Value) r = null; else r = v;
+                result[index] = (n, r);
+            }
+            return result;
+        }
+
+        internal T GetFieldValue<T>(DbDataReader reader, int ordinal,Type type)
         {
             if (reader.IsDBNull(ordinal))
             {

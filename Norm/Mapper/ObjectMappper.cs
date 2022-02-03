@@ -9,42 +9,18 @@ namespace Norm
         internal static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, 
             Type type1)
         {
-            if (TypeCache<T>.CustomMapTuples != null)
+            var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+            Dictionary<string, ushort> names = null;
+            var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T>.GetPropertiesLength()];
+            foreach (var t in tuples)
             {
-                foreach (var t in tuples)
+                if (names == null)
                 {
-                    yield return TypeCache<T>.CustomMapTuples(t);
+                    names = GetNamesDictFromTuple(t);
                 }
-            }
-            else if (TypeCache<T>.CustomMapValues != null)
-            {
-                foreach (var t in tuples)
-                {
-                    yield return TypeCache<T>.CustomMapValues(t.Select(r => r.value).ToArray());
-                }
-            }
-            else if (TypeCache<T>.CustomMapDict != null)
-            {
-                foreach (var t in tuples)
-                {
-                    yield return TypeCache<T>.CustomMapDict(t.ToDictionary(r => r.name, r => r.value));
-                }
-            }
-            else
-            {
-                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
-                Dictionary<string, ushort> names = null;
-                var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T>.GetPropertiesLength()];
-                foreach (var t in tuples)
-                {
-                    if (names == null)
-                    {
-                        names = GetNamesDictFromTuple(t);
-                    }
-                    HashSet<ushort> used = null;
-                    var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                    yield return t.MapInstance(ref i1, ref names, ref used, ref delegates);
-                }
+                HashSet<ushort> used = null;
+                var i1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                yield return t.MapInstance(ref i1, ref names, ref used, ref delegates);
             }
         }
 

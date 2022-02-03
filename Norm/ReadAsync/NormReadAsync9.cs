@@ -34,15 +34,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)));
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)));
             }
             throw new NormMultipleMappingsException();
         }
@@ -75,15 +75,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)));
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)));
             }
             throw new NormMultipleMappingsException();
         }
@@ -117,15 +117,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)), parameters);
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }
@@ -159,15 +159,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)), parameters);
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
 
@@ -202,15 +202,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)), parameters);
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
 
@@ -248,15 +248,15 @@ namespace Norm
             else if (t1.simple && t2.simple && t3.simple && t4.simple && t5.simple && t6.simple && t7.simple && t8.simple && t9.simple)
             {
                 return ReadInternalUnknownParamsTypeAsync(command, async r => (
-                   await GetFieldValueAsync<T1>(r, 0, t1.isString, t1.type),
-                   await GetFieldValueAsync<T2>(r, 1, t2.isString, t2.type),
-                   await GetFieldValueAsync<T3>(r, 2, t3.isString, t3.type),
-                   await GetFieldValueAsync<T4>(r, 3, t4.isString, t4.type),
-                   await GetFieldValueAsync<T5>(r, 4, t5.isString, t5.type),
-                   await GetFieldValueAsync<T6>(r, 5, t6.isString, t6.type),
-                   await GetFieldValueAsync<T7>(r, 6, t7.isString, t7.type),
-                   await GetFieldValueAsync<T8>(r, 7, t8.isString, t8.type),
-                   await GetFieldValueAsync<T9>(r, 8, t9.isString, t9.type)), parameters);
+                   await GetFieldValueAsync<T1>(r, 0, t1.type),
+                   await GetFieldValueAsync<T2>(r, 1, t2.type),
+                   await GetFieldValueAsync<T3>(r, 2, t3.type),
+                   await GetFieldValueAsync<T4>(r, 3, t4.type),
+                   await GetFieldValueAsync<T5>(r, 4, t5.type),
+                   await GetFieldValueAsync<T6>(r, 5, t6.type),
+                   await GetFieldValueAsync<T7>(r, 6, t7.type),
+                   await GetFieldValueAsync<T8>(r, 7, t8.type),
+                   await GetFieldValueAsync<T9>(r, 8, t9.type)), parameters);
             }
             throw new NormMultipleMappingsException();
         }

@@ -272,7 +272,7 @@ namespace Norm
             }
         }
 
-        internal async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, bool isString, Type type)
+        internal async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, Type type)
         {
             if (await reader.IsDBNullAsync(ordinal))
             {
