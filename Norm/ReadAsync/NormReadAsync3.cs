@@ -24,14 +24,10 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
-            else if (t1.simple && t2.simple && t3.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type),
-                    await GetFieldValueAsync<T3>(r, 2, t3.type)));
-            }
-            return default;
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)));
         }
 
         ///<summary>
@@ -52,14 +48,10 @@ namespace Norm
             {
                 return ReadFormatAsync(command).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
-            else if (t1.simple && t2.simple && t3.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type),
-                    await GetFieldValueAsync<T3>(r, 2, t3.type)));
-            }
-            return default;
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)));
         }
 
         ///<summary>
@@ -81,14 +73,10 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
-            else if (t1.simple && t2.simple && t3.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type),
-                    await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
-            }
-            return default;
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
         }
 
         ///<summary>
@@ -111,14 +99,10 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
-            else if (t1.simple && t2.simple && t3.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type),
-                    await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
-            }
-            return default;
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
         }
 
         ///<summary>
@@ -144,14 +128,10 @@ namespace Norm
             {
                 return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
-            else if (t1.simple && t2.simple && t3.simple)
-            {
-                return ReadInternalUnknownParamsTypeAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type),
-                    await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
-            }
-            return default;
+            return ReadInternalUnknownParamsTypeAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)), parameters);
         }
     }
 }
