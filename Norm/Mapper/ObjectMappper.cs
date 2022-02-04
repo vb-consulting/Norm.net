@@ -11,7 +11,7 @@ namespace Norm
         {
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
             Dictionary<string, ushort> names = null;
-            var delegates = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T>.GetPropertiesLength()];
+            var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -32,8 +32,8 @@ namespace Norm
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -59,9 +59,9 @@ namespace Norm
             var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -91,10 +91,10 @@ namespace Norm
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -128,11 +128,11 @@ namespace Norm
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -170,12 +170,12 @@ namespace Norm
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -217,13 +217,13 @@ namespace Norm
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -269,14 +269,14 @@ namespace Norm
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
+            var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -326,15 +326,15 @@ namespace Norm
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
+            var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
+            var delegates9 = CreateDelegateArray(TypeCache<T9>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -388,16 +388,16 @@ namespace Norm
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
 ;
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
+            var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
+            var delegates9 = CreateDelegateArray(TypeCache<T9>.GetPropertiesLength());
+            var delegates10 = CreateDelegateArray(TypeCache<T10>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -455,17 +455,17 @@ namespace Norm
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T11>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
+            var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
+            var delegates9 = CreateDelegateArray(TypeCache<T9>.GetPropertiesLength());
+            var delegates10 = CreateDelegateArray(TypeCache<T10>.GetPropertiesLength());
+            var delegates11 = CreateDelegateArray(TypeCache<T11>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)
@@ -527,18 +527,18 @@ namespace Norm
             var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
 
             Dictionary<string, ushort> names = null;
-            var delegates1 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T1>.GetPropertiesLength()];
-            var delegates2 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T2>.GetPropertiesLength()];
-            var delegates3 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T3>.GetPropertiesLength()];
-            var delegates4 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T4>.GetPropertiesLength()];
-            var delegates5 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T5>.GetPropertiesLength()];
-            var delegates6 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T6>.GetPropertiesLength()];
-            var delegates7 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T7>.GetPropertiesLength()];
-            var delegates8 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T8>.GetPropertiesLength()];
-            var delegates9 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T9>.GetPropertiesLength()];
-            var delegates10 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T10>.GetPropertiesLength()];
-            var delegates11 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T11>.GetPropertiesLength()];
-            var delegates12 = new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[TypeCache<T12>.GetPropertiesLength()];
+            var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
+            var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
+            var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
+            var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
+            var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
+            var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
+            var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
+            var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
+            var delegates9 = CreateDelegateArray(TypeCache<T9>.GetPropertiesLength());
+            var delegates10 = CreateDelegateArray(TypeCache<T10>.GetPropertiesLength());
+            var delegates11 = CreateDelegateArray(TypeCache<T11>.GetPropertiesLength());
+            var delegates12 = CreateDelegateArray(TypeCache<T12>.GetPropertiesLength());
             foreach (var t in tuples)
             {
                 if (names == null)

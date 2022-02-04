@@ -49,7 +49,7 @@ namespace Norm
                     await GetFieldValueAsync<T11>(r, 10, t11.type),
                     await GetFieldValueAsync<T12>(r, 11, t12.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -95,7 +95,7 @@ namespace Norm
                     await GetFieldValueAsync<T11>(r, 10, t11.type),
                     await GetFieldValueAsync<T12>(r, 11, t12.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -143,7 +143,7 @@ namespace Norm
                     await GetFieldValueAsync<T11>(r, 10, t11.type),
                     await GetFieldValueAsync<T12>(r, 11, t12.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -191,7 +191,7 @@ namespace Norm
                     await GetFieldValueAsync<T11>(r, 10, t11.type),
                     await GetFieldValueAsync<T12>(r, 11, t12.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -242,7 +242,7 @@ namespace Norm
                     await GetFieldValueAsync<T11>(r, 10, t11.type),
                     await GetFieldValueAsync<T12>(r, 11, t12.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
     }
 }

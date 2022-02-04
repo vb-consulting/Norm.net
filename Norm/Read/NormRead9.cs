@@ -45,7 +45,7 @@ namespace Norm
                     GetFieldValue<T8>(r, 7, t8.type),
                     GetFieldValue<T9>(r, 8, t9.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -86,7 +86,7 @@ namespace Norm
                     GetFieldValue<T8>(r, 7, t8.type),
                     GetFieldValue<T9>(r, 8, t9.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -128,7 +128,7 @@ namespace Norm
                     GetFieldValue<T8>(r, 7, t8.type),
                     GetFieldValue<T9>(r, 8, t9.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -170,7 +170,7 @@ namespace Norm
                     GetFieldValue<T8>(r, 7, t8.type),
                     GetFieldValue<T9>(r, 8, t9.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         ///<summary>
@@ -215,7 +215,7 @@ namespace Norm
                     GetFieldValue<T8>(r, 7, t8.type),
                     GetFieldValue<T9>(r, 8, t9.type)), parameters);
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
     }
 }

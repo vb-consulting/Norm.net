@@ -23,13 +23,9 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type), 
-                    await GetFieldValueAsync<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type), 
+                await GetFieldValueAsync<T2>(r, 1, t2.type)));
         }
 
         ///<summary>
@@ -49,13 +45,9 @@ namespace Norm
             {
                 return ReadFormatAsync(command).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type)));
         }
 
         ///<summary>
@@ -76,13 +68,9 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
         }
 
         ///<summary>
@@ -104,13 +92,9 @@ namespace Norm
             {
                 return ReadToArrayInternalAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
         }
 
         ///<summary>
@@ -135,13 +119,9 @@ namespace Norm
             {
                 return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalUnknownParamsTypeAsync(command, async r => (
-                    await GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalUnknownParamsTypeAsync(command, async r => (
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
         }
     }
 }

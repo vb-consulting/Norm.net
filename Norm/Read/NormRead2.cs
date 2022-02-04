@@ -25,13 +25,9 @@ namespace Norm
             {
                 return ReadToArrayInternal(command).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type), 
-                    GetFieldValue<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)));
         }
 
         ///<summary>
@@ -51,15 +47,11 @@ namespace Norm
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayInternal(command, readerCallback).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternal(command, readerCallback).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type, readerCallback),
-                    GetFieldValue<T2>(r, 1, t2.type, readerCallback)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback)));
         }
 
         ///<summary>
@@ -73,19 +65,15 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadFormat(command).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternal(command).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadFormat(command).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternal(command).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)));
         }
 
         ///<summary>
@@ -101,19 +89,15 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadFormat(command, readerCallback).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternal(command, readerCallback).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadFormat(command, readerCallback).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternal(command, readerCallback).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type, readerCallback),
-                    GetFieldValue<T2>(r, 1, t2.type, readerCallback)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback)));
         }
 
         ///<summary>
@@ -134,13 +118,9 @@ namespace Norm
             {
                 return ReadToArrayInternal(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)), parameters);
         }
 
         ///<summary>
@@ -162,15 +142,11 @@ namespace Norm
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayInternal(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type, readerCallback),
-                    GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
         }
 
         ///<summary>
@@ -191,13 +167,9 @@ namespace Norm
             {
                 return ReadToArrayInternal(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)), parameters);
         }
 
         ///<summary>
@@ -219,15 +191,11 @@ namespace Norm
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayInternal(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type, readerCallback),
-                    GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
         }
 
         ///<summary>
@@ -251,13 +219,9 @@ namespace Norm
             {
                 return ReadToArrayInternalUnknowParamsType(command, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalUnknowParamsType(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type),
-                    GetFieldValue<T2>(r, 1, t2.type)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalUnknowParamsType(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)), parameters);
         }
 
         ///<summary>
@@ -282,15 +246,11 @@ namespace Norm
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayInternalUnknowParamsType(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternalUnknowParamsType(command, readerCallback, parameters).Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalUnknowParamsType(command, r => (
-                    GetFieldValue<T1>(r, 0, t1.type, readerCallback),
-                    GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalUnknowParamsType(command, r => (
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback)), parameters);
         }
     }
 }

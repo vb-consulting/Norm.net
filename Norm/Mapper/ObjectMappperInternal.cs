@@ -18,16 +18,14 @@ namespace Norm
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
             {
-                var (method, nullable, code, isArray, index, structType) = delegates[i];
-                if (method == null)
+                var (method, nullable, code, isArray, index, structType, created) = delegates[i];
+                if (!created)
                 {
-                    nullable = Nullable.GetUnderlyingType(property.type) != null;
-                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     if (!names.TryGetValue(property.name, out index))
                     {
                         continue;
@@ -36,7 +34,9 @@ namespace Norm
                     {
                         continue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index, structType);
+                    nullable = Nullable.GetUnderlyingType(property.type) != null;
+                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
+                    delegates[i] = (method, nullable, code, isArray, index, structType, true);
                 }
                 i++;
                 if (method != null)
@@ -83,16 +83,14 @@ namespace Norm
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType)[] delegates)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
             {
-                var (method, nullable, code, isArray, index, structType) = delegates[i];
-                if (method == null)
+                var (method, nullable, code, isArray, index, structType, created) = delegates[i];
+                if (!created)
                 {
-                    nullable = Nullable.GetUnderlyingType(property.type) != null;
-                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     if (!names.TryGetValue(property.name, out index))
                     {
                         continue;
@@ -101,24 +99,32 @@ namespace Norm
                     {
                         continue;
                     }
-                    delegates[i] = (method, nullable, code, isArray, index, structType);
-                }
-                i++;
-                var current = tuple[index];
-                if (current.set)
-                {
-                    property.info.SetValue(instance, current.value);
+                    i++;
+                    var current = tuple[index];
+                    if (current.set)
+                    {
+                        property.info.SetValue(instance, current.value);
+                        if (used != null)
+                        {
+                            used.Add(index);
+                        }
+                        continue;
+                    }
+                    nullable = Nullable.GetUnderlyingType(property.type) != null;
+                    (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
+                    delegates[i-1] = (method, nullable, code, isArray, index, structType, true);
                 }
                 else
                 {
-                    if (method != null)
-                    {
-                        InvokeSet(method, nullable, code, instance, current.value, isArray, structType);
-                    }
-                    else if (structType == StructType.Enum)
-                    {
-                        SetEnum(current.value, instance, property, nullable, isArray);
-                    }
+                    i++;
+                }
+                if (method != null)
+                {
+                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                }
+                else if (structType == StructType.Enum)
+                {
+                    SetEnum(tuple[index].value, instance, property, nullable, isArray);
                 }
                 if (used != null)
                 {
@@ -217,6 +223,13 @@ namespace Norm
                     }
                 }
             }
+        }
+
+        private static 
+            (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[]
+            CreateDelegateArray(int length)
+        {
+            return new (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[length];
         }
 
         private static (Delegate method, TypeCode code, bool isArray, StructType structType) CreateDelegate<T>(PropertyInfo property, bool nullable)

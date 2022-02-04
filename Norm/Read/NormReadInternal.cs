@@ -48,6 +48,17 @@ namespace Norm
             }
         }
 
+        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader, readerCallback);
+            }
+        }
+
         private IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
@@ -66,6 +77,17 @@ namespace Norm
             while (reader.Read())
             {
                 yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
+        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader, readerCallback);
             }
         }
 
@@ -98,6 +120,18 @@ namespace Norm
             while (reader.Read())
             {
                 yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
+        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params object[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader, readerCallback);
             }
         }
 
@@ -135,6 +169,18 @@ namespace Norm
             }
         }
 
+        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value)[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader, readerCallback);
+            }
+        }
+
         private IEnumerable<T> ReadInternalUnknowParamsType<T>(string command, Func<DbDataReader, T> readerAction, params (string name, object value, object type)[] parameters)
         {
             using var cmd = CreateCommand(command, parameters);
@@ -164,6 +210,18 @@ namespace Norm
             while (reader.Read())
             {
                 yield return ReadToArray(reader, readerCallback);
+            }
+        }
+
+        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalUnknowParamsType(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value, object type)[] parameters)
+        {
+            using var cmd = CreateCommand(command, parameters);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader, readerCallback);
             }
         }
 

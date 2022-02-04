@@ -50,7 +50,7 @@ namespace Norm
             }
             if (!t1.simple)
             {
-                return ReadToArrayInternal(command, readerCallback).Map<T>(t1.type);
+                return ReadToArrayWithSetInternal(command, readerCallback).Map<T>(t1.type);
             }
 
             return ReadInternal(command, r => GetFieldValue<T>(r, 0, t1.type, readerCallback));
@@ -96,7 +96,7 @@ namespace Norm
             }
             if (!t1.simple)
             {
-                return ReadToArrayInternal(command, readerCallback).Map<T>(t1.type);
+                return ReadToArrayWithSetInternal(command, readerCallback).Map<T>(t1.type);
             }
 
             return ReadInternal(command, r => GetFieldValue<T>(r, 0, t1.type, readerCallback));
@@ -147,7 +147,7 @@ namespace Norm
             }
             if (!t1.simple)
             {
-                return ReadToArrayInternal(command, readerCallback, parameters).Map<T>(t1.type);
+                return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T>(t1.type);
             }
 
             return ReadInternal(command, r => GetFieldValue<T>(r, 0, t1.type, readerCallback), parameters);
@@ -198,7 +198,7 @@ namespace Norm
             }
             if (!t1.simple)
             {
-                return ReadToArrayInternal(command, readerCallback, parameters).Map<T>(t1.type);
+                return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T>(t1.type);
             }
 
             return ReadInternal(command, r => GetFieldValue<T>(r, 0, t1.type, readerCallback), parameters);
@@ -255,7 +255,7 @@ namespace Norm
             }
             if (!t1.simple)
             {
-                return ReadToArrayInternalUnknowParamsType(command, readerCallback, parameters).Map<T>(t1.type);
+                return ReadToArrayWithSetInternalUnknowParamsType(command, readerCallback, parameters).Map<T>(t1.type);
             }
 
             return ReadInternalUnknowParamsType(command, r => GetFieldValue<T>(r, 0, t1.type, readerCallback), parameters);

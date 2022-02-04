@@ -206,32 +206,32 @@ namespace PostgreSqlUnitTests
             public int j { get; set; }
         }
 
-        //[Fact]
-        //public void Map_Callback_Class_Instance__Change_To_Complex_Type_Sync()
-        //{
-        //    using var connection = new NpgsqlConnection(fixture.ConnectionString);
-        //    var result = connection
-        //        .Read<ComplexTestClass>(@"select * from (values 
-        //            (1, 1),
-        //            (2, 2),
-        //            (3, 3)
-        //        ) t(i, j)", r => r.Ordinal switch
-        //        {
-        //            0 => new TestClass3 { SomeString = Convert.ToString(r.Reader.GetInt32(0) + 1) },
-        //            _ => null
-        //        }).ToArray();
+        [Fact]
+        public void Map_Callback_Class_Instance__Change_To_Complex_Type_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<ComplexTestClass>(@"select * from (values 
+                    (1, 1),
+                    (2, 2),
+                    (3, 3)
+                ) t(test, j)", r => r.Ordinal switch
+                {
+                    0 => new TestClass3 { SomeString = Convert.ToString(r.Reader.GetInt32(0) + 1) },
+                    _ => null
+                }).ToArray();
 
-        //    Assert.Equal(3, result.Length);
+            Assert.Equal(3, result.Length);
 
-        //    Assert.Equal("2", result[0].Test.SomeString);
-        //    Assert.Equal(1, result[0].j);
+            Assert.Equal("2", result[0].Test.SomeString);
+            Assert.Equal(1, result[0].j);
 
-        //    Assert.Equal("3", result[1].Test.SomeString);
-        //    Assert.Equal(2, result[1].j);
+            Assert.Equal("3", result[1].Test.SomeString);
+            Assert.Equal(2, result[1].j);
 
-        //    Assert.Equal("4", result[2].Test.SomeString);
-        //    Assert.Equal(3, result[2].j);
-        //}
+            Assert.Equal("4", result[2].Test.SomeString);
+            Assert.Equal(3, result[2].j);
+        }
 
         [Fact]
         public void Map_Callback_Named_Tuple_Values__Change_To_Complex_Type_Sync()
@@ -258,6 +258,33 @@ namespace PostgreSqlUnitTests
 
             Assert.Equal("4", result[2].Test.SomeString);
             Assert.Equal(3, result[2].j);
+        }
+
+        [Fact]
+        public void Map_Callback_Tuple_Values__Change_To_Complex_Type_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<TestClass3, int>(@"select * from (values 
+                    (1, 1),
+                    (2, 2),
+                    (3, 3)
+                ) t(i, j)", r => r.Ordinal switch
+                {
+                    0 => new TestClass3 { SomeString = Convert.ToString(r.Reader.GetInt32(0) + 1) },
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal("2", result[0].Item1.SomeString);
+            Assert.Equal(1, result[0].Item2);
+
+            Assert.Equal("3", result[1].Item1.SomeString);
+            Assert.Equal(2, result[1].Item2);
+
+            Assert.Equal("4", result[2].Item1.SomeString);
+            Assert.Equal(3, result[2].Item2);
         }
 
     }

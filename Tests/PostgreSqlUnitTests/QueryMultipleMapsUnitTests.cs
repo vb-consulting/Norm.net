@@ -184,27 +184,6 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
-        public void Map_Mistmatch1_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            Assert.Throws<NormMultipleMappingsException>(() => connection.Read<Record1, int>(Qurey).Single());
-        }
-
-        [Fact]
-        public void Map_Mistmatch2_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            Assert.Throws<NormMultipleMappingsException>(() => connection.Read<int, Record1>(Qurey).Single());
-        }
-
-        [Fact]
-        public void Map_Mistmatch3_Sync()
-        {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            Assert.Throws<NormMultipleMappingsException>(() => connection.Read<Record1, (int Id2, string Foo2, string Bar2)>(Qurey).Single());
-        }
-
-        [Fact]
         public void Map_Three_NamedTuples_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);

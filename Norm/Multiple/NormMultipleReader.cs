@@ -114,13 +114,9 @@ namespace Norm
             {
                 return Read().Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternal(r => (
-                    norm.GetFieldValue<T1>(r, 0, t1.type),
-                    norm.GetFieldValue<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternal(r => (
+                norm.GetFieldValue<T1>(r, 0, t1.type),
+                norm.GetFieldValue<T2>(r, 1, t2.type)));
         }
 
         /// <summary>
@@ -147,7 +143,7 @@ namespace Norm
                     norm.GetFieldValue<T2>(r, 1, t2.type),
                     norm.GetFieldValue<T3>(r, 2, t3.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -176,7 +172,7 @@ namespace Norm
                     norm.GetFieldValue<T3>(r, 2, t3.type),
                     norm.GetFieldValue<T4>(r, 3, t4.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -207,7 +203,7 @@ namespace Norm
                     norm.GetFieldValue<T4>(r, 3, t4.type),
                     norm.GetFieldValue<T5>(r, 4, t5.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -240,7 +236,7 @@ namespace Norm
                     norm.GetFieldValue<T5>(r, 4, t5.type),
                     norm.GetFieldValue<T6>(r, 5, t6.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -275,7 +271,7 @@ namespace Norm
                     norm.GetFieldValue<T6>(r, 5, t6.type),
                     norm.GetFieldValue<T7>(r, 6, t7.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -312,7 +308,7 @@ namespace Norm
                     norm.GetFieldValue<T7>(r, 6, t7.type),
                     norm.GetFieldValue<T8>(r, 7, t8.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -351,7 +347,7 @@ namespace Norm
                     norm.GetFieldValue<T8>(r, 7, t8.type),
                     norm.GetFieldValue<T9>(r, 8, t9.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -392,7 +388,7 @@ namespace Norm
                     norm.GetFieldValue<T9>(r, 8, t9.type),
                     norm.GetFieldValue<T10>(r, 9, t10.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -435,7 +431,7 @@ namespace Norm
                    norm.GetFieldValue<T10>(r, 9, t10.type),
                    norm.GetFieldValue<T11>(r, 10, t11.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -480,7 +476,7 @@ namespace Norm
                     norm.GetFieldValue<T11>(r, 10, t11.type),
                     norm.GetFieldValue<T12>(r, 11, t12.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -533,13 +529,9 @@ namespace Norm
             {
                 return ReadAsync().Map<T1, T2>(t1.type, t2.type);
             }
-            else if (t1.simple && t2.simple)
-            {
-                return ReadInternalAsync(async r => (
-                    await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                    await norm.GetFieldValueAsync<T2>(r, 1, t2.type)));
-            }
-            throw new NormMultipleMappingsException();
+            return ReadInternalAsync(async r => (
+                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
+                await norm.GetFieldValueAsync<T2>(r, 1, t2.type)));
         }
 
         /// <summary>
@@ -566,7 +558,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
                     await norm.GetFieldValueAsync<T3>(r, 2, t3.type)));
             }
-            throw new NormMultipleMappingsException(); ;
+            return default; ;
         }
 
         /// <summary>
@@ -595,7 +587,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
                     await norm.GetFieldValueAsync<T4>(r, 3, t4.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -626,7 +618,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
                     await norm.GetFieldValueAsync<T5>(r, 4, t5.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -659,7 +651,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
                     await norm.GetFieldValueAsync<T6>(r, 5, t6.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -694,7 +686,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
                     await norm.GetFieldValueAsync<T7>(r, 6, t7.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -731,7 +723,7 @@ namespace Norm
                    await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
                    await norm.GetFieldValueAsync<T8>(r, 7, t8.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -770,7 +762,7 @@ namespace Norm
                    await norm.GetFieldValueAsync<T8>(r, 7, t8.type),
                    await norm.GetFieldValueAsync<T9>(r, 8, t9.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -811,7 +803,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T9>(r, 8, t9.type),
                     await norm.GetFieldValueAsync<T10>(r, 9, t10.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -854,7 +846,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T10>(r, 9, t10.type),
                     await norm.GetFieldValueAsync<T11>(r, 10, t11.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         /// <summary>
@@ -899,7 +891,7 @@ namespace Norm
                     await norm.GetFieldValueAsync<T11>(r, 10, t11.type),
                     await norm.GetFieldValueAsync<T12>(r, 11, t12.type)));
             }
-            throw new NormMultipleMappingsException();
+            return default;
         }
 
         private IEnumerable<T> ReadInternal<T>(Func<DbDataReader, T> readerAction)

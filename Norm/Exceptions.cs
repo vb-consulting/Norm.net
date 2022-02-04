@@ -43,15 +43,6 @@ namespace Norm
         { }
     }
 
-    public class NormMultipleMappingsException : NormException
-    {
-        public NormMultipleMappingsException() :
-            base(@"Multiple mappings requires types of same category: 
-Classes with classes, records with records, value tuples with value tuple and simple types with simple types. 
-For example pappings `Read<Class, int>` or `Read<int, Class>` are not permitted.")
-        { }
-    }
-
     public class NormWrongTypeParameterException : NormException
     {
         public NormWrongTypeParameterException(string name) :

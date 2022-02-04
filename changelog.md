@@ -87,8 +87,9 @@ Important:
 
 ### Removed DbType overloads
 
-### Internal improvements, new benchmark tests
+### Removed NormMultipleMappingsException
 
+### Internal improvements, new benchmark tests
 
 
 ## 3.3.13
