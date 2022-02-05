@@ -39,11 +39,11 @@ namespace Norm
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
             {
-                return ReadFormatAsync(command).MapValueTuple<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command).MapValueTuple<T1, T2>(t1.type, t2.type);
             }
             else if (!t1.simple && !t2.simple)
             {
-                return ReadFormatAsync(command).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayInternalAsync(command).Map<T1, T2>(t1.type, t2.type);
             }
             return ReadInternalAsync(command, async r => (
                 await GetFieldValueAsync<T1>(r, 0, t1.type),
