@@ -46,16 +46,16 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadToArrayInternal(command).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadToArrayInternal(command, readerCallback).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
                 return ReadToArrayWithSetInternal(command, readerCallback).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(command, r => (
-                GetFieldValue<T1>(r, 0, t1.type),
-                GetFieldValue<T2>(r, 1, t2.type),
-                GetFieldValue<T3>(r, 2, t3.type)));
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback),
+                GetFieldValue<T3>(r, 2, t3.type, readerCallback)));
         }
 
         ///<summary>
@@ -96,16 +96,16 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadToArrayInternal(command).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadToArrayInternal(command, readerCallback).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
                 return ReadToArrayWithSetInternal(command, readerCallback).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(command, r => (
-                GetFieldValue<T1>(r, 0, t1.type),
-                GetFieldValue<T2>(r, 1, t2.type),
-                GetFieldValue<T3>(r, 2, t3.type)));
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback),
+                GetFieldValue<T3>(r, 2, t3.type, readerCallback)));
         }
 
         ///<summary>
@@ -149,16 +149,16 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadToArrayInternal(command, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadToArrayInternal(command, readerCallback, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
                 return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(command, r => (
-                GetFieldValue<T1>(r, 0, t1.type),
-                GetFieldValue<T2>(r, 1, t2.type),
-                GetFieldValue<T3>(r, 2, t3.type)), parameters);
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback),
+                GetFieldValue<T3>(r, 2, t3.type, readerCallback)), parameters);
         }
 
         ///<summary>
@@ -203,16 +203,16 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadToArrayInternal(command, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadToArrayInternal(command, readerCallback, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
                 return ReadToArrayWithSetInternal(command, readerCallback, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(command, r => (
-                GetFieldValue<T1>(r, 0, t1.type),
-                GetFieldValue<T2>(r, 1, t2.type),
-                GetFieldValue<T3>(r, 2, t3.type)), parameters);
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback),
+                GetFieldValue<T3>(r, 2, t3.type, readerCallback)), parameters);
         }
 
         ///<summary>
@@ -263,16 +263,16 @@ namespace Norm
             var t3 = TypeCache<T3>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple && t3.valueTuple)
             {
-                return ReadToArrayInternalUnknowParamsType(command, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
+                return ReadToArrayInternalUnknowParamsType(command, readerCallback, parameters).MapValueTuple<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             else if (!t1.simple && !t2.simple && !t3.simple)
             {
                 return ReadToArrayWithSetInternalUnknowParamsType(command, readerCallback, parameters).Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternalUnknowParamsType(command, r => (
-                GetFieldValue<T1>(r, 0, t1.type),
-                GetFieldValue<T2>(r, 1, t2.type),
-                GetFieldValue<T3>(r, 2, t3.type)), parameters);
+                GetFieldValue<T1>(r, 0, t1.type, readerCallback),
+                GetFieldValue<T2>(r, 1, t2.type, readerCallback),
+                GetFieldValue<T3>(r, 2, t3.type, readerCallback)), parameters);
         }
     }
 }
