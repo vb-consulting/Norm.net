@@ -78,7 +78,6 @@ namespace Norm
             return result;
         }
 
-        /********************************************************************************************************/
         private static T MapInstance<T>(this (string name, object value, bool set)[] tuple,
             ref T instance,
             ref Dictionary<string, ushort> names,
@@ -156,7 +155,6 @@ namespace Norm
             }
             return result;
         }
-        /********************************************************************************************************/
 
         private static void SetEnum<T>(
             object value,
