@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 
 namespace Norm
 {
@@ -12,6 +13,18 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command)
+        {
+            return ReadToArrayInternalAsync(command);
+        }
+
+        ///<summary>
+        ///     Maps command results to async enumerator of name and value tuple arrays.
+        ///</summary>
+        ///<param name="command">SQL command text.</param>
+        /// <param name="readerCallback"></param>
+        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
+        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             return ReadToArrayInternalAsync(command);
         }

@@ -140,6 +140,29 @@ namespace Norm
             }
         }
 
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                }
+            }
+        }
+
         private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
