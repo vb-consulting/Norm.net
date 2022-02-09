@@ -399,6 +399,7 @@ namespace Norm
         ///     Maps command results with named parameter values and custom type for each parameter to enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        /// <param name="readerCallback"></param>
         ///<param name="parameters">
         ///     Parameters name, value and type tuple array - (string name, object value, object type).
         ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
