@@ -185,6 +185,29 @@ namespace Norm
             }
         }
 
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            using var cmd = await CreateCommandAsync(command);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                }
+            }
+        }
+
         private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, params object[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
@@ -207,7 +230,32 @@ namespace Norm
             }
         }
 
-        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, params (string name, object value)[] parameters)
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params object[] parameters)
+        {
+            using var cmd = await CreateCommandAsync(command, parameters);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, 
+            params (string name, object value)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
@@ -229,7 +277,56 @@ namespace Norm
             }
         }
 
-        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalUnknownParamsTypeAsync(string command, params (string name, object value, object type)[] parameters)
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value)[] parameters)
+        {
+            using var cmd = await CreateCommandAsync(command, parameters);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalUnknownParamsTypeAsync(string command,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+            params (string name, object value, object type)[] parameters)
+        {
+            using var cmd = await CreateCommandAsync(command, parameters);
+            if (cancellationToken.HasValue)
+            {
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                while (await reader.ReadAsync(cancellationToken.Value))
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                    cancellationToken?.ThrowIfCancellationRequested();
+                }
+            }
+            else
+            {
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    yield return ReadToArray(reader, readerCallback);
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalUnknownParamsTypeAsync(string command,
+            params (string name, object value, object type)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
