@@ -69,14 +69,5 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm Prepared(this DbConnection connection) =>
             connection.GetNoOrmInstance().Clone().Prepared();
-        ///<summary>
-        ///     Next command will use PostgreSQL format function to parse parameter values.
-        ///     This allows for parametrized PostgreSQL scripts execution.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<returns>Norm instance that encapsulates the connection.</returns>
-        ///<exception cref="ArgumentException">Connection is not PostgreSQL connection or command is in prepared mode.</exception>
-        public static Norm UsingPostgresFormatParamsMode(this DbConnection connection) =>
-            connection.GetNoOrmInstance().Clone().UsingPostgresFormatParamsMode();
     }
 }

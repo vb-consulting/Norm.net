@@ -72,56 +72,5 @@ namespace Norm
                 await GetFieldValueAsync<T1>(r, 0, t1.type),
                 await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
         }
-
-        ///<summary>
-        ///     Maps command results with named parameter values to async enumerator of two value tuples (T1, T2).
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
-        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
-        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
-            params (string name, object value)[] parameters)
-        {
-            var t1 = TypeCache<T1>.GetMetadata();
-            var t2 = TypeCache<T2>.GetMetadata();
-            if (t1.valueTuple && t2.valueTuple)
-            {
-                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
-            }
-            else if (!t1.simple && !t2.simple)
-            {
-                return ReadToArrayInternalAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
-            }
-            return ReadInternalAsync(command, async r => (
-                await GetFieldValueAsync<T1>(r, 0, t1.type),
-                await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values and custom type for each parameter to async enumerator of two value tuples (T1, T2).
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">
-        ///     Parameters name, value and type tuple array - (string name, object value, object type).
-        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///</param>
-        ///<returns>IAsyncEnumerable async enumerator of two value tuples (T1, T2).</returns>
-        public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(string command,
-            params (string name, object value, object type)[] parameters)
-        {
-            var t1 = TypeCache<T1>.GetMetadata();
-            var t2 = TypeCache<T2>.GetMetadata();
-            if (t1.valueTuple && t2.valueTuple)
-            {
-                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).MapValueTuple<T1, T2>(t1.type, t2.type);
-            }
-            else if (!t1.simple && !t2.simple)
-            {
-                return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters).Map<T1, T2>(t1.type, t2.type);
-            }
-            return ReadInternalUnknownParamsTypeAsync(command, async r => (
-                await GetFieldValueAsync<T1>(r, 0, t1.type),
-                await GetFieldValueAsync<T2>(r, 1, t2.type)), parameters);
-        }
     }
 }

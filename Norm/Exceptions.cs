@@ -28,26 +28,4 @@ namespace Norm
             base("Too many named tuple members. Maximum is 14.")
         { }
     }
-
-    public class NormCannotUsePostgresFormatParamsModeOnPreparedStatementException : NormException
-    {
-        public NormCannotUsePostgresFormatParamsModeOnPreparedStatementException() :
-            base("Cannot set UsingPostgresFormatParamsMode on prepared statements.")
-        { }
-    }
-
-    public class NormCannotUsePostgresFormatParamsModeWhenNotPostgreSqlException : NormException
-    {
-        public NormCannotUsePostgresFormatParamsModeWhenNotPostgreSqlException() :
-            base("Cannot set UsingPostgresFormatParamsMode on connection other than PostgreSQL.")
-        { }
-    }
-
-    public class NormWrongTypeParameterException : NormException
-    {
-        public NormWrongTypeParameterException(string name) :
-            base($"Command parameter with following name: \"{name}\" has invalid database type. Database types must be enum like DbType or custom custom database provider enum like SqlDbType, or its int representation.")
-        { }
-    }
-
 }

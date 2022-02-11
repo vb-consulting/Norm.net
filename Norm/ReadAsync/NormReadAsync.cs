@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 
 namespace Norm
@@ -75,64 +74,6 @@ namespace Norm
             params object[] parameters)
         {
             return ReadToArrayInternalAsync(command, readerCallback, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            params (string name, object value)[] parameters)
-        {
-            return ReadToArrayInternalAsync(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params (string name, object value)[] parameters)
-        {
-            return ReadToArrayInternalAsync(command, readerCallback, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values and custom type for each parameter to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">
-        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
-        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            params (string name, object value, object type)[] parameters)
-        {
-            return ReadToArrayInternalUnknownParamsTypeAsync(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with named parameter values and custom type for each parameter to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">
-        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
-        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params (string name, object value, object type)[] parameters)
-        {
-            return ReadToArrayInternalUnknownParamsTypeAsync(command, readerCallback, parameters);
         }
     }
 }

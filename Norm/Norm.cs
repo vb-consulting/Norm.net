@@ -68,31 +68,6 @@ namespace Norm
         public Norm Prepared()
         {
             prepared = true;
-            if (prepared && usingPostgresFormatParamsMode)
-            {
-                throw new NormCannotUsePostgresFormatParamsModeOnPreparedStatementException();
-            }
-            return this;
-        }
-
-        ///<summary>
-        ///     Next command will use PostgreSQL format function to parse parameter values.
-        ///     This allows for parametrized PostgreSQL scripts execution.
-        ///</summary>
-        ///
-        ///<returns>Norm instance.</returns>on.
-        ///<exception cref="ArgumentException">Connection is not PostgreSQL connection or command is in prepared mode.</exception>.
-        public Norm UsingPostgresFormatParamsMode()
-        {
-            this.usingPostgresFormatParamsMode = true;
-            if (dbType != DatabaseType.Pg)
-            {
-                throw new NormCannotUsePostgresFormatParamsModeWhenNotPostgreSqlException();
-            }
-            if (prepared && usingPostgresFormatParamsMode)
-            {
-                throw new NormCannotUsePostgresFormatParamsModeOnPreparedStatementException();
-            }
             return this;
         }
     }

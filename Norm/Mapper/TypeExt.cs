@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -13,6 +14,7 @@ namespace Norm
         internal static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
         internal static readonly Type StringType = typeof(string);
         internal static readonly Type IntType = typeof(int);
+        internal static readonly Type DbParameterType = typeof(DbParameter);
 
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
             new[]

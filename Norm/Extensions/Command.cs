@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Norm
 {
@@ -23,20 +24,17 @@ namespace Norm
             return cmd;
         }
 
-        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value, DbType? type = null)
+        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
             param.Value = value ?? DBNull.Value;
-            if (type.HasValue)
-            {
-                param.DbType = type.Value;
-            }
+
             cmd.Parameters.Add(param);
             return cmd;
         }
 
-        public static DbCommand AddUnknownParamTypeWithValue(this DbCommand cmd, string name, object value, object type = null)
+        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value, object type)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
@@ -46,7 +44,7 @@ namespace Norm
                 var paramType = type.GetType();
                 if (!paramType.IsEnum && paramType != TypeExt.IntType)
                 {
-                    throw new NormWrongTypeParameterException(name);
+                    throw new ArgumentException($"Wrong parameter type: {name}");
                 }
                 var paramTypeName = paramType.Name;
                 var propertyInfo = param.GetType().GetProperty(paramTypeName);
@@ -66,12 +64,39 @@ namespace Norm
             {
                 foreach (var prop in type.GetProperties())
                 {
-                    var propMeta = prop.PropertyType.GetMetadata();
-                    if (propMeta.simple)
+                    if (prop.PropertyType.BaseType == TypeExt.DbParameterType || prop.PropertyType == TypeExt.DbParameterType)
                     {
-                        cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
-                        names.Add(prop.Name);
+                        cmd.Parameters.Add(prop.GetValue(p) as DbParameter);
+                    } 
+                    else
+                    {
+                        var propMeta = prop.PropertyType.GetMetadata();
+                        if (propMeta.valueTuple)
+                        {
+                            var tupleValue = prop.GetValue(p);
+                            var tupleType = tupleValue.GetType();
+                            var f1 = tupleType.GetField("Item1");
+                            var f2 = tupleType.GetField("Item2");
+                            if (f1 == null || f2 == null)
+                            {
+                                throw new ArgumentException(@$"Wrong parameter type: {prop.Name}.
+
+Tuples in parameter values are only allowed to set specific database type like this for example:
+new {{
+    id = (1, NpgsqlDbType.Integer),
+    name = (""some text"", DbType.String)
+}}
+");
+                            }
+                            cmd.AddParamWithValue(prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
+                        }
+                        else if (propMeta.simple)
+                        {
+                            cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
+                            names.Add(prop.Name);
+                        }
                     }
+                    
                 }
             }
             foreach (var p in parameters)
@@ -130,78 +155,9 @@ namespace Norm
             return cmd;
         }
 
-        public static DbCommand AddParameters(this DbCommand cmd, params (string name, object value)[] parameters)
-        {
-            foreach (var (name, value) in parameters)
-            {
-                if (name != null)
-                {
-                    cmd.AddParamWithValue(name, value);
-                }
-            }
-
-            return cmd;
-        }
-
-        public static DbCommand AddUnknownTypeParameters(this DbCommand cmd, params (string name, object value, object type)[] parameters)
-        {
-            foreach (var (name, value, type) in parameters)
-            {
-                if (name != null)
-                {
-                    cmd.AddUnknownParamTypeWithValue(name, value, type);
-                }
-            }
-
-            return cmd;
-        }
-
-        public static DbCommand AddParameters(this DbCommand cmd, Action<DbParameterCollection> parameters)
-        {
-            parameters?.Invoke(cmd.Parameters);
-            return cmd;
-        }
-
-        public static async Task<DbCommand> AddParametersAsync(this DbCommand cmd, Func<DbParameterCollection, Task> parameters)
-        {
-            if (parameters != null)
-            {
-                await parameters.Invoke(cmd.Parameters);
-            }
-
-            return cmd;
-        }
-
         public static Task<int> ExecuteNonQueryWithOptionalTokenAsync(this DbCommand cmd, CancellationToken? cancellationToken)
         {
             return cancellationToken.HasValue ? cmd.ExecuteNonQueryAsync(cancellationToken.Value) : cmd.ExecuteNonQueryAsync();
-        }
-
-        public static DbCommand AddPgFormatParameters(this DbCommand cmd, params object[] parameters)
-        {
-            var command = new StringBuilder();
-            var old = cmd.CommandText;
-            var paramIndex = 0;
-            int prevIndex = 0;
-            foreach (var (_, index, len) in EnumerateParams(old))
-            {
-                command.Append(old.Substring(prevIndex, index - prevIndex - 1));
-                command.Append(GetPgFormatExp(parameters[paramIndex++]));
-                prevIndex = index + len;
-            }
-            command.Append(old.Substring(prevIndex, old.Length - prevIndex - 1));
-            cmd.CommandText = command.ToString();
-            return cmd;
-        }
-
-        public static DbCommand AddPgFormatParameters(this DbCommand cmd, params (string name, object value)[] parameters)
-        {
-            return cmd.AddPgFormatParametersFromHash(parameters.ToDictionary(p => p.name, p => p.value));
-        }
-
-        public static DbCommand AddPgFormatParameters(this DbCommand cmd, params (string name, object value, object type)[] parameters)
-        {
-            return cmd.AddPgFormatParametersFromHash(parameters.ToDictionary(p => p.name, p => p.value));
         }
 
         private static readonly char[] NonCharacters =
@@ -246,49 +202,6 @@ namespace Norm
                     break;
                 index = endOf;
             }
-        }
-
-        private static string GetPgFormatExp(object value)
-        {
-            var code = Type.GetTypeCode(value.GetType());
-            return string.Concat("format('%s', '", value, "')", code switch
-            {
-                TypeCode.Boolean => "::boolean",
-                TypeCode.Byte => "::int",
-                TypeCode.Char => "",
-                TypeCode.DateTime => "::timestamp",
-                TypeCode.Decimal => "::decimal",
-                TypeCode.Double => "::float8",
-                TypeCode.Int16 => "::smallint",
-                TypeCode.Int32 => "::int",
-                TypeCode.Int64 => "::bigint",
-                TypeCode.SByte => "::smallint",
-                TypeCode.Single => "::smallint",
-                TypeCode.String => "",
-                TypeCode.UInt16 => "::int",
-                TypeCode.UInt32 => "::bigint",
-                TypeCode.UInt64 => "::bigint",
-                TypeCode.DBNull => "null",
-                TypeCode.Empty => "null",
-                TypeCode.Object => throw new ArgumentException("Parameter type object cannot be used this way."),
-                _ => throw new ArgumentOutOfRangeException()
-            });
-        }
-
-        private static DbCommand AddPgFormatParametersFromHash(this DbCommand cmd, IDictionary<string, object> paramHash)
-        {
-            var command = new StringBuilder();
-            var old = cmd.CommandText;
-            int prevIndex = 0;
-            foreach (var (name, index, len) in EnumerateParams(old))
-            {
-                command.Append(old.Substring(prevIndex, index - prevIndex - 1));
-                command.Append(GetPgFormatExp(paramHash[name]));
-                prevIndex = index + len;
-            }
-            command.Append(old.Substring(prevIndex, old.Length - prevIndex - 1));
-            cmd.CommandText = command.ToString();
-            return cmd;
         }
     }
 }
