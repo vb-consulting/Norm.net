@@ -79,9 +79,14 @@ namespace SqlServerUnitTests
                     from (
                         select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
-                    where first = @1 and bar = @2 and day = @3
+                    where first = @p1 and bar = @p2 and day = @p3
                     ",
-                ("3", new DateTime(1977, 5, 19)), ("2", "foo"), ("1", 1))
+                new
+                {
+                    p3 = new DateTime(1977, 5, 19),
+                    p2 = "foo",
+                    p1 = 1
+                })
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
 
@@ -134,9 +139,14 @@ namespace SqlServerUnitTests
                     from (
                         select 1 as first, 'foo' as bar, cast('1977-05-19' as date) as day, null as ""null""
                     ) as sub
-                    where first = @1 and bar = @2 and day = @3
+                    where first = @p1 and bar = @p2 and day = @p3
                     ",
-                ("3", new DateTime(1977, 5, 19)), ("2", "foo"), ("1", 1)).SingleAsync())
+                new
+                {
+                    p3 = new DateTime(1977, 5, 19),
+                    p2 = "foo",
+                    p1 = 1
+                }).SingleAsync())
                 .ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result.Values.First());

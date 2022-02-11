@@ -37,8 +37,14 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             var (s, i, b, d) = connection.Read<string, long, long, string>(
-                "select @s, @i, @b, @d", 
-                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"))
+                "select @s, @i, @b, @d",
+                new
+                {
+                    d = new DateTime(1977, 5, 19),
+                    b = true,
+                    i = 999,
+                    s = "str"
+                })
                 .Single();
 
             Assert.Equal("str", s);

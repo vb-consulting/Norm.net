@@ -79,9 +79,14 @@ namespace SQLiteUnitTests
                     from (
                         select 1 as first, 'foo' as bar, date('1977-05-19') as day, null as ""null""
                     ) as sub
-                    where first = @1 and bar = @2 and day = @3
+                    where first = @p1 and bar = @p2 and day = @p3
                     ",
-                ("3", "1977-05-19"), ("2", "foo"), ("1", 1))
+                new
+                {
+                    p3 = "1977-05-19",
+                    p2 = "foo",
+                    p1 = 1
+                })
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
 
@@ -134,9 +139,14 @@ namespace SQLiteUnitTests
                     from (
                         select 1 as first, 'foo' as bar, date('1977-05-19') as day, null as ""null""
                     ) as sub
-                    where first = @1 and bar = @2 and day = @3
+                    where first = @p1 and bar = @p2 and day = @p3
                     ",
-                ("3", "1977-05-19"), ("2", "foo"), ("1", 1)).SingleAsync()).ToDictionary(t => t.name, t => t.value);
+                new
+                {
+                    p3 = "1977-05-19",
+                    p2 = "foo",
+                    p1 = 1
+                }).SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal((long)1, result.Values.First());
             Assert.Equal("foo", result["bar"]);

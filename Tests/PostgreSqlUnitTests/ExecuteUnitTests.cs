@@ -82,7 +82,13 @@ namespace PostgreSqlUnitTests
             var result = connection
                 .Execute("begin")
                 .Execute("create table test (i int, t text, d date)")
-                .Execute("insert into test values (@i, @t, @d)", ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1))
+                .Execute("insert into test values (@i, @t, @d)", 
+                new
+                {
+                    d = new DateTime(1977, 5, 19),
+                    t = "foo",
+                    i = 1
+                })
                 .Read("select * from test")
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
@@ -136,7 +142,12 @@ namespace PostgreSqlUnitTests
             await connection.ExecuteAsync("begin");
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
             await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
-                ("d", new DateTime(1977, 5, 19)), ("t", "foo"), ("i", 1));
+                new
+                {
+                    d = new DateTime(1977, 5, 19),
+                    t = "foo",
+                    i = 1,
+                });
             var result = (await connection.ReadAsync("select * from test").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);

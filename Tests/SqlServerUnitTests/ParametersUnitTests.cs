@@ -40,7 +40,13 @@ namespace SqlServerUnitTests
             using var connection = new SqlConnection(fixture.ConnectionString);
             var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
                 "select @s, @i, @b, @d",
-                ("d", new DateTime(1977, 5, 19)), ("b", true), ("i", 999), ("s", "str"))
+                new
+                {
+                    d = new DateTime(1977, 5, 19),
+                    b = true,
+                    i = 999,
+                    s = "str"
+                })
                 .Single();
 
             Assert.Equal("str", s);

@@ -111,21 +111,24 @@ namespace SQLiteUnitTests
                           with cte(first, bar, day) as (
                              select * from (
                                     values
-                                        (@1, @t1, @d1),
-                                        (@2, @t2, @d2),
-                                        (@3, @t3, @d3)
+                                        (@p1, @t1, @d1),
+                                        (@p2, @t2, @d2),
+                                        (@p3, @t3, @d3)
                              )
                         )
                         select * from cte",
-                ("1", 1),
-                ("t1", "foo1"),
-                ("d1", new DateTime(1977, 5, 19)),
-                ("2", 2),
-                ("t2", "foo2"),
-                ("d2", new DateTime(1978, 5, 19)),
-                ("3", 3),
-                ("t3", "foo3"),
-                ("d3", new DateTime(1979, 5, 19)));
+                new
+                {
+                    @p1 = 1,
+                    t1 = "foo1",
+                    d1 = new DateTime(1977, 5, 19),
+                    @p2 = 2,
+                    t2 = "foo2",
+                    d2 = new DateTime(1978, 5, 19),
+                    @p3 = 3,
+                    t3 = "foo3",
+                    d3 = new DateTime(1979, 5, 19)
+                });
 
            AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
@@ -181,21 +184,24 @@ namespace SQLiteUnitTests
                      with cte(first, bar, day) as (
                              select * from (
                                     values
-                                        (@1, @t1, @d1),
-                                        (@2, @t2, @d2),
-                                        (@3, @t3, @d3)
+                                        (@p1, @t1, @d1),
+                                        (@p2, @t2, @d2),
+                                        (@p3, @t3, @d3)
                              )
                         )
                         select * from cte",
-            ("1", 1),
-            ("t1", "foo1"),
-            ("d1", new DateTime(1977, 5, 19)),
-            ("2", 2),
-            ("t2", "foo2"),
-            ("d2", new DateTime(1978, 5, 19)),
-            ("3", 3),
-            ("t3", "foo3"),
-            ("d3", new DateTime(1979, 5, 19)));
+            new
+            {
+                @p1 = 1,
+                t1 = "foo1",
+                d1 = new DateTime(1977, 5, 19),
+                @p2 = 2,
+                t2 = "foo2",
+                d2 = new DateTime(1978, 5, 19),
+                @p3 = 3,
+                t3 = "foo3",
+                d3 = new DateTime(1979, 5, 19)
+            });
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }

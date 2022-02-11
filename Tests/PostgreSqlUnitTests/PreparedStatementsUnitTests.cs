@@ -71,7 +71,11 @@ namespace PostgreSqlUnitTests
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            connection.Prepared().Read(statement, ("p1", 1), ("p2", 2), ("p3", 2)).Single();
+            connection.Prepared().Read(statement, 
+                new
+                {
+                    p1 = 1, p2 = 2, p3 = 3
+                }).Single();
 
             var result = connection.Read<string, uint[], bool>(
                 $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{expected}'").ToArray();

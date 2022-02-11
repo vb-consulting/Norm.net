@@ -81,7 +81,12 @@ namespace PostgreSqlUnitTests
         public void MapTwoRecords_NamedParams_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2"), ("id1", 1));
+            using var multiple = connection.Multiple(QueiresWithParams,
+                new
+                {
+                    bar2 = "bar2",
+                    id1 = 1
+                });
 
             var result1 = multiple.Read<Record1>().Single();
             var next1 = multiple.Next();
@@ -104,7 +109,12 @@ namespace PostgreSqlUnitTests
         public void MapTwoRecords_NamedTypedParams_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", DbType.String), ("id1", 1, DbType.Int32));
+            using var multiple = connection.Multiple(QueiresWithParams,
+                new
+                {
+                    bar2 = ("bar2", DbType.String),
+                    id1 = (1, DbType.Int32)
+                });
 
             var result1 = multiple.Read<Record1>().Single();
             var next1 = multiple.Next();
@@ -127,7 +137,12 @@ namespace PostgreSqlUnitTests
         public void MapTwoRecords_NamedCustomTypedParams_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            using var multiple = connection.Multiple(QueiresWithParams, ("bar2", "bar2", NpgsqlDbType.Varchar), ("id1", 1, NpgsqlDbType.Integer));
+            using var multiple = connection.Multiple(QueiresWithParams, 
+                new
+                {
+                    bar2 = ("bar2", NpgsqlDbType.Varchar),
+                    id1 = (1, NpgsqlDbType.Integer),
+                });
 
             var result1 = multiple.Read<Record1>().Single();
             var next1 = multiple.Next();
