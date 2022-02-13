@@ -287,5 +287,113 @@ namespace PostgreSqlUnitTests
             Assert.Equal(3, result[2].Item2);
         }
 
+        [Fact]
+        public void Map_Callback_Values_1_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<int>(@"select * from (values 
+                    (1),
+                    (2),
+                    (3)
+                ) t(f1)", r => r.Ordinal switch
+                {
+                    0 => r.Reader.GetInt32(0) + 1,
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+            Assert.Equal(2, result[0]);
+            Assert.Equal(3, result[1]);
+            Assert.Equal(4, result[2]);
+        }
+
+        [Fact]
+        public void Map_Callback_Values_3_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<int, int, int>(@"select * from (values 
+                    (1, 1, 1),
+                    (2, 2, 2),
+                    (3, 3, 3)
+                ) t(f1, f2, f3)", r => r.Ordinal switch
+                {
+                    2 => r.Reader.GetInt32(r.Ordinal) + 1,
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+            Assert.Equal(2, result[0].Item3);
+            Assert.Equal(3, result[1].Item3);
+            Assert.Equal(4, result[2].Item3);
+        }
+
+        class TestClass33
+        {
+            public int F1 { get; set; }
+            public int F2 { get; set; }
+            public int F3 { get; set; }
+        }
+
+        [Fact]
+        public void Map_Callback_Instance_3_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<TestClass33>(@"select * from (values 
+                    (1, 1, 1),
+                    (2, 2, 2),
+                    (3, 3, 3)
+                ) t(f1, f2, f3)", r => r.Ordinal switch
+                {
+                    2 => r.Reader.GetInt32(r.Ordinal) + 1,
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(1, result[0].F1);
+            Assert.Equal(2, result[1].F1);
+            Assert.Equal(3, result[2].F1);
+
+            Assert.Equal(1, result[0].F2);
+            Assert.Equal(2, result[1].F2);
+            Assert.Equal(3, result[2].F2);
+
+            Assert.Equal(2, result[0].F3);
+            Assert.Equal(3, result[1].F3);
+            Assert.Equal(4, result[2].F3);
+        }
+
+        [Fact]
+        public async Task Map_Callback_Instance_3_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = await connection
+                .ReadAsync<TestClass33>(@"select * from (values 
+                    (1, 1, 1),
+                    (2, 2, 2),
+                    (3, 3, 3)
+                ) t(f1, f2, f3)", r => r.Ordinal switch
+                {
+                    2 => r.Reader.GetInt32(r.Ordinal) + 1,
+                    _ => null
+                }).ToArrayAsync();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(1, result[0].F1);
+            Assert.Equal(2, result[1].F1);
+            Assert.Equal(3, result[2].F1);
+
+            Assert.Equal(1, result[0].F2);
+            Assert.Equal(2, result[1].F2);
+            Assert.Equal(3, result[2].F2);
+
+            Assert.Equal(2, result[0].F3);
+            Assert.Equal(3, result[1].F3);
+            Assert.Equal(4, result[2].F3);
+        }
     }
 }

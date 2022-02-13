@@ -104,6 +104,7 @@ namespace PostgreSqlUnitTests
             Assert.True(tableMissing);
         }
 
+        [Fact]
         public async Task Execute_Format_Test_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);

@@ -66,6 +66,7 @@ namespace PostgreSqlUnitTests
         {
             using var conn = new NpgsqlConnection(config.Default);
             using var cmd = new NpgsqlCommand(command, conn);
+            cmd.CommandTimeout = 60 * 5; // 5 mins
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();

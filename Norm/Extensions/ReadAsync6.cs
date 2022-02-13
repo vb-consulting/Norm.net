@@ -74,6 +74,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
+        /// <param name="readerCallback"></param>
         ///<param name="parameters">Parameters objects array.</param>
         ///<returns>IAsyncEnumerable async enumerator of six value tuples (T1, T2, T3, T4, T5, T6).</returns>
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(this DbConnection connection, 

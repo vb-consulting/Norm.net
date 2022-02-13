@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using BenchmarkDotNet.Attributes;
 using Npgsql;
 using PostgreSqlUnitTests;
-//using DapperQuery = Dapper.SqlMapper;
+
 using Dapper;
 using Norm;
 
@@ -30,7 +26,7 @@ namespace Benchmarks6
 
     [KeepBenchmarkFiles]
     [MarkdownExporter]
-    [MarkdownExporterAttribute.GitHub]    
+    [MarkdownExporterAttribute.GitHub]
     public class Benchmarks
     {
         private static string GetQuery(int records)
@@ -122,6 +118,42 @@ namespace Benchmarks6
         }
 
         [Benchmark()]
+        public void Norm_PocoClass_Instances_ReaderCallback()
+        {
+            foreach (var i in connection.Read<PocoClass>(query, o => o.Ordinal switch
+            {
+                0 => o.Reader.GetInt32(o.Ordinal),
+                _ => null
+            }))
+            {
+            }
+        }
+
+        [Benchmark()]
+        public void Norm_Tuples_ReaderCallback()
+        {
+            foreach (var i in connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query, o => o.Ordinal switch
+            {
+                0 => o.Reader.GetInt32(o.Ordinal),
+                _ => null
+            }))
+            {
+            }
+        }
+
+        [Benchmark()]
+        public void Norm_Named_Tuples_ReaderCallback()
+        {
+            foreach (var i in connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query, o => o.Ordinal switch
+            {
+                0 => o.Reader.GetInt32(o.Ordinal),
+                _ => null
+            }))
+            {
+            }
+        }
+
+        [Benchmark()]
         public void Command_Reader()
         {
             if (connection.State != System.Data.ConnectionState.Open)
@@ -132,16 +164,19 @@ namespace Benchmarks6
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var id1 = reader.GetInt32(0);
-                var foo1 = reader.GetString(1);
-                var bar1 = reader.GetString(2);
-                var dateTime1 = reader.GetDateTime(3);
-                var id2 = reader.GetInt32(4);
-                var foo2 = reader.GetString(5);
-                var bar2 = reader.GetString(6);
-                var dateTime2 = reader.GetDateTime(7);
-                var longFooBar = reader.GetString(8);
-                var isFooBar = reader.GetBoolean(9);
+                var instance = new PocoClass
+                {
+                    Id1 = reader.GetInt32(0),
+                    Foo1 = reader.GetString(1),
+                    Bar1 = reader.GetString(2),
+                    DateTime1 = reader.GetDateTime(3),
+                    Id2 = reader.GetInt32(4),
+                    Foo2 = reader.GetString(5),
+                    Bar2 = reader.GetString(6),
+                    DateTime2 = reader.GetDateTime(7),
+                    LongFooBar = reader.GetString(8),
+                    IsFooBar = reader.GetBoolean(9),
+                };
             }
         }
     }
