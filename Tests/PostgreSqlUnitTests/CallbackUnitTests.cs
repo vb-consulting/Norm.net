@@ -48,6 +48,33 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public void Map_Callback_By_Name_Values_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<int, int>(@"select * from (values 
+                    (1, 1),
+                    (2, 2),
+                    (3, 3)
+                ) t(i, j)", r => r.Name switch
+                {
+                    "i" => r.Reader.GetInt32(0) + 1,
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(2, result[0].Item1);
+            Assert.Equal(1, result[0].Item2);
+
+            Assert.Equal(3, result[1].Item1);
+            Assert.Equal(2, result[1].Item2);
+
+            Assert.Equal(4, result[2].Item1);
+            Assert.Equal(3, result[2].Item2);
+        }
+
+        [Fact]
         public void Map_Callback_Values__Change_Type_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
