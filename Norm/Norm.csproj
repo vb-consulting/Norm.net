@@ -43,6 +43,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="https:\github.com\vb-consulting\Norm.net#readme" />
   </ItemGroup>
 
 </Project>

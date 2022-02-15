@@ -404,6 +404,7 @@ var result1 = connection.Read<(int?[] Ints, string[] Strings)>(query r => r.Ordi
     0 => r.Reader.GetFieldValue<int?[]>(0),
     _ => null
 });
+```
 
 ##  **Mapping to enum types improvements**
 
@@ -412,7 +413,10 @@ Mapping to enums is a crucial task for any database mapper, but it requires spec
 On the database side, enums can be either text or an integer and to map them to enum types requires special parsing.
 
 In previous versions mapping to enums on instance properties from the database, text was added. 
-This version expanded enum mapping greatly. Now, it is possible to:
+
+This version expanded enum mapping greatly. 
+
+Now, it is possible to:
 
 - Map from int value to enum for instance properties.
 - Map from nullable int value to nullable enum for instance properties.
@@ -424,9 +428,7 @@ This version expanded enum mapping greatly. Now, it is possible to:
 - Map from nullable int value to nullable enum for simple values.
 - Map from string array value to enum array for simple values.
 - Map from int array value to enum array for simple values.
-- Map from string array containing null values to nullable enum array for simple values.
-- Map from an int array containing null values value to nullable enum array for simple values.
--
+
 However, the following mappings are still not available.
 
 - Any array containing nulls to nullable enum for instance properties.
@@ -437,14 +439,7 @@ To successfully overcome these limitations, a new feature with a reader callback
 
 Here is the full feature grid for enum mappings:
 
-| | text → enum | int → enum | text containing nulls → nullable enum | int containing nulls → nullable enum | text array → enum array | int array → enum array | text array containing nulls → nullable enum array | int array containing nulls → nullable enum array |
-| - | ----------- | ---------- | ------------------------------------- | ------------------------------------ | ----------------------- | ---------------------- | ------------------------------------------------- | ------------------------------------------------ |
-| instance mapping `Read<ClassOrRecordType1, ClassOrRecordType2, ClassOrRecordType3>` | YES | YES | YES | YES | YES | YES | NO | NO |
-| simple value mapping `Read<int, string, DateTime>` | YES | YES | YES | YES | YES | YES | YES | YES |
-| name enum mapping `Read<(int Field1, string Field3, DateTime Field3)>` | NO | NO | NO | NO | NO | NO | NO | NO |
-
-
-| | instance mapping `Read<ClassOrRecordType1, ClassOrRecordType2, ClassOrRecordType3>` | simple value mapping `Read<int, string, DateTime>` | name enum mapping `Read<(int Field1, string Field3, DateTime Field3)>` |
+| | instance mapping `Read<ClassOrRecordType1, ClassOrRecordType2, ClassOrRecordType3>` | simple value mapping `Read<int, string, DateTime>` | named tuple mapping `Read<(int Field1, string Field3, DateTime Field3)>` |
 | - | - | - | - |
 | text → enum | YES | YES | NO |
 | int → enum | YES | YES | NO |
@@ -452,5 +447,63 @@ Here is the full feature grid for enum mappings:
 | int containing nulls → nullable enum | YES | YES | NO |
 | text array → enum array | YES | YES | NO |
 | int array → enum array | YES | YES | NO |
-| text array containing nulls → nullable enum array | NO | YES | NO |
-| int array containing nulls → nullable enum array | NO | YES | NO |
+| text array containing nulls → nullable enum array | NO | NO | NO |
+| int array containing nulls → nullable enum array | NO | NO | NO |
+
+
+To overcome these limitations, use new feature with a reader callback. Here are some examples:
+
+```csharp
+var result = connection.Read<(TestEnum Enum1, TestEnum Enum2)>(@"
+select *
+from (
+values 
+    ('Value1', 'Value3'),
+    ('Value2', 'Value2'),
+    ('Value3', 'Value1')
+) t(Enum1, Enum2)", r => Enum.Parse<TestEnum>(r.Reader.GetFieldValue<string>(r.Ordinal))).ToArray();
+```
+
+```csharp
+var result = connection.Read<TestEnum?[]>(@"
+select array_agg(e) as MyEnums
+from (
+values 
+    (0),
+    (null),
+    (2)
+) t(e)", r =>
+{
+    var result = new List<TestEnum?>();
+    foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
+    {
+        if (value is null)
+        {
+            result.Add(null);
+        }
+        else
+        {
+            result.Add((TestEnum?)Enum.ToObject(typeof(TestEnum), value));
+        }
+    }
+    return result.ToArray();
+}).ToArray();
+```
+
+## **Breaking change: `SqlMapper` global class removed**
+
+`SqlMapper` global class used to be previously used to inject custom mapping to the mapper.
+
+This is no longer necessary since there is a reader callback overload for each `Read` extension. 
+
+See examples above.
+
+## **Timeout extension marked as obsolete**
+
+`Timeout` is extension marked as obsolete, altough it will still work.
+
+Instead, `WithCommandTimeout` which has much more precise and consistent naming should be used.
+
+## **Many other internal improvements**
+
+

@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Tests\PostgreSqlUnitTests\PostgreSqlUnitTests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BenchmarkDotNet.Artifacts\results\" />
+  </ItemGroup>
+
 </Project>

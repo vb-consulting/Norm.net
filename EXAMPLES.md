@@ -1,48 +1,5 @@
 # Norm.net Data Access at a glance
 
-- [Prerequisites and Notes](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#prerequisites-and-notes)
-- [Execution](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#execution)
-  - [Simple execution](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-execution)
-  - [Chaining calls](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#chaining-calls)
-- [Single row mappings](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#single-row-mappings)
-  - [Single value](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#single-value)
-  - [Multiple value mappings](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-value-mappings)
-  - [ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#array-types-postgresql-only)
-  - [Named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#named-tuples)
-  - [Multiple named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-named-tuples)
-  - [Named Tuples with ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#named-tuples-with-array-types-postgresql-only)
-  - [Class instance properties](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instance-properties)
-  - [Class instance properties mapping with different naming styles (different case, snake case)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instance-properties-mapping-with-different-naming-styles-different-case-snake-case)
-  - [Ignored class instance properties](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#ignored-class-instance-properties)
-  - [Multiple class instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-class-instances)
-  - [Multiple class instances with the same name](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-class-instances-with-the-same-name)
-  - [Class instances and map ARRAY types (PostgreSQL only)](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#class-instances-and-map-array-types-postgresql-only)
-  - [Record instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#record-instances)
-- [Multiple values](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#multiple-values)
-  - [Iterations](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#iterations)
-  - [Mapping to lists and array](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-lists-and-array)
-  - [Mapping to a dictionary](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-a-dictionary)
-  - [Mapping to a dictionary using named tuples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-to-a-dictionary-using-named-tuples)
-  - [Using GroupBy with the class instances](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-groupby-with-the-class-instances)
-- [Batching multiple commands](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#batching-multiple-commands)
-- [Database command Parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#database-command-parameters)
-  - [Using formattable strings to supply parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-formattable-strings-to-supply-parameters)
-  - [Using formattable strings to supply native database parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#using-formattable-strings-to-supply-native-database-parameters)
-  - [Simple parameters by position](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position)
-  - [Simple parameters by position and native database parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#simple-parameters-by-position-and-native-database-parameters)
-  - [Passing class instance and mapping values to parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-class-instance-and-mapping-values-to-parameters)
-  - [Passing anonymous class instance and mapping values to parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-anonymous-class-instance-and-mapping-values-to-parameters)
-  - [Mixing class instance, database native, and simple parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mixing-class-instance-database-native-and-simple-parameters)
-  - [Mapping parameters by specific name](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name)
-  - [Mapping parameters by specific name and specific database type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name-and-specific-database-type)
-  - [Mapping parameters by specific name and specific custom database type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#mapping-parameters-by-specific-name-and-specific-custom-database-type)
-- [Command object parameters](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-object-parameters)
-  - [Executing stored procedure (or function) command type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#executing-stored-procedure-or-function-command-type)
-  - [Command type](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-type)
-  - [Command timeout](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#command-timeout)
-  - [Passing the cancellation token](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#passing-the-cancellation-token)
-  - [Prepared statements](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md#prepared-statements)
-
 ## Prerequisites and Notes
 
 - All Norm read operations are returning `IEnumerable<?>` or `IAsyncEnumerable<?>` for asynchronous operations.
@@ -539,17 +496,18 @@ connection.Read<T>("select @Param1, @Param2, @Param3", instance);
 ### Passing anonymous class instance and mapping values to parameters
 
 ```csharp
-public class MyClass
-{
-    public string Param1 { get; set; }
-    public string Param2 { get; set; }
-    public string Param3 { get; set; }
-}
-
-var instance = new MyClass{ Param1 = "value1", Param2 = "value2", Param3 = "value3" };
-
 connection.Read<T>("select @Param1, @Param2, @Param3", new { param1 = "value1", param2 = "value2", param3 = "value3" });
 ```
+
+### Passing anonymous class instance and mapping values to parameters
+
+```csharp
+var param1 = "value1";
+var param2 = "value2";
+var param3 = "value3";
+connection.Read<T>("select @Param1, @Param2, @Param3", new { param1, param2, param3 });
+```
+
 
 ### Mixing class instance, database native, and simple parameters
 
@@ -569,24 +527,12 @@ connection.Read<T>("select @X, @Param1, @Param2, @Param3, @Y", instance, new Sql
 // outputs 1, "value1", "value2", "value3", "Y"
 ```
 
-### Mapping parameters by specific name
+
+### Using anonymous class instance to provide value, specific name and specific database type
 
 ```csharp
-connection.Read<T>("select @p1, @p2, @p3", ("p1", 1), ("p2", 2), ("p3", 1));
-connection.Read<T>("select * from table where id = @p", ("p", 1));
-
-var p =  new SqlParameter("p", 1)
-connection.Read<T>("select * from table where id = @p", ("p", p));
-```
-
-### Mapping parameters by specific name and specific database type
-
-```csharp
-connection.Read<T>("select @p1, @p2, @p3", ("p1", 1, DbType.Int32), ("p2", 2, DbType.Int32), ("p3", 1, DbType.Int32));
-connection.Read<T>("select * from table where id = @p", ("p", 1, DbType.Int32));
-
-var p =  new SqlParameter("p", 1)
-connection.Read<T>("select * from table where id = @p", ("p", p, DbType.Int32));
+connection.Read<T>("select @p1, @p2, @p3", new { p1 = (1, DbType.Int32), p2 = (2, DbType.Int32), p3 = (1, DbType.Int32)}
+connection.Read<T>("select * from table where id = @p", new {p = (1, DbType.Int32)});
 ```
 
 ### Mapping parameters by specific name and specific custom database type
@@ -595,14 +541,147 @@ connection.Read<T>("select * from table where id = @p", ("p", p, DbType.Int32));
 connection.Read<T>("select @p1, @p2, @p3", ("p1", 1, NpgsqlDbType.Integer), ("p2", 2, NpgsqlDbType.Integer), ("p3", 1, NpgsqlDbType.Integer));
 connection.Read<T>("select * from table where id = @p", ("p", 1, NpgsqlDbType.Integer));
 
-var p =  new SqlParameter("p", 1)
-connection.Read<T>("select * from table where id = @p", ("p", p, NpgsqlDbType.Integer));
+connection.Read<T>("select @p1, @p2, @p3", new { p1 = (1, NpgsqlDbType.Integer), p2 = (2, NpgsqlDbType.Integer), p3 = (1, NpgsqlDbType.Integer)}
+connection.Read<T>("select * from table where id = @p", new {p = (1, NpgsqlDbType.Integer)});
 ```
 
-## Command object parameters
+## Using reader callback
 
-### Executing stored procedure (or function) command type
+You can pass reader callback lambda function to:
+- Change the value or type
+- Handle complex mappings, not available otherwise.
+- Create complex objects.
 
+```csharp
+var query = "select * from (values (1, 1, 1), (2, 2, 2), (3, 3, 3)) t(a, b, c)";
+```
+
+Will return following results:
+
+| a | b | c |
+| - | - | - |
+| 1 | 1 | 1 |
+| 2 | 2 | 2 |
+| 3 | 3 | 3 |
+
+- If we want to add 1 to the first field, for example, we can add an expression like this:
+
+```csharp
+var array = connection.Read<int, int, int>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first value
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
+
+This example will produce the following array of `int` tuples:
+
+| Item1 | Item2 | Item3 |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
+
+Same could be achieved if we use switch by the field name:
+
+```csharp
+var array = connection.Read<int, int, int>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,    // add 1 to the first field with name "a", mapped to the first value
+    _ => null                           // for all other fields, use default mapping
+}).ToArray();
+```
+
+Same logic applies to named tuples mapping:
+
+```csharp
+var array = connection.Read<(int a, int b, int c)>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first tuple named "a"
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
+
+or
+
+```csharp
+var array = connection.Read<(int a, int b, int c)>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with name "a", mapped to the first tuple named "a"
+    _ => null                         // for all other fields, use default mapping
+}).ToArray();
+```
+
+Produces the following array of named `int` tuples:
+
+| a | b | c |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
+
+**Important: simple values, tuples, and named tuples are still mapped by the position.**
+
+The same technique applies also to mapping to instances of classes and records. 
+Only, in this case - mapping by field name, not by position will be used. Example:
+
+
+```csharp
+class TestClass
+{
+    public int A { get; set; }
+    public int B { get; set; }
+    public int C { get; set; }
+}
+```
+
+```csharp
+var array = connection.Read<TestClass>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field. First field has name "a" and it will be mapped to property "A".
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
+
+or
+
+```csharp
+var array = connection.Read<TestClass>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,  // add 1 to the field name "a", mapped to to property "A" by name
+    _ => null                         // for all other fields, use default mapping
+}).ToArray();
+```
+
+This will produce an array of the `TestClass` instances with the following properties
+
+| A | B | C |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
+
+And now, of course, you can utilize a pattern matching mechanism in switch expressions for C# 9:
+
+```csharp
+var array = connection.Read<TestClass>(query, r => r switch
+{
+    {Ordinal: 0} => r.Reader.GetInt32(0) + 1,   // add 1 to the field at the first position adn with name "a", mapped to to property "A" by name
+    _ => null                                   // for all other fields, use default mapping
+}).ToArray();
+```
+
+Or, for both, name and oridnal number at the same time:
+
+```csharp
+var array = connection.Read<TestClass>(query, r => r switch
+{
+    {Ordinal: 0, Name: "a"} => r.Reader.GetInt32(0) + 1,    // add 1 to the field name "a", mapped to to property "A" by name
+    _ => null                                               // for all other fields, use default mapping
+}).ToArray();
+```
+
+## Command object options
 - `AsProcedure` sets all command types to the procedure for this connection instance.
 
 ```csharp
@@ -626,7 +705,7 @@ connection.As(CommandType.TableDirect).Read<T>("my_table");
 
 ```csharp
 var timeoutSec = 100; // 100 seconds timeout for this connection
-connection.Timeout(timeoutSec).Read<T>(sql, parameters);
+connection.WithCommandTimeout(timeoutSec).Read<T>(sql, parameters);
 ```
 
 ### Passing the cancellation token
