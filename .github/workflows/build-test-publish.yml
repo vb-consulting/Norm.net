@@ -34,8 +34,4 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity m
     - name: Publish
-      uses: vb-consulting/publish-nuget@v2.5.2
-      with:
-        PROJECT_FILE_PATH: Norm/Norm.csproj
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-        INCLUDE_SYMBOLS: true
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
