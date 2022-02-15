@@ -29,7 +29,7 @@ namespace Norm
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
         public static IEnumerable<T> Read<T>(this DbConnection connection, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
@@ -53,7 +53,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
         public static IEnumerable<T> ReadFormat<T>(this DbConnection connection, 
             FormattableString command,
@@ -70,7 +70,7 @@ namespace Norm
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
         public static IEnumerable<T> Read<T>(this DbConnection connection, string command, params object[] parameters)
         {
@@ -85,8 +85,8 @@ namespace Norm
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
         public static IEnumerable<T> Read<T>(this DbConnection connection, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,

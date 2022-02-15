@@ -23,7 +23,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             this DbConnection connection, 
@@ -49,7 +49,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T9, T10, T11, T12).</returns>
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             this DbConnection connection, 
@@ -64,7 +64,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, string command, params object[] parameters)
         {
@@ -76,8 +76,8 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             this DbConnection connection, 

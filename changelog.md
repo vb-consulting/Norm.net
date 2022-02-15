@@ -1,14 +1,14 @@
-# Changelog
+﻿# Changelog
 
-## [3.4.0](https://github.com/vb-consulting/Norm.net/tree/3.4.0) (2022-02-13)
+## [4.0.0](https://github.com/vb-consulting/Norm.net/tree/4.0.0) (2022-02-13)
 
-[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/3.3.13...3.4.0)
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/3.3.13...4.0.0)
 
 ## **New feature - reader callbacks**
 
 All read extension methods on your connection object (`Read` and `ReadAsync`) now have one additional overload that allows you to pass in the **lambda function with direct low-level access to the database reader.**
 
-Lambda function with direct low-level access to the database reader has following signature:
+Lambda function with direct low-level access to the database reader has the following signature:
 
 ```csharp
 Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback
@@ -30,39 +30,290 @@ public static IEnumerable<T> Read<T>(this DbConnection connection, string comman
     params object[] parameters)
 ```
 
-Same overloads also exists for all 12 generic versions of `Read` and `ReadAsync` extensions.
+Same overloads also exist for all 12 generic versions of `Read` and `ReadAsync` extensions.
 
 This lambda function receives a single parameter, a tuple with three values: `(string Name, int Ordinal, DbDataReader Reader)`, where:
 
 - `string Name` is the name of the database field currently being mapped to a value.
-- `int Ordinal` is the orinal position number, starting from zero, of the database field currently being mapped to a value.
-- `DbDataReader Reader` is the low level access to the database reader being used to read the current row.
+- `int Ordinal` is the ordinal position number, starting from zero, of the database field currently being mapped to a value.
+- `DbDataReader Reader` is the low-level access to the database reader being used to read the current row.
 
 The expected result of this reader lambda function is an object of any type that represents a **new value that will be mapped** to the results with the following rules:
 
-- Return any value to that you wish to map to result for that field.
+- Return any value that you wish to map to result for that field.
 - Return `null` to use the default, normal mapping.
 - Return `DBNull.Value` to set `null` value.
 
-This allows
+This allows for the elegant use case of the C# 8 switch expressions.
+
+### Examples
+
+Simple example, a query that returns three records of three integers fields (`a`, `b`, `c`) - from 1 to 3:
+
+```csharp
+var query = "select * from (values (1, 1, 1), (2, 2, 2), (3, 3, 3)) t(a, b, c)";
+```
+
+Will return following results:
+
+| a | b | c |
+| - | - | - |
+| 1 | 1 | 1 |
+| 2 | 2 | 2 |
+| 3 | 3 | 3 |
+
+- If we want to add 1 to the first field, for example, we can add an expression like this:
+
+```csharp
+var array = connection.Read<int, int, int>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first value
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
+
+This example will produce the following array of `int` tuples:
+
+| Item1 | Item2 | Item3 |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
+
+Same could be achieved if we use switch by the field name:
+
+```csharp
+var array = connection.Read<int, int, int>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,    // add 1 to the first field with name "a", mapped to the first value
+    _ => null                           // for all other fields, use default mapping
+}).ToArray();
+```
+
+Same logic applies to named tuples mapping:
+
+```csharp
+var array = connection.Read<(int a, int b, int c)>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first tuple named "a"
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
+
+or
+
+```csharp
+var array = connection.Read<(int a, int b, int c)>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with name "a", mapped to the first tuple named "a"
+    _ => null                         // for all other fields, use default mapping
+}).ToArray();
+```
+
+Produces the following array of named `int` tuples:
+
+| a | b | c |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
+
+**Important: simple values, tuples, and named tuples are still mapped by the position.**
+
+The same technique applies also to mapping to instances of classes and records. 
+Only, in this case - mapping by field name, not by position will be used. Example:
 
 
+```csharp
+class TestClass
+{
+    public int A { get; set; }
+    public int B { get; set; }
+    public int C { get; set; }
+}
+```
 
+```csharp
+var array = connection.Read<TestClass>(query, r => r.Ordinal switch
+{
+    0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field. First field has name "a" and it will be mapped to property "A".
+    _ => null                       // for all other fields, use default mapping
+}).ToArray();
+```
 
+or
 
+```csharp
+var array = connection.Read<TestClass>(query, r => r.Name switch
+{
+    "a" => r.Reader.GetInt32(0) + 1,  // add 1 to the field name "a", mapped to to property "A" by name
+    _ => null                         // for all other fields, use default mapping
+}).ToArray();
+```
 
+This will produce an array of the `TestClass` instances with the following properties
 
+| A | B | C |
+| - | - | - |
+| 2 | 1 | 1 |
+| 3 | 2 | 2 |
+| 4 | 3 | 3 |
 
+And now, of course, you can utilize a pattern matching mechanism in switch expressions for C# 9:
 
+```csharp
+var array = connection.Read<TestClass>(query, r => r switch
+{
+    {Ordinal: 0} => r.Reader.GetInt32(0) + 1,   // add 1 to the field at the first position adn with name "a", mapped to to property "A" by name
+    _ => null                                   // for all other fields, use default mapping
+}).ToArray();
+```
 
+Or, for both, name and oridnal number at the same time:
 
-# Version history and release notes
+```csharp
+var array = connection.Read<TestClass>(query, r => r switch
+{
+    {Ordinal: 0, Name: "a"} => r.Reader.GetInt32(0) + 1,    // add 1 to the field name "a", mapped to to property "A" by name
+    _ => null                                               // for all other fields, use default mapping
+}).ToArray();
+```
 
-## 3.4.0
+### Perfomance impacts
 
-### Array mapping improvements
+There are no performance impacts when using this feature to speak of.
 
-- **Fixed bug with arrays mapping to named tuple values.**
+These new overloads with lambda callbacks are in the new [perfomance benchmarks](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md)
+and the difference is negligible is still slightly better than the `Dapper` without any callback.
+
+However, it's worth noting that performances will always depend on what exactly you are doing within that function, and of course, the query itself.
+
+### Justification and use cases
+
+**1) Database types that are hard or impossible to map to the CLR types.**
+
+For example, **PostgreSQL** can return a nullable array that should map to a nullable array of enums.
+Enums require special care since the database usually returns an integer or text that should be parsed to enums.
+
+This functionality of mapping enum arrays is available in Norm default mapping, however, nullable enum arrays had proved to be especially difficult if not outright impossible when mapping to non-instanced types for example.
+
+In edge cases like this, a reader callback function that can handle special types can be very useful.
+
+**2) Special non-standard database types.**
+
+For example, PostgreSQL can define custom database types by using extensions. Most notably is PostGIS extension that defines geometric types such as point, line, polygon, geometry collections, etc.
+
+For these complex types, a reader callback function can be used to map to the custom types.
+
+**3) Complex mappings**
+
+Reader callback can return any type of object which allows you to create mappings of any complexity, depending on your needs, not on the data access capabilities.
+
+## **Breaking Change: parameter handlings**
+
+Parameter handling has been simplified.
+
+**Breaking change:**
+
+**All method overloads that supplied query parameters via named and value tuple or name, value, and type tuple are now removed.**
+
+Instead, instance (anonymous or otherwise) parameters are now used to supply named parameters with or without a specific type.
+
+For example, **this call will no longer work:**
+
+```csharp
+connection.Read<T>("select * from table where id = @myParam", ("myParam", myParamValue));
+```
+
+To define named paramater, instances are used:
+
+```csharp
+connection.Read<T>("select * from table where id = @myParam", new {myParam = myParamValue});
+```
+
+Note: non-anonymous instances will also work.
+
+The first version was removed because before there were two different ways to define named parameters and it was confusing and required a lot of unnecessary method overloads.
+
+Removing those overloads has made the library much lighter.
+
+Also, it is easier now to define named parameters this way, especially when your variable is named same as parameter, for example:
+
+```csharp
+var myParam = 123;
+connection.Read<T>("select * from table where id = @myParam", new {myParam});
+```
+
+Now, it is also possible to supply specific database type to named paramter, without having to create specific `DbParamater` type by using tuple (value and type) as parameter value:
+
+```csharp
+connection.Read<T>("select * from table where id = @myParam", new {myParam = (myParamValue, DbType.Int)});
+```
+
+Setting specific parameter type will also work with specific provider defined types:
+
+```csharp
+connection.Read<T>("select * from table where id = @myParam", new {myParam = (myParamValue, NpgsqlDbType.Integer)}); // PostgreSQL Integer type
+```
+
+This, of course, allows easy access to more "exotic" PostgreSQL parameter types, such as JSON and arrays for example:
+
+```csharp
+var test = connection.Read<string>("select @p->>'test'", 
+                new
+                {
+                    p = ("{\"test\": \"value\"}", NpgsqlDbType.Json)
+                })
+                .Single();
+// test == "value"
+
+var array = connection.Read<int>("select unnest(@p)", 
+                new
+                {
+                    p = (new List<int> { 1, 2, 3 }, NpgsqlDbType.Array | NpgsqlDbType.Integer)
+                }).ToArray();
+
+// test == int[]{1,2,3}
+```
+
+But, of course, `DbParameter` instances can be used as well:
+
+```csharp
+var test = connection.Read<string>("select @p->>'test'", 
+                new
+                {
+                    p = new NpgsqlParameter("p", "{\"test\": \"value\"}"){ NpgsqlDbType = NpgsqlDbType.Json }
+                })
+                .Single();
+// test == "value"
+
+var array = connection.Read<int>("select unnest(@p)", 
+                new
+                {
+                    p = new NpgsqlParameter("p", new List<int> { 1, 2, 3 }){ NpgsqlDbType =  NpgsqlDbType.Array | NpgsqlDbType.Integer}
+                }).ToArray();
+
+// test == int[]{1,2,3}
+```
+
+Supplying parameters in that way is a bit confusing because in this example above, a parameter is named twice, first as instance property name and the second time as actual parameter name, and only the second will be used.
+
+So, it might be better to use the old way of declare parameters from `DbParameter` instances:
+
+```csharp
+var p1 = new NpgsqlParameter("p", "{\"test\": \"value\"}"){ NpgsqlDbType = NpgsqlDbType.Json };
+var test = connection.Read<string>("select @p->>'test'", p1).Single();
+// test == "value"
+
+var p2 = new NpgsqlParameter("p", new List<int> { 1, 2, 3 }){ NpgsqlDbType =  NpgsqlDbType.Array | NpgsqlDbType.Integer};
+var array = connection.Read<int>("select unnest(@p)", p2).ToArray();
+
+// test == int[]{1,2,3}
+```
+
+Using `DbParameter` instances like this allows also for changing parameter direction to `Out` and `InOut` parameter directions.
+
+##  **Fixed bug/missing feature: arrays mapping for named tuples**
 
 Now it's possible to map arrays to named tuples for database provedires that support arrays. Example:
 
@@ -87,6 +338,8 @@ Assert.Equal("foo1", result[0].s[0]);
 Assert.Equal("foo2", result[0].s[1]);
 Assert.Equal("foo3", result[0].s[2]);
 ```
+
+This was missing from previous versions.
 
 Maping arrays for simple values was always possible:
 
@@ -115,38 +368,89 @@ Assert.Null(result[1]);
 Assert.Equal(3, result[0][2]);
 ```
 
-Important:
+**Important:**
 
-> Mapping nullable arrays to named tuples or to instance properties will not work.
+**Mapping nullable arrays (arrays that contain null values) to named tuples or instance properties will not work.**
+
+Following mappings are still unavailable out os the box:
+
+```csharp
+var query = @"
+    select array_agg(i), array_agg(s) from (values 
+        (1, 'foo1'),
+        (null, 'foo2'),
+        (2, null)
+    ) t(i, s)
+";
+
+class SomeClass
+{ 
+    public int?[] Ints { get; set; }
+    public string[] Strings { get; set; }
+}
+
+//
+// These calls won't work because of int?[] mappings on named tuples and instance property
+//
+var result1 = connection.Read<(int?[] Ints, string[] Strings)>(query);
+var result2 = connection.Read<SomeClass>(query);
+```
+
+However, new feature with reader callback can be used to solve this mapping problem:
+
+```csharp
+var result1 = connection.Read<(int?[] Ints, string[] Strings)>(query r => r.Ordinal switch
+{
+    0 => r.Reader.GetFieldValue<int?[]>(0),
+    _ => null
+});
+
+##  **Mapping to enum types improvements**
+
+Mapping to enums is a crucial task for any database mapper, but it requires special treatment.
+
+On the database side, enums can be either text or an integer and to map them to enum types requires special parsing.
+
+In previous versions mapping to enums on instance properties from the database, text was added. 
+This version expanded enum mapping greatly. Now, it is possible to:
+
+- Map from int value to enum for instance properties.
+- Map from nullable int value to nullable enum for instance properties.
+- Map from string array value to enum array or list for instance properties.
+- Map from int array value to enum array or list for instance properties.
+
+- Map from string value to enum for simple values.
+- Map from int value to enum for simple values.
+- Map from nullable int value to nullable enum for simple values.
+- Map from string array value to enum array for simple values.
+- Map from int array value to enum array for simple values.
+- Map from string array containing null values to nullable enum array for simple values.
+- Map from an int array containing null values value to nullable enum array for simple values.
+-
+However, the following mappings are still not available.
+
+- Any array containing nulls to nullable enum for instance properties.
+- Any enum mapping for named tuples.
+
+Implementation was too difficult and costly. 
+To successfully overcome these limitations, a new feature with a reader callback can be used.
+
+Here is the full feature grid for enum mappings:
+
+| | text → enum | int → enum | text containing nulls → nullable enum | int containing nulls → nullable enum | text array → enum array | int array → enum array | text array containing nulls → nullable enum array | int array containing nulls → nullable enum array |
+| - | ----------- | ---------- | ------------------------------------- | ------------------------------------ | ----------------------- | ---------------------- | ------------------------------------------------- | ------------------------------------------------ |
+| instance mapping `Read<ClassOrRecordType1, ClassOrRecordType2, ClassOrRecordType3>` | YES | YES | YES | YES | YES | YES | NO | NO |
+| simple value mapping `Read<int, string, DateTime>` | YES | YES | YES | YES | YES | YES | YES | YES |
+| name enum mapping `Read<(int Field1, string Field3, DateTime Field3)>` | NO | NO | NO | NO | NO | NO | NO | NO |
 
 
-### Mapping enums in a class, ints and strings
-
-- Class instance: map enums from 
-  - From ints 
-  - From strings, 
-  - From nullable ints 
-  - From nullable strings
-  - From string arrays
-  - From int arrays
-  - NOT from nullable arrays (of string or ints)
-
-- Simple values: 
-  - From ints 
-  - From strings, 
-  - From nullable ints 
-  - From nullable strings
-  - NOT from arrays (nullable or otherwise of any type)
-
-- Named Tuples
-  - None
-
-### Removed Global SqlMapper for Custom Mappings
-
-### Removed DbType overloads
-
-### Removed NormMultipleMappingsException
-
-### Internal improvements, new benchmark tests
-
-
+| | instance mapping `Read<ClassOrRecordType1, ClassOrRecordType2, ClassOrRecordType3>` | simple value mapping `Read<int, string, DateTime>` | name enum mapping `Read<(int Field1, string Field3, DateTime Field3)>` |
+| - | - | - | - |
+| text → enum | YES | YES | NO |
+| int → enum | YES | YES | NO |
+| text containing nulls → nullable enum | YES | YES | NO |
+| int containing nulls → nullable enum | YES | YES | NO |
+| text array → enum array | YES | YES | NO |
+| int array → enum array | YES | YES | NO |
+| text array containing nulls → nullable enum array | NO | YES | NO |
+| int array containing nulls → nullable enum array | NO | YES | NO |

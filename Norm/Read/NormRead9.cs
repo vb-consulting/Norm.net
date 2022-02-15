@@ -49,7 +49,7 @@ namespace Norm
         ///     Maps command results to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
         ///</summary>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command,
@@ -125,7 +125,7 @@ namespace Norm
         /// Parse interpolated (formattable) command as database parameters and map results to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> ReadFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             FormattableString command,
@@ -202,7 +202,7 @@ namespace Norm
         ///     Maps command results with named parameter values to enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).
         ///</summary>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
         ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(

@@ -51,7 +51,7 @@ namespace Norm
         ///     Maps command results to async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).
         ///</summary>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
             string command,
@@ -135,7 +135,7 @@ namespace Norm
         /// Parse interpolated (formattable) command as database parameters and map command results to async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
-        /// <param name="readerCallback"></param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
             FormattableString command,
@@ -178,7 +178,7 @@ namespace Norm
         ///     Maps command results with positional parameter values to async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).
         ///</summary>
         ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
             string command,
@@ -221,8 +221,8 @@ namespace Norm
         ///     Maps command results with positional parameter values to async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).
         ///</summary>
         ///<param name="command">SQL command text.</param>
-        /// <param name="readerCallback"></param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,

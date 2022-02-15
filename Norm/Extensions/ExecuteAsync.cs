@@ -34,7 +34,7 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array.</param>
+        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
         public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params object[] parameters)
         {

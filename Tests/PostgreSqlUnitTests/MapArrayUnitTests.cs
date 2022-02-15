@@ -79,8 +79,8 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar4", result[0].Bar[3]);
         }
 
-        /*
         public class NullableIntsArrayClass { public int?[] Ints { get; set; } }
+
         [Fact]
         public void Map_Nullable_Ints_Array_Sync()
         {
@@ -92,14 +92,14 @@ namespace PostgreSqlUnitTests
                                 (1),
                                 (null),
                                 (2)
-                            ) t(e)").ToArray();
+                            ) t(e)", 
+                            r => r.Reader.GetFieldValue<int?[]>(0)).ToArray();
 
             Assert.Single(result);
             Assert.Equal(1, result[0].Ints[0]);
             Assert.Null(result[0].Ints[1]);
             Assert.Equal(2, result[0].Ints[2]);
         }
-        */
 
         [Fact]
         public void Map_Array_To_Single_Value_Sync()
@@ -251,5 +251,34 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo2", result[0].Item2[1]);
             Assert.Null(result[0].Item2[2]);
         }
+
+        [Fact]
+        public void Map_Nullable_Value_Named_Tuples_Array_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection.Read<(int?[] Ints, string[] Strings)>(@"
+                select array_agg(i), array_agg(s)
+                from (
+                values 
+                    (1, 'foo1'),
+                    (null, 'foo2'),
+                    (2, null)
+                ) t(i, s)", r => r.Ordinal switch
+                {
+                    0 => r.Reader.GetFieldValue<int?[]>(0),
+                    _ => null
+                }).ToArray();
+
+            Assert.Single(result);
+
+            Assert.Equal(1, result[0].Ints[0]);
+            Assert.Null(result[0].Ints[1]);
+            Assert.Equal(2, result[0].Ints[2]);
+
+            Assert.Equal("foo1", result[0].Strings[0]);
+            Assert.Equal("foo2", result[0].Strings[1]);
+            Assert.Null(result[0].Strings[2]);
+        }
+
     }
 }

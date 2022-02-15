@@ -221,6 +221,32 @@ namespace PostgreSqlUnitTests
             Assert.Equal(3, result[2].j);
         }
 
+        [Fact]
+        public void Map_Callback_Class_Instance_Switch_Exp_Pattern_Matching_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .Read<TestClass1>(@"select * from (values 
+                    (1, 1),
+                    (2, 2),
+                    (3, 3)
+                ) t(i, j)", r => r switch
+                {
+                    {Ordinal: 0, Name: "i"} => r.Reader.GetInt32(0) + 1,
+                    _ => null
+                }).ToArray();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(2, result[0].i);
+            Assert.Equal(1, result[0].j);
+
+            Assert.Equal(3, result[1].i);
+            Assert.Equal(2, result[1].j);
+
+            Assert.Equal(4, result[2].i);
+            Assert.Equal(3, result[2].j);
+        }
 
         class TestClass3
         {
