@@ -584,5 +584,22 @@ namespace PostgreSqlUnitTests
 
             Assert.Equal("Parameter name \"p\" appears more than once. Parameter names must be unique.", exception.Message);
         }
+
+        [Fact]
+        public void Keyworded_NamedParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i) = connection.Read<string, int>(
+                "select @string, @int",
+                new
+                {
+                    @string = "str",
+                    @int = 999
+                })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+        }
     }
 }

@@ -437,6 +437,15 @@ var p = "xyz";
 connection.ReadFormat<T>($"select * from table where id = {p}");
 ```
 
+### Using formattable strings to supply parameters and skipping parameters (raw)
+
+```csharp
+var p = "xyz";
+var table = "my_table";
+var where = "where 1=1";
+connection.ReadFormat<T>($"select * from {table:raw} {where:raw} and id = {p}");
+```
+
 ### Using formattable strings to supply native database parameters
 
 - Native parameters allow you to set more precise parameter types.

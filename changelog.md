@@ -1,5 +1,35 @@
 ﻿# Changelog
 
+## [4.1.0](https://github.com/vb-consulting/Norm.net/tree/4.1.0) (2022-02-23)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.0.0...4.1.0)
+
+## New feature: raw modifier for string interpolation overloads
+
+When using following extensions:
+
+- `ReadFormat`
+- `ReadFormatAsync`
+- `ExecuteFormat`
+- `ExecuteFormatAsync`
+- `MultipleFormat`
+- `MultipleFormatAsync`
+
+To set query parameters via string interpolation formats, you can now add `raw` modifier to skip parameter creation and use value "as is".
+
+This is useful when using string interpolation to build a query and you still want to pass the parameter creation.
+
+For example:
+
+```csharp
+var p = "xyz";
+var table = "my_table";
+var where = "where 1=1";
+connection.ReadFormat<T>($"select * from {table:raw} {where:raw} and id = {p}");
+```
+
+Variables `table` and `where` will not create query parameter and will be parsed "as is".
+
 ## [4.0.0](https://github.com/vb-consulting/Norm.net/tree/4.0.0) (2022-02-13)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/3.3.13...4.0.0)

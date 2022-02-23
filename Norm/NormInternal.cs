@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -133,33 +134,42 @@ namespace Norm
             return cmd;
         }
 
-
         private DbCommand CreateCommand(FormattableString command)
         {
-            var args = command.GetArguments();
-            var commandString = string.Format(command.Format, args.Select((p, idx) => 
-            {
-                if (p is DbParameter dbParameter)
-                {
-                    dbParameter.ParameterName = $"p{idx}";
-                }
-                return $"@p{idx}"; 
-            }).ToArray());
-            return CreateCommand(commandString, args);
+            var (commandString, parameters) = ParseFormattableCommand(command);
+            return CreateCommand(commandString, parameters);
         }
 
         private async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
         {
+            var (commandString, parameters) = ParseFormattableCommand(command);
+            return await CreateCommandAsync(commandString, parameters);
+        }
+
+        private (string commandString, object[] parameters) ParseFormattableCommand(FormattableString command)
+        {
             var args = command.GetArguments();
+            var parameters = new List<object>(args.Length);
             var commandString = string.Format(command.Format, args.Select((p, idx) =>
             {
                 if (p is DbParameter dbParameter)
                 {
                     dbParameter.ParameterName = $"p{idx}";
+                    parameters.Add(p);
+                    return $"@p{idx}";
                 }
+                if (p is string)
+                {
+                    if (command.Format.Contains($"{{{idx}:raw"))
+                    {
+                        return p;
+                    }
+                }
+                parameters.Add(p);
                 return $"@p{idx}";
             }).ToArray());
-            return await CreateCommandAsync(commandString, args);
+
+            return (commandString, parameters.ToArray());
         }
     }
 }

@@ -283,5 +283,36 @@ namespace PostgreSqlUnitTests
             Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}").SingleAsync());
             Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), await connection.ReadFormatAsync<int, int, int, int, int, int, int, int, int, int, int, int>($"select {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}").SingleAsync());
         }
+
+
+        [Fact]
+        public void Raw_Parameters_Test_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var (s, i, b, d, @null) = connection.ReadFormat<string, int, bool, DateTime, string>(
+                $"{"select":raw} {"str"}, {999}, {true}, {new DateTime(1977, 5, 19)}, {null}").Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public async Task Raw_Parameters_Test_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var (s, i, b, d, @null) = await connection.ReadFormatAsync<string, int, bool, DateTime, string>(
+                $"{"select":raw} {"str"}, {999}, {true}, {new DateTime(1977, 5, 19)}, {null}").SingleAsync();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
     }
 }
