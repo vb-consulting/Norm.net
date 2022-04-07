@@ -4,7 +4,68 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.1.0...4.2.0)
 
+## New feature: Collection parameters support for non PostgreSQL connections
 
+From version 4.2.0 Norm can parse collection-type parameters for non PostgreSQL connections.
+
+PostgreSQL supports array types natively so you can pass an array or a list parameter and it will be mapped to the PostgreSQL array type parameter.
+
+For non-PostgreSQL connections, any collection-type parameter (a list or an array for example) will be parsed to a sequence of new parameters.
+
+For example, following statements on SQL Server:
+
+```csharp
+connection.ReadAsync("SELECT * FROM Table WHERE id IN (@list)", new[] { 1, 2, 3 });
+```
+
+Normally, this wouldn't work because SQL Server does not support those parameter types. 
+
+But, since this version, Norm will parse this expression to three parameters instead of one:
+
+- `@__list0` with value `1`
+- `@__list1` with value `2`
+- `@__list2` with value `3`
+
+And SQL command text will replace the original parameter placeholder `@list` with CSV list of ne parameters: `SELECT * FROM Table WHERE id IN (@__list0, @__list1, @__list2)`.
+
+
+So basically, this:
+
+```csharp
+connection.ReadAsync("SELECT * FROM Table WHERE id IN (@list)", new[] { 1, 2, 3 });
+```
+
+is equvivalent to this:
+
+```csharp
+connection.ReadAsync("SELECT * FROM Table WHERE id IN (@__list0, @__list1, @__list2)", 1, 2, 3);
+```
+
+It also works normally with named parameters in an anonymous class:
+
+```csharp
+connection.ReadAsync("SELECT * FROM Table WHERE id IN (@list)", new 
+{
+    list = new[] { 1, 2, 3 }
+});
+```
+
+Which is equvivalent to this:
+
+```csharp
+connection.ReadAsync("SELECT * FROM Table WHERE id IN (@__list0, @__list1, @__list2)", new 
+{
+    __list0 = 1,
+    __list1 = 2,
+    __list2 = 3
+});
+```
+
+Any type of parameter that implements `ICollection` will work this way on non-PostgreSQL connections.
+
+## Internal improvements
+
+See changelog for details.
 
 ## [4.1.0](https://github.com/vb-consulting/Norm.net/tree/4.1.0) (2022-02-23)
 

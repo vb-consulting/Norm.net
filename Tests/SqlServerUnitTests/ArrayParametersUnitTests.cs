@@ -24,9 +24,7 @@ namespace SqlServerUnitTests
         public void PositionalParams_Array_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            
-            var p = new[] { 1, 2, 3 };
-            var (p1, p2, p3) = connection.Read<int, int, int>("select @p", p).Single();
+            var (p1, p2, p3) = connection.Read<int, int, int>("select @p", new[] { 1, 2, 3 }).Single();
 
             Assert.Equal(1, p1);
             Assert.Equal(2, p2);
@@ -37,9 +35,7 @@ namespace SqlServerUnitTests
         public void PositionalParams_List_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-
-            var p = new List<int>() { 1, 2, 3 };
-            var (p1, p2, p3) = connection.Read<int, int, int>("select @p", p).Single();
+            var (p1, p2, p3) = connection.Read<int, int, int>("select @p", new List<int>() { 1, 2, 3 }).Single();
 
             Assert.Equal(1, p1);
             Assert.Equal(2, p2);
