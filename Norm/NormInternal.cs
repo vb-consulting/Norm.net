@@ -53,7 +53,12 @@ namespace Norm
 
         private void SetCommand(DbCommand cmd, string command)
         {
-            cmd.SetCommandParameters(command, commandType, commandTimeout);
+            cmd.CommandText = command;
+            cmd.CommandType = commandType;
+            if (commandTimeout.HasValue)
+            {
+                cmd.CommandTimeout = commandTimeout.Value;
+            }
         }
 
         private DbCommand Prepare(DbCommand cmd)
@@ -70,12 +75,14 @@ namespace Norm
 
         private DbCommand AddParameters(DbCommand cmd, params object[] parameters)
         {
-            return Prepare(cmd.AddParameters(parameters));
+            AddParametersInternal(cmd, parameters);
+            return Prepare(cmd);
         }
 
         private async ValueTask<DbCommand> AddParametersAsync(DbCommand cmd, params object[] parameters)
         {
-            return await PrepareAsync(cmd.AddParameters(parameters));
+            AddParametersInternal(cmd, parameters);
+            return await PrepareAsync(cmd);
         }
 
         private async ValueTask<DbCommand> PrepareAsync(DbCommand cmd)

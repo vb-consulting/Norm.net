@@ -3,58 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Norm
 {
-    internal static class CommandExtensions
+    public partial class Norm
     {
-        public static DbCommand SetCommandParameters(this DbCommand cmd, string command, CommandType type, int? timeout)
-        {
-            cmd.CommandText = command;
-            cmd.CommandType = type;
-            if (timeout != null)
-            {
-                cmd.CommandTimeout = timeout.Value;
-            }
-
-            return cmd;
-        }
-
-        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value)
-        {
-            var param = cmd.CreateParameter();
-            param.ParameterName = name;
-            param.Value = value ?? DBNull.Value;
-
-            cmd.Parameters.Add(param);
-            return cmd;
-        }
-
-        public static DbCommand AddParamWithValue(this DbCommand cmd, string name, object value, object type)
-        {
-            var param = cmd.CreateParameter();
-            param.ParameterName = name;
-            param.Value = value ?? DBNull.Value;
-            if (type != null)
-            {
-                var paramType = type.GetType();
-                if (!paramType.IsEnum && paramType != TypeExt.IntType)
-                {
-                    throw new ArgumentException($"Wrong parameter type: {name}");
-                }
-                var paramTypeName = paramType.Name;
-                var propertyInfo = param.GetType().GetProperty(paramTypeName);
-                propertyInfo.SetValue(param, type);
-            }
-            cmd.Parameters.Add(param);
-            return cmd;
-        }
-
-        public static DbCommand AddParameters(this DbCommand cmd, params object[] parameters)
+        private void AddParametersInternal(DbCommand cmd, params object[] parameters)
         {
             var command = cmd.CommandText;
             var valueList = new List<object>();
@@ -66,8 +20,8 @@ namespace Norm
                 {
                     if (prop.PropertyType.BaseType == TypeExt.DbParameterType || prop.PropertyType == TypeExt.DbParameterType)
                     {
-                        cmd.Parameters.Add(prop.GetValue(p) as DbParameter);
-                    } 
+                        AddDbParamInternal(cmd, prop.GetValue(p) as DbParameter);
+                    }
                     else
                     {
                         var propMeta = prop.PropertyType.GetMetadata();
@@ -88,22 +42,22 @@ new {{
 }}
 ");
                             }
-                            cmd.AddParamWithValue(prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
+                            AddParamWithValueInternal(cmd, prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
                         }
                         else if (propMeta.simple)
                         {
-                            cmd.AddParamWithValue(prop.Name, prop.GetValue(p));
+                            AddParamWithValueInternal(cmd, prop.Name, prop.GetValue(p));
                             names.Add(prop.Name);
                         }
                     }
-                    
+
                 }
             }
             foreach (var p in parameters)
             {
                 if (p is DbParameter dbParameter)
                 {
-                    cmd.Parameters.Add(dbParameter);
+                    AddDbParamInternal(cmd, dbParameter);
                     names.Add(dbParameter.ParameterName);
                 }
                 else
@@ -134,7 +88,7 @@ new {{
             var values = valueList.ToArray();
             if (values.Length == 0)
             {
-                return cmd;
+                return;
             }
 
             var paramIndex = 0;
@@ -149,15 +103,64 @@ new {{
                 {
                     throw new NormPositionalParametersWithStoredProcedureException();
                 }
-                cmd.AddParamWithValue(name, values[paramIndex++]);
+                AddParamWithValueInternal(cmd, name, values[paramIndex++]);
                 used.Add(name);
             }
-            return cmd;
         }
 
-        public static Task<int> ExecuteNonQueryWithOptionalTokenAsync(this DbCommand cmd, CancellationToken? cancellationToken)
+        private void AddParamWithValueInternal(DbCommand cmd, string name, object value)
         {
-            return cancellationToken.HasValue ? cmd.ExecuteNonQueryAsync(cancellationToken.Value) : cmd.ExecuteNonQueryAsync();
+            var param = cmd.CreateParameter();
+            param.ParameterName = name;
+            param.Value = value ?? DBNull.Value;
+            AddDbParamInternal(cmd, param);
+        }
+
+        private void AddParamWithValueInternal(DbCommand cmd, string name, object value, object type)
+        {
+            var param = cmd.CreateParameter();
+            param.ParameterName = name;
+            param.Value = value ?? DBNull.Value;
+            if (type != null)
+            {
+                var paramType = type.GetType();
+                if (!paramType.IsEnum && paramType != TypeExt.IntType)
+                {
+                    throw new ArgumentException($"Wrong parameter type: {name}");
+                }
+                var paramTypeName = paramType.Name;
+                var propertyInfo = param.GetType().GetProperty(paramTypeName);
+                propertyInfo.SetValue(param, type);
+            }
+            AddDbParamInternal(cmd, param);
+        }
+
+        private void AddDbParamInternal(DbCommand cmd, DbParameter dbParameter)
+        {
+            if (this.dbType != DatabaseType.Pg)
+            {
+                if (dbParameter.Value is System.Collections.ICollection)
+                {
+                    var name = dbParameter.ParameterName;
+                    var newNames = new List<string>(128);
+                    uint i = 0;
+                    var enumerator = (dbParameter.Value as System.Collections.IEnumerable).GetEnumerator();
+                    while (enumerator.MoveNext())
+                    {
+                        var value = enumerator.Current;
+                        var param = cmd.CreateParameter();
+                        param.ParameterName = $"__{name}{i++}";
+                        param.Value = value ?? DBNull.Value;
+                        cmd.Parameters.Add(param);
+                        newNames.Add($"@{param.ParameterName}");
+                    }
+                    cmd.CommandText = cmd.CommandText.Replace($"@{name}", string.Join(", ", newNames));
+                    return;
+                }
+                cmd.Parameters.Add(dbParameter);
+                return;
+            }
+            cmd.Parameters.Add(dbParameter);
         }
 
         private static readonly char[] NonCharacters =
@@ -172,7 +175,7 @@ new {{
                 index = command.IndexOf(ParamPrefix, index, StringComparison.Ordinal);
                 if (index == -1)
                     break;
-                if (index == command.Length-1)
+                if (index == command.Length - 1)
                     break;
                 // skip sqlservers @@ variables
                 if (command[index + 1] == '@')
@@ -180,7 +183,7 @@ new {{
                     index += 2;
                     continue;
                 }
-                
+
                 index++;
                 var endOf = command.IndexOfAny(NonCharacters, index);
                 var name = endOf == -1 ? command[index..] : command[index..endOf];

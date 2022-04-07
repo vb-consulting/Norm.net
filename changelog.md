@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## [4.2.0](https://github.com/vb-consulting/Norm.net/tree/4.2.0) (2022-04-07)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.1.0...4.2.0)
+
+
+
 ## [4.1.0](https://github.com/vb-consulting/Norm.net/tree/4.1.0) (2022-02-23)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.0.0...4.1.0)

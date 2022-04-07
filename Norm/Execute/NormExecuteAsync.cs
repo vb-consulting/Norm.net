@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm
@@ -14,7 +15,14 @@ namespace Norm
         public async ValueTask<Norm> ExecuteAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            if (cancellationToken.HasValue)
+            {
+                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
             return this;
         }
 
@@ -26,7 +34,14 @@ namespace Norm
         public async ValueTask<Norm> ExecuteFormatAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            if (cancellationToken.HasValue)
+            {
+                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
             return this;
         }
 
@@ -39,7 +54,14 @@ namespace Norm
         public async ValueTask<Norm> ExecuteAsync(string command, params object[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            if (cancellationToken.HasValue)
+            {
+                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
             return this;
         }
 
@@ -52,7 +74,14 @@ namespace Norm
         public async ValueTask<Norm> ExecuteAsync(string command, params (string name, object value)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            if (cancellationToken.HasValue)
+            {
+                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
             return this;
         }
 
@@ -68,7 +97,14 @@ namespace Norm
         public async ValueTask<Norm> ExecuteAsync(string command, params (string name, object value, object type)[] parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
-            await cmd.ExecuteNonQueryWithOptionalTokenAsync(cancellationToken);
+            if (cancellationToken.HasValue)
+            {
+                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
             return this;
         }
     }
