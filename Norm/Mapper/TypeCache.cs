@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,10 @@ namespace Norm
     {
         private static readonly object CtorLocker = new object();
         private static (T, Func<T, object>) _ctorInfo;
+
+        private static readonly object AnonInfoLocker = new object();
+        private static (ConstructorInfo CtorInfo, (string Name, Type Type)[] Props) _anonInfoInfo;
+
         private static readonly object PropertiesLocker = new object();
         private static int? _propertiesLen;
         private static volatile (Type type, string name, PropertyInfo info)[] _properties;
@@ -66,6 +71,29 @@ namespace Norm
                 return _ctorInfo = (
                     (T)defaultCtor.Invoke(Enumerable.Repeat<object>(default, defaultCtor.GetParameters().Length).ToArray()),
                     (Func<T, object>)Delegate.CreateDelegate(typeof(Func<T, object>), type.GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)));
+            }
+        }
+
+        internal static (ConstructorInfo CtorInfo, (string Name, Type Type)[] Props) GetAnonInfo(Type type)
+        {
+            if (_anonInfoInfo.Item1 != null)
+            {
+                return _anonInfoInfo;
+            }
+            lock (AnonInfoLocker)
+            {
+                if (_anonInfoInfo.Item1 != null)
+                {
+                    return _anonInfoInfo;
+                }
+                var defaultCtor = type.GetConstructors()[0];
+                var ctorParams = defaultCtor.GetParameters();
+                var p = new (string Name, Type Type)[ctorParams.Length];
+                for (var i = 0; i < ctorParams.Length; i++)
+                {
+                    p[i] = (ctorParams[i].Name.ToLowerInvariant().Replace("_", ""), ctorParams[i].ParameterType);
+                }
+                return _anonInfoInfo = (defaultCtor, p);
             }
         }
 
