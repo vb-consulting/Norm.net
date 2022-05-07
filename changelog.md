@@ -1,5 +1,103 @@
 ﻿# Changelog
 
+## [4.3.0](https://github.com/vb-consulting/Norm.net/tree/4.3.0) (2022-05-07)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.2.0...4.3.0)
+
+## New feature: mapping to anonymous types
+
+From version 4.3.0., Norm allows **mapping to anonymous type instances** - by supplying anonymous type **blueprint instance** as the first parameter.
+
+Since anonymous types cannot be declared and only created - that blueprint instance will be used to create new instances in a query result.
+
+For example, you can declare new anonymous types with default values:
+
+
+```csharp
+var result = connection.Read(new 
+{ 
+    id = default(int), 
+    foo = default(string), 
+    date = default(DateTime) 
+}, @"select * from (values
+    (1, 'foo1', cast('2022-01-01' as date)), 
+    (2, 'foo2', cast('2022-01-10' as date)), 
+    (3, 'foo3', cast('2022-01-20' as date))
+) t(id, foo, date)").ToList();
+```
+
+This will yield a three-element list of anonymous types:
+
+```csharp
+Assert.Equal(3, result.Count); // true
+
+Assert.Equal(1, result[0].id); // true
+Assert.Equal("foo1", result[0].foo); // true
+Assert.Equal(new DateTime(2022, 1, 1), result[0].date); // true
+
+Assert.Equal(2, result[1].id); // true
+Assert.Equal("foo2", result[1].foo); // true
+Assert.Equal(new DateTime(2022, 1, 10), result[1].date); // true
+
+Assert.Equal(3, result[2].id); // true
+Assert.Equal("foo3", result[2].foo); // true
+Assert.Equal(new DateTime(2022, 1, 20), result[2].date); // true
+```
+
+Declaration of this anonymous type is provided by a blueprint instance with default values in the first parameter:
+
+```csharp
+new 
+{ 
+    id = default(int), 
+    foo = default(string), 
+    date = default(DateTime) 
+};
+```
+
+That is one way to explicitly declare desired types in anonymous types. 
+
+Of course, you can also explicitly declare values of certain types, which is a bit shorter and a bit less readable:
+
+```csharp
+new 
+{ 
+    id = 0, 
+    foo = "", 
+    date = DateTime.Now 
+};
+```
+
+In this case, same as in the previous case, those values are discarded and instances populated by database values are returned.
+
+### Remarks on using anonymous types
+
+> - Fields are **matched by name**, not by position.
+
+> - Matching is **case insensitive.**
+
+> - **Snake case names are supported** and matched with non cnake case names.
+
+> - `@` characters are ignored.
+
+> - **All available types** returned by the `GetValue` reader method are supported including special types like `guid`, `timespan`, etc for example.
+
+> - **PostgreSQL arrays** are supported.
+
+> - Mapping **to enums from numbers** is supported.
+
+> - Mapping **to enums from strings** is supported.
+
+> - **Enum PostgreSQL arrays** are supported (numbers and strings).
+
+> - Nullable arrays are not supported. Mapping nullable arrays can be achieved with reader callbacks.
+
+[See more examples in unit tests.](https://github.com/vb-consulting/Norm.net/blob/master/Tests/PostgreSqlUnitTests/ReadAnonymousUnitTests.cs)
+
+## Other imrpovements
+
+Slight improvements and opštimizations, see [full changelog](https://github.com/vb-consulting/Norm.net/compare/4.2.0...4.3.0) for details.
+
 ## [4.2.0](https://github.com/vb-consulting/Norm.net/tree/4.2.0) (2022-04-07)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.1.0...4.2.0)

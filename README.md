@@ -8,18 +8,17 @@ _High performance micro-ORM database mapper and modernized Dapper replacement fo
  
 ## **High-performance mapping**
 
-- Slightly more performant than Dapper. See the benchmark results file.
+- Outstanding perfomances. [See benchmarsks here](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md#results-round-1)
 - Build an iterator over database reader to avoid unnecessary iterations.
 - Use asynchronous streaming directly from the database.
 
 ## **Powerful and extendible mapping system**
 
 - Map up to 12 instances from the same command.
-- Map to simple values, tuples, named tuples, whatever you need. Not every query deserves a class.
+- Map to **simple values**, **tuples**, **named tuples**, **anonymous types**, whatever you need. Not every query deserves a class.
 - Map to arrays and other exotic types available on databases such as PostgreSQL.
 - Implement your custom mapping logic to handle custom types such as geometry types from PostGIS.
 
-See the examples file.
  
 ## Usage
  
@@ -54,9 +53,25 @@ await foreach(var (id, foo, bar) in connection.ReadAsync<int, string, string>("s
 {
     //...
 }
+
+//anonymous type instance
+var instance = connection.Read(new { id = default(int), foo = default(string), bar = default(string) }, "select id, foo, bar from table").Single();
+
+// Asynchronously stream to anonymous types directly from database
+await foreach(var i in connection.ReadAsync(new 
+{ 
+    id = default(int), 
+    foo = default(string), 
+    bar = default(string) },
+    "select id, foo, bar from table"))
+{
+    //...
+}
  
 // etc...
 ```
+
+[See more examples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md)
  
 ## Currently supported platforms
  

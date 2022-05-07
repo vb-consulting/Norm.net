@@ -10,12 +10,6 @@ namespace Norm
 {
     internal static class TypeCache<T>
     {
-        private static readonly object CtorLocker = new object();
-        private static (T, Func<T, object>) _ctorInfo;
-
-        private static readonly object AnonInfoLocker = new object();
-        private static (ConstructorInfo CtorInfo, (string Name, Type Type)[] Props) _anonInfoInfo;
-
         private static readonly object PropertiesLocker = new object();
         private static int? _propertiesLen;
         private static volatile (Type type, string name, PropertyInfo info)[] _properties;
@@ -38,7 +32,7 @@ namespace Norm
                 short i = 0;
                 foreach(var p in props)
                 {
-                    result[i++] = (p.PropertyType, p.Name.ToLower(), p);
+                    result[i++] = (p.PropertyType, p.Name.ToLowerInvariant(), p);
                 }
                 _properties = result; 
                 return new Span<(Type type, string name, PropertyInfo info)>(_properties, 0, _properties.Length);
@@ -54,6 +48,9 @@ namespace Norm
             GetProperties();
             return _propertiesLen.Value;
         }
+
+        private static readonly object CtorLocker = new object();
+        private static (T, Func<T, object>) _ctorInfo;
 
         internal static (T, Func<T, object>) GetCtorInfo(Type type)
         {
@@ -74,17 +71,24 @@ namespace Norm
             }
         }
 
-        internal static (ConstructorInfo CtorInfo, (string Name, Type Type)[] Props) GetAnonInfo(Type type)
+        private static readonly object AnonInfoLocker = new object();
+        private static (ConstructorInfo ctorInfo, (string name, Type type)[] props) _anonInfoInfo;
+
+        internal static (ConstructorInfo ctorInfo, (string name, Type type)[] props) GetAnonInfo(Type type)
         {
-            if (_anonInfoInfo.Item1 != null)
+            if (_anonInfoInfo.ctorInfo != null)
             {
                 return _anonInfoInfo;
             }
             lock (AnonInfoLocker)
             {
-                if (_anonInfoInfo.Item1 != null)
+                if (_anonInfoInfo.ctorInfo != null)
                 {
                     return _anonInfoInfo;
+                }
+                if (!type.IsAnonymousType())
+                {
+                    throw new ArgumentException("Anonymous Type is required for this call.");
                 }
                 var defaultCtor = type.GetConstructors()[0];
                 var ctorParams = defaultCtor.GetParameters();

@@ -280,6 +280,22 @@ Console.WriteLine("{0}, {1}", instance.Value1, instance.Value2);
 
 - Everything in regards to mapping is also true when returning multiple records from your query
 
+## Anonymous type instances
+
+var instance = connection.Read(new
+{ 
+    Value1 = default(int), 
+    Value2 = default(int) 
+}, "select 1 as Value1, 2 as Value2").FirstOrDefault();
+
+var instance = await connection.ReadAsync<MyClass>(new
+{ 
+    Value1 = default(int), 
+    Value2 = default(int)
+}, "select 1 as Value1, 2 as Value2").FirstOrDefaultAsync();
+
+Console.WriteLine("{0}, {1}", instance.Value1, instance.Value2); 
+
 ### Iterations
 
 - Mapped by position, no field name is required in a query:

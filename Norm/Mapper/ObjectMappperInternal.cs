@@ -66,7 +66,7 @@ namespace Norm
             ushort i = 0;
             foreach (var t in tuple)
             {
-                var name = string.Concat(t.name.ToLower().Replace("@", "").Replace("_", ""));
+                var name = t.name.ToLowerInvariant().Replace("@", "").Replace("_", "");
                 if (hashes.Contains(name))
                 {
                     i++;
@@ -144,7 +144,7 @@ namespace Norm
             ushort i = 0;
             foreach (var t in tuple)
             {
-                var name = string.Concat(t.name.ToLower().Replace("_", ""));
+                var name = t.name.ToLowerInvariant().Replace("_", "");
                 if (hashes.Contains(name))
                 {
                     i++;
