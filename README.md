@@ -62,7 +62,8 @@ await foreach(var i in connection.ReadAsync(new
 { 
     id = default(int), 
     foo = default(string), 
-    bar = default(string) },
+    bar = default(string) 
+},
     "select id, foo, bar from table"))
 {
     //...
