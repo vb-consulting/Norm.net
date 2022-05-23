@@ -8,7 +8,12 @@ namespace Norm
 {
     public partial class Norm
     {
-        private void AddParametersInternal(DbCommand cmd, params object[] parameters)
+        protected static readonly char[] NonCharacters =
+            {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.'};
+
+        protected const string ParamPrefix = "@";
+
+        protected void AddParametersInternal(DbCommand cmd, params object[] parameters)
         {
             var command = cmd.CommandText;
             var valueList = new List<object>();
@@ -18,7 +23,7 @@ namespace Norm
             {
                 foreach (var prop in type.GetProperties())
                 {
-                    if (prop.PropertyType.BaseType == TypeExt.DbParameterType || prop.PropertyType == TypeExt.DbParameterType)
+                    if (prop.PropertyType.BaseType == typeof(DbParameter) || prop.PropertyType == typeof(DbParameter))
                     {
                         AddDbParamInternal(cmd, prop.GetValue(p) as DbParameter);
                     }
@@ -108,7 +113,7 @@ new {{
             }
         }
 
-        private void AddParamWithValueInternal(DbCommand cmd, string name, object value)
+        protected void AddParamWithValueInternal(DbCommand cmd, string name, object value)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
@@ -116,7 +121,7 @@ new {{
             AddDbParamInternal(cmd, param);
         }
 
-        private void AddParamWithValueInternal(DbCommand cmd, string name, object value, object type)
+        protected void AddParamWithValueInternal(DbCommand cmd, string name, object value, object type)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
@@ -124,7 +129,7 @@ new {{
             if (type != null)
             {
                 var paramType = type.GetType();
-                if (!paramType.IsEnum && paramType != TypeExt.IntType)
+                if (!paramType.IsEnum && paramType != typeof(int))
                 {
                     throw new ArgumentException($"Wrong parameter type: {name}");
                 }
@@ -135,9 +140,9 @@ new {{
             AddDbParamInternal(cmd, param);
         }
 
-        private void AddDbParamInternal(DbCommand cmd, DbParameter dbParameter)
+        protected void AddDbParamInternal(DbCommand cmd, DbParameter dbParameter)
         {
-            if (this.dbType != DatabaseType.Pg)
+            if (this.dbType != DatabaseType.Npgsql)
             {
                 if (dbParameter.Value is System.Collections.ICollection)
                 {
@@ -163,12 +168,7 @@ new {{
             cmd.Parameters.Add(dbParameter);
         }
 
-        private static readonly char[] NonCharacters =
-            {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.'};
-
-        private const string ParamPrefix = "@";
-
-        private static IEnumerable<(string name, int index, int count)> EnumerateParams(string command, ICollection<string> skip = null)
+        protected static IEnumerable<(string name, int index, int count)> EnumerateParams(string command, ICollection<string> skip = null)
         {
             for (var index = 0; ; index += ParamPrefix.Length)
             {
@@ -205,6 +205,32 @@ new {{
                     break;
                 index = endOf;
             }
+        }
+
+        protected (string commandString, object[] parameters) ParseFormattableCommand(FormattableString command)
+        {
+            var args = command.GetArguments();
+            var parameters = new List<object>(args.Length);
+            var commandString = string.Format(command.Format, args.Select((p, idx) =>
+            {
+                if (p is DbParameter dbParameter)
+                {
+                    dbParameter.ParameterName = $"p{idx}";
+                    parameters.Add(p);
+                    return $"@p{idx}";
+                }
+                if (p is string)
+                {
+                    if (command.Format.Contains($"{{{idx}:{NormOptions.Value.RawInterpolationParameterEscape}"))
+                    {
+                        return p;
+                    }
+                }
+                parameters.Add(p);
+                return $"@p{idx}";
+            }).ToArray());
+
+            return (commandString, parameters.ToArray());
         }
     }
 }

@@ -42,6 +42,13 @@ namespace PostgreSqlUnitTests
             Assert.Equal(statement, result[0].Item1);
             Assert.Empty(result[0].Item2);
             Assert.False(result[0].Item3);
+
+            using var connection2 = new NpgsqlConnection(fixture.ConnectionString);
+
+            result = connection2.Read<string, uint[], bool>(
+        $"select statement, parameter_types, from_sql from pg_prepared_statements where statement = '{statement}'").ToArray();
+
+            Assert.Empty(result);
         }
 
         [Fact]

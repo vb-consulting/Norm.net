@@ -9,13 +9,6 @@ namespace Norm
 {
     public static class TypeExt
     {
-        internal static readonly Type TimeSpanType = typeof(TimeSpan);
-        internal static readonly Type GuidType = typeof(Guid);
-        internal static readonly Type DateTimeOffsetType = typeof(DateTimeOffset);
-        internal static readonly Type StringType = typeof(string);
-        internal static readonly Type IntType = typeof(int);
-        internal static readonly Type DbParameterType = typeof(DbParameter);
-
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
             new[]
             {
@@ -65,9 +58,9 @@ namespace Norm
                     }
 
                     code = Type.GetTypeCode(type.GenericTypeArguments[0]);
-                    if (code == TypeCode.Object && type.GenericTypeArguments[0] == TimeSpanType
-                        || code == TypeCode.Object && type.GenericTypeArguments[0] == GuidType
-                        || code == TypeCode.Object && type.GenericTypeArguments[0] == DateTimeOffsetType)
+                    if (code == TypeCode.Object && type.GenericTypeArguments[0] == typeof(TimeSpan)
+                        || code == TypeCode.Object && type.GenericTypeArguments[0] == typeof(Guid)
+                        || code == TypeCode.Object && type.GenericTypeArguments[0] == typeof(DateTimeOffset))
                     {
                         return simpleNotString;
                     }
@@ -75,9 +68,9 @@ namespace Norm
                 else
                 {
                     code = Type.GetTypeCode(type);
-                    if (code == TypeCode.Object && type == TimeSpanType
-                        || code == TypeCode.Object && type == GuidType
-                        || code == TypeCode.Object && type == DateTimeOffsetType)
+                    if (code == TypeCode.Object && type == typeof(TimeSpan)
+                        || code == TypeCode.Object && type == typeof(Guid)
+                        || code == TypeCode.Object && type == typeof(DateTimeOffset))
                     {
                         return simpleNotString;
                     }

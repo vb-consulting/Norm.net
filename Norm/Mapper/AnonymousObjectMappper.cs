@@ -56,7 +56,7 @@ namespace Norm
                     if (value != null)
                     {
                         var valueType = value.GetType();
-                        if (type.IsEnum && valueType == TypeExt.StringType)
+                        if (type.IsEnum && valueType == typeof(string))
                         {
                             value = Enum.Parse(type, (string)value);
                         }
@@ -67,11 +67,11 @@ namespace Norm
                             {
                                 if (nullableType.IsEnum)
                                 {
-                                    if (valueType == TypeExt.StringType)
+                                    if (valueType == typeof(string))
                                     {
                                         value = Enum.Parse(nullableType, (string)value);
                                     }
-                                    else if (valueType == TypeExt.IntType)
+                                    else if (valueType == typeof(int))
                                     {
                                         value = Enum.ToObject(nullableType, value);
                                     }
@@ -84,7 +84,7 @@ namespace Norm
                                     var elementType = type.GetElementType();
                                     if (elementType.IsEnum)
                                     {
-                                        if (valueType.GetElementType() == TypeExt.StringType)
+                                        if (valueType.GetElementType() == typeof(string))
                                         {
                                             var valueArray = (object[])value;
                                             var enumArray = Array.CreateInstance(elementType, valueArray.Length);

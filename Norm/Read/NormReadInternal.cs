@@ -209,7 +209,7 @@ namespace Norm
             if (type.IsEnum || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum))
             {
                 var fieldType = reader.GetFieldType(ordinal);
-                if (fieldType == TypeExt.StringType)
+                if (fieldType == typeof(string))
                 {
                     if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
                     {
@@ -217,7 +217,7 @@ namespace Norm
                     }
                     return (T)Enum.Parse(type, reader.GetString(ordinal));
                 }
-                if (fieldType == TypeExt.IntType)
+                if (fieldType == typeof(int))
                 {
                     if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
                     {

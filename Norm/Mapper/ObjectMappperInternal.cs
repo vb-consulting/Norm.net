@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Norm
 {
     public static partial class NormExtensions
     {
-        private static Type TimeSpanType = typeof(TimeSpan);
-        private static Type DateTimeOffsetType = typeof(DateTimeOffset);
-        private static Type GuidType = typeof(Guid);
-
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
 
         private static T MapInstance<T>(this (string name, object value)[] tuple,
@@ -171,7 +165,7 @@ namespace Norm
             var type = isArray ? value?.GetType().GetElementType() : value?.GetType();
             if (nullable)
             {
-                if (type == TypeExt.StringType)
+                if (type == typeof(string))
                 {
                     property.info.SetValue(instance, Enum.Parse(property.type.GenericTypeArguments[0], (string)value));
                 }
@@ -182,7 +176,7 @@ namespace Norm
             }
             else
             {
-                if (type == TypeExt.StringType)
+                if (type == typeof(string))
                 {
                     if (isArray)
                     {
@@ -235,7 +229,7 @@ namespace Norm
             var type = property.PropertyType;
             if (property.GetMethod.IsVirtual)
             {
-                if (type.IsGenericType || (type.IsClass && type != TypeExt.StringType))
+                if (type.IsGenericType || (type.IsClass && type != typeof(string)))
                 {
                     return (null, TypeCode.Empty, false, StructType.None);
                 }
@@ -256,15 +250,15 @@ namespace Norm
                 
                 if (code == TypeCode.Object)
                 {
-                    if (elementType == TimeSpanType)
+                    if (elementType == typeof(TimeSpan))
                     {
                         return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, StructType.TimeSpan);
                     }
-                    if (elementType == GuidType)
+                    if (elementType == typeof(Guid))
                     {
                         return (CreateDelegateValue<T, Guid[]>(property), code, isArray, StructType.Guid);
                     }
-                    if (elementType == DateTimeOffsetType)
+                    if (elementType == typeof(DateTimeOffset))
                     {
                         return (CreateDelegateValue<T, DateTimeOffset[]>(property), code, isArray, StructType.DateTimeOffset);
                     }
@@ -282,15 +276,15 @@ namespace Norm
                 
                 if (code == TypeCode.Object)
                 {
-                    if (type == TimeSpanType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == TimeSpanType))
+                    if (type == typeof(TimeSpan) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(TimeSpan)))
                     {
                         return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, StructType.TimeSpan);
                     }
-                    if (type == GuidType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == GuidType))
+                    if (type == typeof(Guid) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(Guid)))
                     {
                         return (CreateDelegateStruct<T, Guid>(property, nullable), code, isArray, StructType.Guid);
                     }
-                    if (type == DateTimeOffsetType || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == DateTimeOffsetType))
+                    if (type == typeof(DateTimeOffset) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(DateTimeOffset)))
                     {
                         return (CreateDelegateStruct<T, DateTimeOffset>(property, nullable), code, isArray, StructType.DateTimeOffset);
                     }
