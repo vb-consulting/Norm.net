@@ -118,7 +118,7 @@ namespace Norm
                 if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCommandAttributes) || 
                     (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
                 {
-                    sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString().ToLower()} command. Timeout: {cmd.CommandTimeout} seconds.");
+                    sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString()} Command. Timeout: {cmd.CommandTimeout} seconds.");
                 }
 
                 if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) || 

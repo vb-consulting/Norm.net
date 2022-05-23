@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PostgreSqlSerialUnitTests
 {
@@ -24,7 +25,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 "-- at WithCommentHeader_Default_Test in ",
                 "select 1"
             };
@@ -42,7 +43,7 @@ namespace PostgreSqlSerialUnitTests
             Assert.Equal(expected.Length, actualLines?.Length);
             Assert.Equal(expected[0], actualLines?[0]);
             Assert.StartsWith(expected[1], actualLines?[1]);
-            Assert.EndsWith(" 35", actualLines?[1]);
+            Assert.EndsWith(" 36", actualLines?[1]);
             Assert.Equal(expected[2], actualLines?[2]);
 
             connection
@@ -89,7 +90,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 "select 1"
             };
             string actual = "";
@@ -186,7 +187,7 @@ namespace PostgreSqlSerialUnitTests
             Assert.Equal(2, actualLines.Length);
             Assert.Equal(expected.Length, actualLines?.Length);
             Assert.StartsWith(expected[0], actualLines?[0]);
-            Assert.EndsWith(" 180", actualLines?[0]);
+            Assert.EndsWith(" 181", actualLines?[0]);
             Assert.Equal(expected[1], actualLines?[1]);
 
             connection
@@ -199,7 +200,7 @@ namespace PostgreSqlSerialUnitTests
             Assert.Equal(2, actualLines.Length);
             Assert.Equal(expected.Length, actualLines?.Length);
             Assert.StartsWith(expected[0], actualLines?[0]);
-            Assert.EndsWith(" 193", actualLines?[0]);
+            Assert.EndsWith(" 194", actualLines?[0]);
             Assert.Equal(expected[1], actualLines?[1]);
         }
 
@@ -233,7 +234,7 @@ namespace PostgreSqlSerialUnitTests
             var expected = new string[]
             {
                 "-- This is my comment",
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 $"-- Timestamp: {DateTime.Now.ToString("o")[..11]}",
                 "-- @1 integer = 1",
                 "-- @2 text = \"foo\"",
@@ -264,7 +265,7 @@ namespace PostgreSqlSerialUnitTests
             Assert.StartsWith(expected[6], actualLines?[6]);
 
             Assert.StartsWith(expected[7], actualLines?[7]);
-            Assert.EndsWith(" 249", actualLines?[7]);
+            Assert.EndsWith(" 250", actualLines?[7]);
 
             Assert.Equal(expected[8], actualLines?[8]);
         }
@@ -311,7 +312,7 @@ namespace PostgreSqlSerialUnitTests
             var expected = new string[]
             {
                 "-- This is my comment",
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 $"-- Timestamp: {DateTime.Now.ToString("o")[..11]}",
                 "-- @1 integer = 1",
                 "-- @2 text = \"foo\"",
@@ -350,9 +351,48 @@ namespace PostgreSqlSerialUnitTests
             Assert.StartsWith(expected[6], actualLines?[6]);
 
             Assert.StartsWith(expected[7], actualLines?[7]);
-            Assert.EndsWith(" 336", actualLines?[7]);
+            Assert.EndsWith(" 337", actualLines?[7]);
 
             Assert.Equal(expected[8], actualLines?[8]);
+        }
+
+        [Fact]
+        public void WithCommentHeader_StoredProcedure_Test()
+        {
+            var expected = new string[]
+            {
+                "-- Npgsql StoredProcedure Command. Timeout: 30 seconds.",
+                "-- @test_param text = \"foo\"",
+                "-- at WithCommentHeader_StoredProcedure_Test in ",
+                "comment_header_test_func"
+            };
+            string actual = "";
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            var result = connection
+                .Execute(@"
+                create function comment_header_test_func(test_param text) returns text language plpgsql as
+                $$
+                begin
+                    return test_param || ' bar';
+                end
+                $$")
+                .AsProcedure()
+                .WithCommentHeader()
+                .WithCommandCallback(c => actual = c.CommandText)
+                .Read<string?>("comment_header_test_func", new { test_param = "foo" })
+                .FirstOrDefault();
+
+            var actualLines = actual.Split(Environment.NewLine);
+
+            Assert.Equal(4, actualLines.Length);
+            Assert.Equal(expected.Length, actualLines?.Length);
+            
+            Assert.Equal(expected[0], actualLines?[0]);
+            Assert.Equal(expected[1], actualLines?[1]);
+            Assert.StartsWith(expected[2], actualLines?[2]);
+            Assert.EndsWith(" 381", actualLines?[2]);
+            Assert.Equal(expected[3], actualLines?[3]);
         }
     }
 }

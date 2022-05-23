@@ -14,9 +14,9 @@ namespace Norm
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
         ///<param name="command">SQL command text.</param>
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command) where T : class
         {
-            return connection.GetNoOrmInstance().ReadAsync(anonymousBlueprintInstance, command);
+            return connection.GetNoOrmInstance().ReadAnonymousAsync(anonymousBlueprintInstance, command);
         }
 
         ///<summary>
@@ -27,10 +27,10 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback) where T : class
         {
-            return connection.GetNoOrmInstance().ReadAsync<T>(anonymousBlueprintInstance, command, readerCallback);
+            return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, readerCallback);
         }
 
         ///<summary>
@@ -40,9 +40,9 @@ namespace Norm
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, FormattableString command) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, FormattableString command) where T : class
         {
-            return connection.GetNoOrmInstance().ReadFormatAsync<T>(anonymousBlueprintInstance, command);
+            return connection.GetNoOrmInstance().ReadAnonymousFormatAsync<T>(anonymousBlueprintInstance, command);
         }
 
         ///<summary>
@@ -53,11 +53,11 @@ namespace Norm
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance,
+        public static IAsyncEnumerable<T> ReadAnonymousFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance,
             FormattableString command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback) where T : class
         {
-            return connection.GetNoOrmInstance().ReadFormatAsync<T>(anonymousBlueprintInstance, command, readerCallback);
+            return connection.GetNoOrmInstance().ReadAnonymousFormatAsync<T>(anonymousBlueprintInstance, command, readerCallback);
         }
 
         ///<summary>
@@ -68,9 +68,9 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command, params object[] parameters) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command, params object[] parameters) where T : class
         {
-            return connection.GetNoOrmInstance().ReadAsync<T>(anonymousBlueprintInstance, command, parameters);
+            return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, parameters);
         }
 
         ///<summary>
@@ -82,11 +82,11 @@ namespace Norm
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
             params object[] parameters) where T : class
         {
-            return connection.GetNoOrmInstance().ReadAsync<T>(anonymousBlueprintInstance, command, readerCallback, parameters);
+            return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, readerCallback, parameters);
         }
     }
 }

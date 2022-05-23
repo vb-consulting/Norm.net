@@ -23,7 +23,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 "select 1"
             };
             string? actual = null;
@@ -49,7 +49,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 $"-- Timestamp: {DateTime.Now.ToString("o")[..11]}",
                 "select 1"
             };
@@ -80,7 +80,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 60 seconds.",
+                "-- Npgsql Text Command. Timeout: 60 seconds.",
                 "select 1"
             };
             string? actual = null;
@@ -176,7 +176,7 @@ namespace PostgreSqlSerialUnitTests
         {
             var expected = new string[]
             {
-                "-- Npgsql text command. Timeout: 30 seconds.",
+                "-- Npgsql Text Command. Timeout: 30 seconds.",
                 "-- @1 integer = 1",
                 "-- @2 text = \"foo\"",
                 "-- @3 boolean = false",

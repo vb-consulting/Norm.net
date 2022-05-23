@@ -120,7 +120,7 @@ namespace Benchmarks6
         [Benchmark()]
         public void Norm_Anonymous_Types()
         {
-            foreach (var i in connection.Read(new
+            foreach (var i in connection.ReadAnonymous(new
             {
                 id1 = default(int),
                 foo1 = default(string),
