@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 namespace Norm
 {
@@ -12,7 +13,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of six value tuples (T1, T2, T3, T4, T5, T6).</returns>
-        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(string command)
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -44,7 +50,12 @@ namespace Norm
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of six value tuples (T1, T2, T3, T4, T5, T6).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadAsync<T1, T2, T3, T4, T5, T6>(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -75,7 +86,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of six value tuples (T1, T2, T3, T4, T5, T6).</returns>
-        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadFormatAsync<T1, T2, T3, T4, T5, T6>(FormattableString command)
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadFormatAsync<T1, T2, T3, T4, T5, T6>(FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -107,7 +123,12 @@ namespace Norm
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of six value tuples (T1, T2, T3, T4, T5, T6).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> ReadFormatAsync<T1, T2, T3, T4, T5, T6>(FormattableString command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();

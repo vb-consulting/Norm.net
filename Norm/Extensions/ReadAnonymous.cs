@@ -23,7 +23,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.GetNoOrmInstance().ReadAnonymous(anonymousBlueprintInstance, command);
+            return connection.GetNoOrmInstance().ReadAnonymous(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -43,7 +43,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.GetNoOrmInstance().ReadAnonymous<T>(anonymousBlueprintInstance, command, readerCallback);
+            return connection.GetNoOrmInstance().ReadAnonymous<T>(anonymousBlueprintInstance, command, readerCallback, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -61,7 +61,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.GetNoOrmInstance().ReadAnonymousFormat<T>(anonymousBlueprintInstance, command);
+            return connection.GetNoOrmInstance().ReadAnonymousFormat<T>(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -82,7 +82,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.GetNoOrmInstance().ReadAnonymousFormat<T>(anonymousBlueprintInstance, command, readerCallback);
+            return connection.GetNoOrmInstance().ReadAnonymousFormat<T>(anonymousBlueprintInstance, command, readerCallback, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }

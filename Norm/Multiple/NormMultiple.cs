@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Norm
@@ -11,7 +12,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader Multiple(string command)
+        public NormMultipleReader Multiple(string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = CreateCommand(command);
             return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
@@ -22,7 +28,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader MultipleFormat(FormattableString command)
+        public NormMultipleReader MultipleFormat(FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = CreateCommand(command);
             return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
@@ -33,7 +44,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public async ValueTask<NormMultipleReader> MultipleAsync(string command)
+        public async ValueTask<NormMultipleReader> MultipleAsync(string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -48,7 +64,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public async ValueTask<NormMultipleReader> MultipleFormatAsync(FormattableString command)
+        public async ValueTask<NormMultipleReader> MultipleFormatAsync(FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)

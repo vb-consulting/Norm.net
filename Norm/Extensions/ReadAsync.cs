@@ -21,7 +21,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNoOrmInstance().ReadAsync(command);
+            return connection.GetNoOrmInstance().ReadAsync(command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -40,7 +40,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNoOrmInstance().ReadAsync(command, readerCallback);
+            return connection.GetNoOrmInstance().ReadAsync(command, readerCallback, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -57,7 +57,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNoOrmInstance().ReadFormatAsync(command);
+            return connection.GetNoOrmInstance().ReadFormatAsync(command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -76,7 +76,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNoOrmInstance().ReadFormatAsync(command, readerCallback);
+            return connection.GetNoOrmInstance().ReadFormatAsync(command, readerCallback, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }
