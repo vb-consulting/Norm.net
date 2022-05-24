@@ -23,6 +23,9 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             return ReadToArrayInternal(command).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
 
@@ -42,6 +45,9 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             return ReadToArrayInternal(command, readerCallback).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
 
@@ -59,6 +65,9 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             return ReadToArrayInternal(command).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
 
@@ -78,6 +87,9 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             return ReadToArrayInternal(command, readerCallback).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
     }

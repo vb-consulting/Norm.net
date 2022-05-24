@@ -19,6 +19,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
             return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
         }
@@ -35,6 +38,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
             return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
         }
@@ -51,6 +57,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
@@ -71,6 +80,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {

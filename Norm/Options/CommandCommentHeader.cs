@@ -13,6 +13,10 @@ namespace Norm
         /// </summary>
         public bool IncludeCommandAttributes { get; set; } = true;
         /// <summary>
+        /// Include command caller info like member name, source code path and source code line number.
+        /// </summary>
+        public bool IncludeCallerInfo { get; set; } = true;
+        /// <summary>
         /// Include command parameters in comment headers.
         /// </summary>
         public bool IncludeParameters { get; set; } = true;

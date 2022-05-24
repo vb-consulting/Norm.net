@@ -144,14 +144,9 @@ namespace Norm
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
-        public static Norm WithCommentCallerInfo(this DbConnection connection,
-#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
-            [CallerMemberName] string memberName = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+        public static Norm WithCommentCallerInfo(this DbConnection connection)
         {
-            return connection.GetNoOrmInstance().Clone().WithCommentCallerInfo(memberName, sourceFilePath, sourceLineNumber);
+            return connection.GetNoOrmInstance().Clone().WithCommentCallerInfo();
         }
 
         /// <summary>
@@ -169,21 +164,13 @@ namespace Norm
             bool includeCommandAttributes = true,
             bool includeParameters = true,
             bool includeCallerInfo = true,
-            bool includeTimestamp = false,
-#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
-            [CallerMemberName] string memberName = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            bool includeTimestamp = false)
         {
             return connection.GetNoOrmInstance().Clone().WithCommentHeader(
                 comment: comment,
                 includeCommandAttributes: includeCommandAttributes,
                 includeParameters: includeParameters,
                 includeCallerInfo: includeCallerInfo,
-                memberName: memberName,
-                sourceFilePath: sourceFilePath,
-                sourceLineNumber: sourceLineNumber,
                 includeTimestamp: includeTimestamp);
         }
     }

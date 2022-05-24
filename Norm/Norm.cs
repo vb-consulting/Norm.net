@@ -117,7 +117,7 @@ namespace Norm
         /// 
         /// </summary>
         /// <param name="comment"></param>
-        /// <returns></returns>
+        ///<returns>Norm instance.</returns>
         public Norm WithComment(string comment)
         {
             if (!this.commandCommentHeaderEnabled)
@@ -126,9 +126,6 @@ namespace Norm
                 this.includeCommandAttributes = false;
                 this.includeParameters = false;
                 this.includeCallerInfo = false;
-                this.memberName = "";
-                this.sourceFilePath = "";
-                this.sourceLineNumber = 0;
                 this.includeTimestamp = false;
             }
             
@@ -140,7 +137,7 @@ namespace Norm
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+        ///<returns>Norm instance.</returns>
         public Norm WithCommentParameters()
         {
             if (!this.commandCommentHeaderEnabled)
@@ -149,9 +146,6 @@ namespace Norm
                 this.comment = null;
                 this.includeCommandAttributes = false;
                 this.includeCallerInfo = false;
-                this.memberName = "";
-                this.sourceFilePath = "";
-                this.sourceLineNumber = 0;
                 this.includeTimestamp = false;
             }
 
@@ -162,11 +156,8 @@ namespace Norm
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
-        public Norm WithCommentCallerInfo(
-            [CallerMemberName] string memberName = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
+        ///<returns>Norm instance.</returns>
+        public Norm WithCommentCallerInfo()
         {
             if (!this.commandCommentHeaderEnabled)
             {
@@ -178,9 +169,6 @@ namespace Norm
             }
 
             this.includeCallerInfo = true;
-            this.memberName = memberName;
-            this.sourceFilePath = sourceFilePath;
-            this.sourceLineNumber = sourceLineNumber;
             return this;
         }
 
@@ -192,27 +180,19 @@ namespace Norm
         /// <param name="includeParameters"></param>
         /// <param name="includeCallerInfo"></param>
         /// <param name="includeTimestamp"></param>
-        /// <returns></returns>
+        ///<returns>Norm instance.</returns>
         public Norm WithCommentHeader(
             string comment = null,
             bool includeCommandAttributes = true,
             bool includeParameters = true,
             bool includeCallerInfo = true,
-            bool includeTimestamp = false,
-#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
-            [CallerMemberName] string memberName = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            bool includeTimestamp = false)
         {
             this.commandCommentHeaderEnabled = true;
             this.comment = comment;
             this.includeCommandAttributes = includeCommandAttributes;
             this.includeParameters = includeParameters;
             this.includeCallerInfo = includeCallerInfo;
-            this.memberName = memberName;
-            this.sourceFilePath = sourceFilePath;
-            this.sourceLineNumber = sourceLineNumber;
             this.includeTimestamp = includeTimestamp;
             return this;
         }

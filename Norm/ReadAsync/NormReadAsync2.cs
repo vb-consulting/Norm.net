@@ -20,6 +20,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
@@ -49,6 +52,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
@@ -76,6 +82,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)
@@ -105,6 +114,9 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            this.memberName = memberName;
+            this.sourceFilePath = sourceFilePath;
+            this.sourceLineNumber = sourceLineNumber;
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
             if (t1.valueTuple && t2.valueTuple)

@@ -53,11 +53,7 @@ namespace Norm
             bool includeCommandAttributes,
             bool includeParameters,
             bool includeCallerInfo,
-            bool includeTimestamp,
-            string memberName,
-            string sourceFilePath,
-            int sourceLineNumber
-
+            bool includeTimestamp
         ) : this(connection)
         {
             this.commandType = commandType;
@@ -72,9 +68,6 @@ namespace Norm
             this.includeParameters = includeParameters;
             this.includeCallerInfo = includeCallerInfo;
             this.includeTimestamp = includeTimestamp;
-            this.memberName = memberName;
-            this.sourceFilePath = sourceFilePath;
-            this.sourceLineNumber = sourceLineNumber;
         }
 
         public Norm Clone()
@@ -92,10 +85,7 @@ namespace Norm
                 includeCommandAttributes: includeCommandAttributes,
                 includeParameters: includeParameters,
                 includeCallerInfo: includeCallerInfo,
-                includeTimestamp: includeTimestamp,
-                memberName: memberName,
-                sourceFilePath: sourceFilePath,
-                sourceLineNumber: sourceLineNumber
+                includeTimestamp: includeTimestamp
             );
         }
 
@@ -109,79 +99,85 @@ namespace Norm
             {
                 cmd.CommandTimeout = commandTimeout.Value;
             }
-            if (NormOptions.Value.CommandCommentHeader.Enabled || this.commandCommentHeaderEnabled)
-            {
-                var sb = new StringBuilder();
 
-                if (this.commandCommentHeaderEnabled && this.comment != null)
-                {
-                    sb.AppendLine($"-- {this.comment}");
-                }
-
-                if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCommandAttributes) || 
-                    (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
-                {
-                    sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString()} Command. Timeout: {cmd.CommandTimeout} seconds.");
-                }
-
-                if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) || 
-                    (this.commandCommentHeaderEnabled && this.includeTimestamp))
-                {
-                    sb.AppendLine($"-- Timestamp: {DateTime.Now:o}");
-                }
-
-                if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeParameters) || 
-                    (this.commandCommentHeaderEnabled && this.includeParameters))
-                {
-                    foreach (DbParameter p in cmd.Parameters)
-                    {
-                        string paramType;
-                        if (this.dbType == DatabaseType.Other)
-                        {
-                            paramType = p.DbType.ToString().ToLowerInvariant();
-                        }
-                        else
-                        {
-                            var prop = p.GetType().GetProperty($"{this.dbType}DbType");
-                            if (prop != null)
-                            {
-                                paramType = prop.GetValue(p).ToString().ToLowerInvariant();
-                            }
-                            else
-                            {
-                                paramType = this.dbType.ToString().ToLowerInvariant();
-                            }
-                        }
-                        object value = p.Value is DateTime time ? time.ToString("o") : p.Value;
-                        if (value is string)
-                        {
-                            value = $"\"{value}\"";
-                        }
-                        else if (value is bool)
-                        {
-                            value = value.ToString().ToLowerInvariant();
-                        }
-                        sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, p.ParameterName, paramType, value));
-                    }
-                }
-
-                if (this.commandCommentHeaderEnabled && this.includeCallerInfo)
-                {
-                    sb.AppendLine($"-- at {memberName} in {sourceFilePath} {sourceLineNumber}");
-                }
-
-                commandText = cmd.CommandText;
-                commentHeader = sb.ToString();
-                cmd.CommandText = string.Concat(commentHeader, commandText);
-            }
-            else
-            {
-                commandText = cmd.CommandText;
-                commentHeader = null;
-            }
+            ApllyCommentHeader(cmd);
 
             NormOptions.Value.DbCommandCallback?.Invoke(cmd);
             dbCommandCallback?.Invoke(cmd);
+        }
+
+        protected virtual void ApllyCommentHeader(DbCommand cmd)
+        {
+            if (!NormOptions.Value.CommandCommentHeader.Enabled && !this.commandCommentHeaderEnabled)
+            {
+                commandText = cmd.CommandText;
+                commentHeader = null;
+                return;
+            }
+            
+            var sb = new StringBuilder();
+
+            if (this.commandCommentHeaderEnabled && this.comment != null)
+            {
+                sb.AppendLine($"-- {this.comment}");
+            }
+
+            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCommandAttributes) ||
+                (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
+            {
+                sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString()} Command. Timeout: {cmd.CommandTimeout} seconds.");
+            }
+
+            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) ||
+                (this.commandCommentHeaderEnabled && this.includeTimestamp))
+            {
+                sb.AppendLine($"-- Timestamp: {DateTime.Now:o}");
+            }
+
+            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeParameters) ||
+                (this.commandCommentHeaderEnabled && this.includeParameters))
+            {
+                foreach (DbParameter p in cmd.Parameters)
+                {
+                    string paramType;
+                    if (this.dbType == DatabaseType.Other)
+                    {
+                        paramType = p.DbType.ToString().ToLowerInvariant();
+                    }
+                    else
+                    {
+                        var prop = p.GetType().GetProperty($"{this.dbType}DbType");
+                        if (prop != null)
+                        {
+                            paramType = prop.GetValue(p).ToString().ToLowerInvariant();
+                        }
+                        else
+                        {
+                            paramType = this.dbType.ToString().ToLowerInvariant();
+                        }
+                    }
+                    object value = p.Value is DateTime time ? time.ToString("o") : p.Value;
+                    if (value is string)
+                    {
+                        value = $"\"{value}\"";
+                    }
+                    else if (value is bool)
+                    {
+                        value = value.ToString().ToLowerInvariant();
+                    }
+                    sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, p.ParameterName, paramType, value));
+                }
+            }
+
+            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
+                (this.commandCommentHeaderEnabled && this.includeCallerInfo))
+            {
+                sb.AppendLine($"-- at {memberName} in {sourceFilePath} {sourceLineNumber}");
+            }
+
+            commandText = cmd.CommandText;
+            commentHeader = sb.ToString();
+            cmd.CommandText = string.Concat(commentHeader, commandText);
         }
 
         protected DbCommand CreateCommand(string command)
