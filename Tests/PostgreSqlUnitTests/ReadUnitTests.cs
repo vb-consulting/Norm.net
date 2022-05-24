@@ -100,16 +100,8 @@ namespace PostgreSqlUnitTests
         public void Read_With_Named_Parameters_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(
-                @"
-                          select * from (
-                          values 
-                            (@p1, @t1, @d1),
-                            (@p2, @t2, @d2),
-                            (@p3, @t3, @d3)
-                          ) t(first, bar, day)",
-
-                new
+            var result = connection
+                .WithParameters(new
                 {
                     @p1 = 1,
                     t1 = "foo1",
@@ -120,7 +112,14 @@ namespace PostgreSqlUnitTests
                     @p3 = 3,
                     t3 = "foo3",
                     d3 = new DateTime(1979, 5, 19)
-                });
+                })
+                .Read(@"
+                          select * from (
+                          values 
+                            (@p1, @t1, @d1),
+                            (@p2, @t2, @d2),
+                            (@p3, @t3, @d3)
+                          ) t(first, bar, day)");
 
             AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
@@ -164,15 +163,8 @@ namespace PostgreSqlUnitTests
         public async Task Read_With_Named_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAsync(
-                @"
-                          select * from (
-                          values 
-                            (@p1, @t1, @d1),
-                            (@p2, @t2, @d2),
-                            (@p3, @t3, @d3)
-                          ) t(first, bar, day)",
-                new 
+            var result = connection
+                .WithParameters(new
                 {
                     @p1 = 1,
                     t1 = "foo1",
@@ -183,7 +175,14 @@ namespace PostgreSqlUnitTests
                     @p3 = 3,
                     t3 = "foo3",
                     d3 = new DateTime(1979, 5, 19)
-                });
+                })
+                .ReadAsync(@"
+                          select * from (
+                          values 
+                            (@p1, @t1, @d1),
+                            (@p2, @t2, @d2),
+                            (@p3, @t3, @d3)
+                          ) t(first, bar, day)");
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }

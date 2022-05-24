@@ -78,8 +78,14 @@ namespace PostgreSqlUnitTests
         public void Query_Param1_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id", 1).ToList();
-            var result2 = connection.WithParameters(1, "foo1").Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo").ToList();
+            var result1 = connection
+                .WithParameters(1)
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToList();
+            var result2 = connection
+                .WithParameters(1, "foo1")
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -88,9 +94,9 @@ namespace PostgreSqlUnitTests
         public void Query_Param1__SqlParam_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id",
-                new NpgsqlParameter("id", 1)).ToList();
+            var result1 = connection
+                .WithParameters(new NpgsqlParameter("id", 1))
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id").ToList();
 
             // switch position
             var result2 = connection
@@ -105,15 +111,20 @@ namespace PostgreSqlUnitTests
         public void Query_Param2_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id", new { id = 1 }).ToList();
+            var result1 = connection
+                .WithParameters(new { id = 1 })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToList();
             // switch position
-            var result2 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo", 
-                new
+            var result2 = connection
+                .WithParameters(new
                 {
                     id = 1,
                     foo = "foo1"
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToList();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -122,20 +133,24 @@ namespace PostgreSqlUnitTests
         public void Query_Param3_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id",
-                new 
-                { 
+            var result1 = connection
+                .WithParameters(new
+                {
                     id = (1, DbType.Int32)
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToList();
+
             // switch position
-            var result2 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = connection
+                .WithParameters(new
                 {
                     foo = ("foo1", DbType.String),
                     id = (1, DbType.Int32)
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToList();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -144,20 +159,25 @@ namespace PostgreSqlUnitTests
         public void Query_Param4_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id",
-                new
+            var result1 = connection
+                .WithParameters(new
                 {
                     id = (1, NpgsqlDbType.Integer)
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToList();
+
             // switch position
-            var result2 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = connection
+                .WithParameters(new
                 {
                     foo = ("foo1", NpgsqlDbType.Varchar),
                     id = (1, NpgsqlDbType.Integer)
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
+                $"{Query} where id = @id and foo = @foo")
+                .ToList();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -166,13 +186,14 @@ namespace PostgreSqlUnitTests
         public void Query_Param4_Mixed_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result2 = connection.Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = connection
+                .WithParameters(new
                 {
                     foo = ("foo1", NpgsqlDbType.Varchar),
                     id = (1, DbType.Int32)
-                }).ToList();
+                })
+                .Read<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToList();
             AssertSingleTestClass(result2);
         }
 
@@ -188,7 +209,10 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param1_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id", 1).ToListAsync();
+            var result1 = await connection
+                .WithParameters(1)
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToListAsync();
             var result2 = await connection
                 .WithParameters(1, "foo1")
                 .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo").ToListAsync();
@@ -200,9 +224,10 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param1__SqlParam_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id",
-                new NpgsqlParameter("id", 1)).ToListAsync();
+            var result1 = await connection
+                .WithParameters(new NpgsqlParameter("id", 1))
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToListAsync();
 
             // switch position
             var result2 = await connection
@@ -217,16 +242,21 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param2_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id", new { id = 1 }).ToListAsync();
+            var result1 = await connection
+                .WithParameters(new { id = 1 })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToListAsync();
+
             // switch position
-            var result2 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo", 
-                new
+            var result2 = await connection
+                .WithParameters(new
                 {
                     foo = "foo1",
                     id = 1
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -235,20 +265,24 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param3_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id", 
-                new
+            var result1 = await connection
+                .WithParameters(new
                 {
                     id = (1, DbType.Int32)
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToListAsync();
+
             // switch position
-            var result2 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = await connection
+                .WithParameters(new
                 {
                     foo = ("foo1", DbType.String),
                     id = (1, DbType.Int32)
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -257,20 +291,24 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param4_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result1 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id",
-                new
+            var result1 = await connection
+                .WithParameters(new
                 {
                     id = (1, NpgsqlDbType.Integer)
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id")
+                .ToListAsync();
+
             // switch position
-            var result2 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = await connection
+                .WithParameters(new
                 {
                     foo = ("foo1", NpgsqlDbType.Varchar),
                     id = (1, NpgsqlDbType.Integer)
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
+
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -279,13 +317,15 @@ namespace PostgreSqlUnitTests
         public async Task Query_Param4_Mixed_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result2 = await connection.ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>(
-                $"{Query} where id = @id and foo = @foo",
-                new
+            var result2 = await connection
+                .WithParameters(new
                 {
                     foo = ("foo1", NpgsqlDbType.Varchar),
                     id = (1, DbType.Int32)
-                }).ToListAsync();
+                })
+                .ReadAsync<(int Id, string Foo, DateTime Day, bool? Bool, string Bar)>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
+
             AssertSingleTestClass(result2);
         }
 

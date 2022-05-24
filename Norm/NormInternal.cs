@@ -230,56 +230,24 @@ namespace Norm
             return cmd;
         }
 
-        protected DbCommand CreateCommand(string command, params object[] parameters)
-        {
-            var cmd = Connection.CreateCommand();
-            cmd.CommandText = command;
-            cmd.CommandType = commandType;
-            Connection.EnsureIsOpen();
-            AddParametersInternal(cmd, this.parameters == null ? parameters : this.parameters.Concat(parameters).ToArray());
-            if (NormOptions.Value.Prepared || prepared)
-            {
-                cmd.Prepare();
-                prepared = false;
-            }
-            ApplyOptions(cmd);
-            return cmd;
-        }
-
-        protected async ValueTask<DbCommand> CreateCommandAsync(string command, params object[] parameters)
-        {
-            cancellationToken?.ThrowIfCancellationRequested();
-            var cmd = Connection.CreateCommand();
-            cmd.CommandText = command;
-            cmd.CommandType = commandType;
-            await Connection.EnsureIsOpenAsync(cancellationToken);
-            AddParametersInternal(cmd, this.parameters == null ? parameters : this.parameters.Concat(parameters).ToArray());
-            if (NormOptions.Value.Prepared || prepared)
-            {
-                if (cancellationToken.HasValue)
-                {
-                    await cmd.PrepareAsync(cancellationToken.Value);
-                }
-                else
-                {
-                    await cmd.PrepareAsync();
-                }
-                prepared = false;
-            }
-            ApplyOptions(cmd);
-            return cmd;
-        }
-
         protected DbCommand CreateCommand(FormattableString command)
         {
             var (commandString, parameters) = ParseFormattableCommand(command);
-            return CreateCommand(commandString, parameters);
+            if (parameters.Length > 0)
+            {
+                this.parameters = parameters;
+            }
+            return CreateCommand(commandString);
         }
-
+        
         protected async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
         {
             var (commandString, parameters) = ParseFormattableCommand(command);
-            return await CreateCommandAsync(commandString, parameters);
+            if (parameters.Length > 0)
+            {
+                this.parameters = parameters;
+            }
+            return await CreateCommandAsync(commandString);
         }
     }
 }

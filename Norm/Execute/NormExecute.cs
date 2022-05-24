@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace Norm
 {
@@ -10,7 +11,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>Norm instance.</returns>
-        public Norm Execute(string command)
+        public Norm Execute(string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = CreateCommand(command);
             cmd.ExecuteNonQuery();
@@ -22,22 +28,14 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>Norm instance.</returns>
-        public Norm ExecuteFormat(FormattableString command)
+        public Norm ExecuteFormat(FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = CreateCommand(command);
-            cmd.ExecuteNonQuery();
-            return this;
-        }
-
-        ///<summary>
-        ///     Execute SQL command with positional parameter values.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>Norm instance.</returns>
-        public Norm Execute(string command, object parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
             cmd.ExecuteNonQuery();
             return this;
         }

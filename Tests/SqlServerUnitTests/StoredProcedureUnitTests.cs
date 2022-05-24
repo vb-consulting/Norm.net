@@ -58,7 +58,8 @@ namespace SqlServerUnitTests
 
             var results = connection
                 .AsProcedure()
-                .Read("TestStoredProcedure", new { id = 1 })
+                .WithParameters(new { id = 1 })
+                .Read("TestStoredProcedure")
                 .Select(tuples => tuples.ToDictionary(t => t.name, t => t.value))
                 .ToList();
 

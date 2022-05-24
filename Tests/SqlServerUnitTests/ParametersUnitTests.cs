@@ -39,15 +39,15 @@ namespace SqlServerUnitTests
         public void NamedParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new
+            var (s, i, b, d) = connection
+                .WithParameters(new
                 {
                     d = new DateTime(1977, 5, 19),
                     b = true,
                     i = 999,
                     s = "str"
                 })
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -134,7 +134,8 @@ namespace SqlServerUnitTests
                     set @TestParam = concat(@TestParam, ' returned from procedure');
                     ")
                   .AsProcedure()
-                  .Execute("TestInOutParamProc", p);
+                  .WithParameters(p)
+                  .Execute("TestInOutParamProc");
 
             Assert.Equal("I am output value returned from procedure", p.Value);
         }

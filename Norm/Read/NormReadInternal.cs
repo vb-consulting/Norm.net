@@ -90,50 +90,6 @@ namespace Norm
             }
         }
 
-        private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, object parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                yield return readerAction(reader);
-            }
-        }
-
-        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, object parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                yield return ReadToArray(reader);
-            }
-        }
-
-        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                yield return ReadToArray(reader, readerCallback);
-            }
-        }
-
-        private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                yield return ReadToArrayWithSet(reader, readerCallback);
-            }
-        }
-
         internal (string name, object value)[] ReadToArray(DbDataReader reader)
         {
             var count = reader.FieldCount;

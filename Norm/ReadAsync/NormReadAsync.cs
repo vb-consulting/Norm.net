@@ -49,31 +49,5 @@ namespace Norm
         {
             return ReadToArrayInternalAsync(command, readerCallback);
         }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            object parameters)
-        {
-            return ReadToArrayInternalAsync(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to async enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            return ReadToArrayInternalAsync(command, readerCallback, parameters);
-        }
     }
 }

@@ -100,56 +100,5 @@ namespace Norm
 
             return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type, readerCallback));
         }
-
-        ///<summary>
-        /// Maps command results with positional parameter values to async enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>.
-        public IAsyncEnumerable<T> ReadAsync<T>(string command, object parameters)
-        {
-            var t1 = TypeCache<T>.GetMetadata();
-            if (t1.valueTuple)
-            {
-                return ReadToArrayInternalAsync(command, parameters).MapValueTuple<T>(t1.type);
-            }
-            if (!t1.simple)
-            {
-                return ReadToArrayInternalAsync(command, parameters).Map<T>(t1.type);
-            }
-
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type), parameters);
-        }
-
-        ///<summary>
-        /// Maps command results with positional parameter values to async enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>.
-        public IAsyncEnumerable<T> ReadAsync<T>(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            var t1 = TypeCache<T>.GetMetadata();
-            if (t1.valueTuple)
-            {
-                return ReadToArrayInternalAsync(command, readerCallback, parameters).MapValueTuple<T>(t1.type);
-            }
-            if (!t1.simple)
-            {
-                return ReadToArrayWithSetInternalAsync(command, readerCallback, parameters).Map<T>(t1.type);
-            }
-
-            return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type, readerCallback), parameters);
-        }
     }
 }

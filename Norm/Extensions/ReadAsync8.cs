@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 namespace Norm
 {
@@ -13,7 +14,12 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6, T7, T8).</returns>
-        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this DbConnection connection, string command)
+        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this DbConnection connection, string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             return connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command);
         }
@@ -28,7 +34,12 @@ namespace Norm
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
             this DbConnection connection, 
             string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             return connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command, readerCallback);
         }
@@ -39,7 +50,12 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6).</returns>
-        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this DbConnection connection, FormattableString command)
+        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this DbConnection connection, FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             return connection.GetNoOrmInstance().ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command);
         }
@@ -54,38 +70,14 @@ namespace Norm
         public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
             this DbConnection connection, 
             FormattableString command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             return connection.GetNoOrmInstance().ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command, readerCallback);
-        }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6, T7, T8).
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6, T7, T8).</returns>
-        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this DbConnection connection, string command, object parameters)
-        {
-            return connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6, T7, T8).
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of eight value tuples (T1, T2, T3, T4, T5, T6, T7, T8).</returns>
-        public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(
-            this DbConnection connection, 
-            string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            return connection.GetNoOrmInstance().ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8>(command, readerCallback, parameters);
         }
     }
 }

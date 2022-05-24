@@ -385,8 +385,11 @@ namespace PostgreSqlSerialUnitTests
                 .AsProcedure()
                 .WithCommentHeader()
                 .WithCommandCallback(c => actual = c.CommandText)
-                .Read<string?>("comment_header_test_func", new { test_param = "foo" })
+                .WithParameters(new { test_param = "foo" })
+                .Read<string?>("comment_header_test_func")
                 .FirstOrDefault();
+
+            connection.Read("blah", "a");
 
             var actualLines = actual.Split(Environment.NewLine);
 

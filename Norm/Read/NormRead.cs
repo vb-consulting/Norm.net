@@ -51,30 +51,5 @@ namespace Norm
         {
             return ReadToArrayInternal(command, readerCallback);
         }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public IEnumerable<(string name, object value)[]> Read(string command, object parameters)
-        {
-            return ReadToArrayInternal(command, parameters);
-        }
-
-        ///<summary>
-        ///     Maps command results with positional parameter values to enumerator of name and value tuple arrays.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public IEnumerable<(string name, object value)[]> Read(string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters)
-        {
-            return ReadToArrayInternal(command, readerCallback, parameters);
-        }
     }
 }

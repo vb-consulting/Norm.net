@@ -106,18 +106,8 @@ namespace SQLiteUnitTests
        public void Read_With_Named_Parameters_Test()
        {
            using var connection = new SQLiteConnection(fixture.ConnectionString);
-           var result = connection.Read(
-                @"
-                          with cte(first, bar, day) as (
-                             select * from (
-                                    values
-                                        (@p1, @t1, @d1),
-                                        (@p2, @t2, @d2),
-                                        (@p3, @t3, @d3)
-                             )
-                        )
-                        select * from cte",
-                new
+           var result = connection
+                .WithParameters(new
                 {
                     @p1 = 1,
                     t1 = "foo1",
@@ -128,7 +118,17 @@ namespace SQLiteUnitTests
                     @p3 = 3,
                     t3 = "foo3",
                     d3 = new DateTime(1979, 5, 19)
-                });
+                })
+                .Read(@"
+                          with cte(first, bar, day) as (
+                             select * from (
+                                    values
+                                        (@p1, @t1, @d1),
+                                        (@p2, @t2, @d2),
+                                        (@p3, @t3, @d3)
+                             )
+                        )
+                        select * from cte");
 
            AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
@@ -179,8 +179,20 @@ namespace SQLiteUnitTests
         public async Task Read_With_Named_Parameters_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.ReadAsync(
-            @"
+            var result = connection
+                .WithParameters(new
+                {
+                    @p1 = 1,
+                    t1 = "foo1",
+                    d1 = new DateTime(1977, 5, 19),
+                    @p2 = 2,
+                    t2 = "foo2",
+                    d2 = new DateTime(1978, 5, 19),
+                    @p3 = 3,
+                    t3 = "foo3",
+                    d3 = new DateTime(1979, 5, 19)
+                })
+                .ReadAsync(@"
                      with cte(first, bar, day) as (
                              select * from (
                                     values
@@ -189,19 +201,7 @@ namespace SQLiteUnitTests
                                         (@p3, @t3, @d3)
                              )
                         )
-                        select * from cte",
-            new
-            {
-                @p1 = 1,
-                t1 = "foo1",
-                d1 = new DateTime(1977, 5, 19),
-                @p2 = 2,
-                t2 = "foo2",
-                d2 = new DateTime(1978, 5, 19),
-                @p3 = 3,
-                t3 = "foo3",
-                d3 = new DateTime(1979, 5, 19)
-            });
+                        select * from cte");
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }

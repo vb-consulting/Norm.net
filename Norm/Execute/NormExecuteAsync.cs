@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,12 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command)
+        public async ValueTask<Norm> ExecuteAsync(string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -31,29 +37,14 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteFormatAsync(FormattableString command)
+        public async ValueTask<Norm> ExecuteFormatAsync(FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
             using var cmd = await CreateCommandAsync(command);
-            if (cancellationToken.HasValue)
-            {
-                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
-            }
-            else
-            {
-                await cmd.ExecuteNonQueryAsync();
-            }
-            return this;
-        }
-
-        ///<summary>
-        ///      Execute SQL command asynchronously with positional parameter values.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command, object parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
             {
                 await cmd.ExecuteNonQueryAsync(cancellationToken.Value);

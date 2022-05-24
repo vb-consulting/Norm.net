@@ -82,13 +82,13 @@ namespace PostgreSqlUnitTests
             var result = connection
                 .Execute("begin")
                 .Execute("create table test (i int, t text, d date)")
-                .Execute("insert into test values (@i, @t, @d)", 
-                new
+                .WithParameters(new
                 {
                     d = new DateTime(1977, 5, 19),
                     t = "foo",
                     i = 1
                 })
+                .Execute("insert into test values (@i, @t, @d)")
                 .Read("select * from test")
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
@@ -141,13 +141,14 @@ namespace PostgreSqlUnitTests
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
             await connection.ExecuteAsync("begin");
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
-            await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
-                new
+            await connection
+                .WithParameters(new
                 {
                     d = new DateTime(1977, 5, 19),
                     t = "foo",
                     i = 1,
-                });
+                })
+                .ExecuteAsync("insert into test values (@i, @t, @d)");
             var result = (await connection.ReadAsync("select * from test").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);

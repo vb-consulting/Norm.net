@@ -57,33 +57,5 @@ namespace Norm
             }
             return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this);
         }
-
-        ///<summary>
-        ///     Execute SQL command with positional parameter values and return disposable reader object for multiple result sets..
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader Multiple(string command, params object[] parameters)
-        {
-            using var cmd = CreateCommand(command, parameters);
-            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
-        }
-
-        ///<summary>
-        ///     Execute SQL command asynchronously and return disposable reader object for multiple result sets.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        public async ValueTask<NormMultipleReader> MultipleAsync(string command, params object[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this);
-            }
-            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this);
-        }
     }
 }

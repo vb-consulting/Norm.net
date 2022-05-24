@@ -73,20 +73,20 @@ namespace SQLiteUnitTests
         public void Single_With_Named_Parameters_Test()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.Read(
-                @"
-                    select *
-                    from (
-                        select 1 as first, 'foo' as bar, date('1977-05-19') as day, null as ""null""
-                    ) as sub
-                    where first = @p1 and bar = @p2 and day = @p3
-                    ",
-                new
+            var result = connection
+                .WithParameters(new
                 {
                     p3 = "1977-05-19",
                     p2 = "foo",
                     p1 = 1
                 })
+                .Read(@"
+                    select *
+                    from (
+                        select 1 as first, 'foo' as bar, date('1977-05-19') as day, null as ""null""
+                    ) as sub
+                    where first = @p1 and bar = @p2 and day = @p3
+                    ")
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
 
@@ -133,20 +133,23 @@ namespace SQLiteUnitTests
         public async Task Single_With_Named_Parameters_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = (await connection.ReadAsync(
+            var result = (await connection
+                .WithParameters(new
+                {
+                    p3 = "1977-05-19",
+                    p2 = "foo",
+                    p1 = 1
+                })
+                .ReadAsync(
                 @"
                     select *
                     from (
                         select 1 as first, 'foo' as bar, date('1977-05-19') as day, null as ""null""
                     ) as sub
                     where first = @p1 and bar = @p2 and day = @p3
-                    ",
-                new
-                {
-                    p3 = "1977-05-19",
-                    p2 = "foo",
-                    p1 = 1
-                }).SingleAsync()).ToDictionary(t => t.name, t => t.value);
+                    ")
+                .SingleAsync())
+                .ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal((long)1, result.Values.First());
             Assert.Equal("foo", result["bar"]);

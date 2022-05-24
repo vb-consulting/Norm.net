@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 
 namespace Norm
 {
@@ -14,7 +15,13 @@ namespace Norm
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
         ///<param name="command">SQL command text.</param>
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousAsync(anonymousBlueprintInstance, command);
         }
@@ -28,7 +35,13 @@ namespace Norm
         ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
         public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback) where T : class
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, readerCallback);
         }
@@ -40,7 +53,13 @@ namespace Norm
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAnonymousFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, FormattableString command) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, FormattableString command,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousFormatAsync<T>(anonymousBlueprintInstance, command);
         }
@@ -55,38 +74,15 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
         public static IAsyncEnumerable<T> ReadAnonymousFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance,
             FormattableString command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback) where T : class
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
+#pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+#pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
+            where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousFormatAsync<T>(anonymousBlueprintInstance, command, readerCallback);
-        }
-
-        ///<summary>
-        ///Maps command results to async enumerator of single values of type T.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command, object parameters) where T : class
-        {
-            return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, parameters);
-        }
-
-        ///<summary>
-        ///Maps command results to async enumerator of single values of type T.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="readerCallback">A callback function, that is executed on each read iteration to provide an alternate mapping.</param>
-        ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
-        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            object parameters) where T : class
-        {
-            return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, readerCallback, parameters);
         }
     }
 }

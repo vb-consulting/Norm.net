@@ -37,15 +37,15 @@ namespace SQLiteUnitTests
         public void NamedParams_Test()
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, long, long, string>(
-                "select @s, @i, @b, @d",
-                new
+            var (s, i, b, d) = connection
+                .WithParameters(new
                 {
                     d = new DateTime(1977, 5, 19),
                     b = true,
                     i = 999,
                     s = "str"
                 })
+                .Read<string, long, long, string>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);

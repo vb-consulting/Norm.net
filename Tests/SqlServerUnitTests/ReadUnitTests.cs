@@ -100,26 +100,27 @@ namespace SqlServerUnitTests
         public void Read_With_Named_Parameters_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.Read(
+            var result = connection
+                .WithParameters(new
+                {
+                    @p1 = 1,
+                    t1 = "foo1",
+                    d1 = new DateTime(1977, 5, 19),
+                    @p2 = 2,
+                    t2 = "foo2",
+                    d2 = new DateTime(1978, 5, 19),
+                    @p3 = 3,
+                    t3 = "foo3",
+                    d3 = new DateTime(1979, 5, 19)
+                })
+                .Read(
                     @"
                           select * from (
                           values 
                             (@p1, @t1, @d1),
                             (@p2, @t2, @d2),
                             (@p3, @t3, @d3)
-                          ) t(first, bar, day)",
-                    new
-                    {
-                        @p1 = 1,
-                        t1 = "foo1",
-                        d1 = new DateTime(1977, 5, 19),
-                        @p2 = 2,
-                        t2 = "foo2",
-                        d2 = new DateTime(1978, 5, 19),
-                        @p3 = 3,
-                        t3 = "foo3",
-                        d3 = new DateTime(1979, 5, 19)
-                    })
+                          ) t(first, bar, day)")
                 .Select(tuples => tuples.ToDictionary(t => t.name, t => t.value));
 
             AssertResult(result);
@@ -165,15 +166,8 @@ namespace SqlServerUnitTests
         public async Task Read_With_Named_Parameters_Test_Async()
         {
             await using var connection = new SqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAsync(
-                @"
-                          select * from (
-                          values 
-                            (@p1, @t1, @d1),
-                            (@p2, @t2, @d2),
-                            (@p3, @t3, @d3)
-                          ) t(first, bar, day)",
-                new
+            var result = connection
+                .WithParameters(new
                 {
                     @p1 = 1,
                     t1 = "foo1",
@@ -184,7 +178,15 @@ namespace SqlServerUnitTests
                     @p3 = 3,
                     t3 = "foo3",
                     d3 = new DateTime(1979, 5, 19)
-                });
+                })
+                .ReadAsync(
+                @"
+                          select * from (
+                          values 
+                            (@p1, @t1, @d1),
+                            (@p2, @t2, @d2),
+                            (@p3, @t3, @d3)
+                          ) t(first, bar, day)");
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
