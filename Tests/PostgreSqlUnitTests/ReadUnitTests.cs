@@ -81,17 +81,17 @@ namespace PostgreSqlUnitTests
         public void Read_With_Positional_Parameters_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(
-                @"
-                            select * from(
-                            values
-                                (@1, @t1, @d1),
-                                (@2, @t2, @d2),
-                                (@3, @t3, @d3)
-                            ) t(first, bar, day)",
-                1, "foo1", new DateTime(1977, 5, 19),
-                2, "foo2", new DateTime(1978, 5, 19),
-                3, "foo3", new DateTime(1979, 5, 19));
+            var result = connection
+                .WithParameters(1, "foo1", new DateTime(1977, 5, 19),
+                    2, "foo2", new DateTime(1978, 5, 19),
+                    3, "foo3", new DateTime(1979, 5, 19))
+                .Read(@"
+                    select * from(
+                    values
+                        (@1, @t1, @d1),
+                        (@2, @t2, @d2),
+                        (@3, @t3, @d3)
+                    ) t(first, bar, day)");
 
             AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }
@@ -145,17 +145,17 @@ namespace PostgreSqlUnitTests
         public async Task Read_With_Positional_Parameters_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAsync(
-                @"
-                            select * from(
-                            values
-                                (@1, @t1, @d1),
-                                (@2, @t2, @d2),
-                                (@3, @t3, @d3)
-                            ) t(first, bar, day)",
-                1, "foo1", new DateTime(1977, 5, 19),
-                2, "foo2", new DateTime(1978, 5, 19),
-                3, "foo3", new DateTime(1979, 5, 19));
+            var result = connection
+                .WithParameters(1, "foo1", new DateTime(1977, 5, 19),
+                    2, "foo2", new DateTime(1978, 5, 19),
+                    3, "foo3", new DateTime(1979, 5, 19))
+                .ReadAsync(@"
+                    select * from(
+                    values
+                        (@1, @t1, @d1),
+                        (@2, @t2, @d2),
+                        (@3, @t3, @d3)
+                    ) t(first, bar, day)");
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }

@@ -67,7 +67,7 @@ namespace Norm
         ///<returns>IEnumerable enumerator of seven value tuples (T1, T2, T3, T4, T5, T6, T7).</returns>
         public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Read<T1, T2, T3, T4, T5, T6, T7>(this DbConnection connection, 
             string command, 
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7>(command, parameters);
         }
@@ -83,7 +83,7 @@ namespace Norm
         public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Read<T1, T2, T3, T4, T5, T6, T7>(this DbConnection connection,
             string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().Read<T1, T2, T3, T4, T5, T6, T7>(command, readerCallback, parameters);
         }

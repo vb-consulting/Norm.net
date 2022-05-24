@@ -36,34 +36,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
-        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params object[] parameters)
-        {
-            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
-            return connection;
-        }
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
-        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
-        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value)[] parameters)
-        {
-            await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
-            return connection;
-        }
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
-        ///</summary>
-        ///<param name="connection">DbConnection instance.</param>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">
-        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
-        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///</param>
-        ///<returns>A value task representing the asynchronous operation returning the same DbConnection instance.</returns>
-        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, params (string name, object value, object type)[] parameters)
+        public static async ValueTask<DbConnection> ExecuteAsync(this DbConnection connection, string command, object parameters)
         {
             await connection.GetNoOrmInstance().ExecuteAsync(command, parameters);
             return connection;

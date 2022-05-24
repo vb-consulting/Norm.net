@@ -187,7 +187,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
-        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command, params object[] parameters)
+        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command, object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -234,7 +234,7 @@ namespace Norm
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();

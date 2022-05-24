@@ -24,8 +24,9 @@ namespace SqlServerUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d", "str", 999, true, new DateTime(1977, 5, 19))
+            var (s, i, b, d) = connection
+                .WithParameters("str", 999, true, new DateTime(1977, 5, 19))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -59,12 +60,12 @@ namespace SqlServerUnitTests
         public void DbParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new SqlParameter("s", "str"),
-                new SqlParameter("i", 999),
-                new SqlParameter("b", true),
-                new SqlParameter("d", new DateTime(1977, 5, 19)))
+            var (s, i, b, d) = connection
+                .WithParameters(new SqlParameter("s", "str"),
+                    new SqlParameter("i", 999),
+                    new SqlParameter("b", true),
+                    new SqlParameter("d", new DateTime(1977, 5, 19)))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -72,12 +73,13 @@ namespace SqlServerUnitTests
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new SqlParameter("d", new DateTime(1977, 5, 19)),
-                new SqlParameter("b", true),
-                new SqlParameter("i", 999),
-                new SqlParameter("s", "str"))
+            (s, i, b, d) = connection
+                .WithParameters(
+                    new SqlParameter("d", new DateTime(1977, 5, 19)),
+                    new SqlParameter("b", true),
+                    new SqlParameter("i", 999),
+                    new SqlParameter("s", "str"))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -90,9 +92,9 @@ namespace SqlServerUnitTests
         public void MixedParams_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new SqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+            var (s, i, b, d) = connection
+                .WithParameters(new SqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -100,9 +102,12 @@ namespace SqlServerUnitTests
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new SqlParameter("s", "str"), new SqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+            (s, i, b, d) = connection
+                .WithParameters(new SqlParameter("s", "str"), 
+                    new SqlParameter("i", 999), 
+                    true, 
+                    new DateTime(1977, 5, 19))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -138,17 +143,26 @@ namespace SqlServerUnitTests
         public void Positional_Parameters_When_Using_RowCount_Test()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            var (v1, v2, rc) = connection.Read<string, string, int>("select @v1, @v2, @@rowcount", "v1", "v2").Single();
+            var (v1, v2, rc) = connection
+                .WithParameters("v1", "v2")
+                .Read<string, string, int>("select @v1, @v2, @@rowcount")
+                .Single();
             Assert.Equal("v1", v1);
             Assert.Equal("v2", v2);
             Assert.Equal(0, rc);
             
-            (rc, v1, v2) = connection.Read<int, string, string>("select @@rowcount, @v1, @v2", "v1", "v2").Single();
+            (rc, v1, v2) = connection
+                .WithParameters("v1", "v2")
+                .Read<int, string, string>("select @@rowcount, @v1, @v2")
+                .Single();
             Assert.Equal("v1", v1);
             Assert.Equal("v2", v2);
             Assert.Equal(1, rc);
             
-            (v1, rc, v2) = connection.Read<string, int, string>("select @v1, @@rowcount, @v2", "v1", "v2").Single();
+            (v1, rc, v2) = connection
+                .WithParameters("v1", "v2")
+                .Read<string, int, string>("select @v1, @@rowcount, @v2")
+                .Single();
             Assert.Equal("v1", v1);
             Assert.Equal("v2", v2);
             Assert.Equal(1, rc);

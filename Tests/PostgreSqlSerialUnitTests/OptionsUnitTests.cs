@@ -195,7 +195,7 @@ namespace PostgreSqlSerialUnitTests
                 };
             });
 
-            connection.Execute("select @1, @2, @3, @4", 1, "foo", false, new DateTime(2022, 5, 19));
+            connection.WithParameters(1, "foo", false, new DateTime(2022, 5, 19)).Execute("select @1, @2, @3, @4");
             Assert.Equal(string.Join(Environment.NewLine, expected), actual);
         }
 

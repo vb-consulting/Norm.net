@@ -91,7 +91,10 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result1 = connection.Read<TestClass>($"{Query} where id = @id", 1).ToList();
-            var result2 = connection.Read<TestClass>($"{Query} where id = @id and foo = @foo", 1, "foo1").ToList();
+            var result2 = connection
+                .WithParameters(1, "foo1")
+                .Read<TestClass>($"{Query} where id = @id and foo = @foo")
+                .ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -105,10 +108,10 @@ namespace SQLiteUnitTests
                 new SQLiteParameter("id", 1)).ToList();
 
             // switch position
-            var result2 = connection.Read<TestClass>(
-                $"{Query} where id = @id and foo = @foo",
-                new SQLiteParameter("foo", "foo1"),
-                new SQLiteParameter("id", 1)).ToList();
+            var result2 = connection
+                .WithParameters(new SQLiteParameter("foo", "foo1"), new SQLiteParameter("id", 1))
+                .Read<TestClass>($"{Query} where id = @id and foo = @foo")
+                .ToList();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -167,7 +170,10 @@ namespace SQLiteUnitTests
         {
             using var connection = new SQLiteConnection(fixture.ConnectionString);
             var result1 = await connection.ReadAsync<TestClass>($"{Query} where id = @id", 1).ToListAsync();
-            var result2 = await connection.ReadAsync<TestClass>($"{Query} where id = @id and foo = @foo", 1, "foo1").ToListAsync();
+            var result2 = await connection
+                .WithParameters(1, "foo1")
+                .ReadAsync<TestClass>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }
@@ -181,10 +187,10 @@ namespace SQLiteUnitTests
                 new SQLiteParameter("id", 1)).ToListAsync();
 
             // switch position
-            var result2 = await connection.ReadAsync<TestClass>(
-                $"{Query} where id = @id and foo = @foo",
-                new SQLiteParameter("foo", "foo1"),
-                new SQLiteParameter("id", 1)).ToListAsync();
+            var result2 = await connection
+                .WithParameters(new SQLiteParameter("foo", "foo1"), new SQLiteParameter("id", 1))
+                .ReadAsync<TestClass>($"{Query} where id = @id and foo = @foo")
+                .ToListAsync();
             AssertSingleTestClass(result1);
             AssertSingleTestClass(result2);
         }

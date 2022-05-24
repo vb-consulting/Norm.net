@@ -51,50 +51,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command, params object[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
-            }
-            else
-            {
-                await cmd.ExecuteNonQueryAsync();
-            }
-            return this;
-        }
-
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">Parameters name and value tuples array - (string name, object value).</param>
-        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command, params (string name, object value)[] parameters)
-        {
-            using var cmd = await CreateCommandAsync(command, parameters);
-            if (cancellationToken.HasValue)
-            {
-                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
-            }
-            else
-            {
-                await cmd.ExecuteNonQueryAsync();
-            }
-            return this;
-        }
-
-        ///<summary>
-        ///     Execute SQL command asynchronously with named parameter values and custom type for each parameter.
-        ///</summary>
-        ///<param name="command">SQL command text.</param>
-        ///<param name="parameters">
-        ///     Parameters name, value and type tuples array - (string name, object value, DbType type).
-        ///     Parameter type can be any type from custom db provider -  NpgsqlDbType or MySqlDbType for example.
-        ///</param>
-        ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
-        public async ValueTask<Norm> ExecuteAsync(string command, params (string name, object value, object type)[] parameters)
+        public async ValueTask<Norm> ExecuteAsync(string command, object parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)

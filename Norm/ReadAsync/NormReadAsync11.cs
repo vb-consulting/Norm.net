@@ -182,7 +182,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
             string command,
-            params object[] parameters)
+            object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -226,7 +226,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of eleven value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11).</returns>
         public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();

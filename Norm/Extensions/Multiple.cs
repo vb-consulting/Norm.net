@@ -34,7 +34,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public static NormMultipleReader Multiple(this DbConnection connection, string command, params object[] parameters)
+        public static NormMultipleReader Multiple(this DbConnection connection, string command, object parameters)
         {
             return connection.GetNoOrmInstance().Multiple(command, parameters);
         }
@@ -65,7 +65,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, params object[] parameters)
+        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command, object parameters)
         {
             return connection.GetNoOrmInstance().MultipleAsync(command, parameters);
         }

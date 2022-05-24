@@ -86,7 +86,7 @@ namespace SqlServerUnitTests
         public void MapTwoRecords_PositionalParams_Sync()
         {
             using var connection = new SqlConnection(fixture.ConnectionString);
-            using var multiple = connection.Multiple(QueiresWithParams, 1, "bar2");
+            using var multiple = connection.WithParameters(1, "bar2").Multiple(QueiresWithParams);
 
             var result1 = multiple.Read<Record1>().Single();
             var next1 = multiple.Next();

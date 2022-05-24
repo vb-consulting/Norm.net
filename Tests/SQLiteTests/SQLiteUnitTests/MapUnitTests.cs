@@ -125,16 +125,16 @@ namespace SQLiteUnitTests
             {
                 connection
                     .Execute("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);")
+                    .WithParameters(1, "foo1", new DateTime(1977, 5, 19), true, null,
+                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
+                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3")
                     .Execute(@"
                     insert into test_class2 
                     (id, foo, day, bool, bar)
                     values
                     (@id1, @foo1, @day1, @bool1, @bar1),
                     (@id2, @foo2, @day2, @bool2, @bar2),
-                    (@id3, @foo3, @day3, @bool3, @bar3);",
-                        1, "foo1", new DateTime(1977, 5, 19), true, null,
-                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
-                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
+                    (@id3, @foo3, @day3, @bool3, @bar3);");
 
                 var result = connection.Read<TestClass2>("select * from test_class2").ToList();
 
@@ -153,16 +153,17 @@ namespace SQLiteUnitTests
             try
             {
                 await connection.ExecuteAsync("create table test_class2 (id integer, foo string, day datetime, bool boolean, bar string);");
-                await connection.ExecuteAsync(@"
+                await connection
+                    .WithParameters(1, "foo1", new DateTime(1977, 5, 19), true, null,
+                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
+                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3")
+                    .ExecuteAsync(@"
                     insert into test_class2 
                     (id, foo, day, bool, bar)
                     values
                     (@id1, @foo1, @day1, @bool1, @bar1),
                     (@id2, @foo2, @day2, @bool2, @bar2),
-                    (@id3, @foo3, @day3, @bool3, @bar3);",
-                        1, "foo1", new DateTime(1977, 5, 19), true, null,
-                        2, "foo2", new DateTime(1978, 5, 19), false, "bar2",
-                        3, "foo3", new DateTime(1979, 5, 19), null, "bar3");
+                    (@id3, @foo3, @day3, @bool3, @bar3);");
 
                 var result = await connection.ReadAsync<TestClass2>("select * from test_class2").ToListAsync();
 

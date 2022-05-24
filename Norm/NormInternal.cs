@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace Norm
         protected string commandText;
         protected string commentHeader;
         protected readonly DatabaseType dbType;
+        protected object[] parameters = null;
 
         protected CommandType commandType = CommandType.Text;
         protected int? commandTimeout = null;
@@ -37,13 +40,13 @@ namespace Norm
         protected string sourceFilePath = null;
         protected int sourceLineNumber = 0;
 
-        internal Norm(
+        protected Norm(
             DbConnection connection,
             CommandType commandType,
             int? commandTimeout,
             CancellationToken? cancellationToken,
             bool prepared,
-
+            object[] parameters,
             Action<DbCommand> dbCommandCallback,
             bool commandCommentHeaderEnabled,
             string comment,
@@ -61,7 +64,7 @@ namespace Norm
             this.commandTimeout = commandTimeout;
             this.cancellationToken = cancellationToken;
             this.prepared = prepared;
-
+            this.parameters = parameters;
             this.dbCommandCallback = dbCommandCallback;
             this.commandCommentHeaderEnabled = commandCommentHeaderEnabled;
             this.comment = comment;
@@ -74,7 +77,7 @@ namespace Norm
             this.sourceLineNumber = sourceLineNumber;
         }
 
-        internal Norm Clone()
+        public Norm Clone()
         {
             return new Norm(
                 connection: Connection,
@@ -82,7 +85,7 @@ namespace Norm
                 commandTimeout: commandTimeout,
                 cancellationToken: cancellationToken,
                 prepared: prepared,
-
+                parameters: parameters,
                 dbCommandCallback: dbCommandCallback,
                 commandCommentHeaderEnabled: commandCommentHeaderEnabled,
                 comment: comment,
@@ -187,6 +190,10 @@ namespace Norm
             cmd.CommandText = command;
             cmd.CommandType = commandType;
             Connection.EnsureIsOpen();
+            if (this.parameters != null)
+            {
+                AddParametersInternal(cmd, this.parameters);
+            }
             if (NormOptions.Value.Prepared || prepared)
             {
                 cmd.Prepare();
@@ -203,6 +210,10 @@ namespace Norm
             cmd.CommandText = command;
             cmd.CommandType = commandType;
             await Connection.EnsureIsOpenAsync(cancellationToken);
+            if (this.parameters != null)
+            {
+                AddParametersInternal(cmd, this.parameters);
+            }
             if (NormOptions.Value.Prepared || prepared)
             {
                 if (cancellationToken.HasValue)
@@ -225,7 +236,7 @@ namespace Norm
             cmd.CommandText = command;
             cmd.CommandType = commandType;
             Connection.EnsureIsOpen();
-            AddParametersInternal(cmd, parameters);
+            AddParametersInternal(cmd, this.parameters == null ? parameters : this.parameters.Concat(parameters).ToArray());
             if (NormOptions.Value.Prepared || prepared)
             {
                 cmd.Prepare();
@@ -242,7 +253,7 @@ namespace Norm
             cmd.CommandText = command;
             cmd.CommandType = commandType;
             await Connection.EnsureIsOpenAsync(cancellationToken);
-            AddParametersInternal(cmd, parameters);
+            AddParametersInternal(cmd, this.parameters == null ? parameters : this.parameters.Concat(parameters).ToArray());
             if (NormOptions.Value.Prepared || prepared)
             {
                 if (cancellationToken.HasValue)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
@@ -10,7 +11,7 @@ namespace Norm
     {
         private static readonly ConditionalWeakTable<DbConnection, Norm> Table = new ConditionalWeakTable<DbConnection, Norm>();
 
-        internal static Norm GetNoOrmInstance(this DbConnection connection)
+        private static Norm GetNoOrmInstance(this DbConnection connection)
         {
             if (Table.TryGetValue(connection, out var instance))
             {
@@ -93,6 +94,17 @@ namespace Norm
         public static Norm Prepared(this DbConnection connection)
         {
             return connection.GetNoOrmInstance().Clone().Prepared();
+        }
+
+        ///<summary>
+        /// Adds parameters list to query
+        ///</summary>
+        ///<param name="parameters">Parameters list. The parameter can be a simple value (mapped by position), DbParameter instance, or object instances where is each property is mapped to a named database parameter.</param>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<returns>Norm instance that encapsulates the connection.</returns>
+        public static Norm WithParameters(this DbConnection connection, params object[] parameters)
+        {
+            return connection.GetNoOrmInstance().Clone().WithParameters(parameters);
         }
 
         ///<summary>

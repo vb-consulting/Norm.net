@@ -83,8 +83,11 @@ namespace SQLiteUnitTests
        public void Read_With_Positional_Parameters_Test()
        {
            using var connection = new SQLiteConnection(fixture.ConnectionString);
-           var result = connection.Read(
-               @"
+           var result = connection
+                .WithParameters(1, "foo1", new DateTime(1977, 5, 19),
+                    2, "foo2", new DateTime(1978, 5, 19),
+                    3, "foo3", new DateTime(1979, 5, 19))
+                .Read(@"
 
                 with cte(first, bar, day) as (
                      select * from (
@@ -94,10 +97,7 @@ namespace SQLiteUnitTests
                                 (@3, @t3, @d3)
                      )
                 )
-                select * from cte",
-               1, "foo1", new DateTime(1977, 5, 19),
-               2, "foo2", new DateTime(1978, 5, 19),
-               3, "foo3", new DateTime(1979, 5, 19));
+                select * from cte");
 
            AssertResult(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
        }
@@ -156,8 +156,11 @@ namespace SQLiteUnitTests
         public async Task Read_With_Positional_Parameters_Test_Async()
         {
             await using var connection = new SQLiteConnection(fixture.ConnectionString);
-            var result = connection.ReadAsync(
-            @"
+            var result = connection
+                .WithParameters(1, "foo1", new DateTime(1977, 5, 19),
+                    2, "foo2", new DateTime(1978, 5, 19),
+                    3, "foo3", new DateTime(1979, 5, 19))
+                .ReadAsync(@"
                        with cte(first, bar, day) as (
                              select * from (
                                     values
@@ -166,10 +169,7 @@ namespace SQLiteUnitTests
                                         (@3, @t3, @d3)
                              )
                         )
-                        select * from cte",
-            1, "foo1", new DateTime(1977, 5, 19),
-            2, "foo2", new DateTime(1978, 5, 19),
-            3, "foo3", new DateTime(1979, 5, 19));
+                        select * from cte");
 
             await AssertResultAsync(result.Select(tuples => tuples.ToDictionary(t => t.name, t => t.value)));
         }

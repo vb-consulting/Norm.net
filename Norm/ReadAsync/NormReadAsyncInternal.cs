@@ -55,7 +55,7 @@ namespace Norm
         }
 
         private async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, 
-            Func<DbDataReader, Task<T>> readerAction, params object[] parameters)
+            Func<DbDataReader, Task<T>> readerAction, object parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
@@ -213,7 +213,7 @@ namespace Norm
             }
         }
 
-        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, params object[] parameters)
+        private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command, object parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
@@ -237,7 +237,7 @@ namespace Norm
 
         private async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)
@@ -261,7 +261,7 @@ namespace Norm
 
         private async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             using var cmd = await CreateCommandAsync(command, parameters);
             if (cancellationToken.HasValue)

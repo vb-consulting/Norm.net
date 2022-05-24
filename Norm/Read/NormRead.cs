@@ -58,7 +58,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
-        public IEnumerable<(string name, object value)[]> Read(string command, params object[] parameters)
+        public IEnumerable<(string name, object value)[]> Read(string command, object parameters)
         {
             return ReadToArrayInternal(command, parameters);
         }
@@ -72,7 +72,7 @@ namespace Norm
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
         public IEnumerable<(string name, object value)[]> Read(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             return ReadToArrayInternal(command, readerCallback, parameters);
         }

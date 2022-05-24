@@ -90,7 +90,7 @@ namespace Norm
             }
         }
 
-        private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, params object[] parameters)
+        private IEnumerable<T> ReadInternal<T>(string command, Func<DbDataReader, T> readerAction, object parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
@@ -100,7 +100,7 @@ namespace Norm
             }
         }
 
-        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, params object[] parameters)
+        private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command, object parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
@@ -112,7 +112,7 @@ namespace Norm
 
         private IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();
@@ -124,7 +124,7 @@ namespace Norm
 
         private IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             using var cmd = CreateCommand(command, parameters);
             using var reader = cmd.ExecuteReader();

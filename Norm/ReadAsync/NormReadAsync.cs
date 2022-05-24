@@ -57,7 +57,7 @@ namespace Norm
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
-            params object[] parameters)
+            object parameters)
         {
             return ReadToArrayInternalAsync(command, parameters);
         }
@@ -71,7 +71,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             return ReadToArrayInternalAsync(command, readerCallback, parameters);
         }

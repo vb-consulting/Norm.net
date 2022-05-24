@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
@@ -87,6 +88,17 @@ namespace Norm
         public Norm Prepared()
         {
             prepared = true;
+            return this;
+        }
+
+        ///<summary>
+        /// Adds parameters list to query
+        ///</summary>
+        ///<param name="parameters">Parameters list. The parameter can be a simple value (mapped by position), DbParameter instance, or object instances where is each property is mapped to a named database parameter.</param>
+        ///<returns>Norm instance.</returns>
+        public Norm WithParameters(params object[] parameters)
+        {
+            this.parameters = parameters;
             return this;
         }
 

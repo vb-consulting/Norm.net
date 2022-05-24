@@ -63,7 +63,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
-        public IEnumerable<T> ReadAnonymous<T>(T anonymousBlueprintInstance, string command, params object[] parameters) where T : class
+        public IEnumerable<T> ReadAnonymous<T>(T anonymousBlueprintInstance, string command, object parameters) where T : class
         {
             return ReadToArrayInternal(command, parameters).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
@@ -78,7 +78,7 @@ namespace Norm
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
         public IEnumerable<T> ReadAnonymous<T>(T anonymousBlueprintInstance, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters) where T : class
+            object parameters) where T : class
         {
             return ReadToArrayInternal(command, readerCallback, parameters).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }

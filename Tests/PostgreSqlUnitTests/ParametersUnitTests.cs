@@ -23,9 +23,10 @@ namespace PostgreSqlUnitTests
         public void PositionalParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
-                "select @s, @i, @b, @d, @null", 
-                "str", 999, true, new DateTime(1977, 5, 19), null)
+            var (s, i, b, d, @null) = connection
+                .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+                .Read<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null")
                 .Single();
 
             Assert.Equal("str", s);
@@ -62,12 +63,12 @@ namespace PostgreSqlUnitTests
         public void DbParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new NpgsqlParameter("s", "str"),
-                new NpgsqlParameter("i", 999),
-                new NpgsqlParameter("b", true),
-                new NpgsqlParameter("d", new DateTime(1977, 5, 19)))
+            var (s, i, b, d) = connection
+                .WithParameters(new NpgsqlParameter("s", "str"),
+                    new NpgsqlParameter("i", 999),
+                    new NpgsqlParameter("b", true),
+                    new NpgsqlParameter("d", new DateTime(1977, 5, 19)))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -75,12 +76,12 @@ namespace PostgreSqlUnitTests
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
-                new NpgsqlParameter("b", true),
-                new NpgsqlParameter("i", 999),
-                new NpgsqlParameter("s", "str"))
+            (s, i, b, d) = connection
+                .WithParameters(new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
+                    new NpgsqlParameter("b", true),
+                    new NpgsqlParameter("i", 999),
+                    new NpgsqlParameter("s", "str"))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -93,9 +94,9 @@ namespace PostgreSqlUnitTests
         public void MixedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new NpgsqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+            var (s, i, b, d) = connection
+                .WithParameters(new NpgsqlParameter("d", new DateTime(1977, 5, 19)), "str", 999, true)
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -103,9 +104,9 @@ namespace PostgreSqlUnitTests
             Assert.True(b);
             Assert.Equal(new DateTime(1977, 5, 19), d);
 
-            (s, i, b, d) = connection.Read<string, int, bool, DateTime>(
-                "select @s, @i, @b, @d",
-                new NpgsqlParameter("s", "str"), new NpgsqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+            (s, i, b, d) = connection
+                .WithParameters(new NpgsqlParameter("s", "str"), new NpgsqlParameter("i", 999), true, new DateTime(1977, 5, 19))
+                .Read<string, int, bool, DateTime>("select @s, @i, @b, @d")
                 .Single();
 
             Assert.Equal("str", s);
@@ -281,9 +282,9 @@ namespace PostgreSqlUnitTests
         public void PocoClassParams_Positional_Mixed_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
-                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
-                    new PocoClassParams(), "pos1")
+            var (s, i, b, d, @null, p1) = connection
+                .WithParameters(new PocoClassParams(), "pos1")
+                .Read<string, int, bool, DateTime, string, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1")
                 .Single();
 
             Assert.Equal("str", s);
@@ -294,9 +295,9 @@ namespace PostgreSqlUnitTests
             Assert.Equal("pos1", p1);
 
             string p2;
-            (s, i, b, d, @null, p1, p2) = connection.Read<string, int, bool, DateTime, string, string, string>(
-                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2", 
-                    new PocoClassParams(), "pos1", "pos2")
+            (s, i, b, d, @null, p1, p2) = connection
+                .WithParameters(new PocoClassParams(), "pos1", "pos2")
+                .Read<string, int, bool, DateTime, string, string, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2")
                 .Single();
 
             Assert.Equal("str", s);
@@ -307,9 +308,10 @@ namespace PostgreSqlUnitTests
             Assert.Equal("pos1", p1);
             Assert.Equal("pos2", p2);
             
-            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
-                    new PocoClassParams(), "pos1")
+            (p1, s, i, b, d, @null) = connection
+                .WithParameters(new PocoClassParams(), "pos1")
+                .Read<string, string, int, bool, DateTime, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
                 .Single();
 
             Assert.Equal("str", s);
@@ -319,9 +321,9 @@ namespace PostgreSqlUnitTests
             Assert.Null(@null);
             Assert.Equal("pos1", p1);
             
-            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
-                    "pos1", new PocoClassParams())
+            (p1, s, i, b, d, @null) = connection
+                .WithParameters("pos1", new PocoClassParams())
+                .Read<string, string, int, bool, DateTime, string>("select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
                 .Single();
 
             Assert.Equal("str", s);
@@ -331,9 +333,10 @@ namespace PostgreSqlUnitTests
             Assert.Null(@null);
             Assert.Equal("pos1", p1);
             
-            (p1, s, i, b, d, @null, p2) = connection.Read<string, string, int, bool, DateTime, string, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2", 
-                    "pos1", new PocoClassParams(), "pos2")
+            (p1, s, i, b, d, @null, p2) = connection
+                .WithParameters("pos1", new PocoClassParams(), "pos2")
+                .Read<string, string, int, bool, DateTime, string, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2")
                 .Single();
 
             Assert.Equal("str", s);
@@ -349,9 +352,9 @@ namespace PostgreSqlUnitTests
         public void PocoClassParams_DbParams_Mixed_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null, p1) = connection.Read<string, int, bool, DateTime, string, string>(
-                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1", 
-                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+            var (s, i, b, d, @null, p1) = connection
+                .WithParameters(new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+                .Read<string, int, bool, DateTime, string, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1")
                 .Single();
 
             Assert.Equal("str", s);
@@ -362,9 +365,9 @@ namespace PostgreSqlUnitTests
             Assert.Equal("pos1", p1);
 
             string p2;
-            (s, i, b, d, @null, p1, p2) = connection.Read<string, int, bool, DateTime, string, string, string>(
-                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2", 
-                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"), new NpgsqlParameter("pos2", "pos2"))
+            (s, i, b, d, @null, p1, p2) = connection
+                .WithParameters(new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"), new NpgsqlParameter("pos2", "pos2"))
+                .Read<string, int, bool, DateTime, string, string, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos1, @pos2")
                 .Single();
 
             Assert.Equal("str", s);
@@ -375,9 +378,9 @@ namespace PostgreSqlUnitTests
             Assert.Equal("pos1", p1);
             Assert.Equal("pos2", p2);
             
-            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
-                    new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+            (p1, s, i, b, d, @null) = connection
+                .WithParameters(new PocoClassParams(), new NpgsqlParameter("pos1", "pos1"))
+                .Read<string, string, int, bool, DateTime, string>("select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
                 .Single();
 
             Assert.Equal("str", s);
@@ -387,9 +390,9 @@ namespace PostgreSqlUnitTests
             Assert.Null(@null);
             Assert.Equal("pos1", p1);
             
-            (p1, s, i, b, d, @null) = connection.Read<string, string, int, bool, DateTime, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue", 
-                    new NpgsqlParameter("pos1", "pos1"), new PocoClassParams())
+            (p1, s, i, b, d, @null) = connection
+                .WithParameters(new NpgsqlParameter("pos1", "pos1"), new PocoClassParams())
+                .Read<string, string, int, bool, DateTime, string>("select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
                 .Single();
 
             Assert.Equal("str", s);
@@ -399,9 +402,10 @@ namespace PostgreSqlUnitTests
             Assert.Null(@null);
             Assert.Equal("pos1", p1);
             
-            (p1, s, i, b, d, @null, p2) = connection.Read<string, string, int, bool, DateTime, string, string>(
-                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2", 
-                    new NpgsqlParameter("pos1", "pos1"), new PocoClassParams(), new NpgsqlParameter("pos2", "pos2"))
+            (p1, s, i, b, d, @null, p2) = connection
+                .WithParameters(new NpgsqlParameter("pos1", "pos1"), new PocoClassParams(), new NpgsqlParameter("pos2", "pos2"))
+                .Read<string, string, int, bool, DateTime, string, string>(
+                    "select @pos1, @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue, @pos2")
                 .Single();
 
             Assert.Equal("str", s);
@@ -549,22 +553,22 @@ namespace PostgreSqlUnitTests
             var nullValue = (string)null;
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var (s, i, b, d, @null) = connection.Read<string, int, bool, DateTime, string>(
-                    "select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue",
-                    new
-                    {
-                        strValue = new NpgsqlParameter("StrValue", strValue),
-                        intValue,
-                    },
-                    new
-                    {
-                        boolValue,
-                        dateTimeValue,
-                    },
-                    new
-                    {
-                        nullValue,
-                    })
+            var (s, i, b, d, @null) = connection
+                .WithParameters(new
+                {
+                    strValue = new NpgsqlParameter("StrValue", strValue),
+                    intValue,
+                },
+                new
+                {
+                    boolValue,
+                    dateTimeValue,
+                },
+                new
+                {
+                    nullValue,
+                })
+                .Read<string, int, bool, DateTime, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
                 .Single();
 
             Assert.Equal("str", s);
@@ -580,7 +584,7 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
             var exception = Assert.Throws<NormParametersException>(() => 
-                connection.Read<int, int>("select @p, @p", 1, 2).Single());
+                connection.WithParameters(1, 2).Read<int, int>("select @p, @p").Single());
 
             Assert.Equal("Parameter name \"p\" appears more than once. Parameter names must be unique.", exception.Message);
         }

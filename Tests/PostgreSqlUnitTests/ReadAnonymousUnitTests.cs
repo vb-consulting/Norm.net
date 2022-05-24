@@ -975,12 +975,12 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, date)
             where id = @id and foo = @foo";
 
-            var result = connection.ReadAnonymous(new
+            var result = connection.WithParameters(1, "foo1").ReadAnonymous(new
             {
                 id = default(int),
                 foo = default(string),
                 date = default(DateTime)
-            }, query, 1, "foo1").ToList();
+            }, query).ToList();
 
             Assert.Single(result);
 
@@ -1051,12 +1051,12 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, date)
             where id = @id and foo = @foo";
 
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.WithParameters(1, "foo1").ReadAnonymousAsync(new
             {
                 id = default(int),
                 foo = default(string),
                 date = default(DateTime)
-            }, query, 1, "foo1").ToListAsync();
+            }, query).ToListAsync();
 
             Assert.Single(result);
 

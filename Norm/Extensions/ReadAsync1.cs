@@ -80,7 +80,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>.
         public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, 
             string command, 
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().ReadAsync<T>(command, parameters);
         }
@@ -99,7 +99,7 @@ namespace Norm
         public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection,
             string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().ReadAsync<T>(command, readerCallback, parameters);
         }

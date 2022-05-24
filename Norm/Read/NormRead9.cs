@@ -167,7 +167,7 @@ namespace Norm
         ///<param name="parameters">Parameters name and value tuple array - (string name, object value).</param>
         ///<returns>IEnumerable enumerator of nine value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9).</returns>
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
-            string command, params object[] parameters)
+            string command, object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();
@@ -208,7 +208,7 @@ namespace Norm
         public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             var t1 = TypeCache<T1>.GetMetadata();
             var t2 = TypeCache<T2>.GetMetadata();

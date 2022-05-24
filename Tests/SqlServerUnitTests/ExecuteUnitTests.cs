@@ -51,8 +51,8 @@ namespace SqlServerUnitTests
             var result = connection
                 .Execute("begin tran")
                 .Execute("create table test (i int, t text, d date)")
-                .Execute("insert into test values (@i, @t, @d)",
-                    1, "foo", new DateTime(1977, 5, 19))
+                .WithParameters(1, "foo", new DateTime(1977, 5, 19))
+                .Execute("insert into test values (@i, @t, @d)")
                 .Read("select * from test")
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
@@ -172,8 +172,10 @@ namespace SqlServerUnitTests
             await using var connection = new SqlConnection(fixture.ConnectionString);
             await connection.ExecuteAsync("begin tran");
             await connection.ExecuteAsync("create table test (i int, t text, d date)");
-            await connection.ExecuteAsync("insert into test values (@i, @t, @d)",
-                1, "foo", new DateTime(1977, 5, 19));
+            await connection
+                .WithParameters(1, "foo", new DateTime(1977, 5, 19))
+                .ExecuteAsync("insert into test values (@i, @t, @d)");
+
             var result = (await connection.ReadAsync("select * from test").SingleAsync()).ToDictionary(t => t.name, t => t.value);
 
             Assert.Equal(1, result["i"]);

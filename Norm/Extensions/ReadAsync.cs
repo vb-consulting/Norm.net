@@ -67,7 +67,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public static IAsyncEnumerable<(string name, object value)[]> ReadAsync(this DbConnection connection, 
             string command, 
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().ReadAsync(command, parameters);
         }
@@ -83,7 +83,7 @@ namespace Norm
         public static IAsyncEnumerable<(string name, object value)[]> ReadAsync(this DbConnection connection,
             string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters)
+            object parameters)
         {
             return connection.GetNoOrmInstance().ReadAsync(command, readerCallback, parameters);
         }

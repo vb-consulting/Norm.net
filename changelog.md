@@ -1,5 +1,38 @@
 ﻿# Changelog
 
+## [5.0.0](https://github.com/vb-consulting/Norm.net/tree/5.0.0) (2022-05-24)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.3.0...5.0.0)
+
+### Breaking change - anonymous `Read` overload are renamed to `ReadAnonymous`
+
+Anonyoums example from previous version looks like this now:
+
+```csharp
+var result = connection.ReadAnonyoums(new 
+{ 
+    id = default(int), 
+    foo = default(string), 
+    date = default(DateTime) 
+}, @"select * from (values
+    (1, 'foo1', cast('2022-01-01' as date)), 
+    (2, 'foo2', cast('2022-01-10' as date)), 
+    (3, 'foo3', cast('2022-01-20' as date))
+) t(id, foo, date)").ToList();
+```
+
+The reason for this change is because method overload resolution couldn't distinguish anonymous reads from non-anonymous reads in some rare situations and the anonymous type blueprint instance parameter was accidentally swap for command which could break some code.
+
+This is much more concise.
+
+### Internal improvements 
+
+- Removed some unused leftovers from before version 4.0.0 on methods `Execute` and `ExecuteAsync` which were still using tuple parameters, although they are not supported since 4.0.0.
+
+- Changed internal instance methods scope modifiers from private to protected to improve future extendibility.
+
+- Removed unnecessary type caching. They give no performance gains and are using memory. No need to have them.
+
 ## [4.3.0](https://github.com/vb-consulting/Norm.net/tree/4.3.0) (2022-05-07)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.2.0...4.3.0)

@@ -68,7 +68,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Parameters objects array. The parameter can be a simple value (mapped by position), DbParameter instance, or object instance where is each property is mapped to parameters.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command, params object[] parameters) where T : class
+        public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command, object parameters) where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, parameters);
         }
@@ -84,7 +84,7 @@ namespace Norm
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
         public static IAsyncEnumerable<T> ReadAnonymousAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            params object[] parameters) where T : class
+            object parameters) where T : class
         {
             return connection.GetNoOrmInstance().ReadAnonymousAsync<T>(anonymousBlueprintInstance, command, readerCallback, parameters);
         }
