@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -812,6 +813,28 @@ namespace Norm
                 await norm.GetFieldValueAsync<T10>(r, 9, t10.type),
                 await norm.GetFieldValueAsync<T11>(r, 10, t11.type),
                 await norm.GetFieldValueAsync<T12>(r, 11, t12.type)));
+        }
+
+        ///<summary>
+        ///Maps command results to enumerator of anonymous values.
+        ///</summary>
+        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<returns>IEnumerable enumerator of single values of type T.</returns>
+        public IEnumerable<T> Read<T>(T anonymousBlueprintInstance)
+            where T : class
+        {
+            return Read().MapAnonymous<T>(anonymousBlueprintInstance.GetType());
+        }
+
+        ///<summary>
+        ///Maps command results to async enumerator of single values of type T.
+        ///</summary>
+        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
+        public IAsyncEnumerable<T> ReadAsync<T>(T anonymousBlueprintInstance)
+            where T : class
+        {
+            return ReadAsync().MapAnonymous<T>(anonymousBlueprintInstance.GetType());
         }
 
         private IEnumerable<T> ReadInternal<T>(Func<DbDataReader, T> readerAction)

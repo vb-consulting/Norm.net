@@ -4,7 +4,6 @@ using System.Reflection;
 
 namespace Norm
 {
-
     public class NormOptions
     {
         /// <summary>
@@ -33,13 +32,28 @@ namespace Norm
         /// </summary>
         public Type NormInstanceType { get; set; } = null;
 
-        internal static NormOptions Value = new NormOptions();
+        public static NormOptions Value { get; internal set; } = new NormOptions();
+
         internal static ConstructorInfo NormCtor = null;
 
         public static void Configure(Action<NormOptions> options)
         {
             Value = new NormOptions();
+            NormCtor = null;
             options(Value);
+            AssignExtensionCtor();
+        }
+
+        public static void Configure<T>(Action<T> options) where T : NormOptions, new()
+        {
+            Value = new T();
+            NormCtor = null;
+            options(Value as T);
+            AssignExtensionCtor();
+        }
+
+        private static void AssignExtensionCtor()
+        {
             if (Value.NormInstanceType != null)
             {
                 if (!Value.NormInstanceType.IsSubclassOf(typeof(Norm)))

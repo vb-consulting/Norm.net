@@ -4,26 +4,45 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.3.0...5.0.0)
 
-### Breaking change - anonymous `Read` overload are renamed to `ReadAnonymous`
+### New feature - anonymous `Read` and `ReadAsync` overloads for anonymous types added to Multiple and MultipleAsync
 
-Anonyoums example from previous version looks like this now:
+This was previously missing. Now, it is possible to map anonymous types from multiple queries:
 
 ```csharp
-var result = connection.ReadAnonyoums(new 
-{ 
-    id = default(int), 
-    foo = default(string), 
-    date = default(DateTime) 
-}, @"select * from (values
-    (1, 'foo1', cast('2022-01-01' as date)), 
-    (2, 'foo2', cast('2022-01-10' as date)), 
-    (3, 'foo3', cast('2022-01-20' as date))
-) t(id, foo, date)").ToList();
+using var multiple = connection.Multiple(@"
+    select * from (
+        values 
+        (1, 'foo1'),
+        (2, 'foo2'),
+        (3, 'foo3')
+    ) t(first, bar);
+
+    select * from (
+        values 
+        ('1977-05-19'::date, true, null),
+        ('1978-05-19'::date, false, 'bar2'),
+        (null::date, null, 'bar3')
+    ) t(day, bool, s)
+");
+
+var first = multiple.Read(new
+{
+    first = default(int),
+    bar = default(string)
+}).ToList();
+
+multiple.Next();
+
+var second = multiple.Read(new
+{
+    day = default(DateTime?),
+    @bool = default(bool?),
+    s = default(string),
+}).ToList();
 ```
 
-The reason for this change is because method overload resolution couldn't distinguish anonymous reads from non-anonymous reads in some rare situations and the anonymous type blueprint instance parameter was accidentally swap for command which could break some code.
 
-This is much more concise.
+
 
 ### Internal improvements 
 

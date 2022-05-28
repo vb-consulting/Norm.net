@@ -101,7 +101,6 @@ namespace Norm
             }
 
             ApllyCommentHeader(cmd);
-
             NormOptions.Value.DbCommandCallback?.Invoke(cmd);
             dbCommandCallback?.Invoke(cmd);
         }
@@ -126,6 +125,12 @@ namespace Norm
                 (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
             {
                 sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString()} Command. Timeout: {cmd.CommandTimeout} seconds.");
+            }
+
+            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
+                (this.commandCommentHeaderEnabled && this.includeCallerInfo))
+            {
+                sb.AppendLine($"-- at {memberName} in {sourceFilePath} {sourceLineNumber}");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) ||
@@ -167,12 +172,6 @@ namespace Norm
                     }
                     sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, p.ParameterName, paramType, value));
                 }
-            }
-
-            if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
-                (this.commandCommentHeaderEnabled && this.includeCallerInfo))
-            {
-                sb.AppendLine($"-- at {memberName} in {sourceFilePath} {sourceLineNumber}");
             }
 
             commandText = cmd.CommandText;

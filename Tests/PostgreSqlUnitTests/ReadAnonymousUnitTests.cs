@@ -23,7 +23,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 first = default(int),
                 bar = default(string),
@@ -67,7 +67,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Unordered_DifferentCase_Unmached_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 s = default(string),
                 Bar = default(string),
@@ -117,7 +117,7 @@ namespace PostgreSqlUnitTests
             var guid = Guid.NewGuid();
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 guid1 = default(Guid),
                 guid2 = default(Guid?)
@@ -133,7 +133,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Timespan_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 oneday = default(TimeSpan),
                 twodays = default(TimeSpan),
@@ -166,7 +166,7 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, day, bool, bar)";
 
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Id = default(int[]),
                 Foo = default(string[]),
@@ -208,7 +208,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Array_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new { Ints = default(int?[]) }, @"
+            var result = connection.Read(new { Ints = default(int?[]) }, @"
                             select array_agg(e) as Ints
                             from (
                             values 
@@ -228,7 +228,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Enums_From_Ints_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum),
                 Item2 = default(TestEnum)
@@ -256,7 +256,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Enums_From_Strings_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum),
                 Item2 = default(TestEnum)
@@ -284,7 +284,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enums_From_Ints_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum?),
             }, @"
@@ -306,7 +306,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enums_From_Strings_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum?),
             }, @"
@@ -328,7 +328,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Enum_Array_From_Ints_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum[])
             }, @"
@@ -352,7 +352,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Enum_Array_From_Strings_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum[])
             }, @"
@@ -376,7 +376,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enum_Array_From_Ints_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum?[])
             }, @"
@@ -415,7 +415,7 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enum_Array_From_Strings_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.ReadAnonymous(new
+            var result = connection.Read(new
             {
                 Item1 = default(TestEnum?[])
             }, @"
@@ -454,7 +454,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 first = default(int),
                 bar = default(string),
@@ -498,7 +498,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Unordered_DifferentCase_Unmached_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 s = default(string),
                 Bar = default(string),
@@ -548,7 +548,7 @@ namespace PostgreSqlUnitTests
             var guid = Guid.NewGuid();
 
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 guid1 = default(Guid),
                 guid2 = default(Guid?)
@@ -564,7 +564,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Timespan_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 oneday = default(TimeSpan),
                 twodays = default(TimeSpan),
@@ -597,7 +597,7 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, day, bool, bar)";
 
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Id = default(int[]),
                 Foo = default(string[]),
@@ -639,7 +639,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Array_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new { Ints = default(int?[]) }, @"
+            var result = await connection.ReadAsync(new { Ints = default(int?[]) }, @"
                             select array_agg(e) as Ints
                             from (
                             values 
@@ -659,7 +659,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Enums_From_Ints_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum),
                 Item2 = default(TestEnum)
@@ -687,7 +687,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Enums_From_Strings_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum),
                 Item2 = default(TestEnum)
@@ -715,7 +715,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enums_From_Ints_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum?),
             }, @"
@@ -737,7 +737,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enums_From_Strings_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum?),
             }, @"
@@ -759,7 +759,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Enum_Array_From_Ints_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum[])
             }, @"
@@ -783,7 +783,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Enum_Array_From_Strings_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum[])
             }, @"
@@ -807,7 +807,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enum_Array_From_Ints_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum?[])
             }, @"
@@ -846,7 +846,7 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enum_Array_From_Strings_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAnonymousAsync(new
+            var result = await connection.ReadAsync(new
             {
                 Item1 = default(TestEnum?[])
             }, @"
@@ -892,7 +892,7 @@ namespace PostgreSqlUnitTests
                 (3, 'foo3', cast('2022-01-20' as date))
             ) t(id, foo, date)";
 
-            var result = connection.ReadAnonymous(new { 
+            var result = connection.Read(new { 
                 id = default(int), 
                 foo = default(string), 
                 date = default(DateTime) 
@@ -927,7 +927,7 @@ namespace PostgreSqlUnitTests
 
             var result = connection
                 .WithParameters(new { id = 1, foo = "foo1" })
-                .ReadAnonymous(new
+                .Read(new
             {
                 id = default(int),
                 foo = default(string),
@@ -946,7 +946,7 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.ReadAnonymousFormat(new
+            var result = connection.ReadFormat(new
             {
                 id = default(int),
                 foo = default(string),
@@ -977,7 +977,7 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, date)
             where id = @id and foo = @foo";
 
-            var result = connection.WithParameters(1, "foo1").ReadAnonymous(new
+            var result = connection.WithParameters(1, "foo1").Read(new
             {
                 id = default(int),
                 foo = default(string),
@@ -1005,7 +1005,7 @@ namespace PostgreSqlUnitTests
 
             var result = await connection
                 .WithParameters(new { id = 1, foo = "foo1" })
-                .ReadAnonymousAsync(new
+                .ReadAsync(new
             {
                 id = default(int),
                 foo = default(string),
@@ -1025,7 +1025,7 @@ namespace PostgreSqlUnitTests
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = await connection.ReadAnonymousFormatAsync(new
+            var result = await connection.ReadFormatAsync(new
             {
                 id = default(int),
                 foo = default(string),
@@ -1056,7 +1056,7 @@ namespace PostgreSqlUnitTests
             ) t(id, foo, date)
             where id = @id and foo = @foo";
 
-            var result = await connection.WithParameters(1, "foo1").ReadAnonymousAsync(new
+            var result = await connection.WithParameters(1, "foo1").ReadAsync(new
             {
                 id = default(int),
                 foo = default(string),
@@ -1068,6 +1068,128 @@ namespace PostgreSqlUnitTests
             Assert.Equal(1, result[0].id);
             Assert.Equal("foo1", result[0].foo);
             Assert.Equal(new DateTime(2022, 1, 1), result[0].date);
+        }
+
+        [Fact]
+        public void ReadAnonymous_Multiple_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            using var multiple = connection.Multiple(@"
+                select * from (
+                    values 
+                    (1, 'foo1'),
+                    (2, 'foo2'),
+                    (3, 'foo3')
+                ) t(first, bar);
+
+                select * from (
+                    values 
+                    ('1977-05-19'::date, true, null),
+                    ('1978-05-19'::date, false, 'bar2'),
+                    (null::date, null, 'bar3')
+                ) t(day, bool, s)
+            ");
+
+            var first = multiple.Read(new
+            {
+                first = default(int),
+                bar = default(string)
+            }).ToList();
+
+            multiple.Next();
+
+            var second = multiple.Read(new
+            {
+                day = default(DateTime?),
+                @bool = default(bool?),
+                s = default(string),
+            }).ToList();
+
+            Assert.Equal(3, first.Count);
+            Assert.Equal(3, second.Count);
+
+            Assert.Equal(1, first[0].first);
+            Assert.Equal("foo1", first[0].bar);
+
+            Assert.Equal(new DateTime(1977, 5, 19), second[0].day);
+            Assert.Equal(true, second[0].@bool);
+            Assert.Null(second[0].s);
+
+            Assert.Equal(2, first[1].first);
+            Assert.Equal("foo2", first[1].bar);
+
+            Assert.Equal(new DateTime(1978, 5, 19), second[1].day);
+            Assert.Equal(false, second[1].@bool);
+            Assert.Equal("bar2", second[1].s);
+
+            Assert.Equal(3, first[2].first);
+            Assert.Equal("foo3", first[2].bar);
+
+            Assert.Null(second[2].day);
+            Assert.Null(second[2].@bool);
+            Assert.Equal("bar3", second[2].s);
+        }
+
+        [Fact]
+        public async Task ReadAnonymous_Multiple_Test_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            using var multiple = await connection.MultipleAsync(@"
+                select * from (
+                    values 
+                    (1, 'foo1'),
+                    (2, 'foo2'),
+                    (3, 'foo3')
+                ) t(first, bar);
+
+                select * from (
+                    values 
+                    ('1977-05-19'::date, true, null),
+                    ('1978-05-19'::date, false, 'bar2'),
+                    (null::date, null, 'bar3')
+                ) t(day, bool, s)
+            ");
+
+            var first = await multiple.ReadAsync(new
+            {
+                first = default(int),
+                bar = default(string)
+            }).ToListAsync();
+
+            await multiple.NextAsync();
+
+            var second = await multiple.ReadAsync(new
+            {
+                day = default(DateTime?),
+                @bool = default(bool?),
+                s = default(string),
+            }).ToListAsync();
+
+            Assert.Equal(3, first.Count);
+            Assert.Equal(3, second.Count);
+
+            Assert.Equal(1, first[0].first);
+            Assert.Equal("foo1", first[0].bar);
+
+            Assert.Equal(new DateTime(1977, 5, 19), second[0].day);
+            Assert.Equal(true, second[0].@bool);
+            Assert.Null(second[0].s);
+
+            Assert.Equal(2, first[1].first);
+            Assert.Equal("foo2", first[1].bar);
+
+            Assert.Equal(new DateTime(1978, 5, 19), second[1].day);
+            Assert.Equal(false, second[1].@bool);
+            Assert.Equal("bar2", second[1].s);
+
+            Assert.Equal(3, first[2].first);
+            Assert.Equal("foo3", first[2].bar);
+
+            Assert.Null(second[2].day);
+            Assert.Null(second[2].@bool);
+            Assert.Equal("bar3", second[2].s);
         }
     }
 }
