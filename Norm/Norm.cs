@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Norm
@@ -103,13 +101,24 @@ namespace Norm
         }
 
         ///<summary>
-        ///
+        /// Set the command callback for the next command.
         ///</summary>
         ///<param name="dbCommandCallback">DbCommand callback</param>
         ///<returns>Norm instance.</returns>
         public Norm WithCommandCallback(Action<DbCommand> dbCommandCallback)
         {
             this.dbCommandCallback = dbCommandCallback;
+            return this;
+        }
+
+        ///<summary>
+        /// Set the database reader callback for the next command.
+        ///</summary>
+        ///<param name="readerCallback">DbCommand callback</param>
+        ///<returns>Norm instance.</returns>
+        public Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            this.readerCallback = readerCallback;
             return this;
         }
 

@@ -17,71 +17,54 @@ public partial class PostgreSqlSerialUnitTest
             ApplyOptionsCallback?.Invoke(NormOptions.Value);
         }
     }
-
-    [Fact]
-    public void Configure_NormInstanceType_GoodPath_Test()
-    {
-        // reset to default
-        NormOptions.Configure(o => { });
-
-        using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
-
-        NormOptions.Configure(options =>
-        {
-            options.NormInstanceType = typeof(NormExtension);
-        });
-
-        var applyOptionsCallbackCalled = false;
-
-        NormExtension.ApplyOptionsCallback = _ =>
-        {
-            applyOptionsCallbackCalled = true;
-        };
-
-        Assert.False(applyOptionsCallbackCalled);
-
-        connection.Execute("select 1");
-
-        Assert.True(applyOptionsCallbackCalled);
-
-        NormExtension.ApplyOptionsCallback = null;
-    }
-
     public class NormCustomOptions : NormOptions
     {
+        public static Action? OnConfiguredCallback = null;
+
         public string? CustomSettings { get; set; }
+        protected override Type NormInstanceType { get; set; } = typeof(NormExtension);
+
+        protected override void OnConfigured()
+        {
+            OnConfiguredCallback?.Invoke();
+        }
     }
 
     [Fact]
-    public void Configure_NormInstanceType_GoodPath_CutomOption_Test()
+    public void Configure_NormInstanceType_GoodPath_CustomOptions_Test()
     {
         // reset to default
         NormOptions.Configure(o => { });
-
         using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
 
-        NormOptions.Configure<NormCustomOptions>(options =>
-        {
-            options.CustomSettings = "called";
-            options.NormInstanceType = typeof(NormExtension);
-        });
-
         var applyOptionsCallbackCalled = false;
+        var onConfiguredCallbackCalled = false;
 
         NormExtension.ApplyOptionsCallback = options =>
         {
-            if ((options as NormCustomOptions).CustomSettings == "called")
+            if ((options as NormCustomOptions)?.CustomSettings == "called")
             {
                 applyOptionsCallbackCalled = true;
             }
         };
+        NormCustomOptions.OnConfiguredCallback = () =>
+        {
+            onConfiguredCallbackCalled = true;
+        };
+
+
+        Assert.False(onConfiguredCallbackCalled);
+        NormOptions.Configure<NormCustomOptions>(options =>
+        {
+            options.CustomSettings = "called";
+        });
+        Assert.True(onConfiguredCallbackCalled);
 
         Assert.False(applyOptionsCallbackCalled);
-
         connection.Execute("select 1");
-
         Assert.True(applyOptionsCallbackCalled);
 
         NormExtension.ApplyOptionsCallback = null;
+        NormCustomOptions.OnConfiguredCallback = null;
     }
 }

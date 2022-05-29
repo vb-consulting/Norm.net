@@ -3,6 +3,11 @@ namespace PostgreSqlSerialUnitTests;
 
 public partial class PostgreSqlSerialUnitTest
 {
+    public class NormCustomBadPathOptions : NormOptions
+    {
+        protected override Type NormInstanceType { get; set; } = typeof(PostgreSqlSerialUnitTest);
+    }
+
     [Fact]
     public void Configure_NormInstanceType_BadPath_Test()
     {
@@ -11,9 +16,8 @@ public partial class PostgreSqlSerialUnitTest
 
         Assert.Throws<ArgumentException>(() =>
         {
-            NormOptions.Configure(options =>
+            NormOptions.Configure<NormCustomBadPathOptions>(options =>
             {
-                options.NormInstanceType = typeof(PostgreSqlSerialUnitTest);
             });
         });
     }

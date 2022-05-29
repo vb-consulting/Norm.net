@@ -27,29 +27,43 @@ namespace Norm
         /// Set to true to run all commands in prepared mode every time by calling Prepare() method before execution.
         /// </summary>
         public bool Prepared { get; set; } = false;
+
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.
         /// </summary>
-        public Type NormInstanceType { get; set; } = null;
+        protected virtual Type NormInstanceType { get; set; } = null;
+
+        protected virtual void OnConfigured()
+        {
+        }
 
         public static NormOptions Value { get; internal set; } = new NormOptions();
 
         internal static ConstructorInfo NormCtor = null;
 
+        /// <summary>
+        /// Configuration of global settings
+        /// </summary>
+        /// <param name="options"></param>
         public static void Configure(Action<NormOptions> options)
         {
             Value = new NormOptions();
             NormCtor = null;
             options(Value);
-            AssignExtensionCtor();
         }
 
+        /// <summary>
+        /// Configuration of global settings for extensions
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
         public static void Configure<T>(Action<T> options) where T : NormOptions, new()
         {
             Value = new T();
             NormCtor = null;
             options(Value as T);
             AssignExtensionCtor();
+            Value.OnConfigured();
         }
 
         private static void AssignExtensionCtor()

@@ -208,15 +208,17 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Array_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(new { Ints = default(int?[]) }, @"
+            var result = connection
+                .WithReaderCallback(r => r.Reader.GetFieldValue<int?[]>(0))
+                .Read(new { Ints = default(int?[]) }, @"
                             select array_agg(e) as Ints
                             from (
                             values 
                                 (1),
                                 (null),
                                 (2)
-                            ) t(e)",
-                            r => r.Reader.GetFieldValue<int?[]>(0)).ToArray();
+                            ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(1, result[0].Ints[0]);
@@ -376,33 +378,36 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enum_Array_From_Ints_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(new
-            {
-                Item1 = default(TestEnum?[])
-            }, @"
-            select 
-                array_agg(Item1) as Item1
-            from (
-            values 
-                (0),
-                (null),
-                (2)
-            ) t(Item1)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    if (value == null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
                     {
-                        result.Add(null);
+                        if (value == null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
+                        }
                     }
-                    else
-                    {
-                        result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
-                    }
-                }
-                return result.ToArray();
-            }).ToList();
+                    return result.ToArray();
+                })
+                .Read(new
+                {
+                    Item1 = default(TestEnum?[])
+                }, @"
+                select 
+                    array_agg(Item1) as Item1
+                from (
+                values 
+                    (0),
+                    (null),
+                    (2)
+                ) t(Item1)")
+                .ToList();
 
             Assert.Single(result);
 
@@ -415,33 +420,36 @@ namespace PostgreSqlUnitTests
         public void ReadAnonymous_Nullable_Enum_Array_From_Strings_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read(new
-            {
-                Item1 = default(TestEnum?[])
-            }, @"
-            select 
-                array_agg(Item1) as Item1
-            from (
-            values 
-                ('Value1'),
-                (null),
-                ('Value3')
-            ) t(Item1)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    if (value == null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<string[]>(0))
                     {
-                        result.Add(null);
+                        if (value == null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add((TestEnum)Enum.Parse(typeof(TestEnum), value));
+                        }
                     }
-                    else
-                    {
-                        result.Add((TestEnum)Enum.Parse(typeof(TestEnum), value));
-                    }
-                }
-                return result.ToArray();
-            }).ToList();
+                    return result.ToArray();
+                })
+                .Read(new
+                {
+                    Item1 = default(TestEnum?[])
+                }, @"
+                select 
+                    array_agg(Item1) as Item1
+                from (
+                values 
+                    ('Value1'),
+                    (null),
+                    ('Value3')
+                ) t(Item1)")
+                .ToList();
 
             Assert.Single(result);
 
@@ -639,15 +647,17 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Array_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(new { Ints = default(int?[]) }, @"
+            var result = await connection
+                .WithReaderCallback(r => r.Reader.GetFieldValue<int?[]>(0))
+                .ReadAsync(new { Ints = default(int?[]) }, @"
                             select array_agg(e) as Ints
                             from (
                             values 
                                 (1),
                                 (null),
                                 (2)
-                            ) t(e)",
-                            r => r.Reader.GetFieldValue<int?[]>(0)).ToArrayAsync();
+                            ) t(e)")
+                .ToArrayAsync();
 
             Assert.Single(result);
             Assert.Equal(1, result[0].Ints[0]);
@@ -807,33 +817,36 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enum_Array_From_Ints_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(new
-            {
-                Item1 = default(TestEnum?[])
-            }, @"
-            select 
-                array_agg(Item1) as Item1
-            from (
-            values 
-                (0),
-                (null),
-                (2)
-            ) t(Item1)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
+            var result = await connection
+                .WithReaderCallback(r =>
                 {
-                    if (value == null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
                     {
-                        result.Add(null);
+                        if (value == null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
+                        }
                     }
-                    else
-                    {
-                        result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
-                    }
-                }
-                return result.ToArray();
-            }).ToListAsync();
+                    return result.ToArray();
+                })
+                .ReadAsync(new
+                {
+                    Item1 = default(TestEnum?[])
+                }, @"
+                select 
+                    array_agg(Item1) as Item1
+                from (
+                values 
+                    (0),
+                    (null),
+                    (2)
+                ) t(Item1)")
+                .ToListAsync();
 
             Assert.Single(result);
 
@@ -846,33 +859,36 @@ namespace PostgreSqlUnitTests
         public async Task ReadAnonymous_Nullable_Enum_Array_From_Strings_Test_Async()
         {
             await using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = await connection.ReadAsync(new
-            {
-                Item1 = default(TestEnum?[])
-            }, @"
-            select 
-                array_agg(Item1) as Item1
-            from (
-            values 
-                ('Value1'),
-                (null),
-                ('Value3')
-            ) t(Item1)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+            var result = await connection
+                .WithReaderCallback(r =>
                 {
-                    if (value == null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<string[]>(0))
                     {
-                        result.Add(null);
+                        if (value == null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add((TestEnum)Enum.Parse(typeof(TestEnum), value));
+                        }
                     }
-                    else
-                    {
-                        result.Add((TestEnum)Enum.Parse(typeof(TestEnum), value));
-                    }
-                }
-                return result.ToArray();
-            }).ToListAsync();
+                    return result.ToArray();
+                })
+                .ReadAsync(new
+                {
+                    Item1 = default(TestEnum?[])
+                }, @"
+                select 
+                    array_agg(Item1) as Item1
+                from (
+                values 
+                    ('Value1'),
+                    (null),
+                    ('Value3')
+                ) t(Item1)")
+                .ToListAsync();
 
             Assert.Single(result);
 

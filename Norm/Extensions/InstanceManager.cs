@@ -118,6 +118,17 @@ namespace Norm
             return connection.GetNoOrmInstance().Clone().WithCommandCallback(dbCommandCallback);
         }
 
+        ///<summary>
+        /// Set the database reader callback for the next command.
+        ///</summary>
+        ///<param name="readerCallback">DbCommand callback</param>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<returns>Norm instance that encapsulates the connection.</returns>
+        public static Norm WithReaderCallback(this DbConnection connection, Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        {
+            return connection.GetNoOrmInstance().Clone().WithReaderCallback(readerCallback);
+        }
+
         /// <summary>
         /// 
         /// </summary>

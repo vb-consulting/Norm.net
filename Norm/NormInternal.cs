@@ -30,6 +30,7 @@ namespace Norm
         protected bool prepared = false;
 
         protected Action<DbCommand> dbCommandCallback = null;
+        protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
         protected bool commandCommentHeaderEnabled = false;
         protected string comment = null;
         protected bool includeCommandAttributes = true;
@@ -48,6 +49,7 @@ namespace Norm
             bool prepared,
             object[] parameters,
             Action<DbCommand> dbCommandCallback,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
             bool commandCommentHeaderEnabled,
             string comment,
             bool includeCommandAttributes,
@@ -62,6 +64,7 @@ namespace Norm
             this.prepared = prepared;
             this.parameters = parameters;
             this.dbCommandCallback = dbCommandCallback;
+            this.readerCallback = readerCallback;
             this.commandCommentHeaderEnabled = commandCommentHeaderEnabled;
             this.comment = comment;
             this.includeCommandAttributes = includeCommandAttributes;
@@ -80,6 +83,7 @@ namespace Norm
                 prepared: prepared,
                 parameters: parameters,
                 dbCommandCallback: dbCommandCallback,
+                readerCallback: readerCallback,
                 commandCommentHeaderEnabled: commandCommentHeaderEnabled,
                 comment: comment,
                 includeCommandAttributes: includeCommandAttributes,

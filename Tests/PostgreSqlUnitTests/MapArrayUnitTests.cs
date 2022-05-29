@@ -85,15 +85,17 @@ namespace PostgreSqlUnitTests
         public void Map_Nullable_Ints_Array_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read<NullableIntsArrayClass>(@"
+            var result = connection
+                .WithReaderCallback(r => r.Reader.GetFieldValue<int?[]>(0))
+                .Read<NullableIntsArrayClass>(@"
                             select array_agg(e) as Ints
                             from (
                             values 
                                 (1),
                                 (null),
                                 (2)
-                            ) t(e)", 
-                            r => r.Reader.GetFieldValue<int?[]>(0)).ToArray();
+                            ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(1, result[0].Ints[0]);
@@ -256,18 +258,21 @@ namespace PostgreSqlUnitTests
         public void Map_Nullable_Value_Named_Tuples_Array_Sync()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection.Read<(int?[] Ints, string[] Strings)>(@"
-                select array_agg(i), array_agg(s)
-                from (
-                values 
-                    (1, 'foo1'),
-                    (null, 'foo2'),
-                    (2, null)
-                ) t(i, s)", r => r.Ordinal switch
+            var result = connection
+                .WithReaderCallback(r => r.Ordinal switch
                 {
                     0 => r.Reader.GetFieldValue<int?[]>(0),
                     _ => null
-                }).ToArray();
+                })
+                .Read<(int?[] Ints, string[] Strings)>(@"
+                    select array_agg(i), array_agg(s)
+                    from (
+                    values 
+                        (1, 'foo1'),
+                        (null, 'foo2'),
+                        (2, null)
+                    ) t(i, s)")
+                .ToArray();
 
             Assert.Single(result);
 

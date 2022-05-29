@@ -131,29 +131,32 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<TestNullableEnumArrayClass>(@"
+            var result = connection
+                .WithReaderCallback(r =>
+                {
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+                    {
+                        if (value is null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add(Enum.Parse<TestEnum>(value));
+                        }
+                    }
+                    return result.ToArray();
+                })
+                .Read<TestNullableEnumArrayClass>(@"
                             select array_agg(e) as MyEnums
                             from (
                             values 
                                 ('Value1'),
                                 (null),
                                 ('Value3')
-                            ) t(e)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach(var value in r.Reader.GetFieldValue<string[]>(0))
-                {
-                    if (value is null)
-                    {
-                        result.Add(null);
-                    }
-                    else
-                    {
-                        result.Add(Enum.Parse<TestEnum>(value));
-                    }
-                }
-                return result.ToArray();
-            }).ToArray();
+                            ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(TestEnum.Value1, result[0].MyEnums[0]);
@@ -247,22 +250,25 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<TestEnum[]>(@"
-            select array_agg(e) as MyEnums
-            from (
-            values 
-                ('Value1'),
-                ('Value2'),
-                ('Value3')
-            ) t(e)", r =>
-            {
-                var result = new List<TestEnum>();
-                foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    result.Add(Enum.Parse<TestEnum>(value));
-                }
-                return result.ToArray();
-            }).ToArray();
+                    var result = new List<TestEnum>();
+                    foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+                    {
+                        result.Add(Enum.Parse<TestEnum>(value));
+                    }
+                    return result.ToArray();
+                })
+                .Read<TestEnum[]>(@"
+                    select array_agg(e) as MyEnums
+                    from (
+                    values 
+                        ('Value1'),
+                        ('Value2'),
+                        ('Value3')
+                    ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(TestEnum.Value1, result[0][0]);
@@ -275,29 +281,32 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<TestEnum?[]>(@"
-            select array_agg(e) as MyEnums
-            from (
-            values 
-                ('Value1'),
-                (null),
-                ('Value3')
-            ) t(e)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<string[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    if (value is null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<string[]>(0))
                     {
-                        result.Add(null);
+                        if (value is null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add(Enum.Parse<TestEnum>(value));
+                        }
                     }
-                    else
-                    {
-                        result.Add(Enum.Parse<TestEnum>(value));
-                    }
-                }
-                return result.ToArray();
-            }).ToArray();
+                    return result.ToArray();
+                })
+                .Read<TestEnum?[]>(@"
+                    select array_agg(e) as MyEnums
+                    from (
+                    values 
+                        ('Value1'),
+                        (null),
+                        ('Value3')
+                    ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(TestEnum.Value1, result[0][0]);
@@ -310,22 +319,25 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<TestEnum[]>(@"
-            select array_agg(e) as MyEnums
-            from (
-            values 
-                (0),
-                (1),
-                (2)
-            ) t(e)", r =>
-            {
-                var result = new List<TestEnum>();
-                foreach (var value in r.Reader.GetFieldValue<int[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
-                }
-                return result.ToArray();
-            }).ToArray();
+                    var result = new List<TestEnum>();
+                    foreach (var value in r.Reader.GetFieldValue<int[]>(0))
+                    {
+                        result.Add((TestEnum)Enum.ToObject(typeof(TestEnum), value));
+                    }
+                    return result.ToArray();
+                })
+                .Read<TestEnum[]>(@"
+                    select array_agg(e) as MyEnums
+                    from (
+                    values 
+                        (0),
+                        (1),
+                        (2)
+                    ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(TestEnum.Value1, result[0][0]);
@@ -338,29 +350,32 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<TestEnum?[]>(@"
-            select array_agg(e) as MyEnums
-            from (
-            values 
-                (0),
-                (null),
-                (2)
-            ) t(e)", r =>
-            {
-                var result = new List<TestEnum?>();
-                foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
+            var result = connection
+                .WithReaderCallback(r =>
                 {
-                    if (value is null)
+                    var result = new List<TestEnum?>();
+                    foreach (var value in r.Reader.GetFieldValue<int?[]>(0))
                     {
-                        result.Add(null);
+                        if (value is null)
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            result.Add((TestEnum?)Enum.ToObject(typeof(TestEnum), value));
+                        }
                     }
-                    else
-                    {
-                        result.Add((TestEnum?)Enum.ToObject(typeof(TestEnum), value));
-                    }
-                }
-                return result.ToArray();
-            }).ToArray();
+                    return result.ToArray();
+                })
+                .Read<TestEnum?[]>(@"
+                    select array_agg(e) as MyEnums
+                    from (
+                    values 
+                        (0),
+                        (null),
+                        (2)
+                    ) t(e)")
+                .ToArray();
 
             Assert.Single(result);
             Assert.Equal(TestEnum.Value1, result[0][0]);
@@ -373,14 +388,17 @@ namespace PostgreSqlUnitTests
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
 
-            var result = connection.Read<(TestEnum Enum1, TestEnum Enum2)>(@"
-            select *
-            from (
-            values 
-                ('Value1', 'Value3'),
-                ('Value2', 'Value2'),
-                ('Value3', 'Value1')
-            ) t(Enum1, Enum2)", r => Enum.Parse<TestEnum>(r.Reader.GetFieldValue<string>(r.Ordinal))).ToArray();
+            var result = connection
+                .WithReaderCallback(r => Enum.Parse<TestEnum>(r.Reader.GetFieldValue<string>(r.Ordinal)))
+                .Read<(TestEnum Enum1, TestEnum Enum2)>(@"
+                    select *
+                    from (
+                    values 
+                        ('Value1', 'Value3'),
+                        ('Value2', 'Value2'),
+                        ('Value3', 'Value1')
+                    ) t(Enum1, Enum2)")
+                .ToArray();
 
             Assert.Equal(3, result.Length);
             Assert.Equal(TestEnum.Value1, result[0].Enum1);
