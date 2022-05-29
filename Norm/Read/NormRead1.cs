@@ -25,6 +25,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             var t1 = TypeCache<T>.GetMetadata();
+            
             if (t1.valueTuple)
             {
                 return ReadToArrayInternal(command).MapValueTuple<T>(t1.type);

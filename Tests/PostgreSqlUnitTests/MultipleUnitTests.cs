@@ -280,5 +280,64 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo2", foo2);
             Assert.Equal("bar2", bar2);
         }
+
+        [Fact]
+        public void MapTwoRecords_Callback_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            using var multiple = connection
+                .WithReaderCallback(r => r.Ordinal switch
+                {
+                    0 => r.Reader.GetInt32(0) + 1,
+                    _ => null
+                })
+                .Multiple(Queires);
+
+            var result1 = multiple.Read<Record1>().Single();
+            var next1 = multiple.Next();
+            var result2 = multiple.Read<Record2>().Single();
+            var next2 = multiple.Next();
+
+            Assert.True(next1);
+            Assert.False(next2);
+
+            Assert.Equal(2, result1.Id1);
+            Assert.Equal("foo1", result1.Foo1);
+            Assert.Equal("bar1", result1.Bar1);
+
+            Assert.Equal(3, result2.Id2);
+            Assert.Equal("foo2", result2.Foo2);
+            Assert.Equal("bar2", result2.Bar2);
+        }
+
+        [Fact]
+        public async Task MapTwoRecords_Callback_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            using var multiple = await connection
+                .WithReaderCallback(r => r.Ordinal switch
+                {
+                    0 => r.Reader.GetInt32(0) + 1,
+                    _ => null
+                })
+                .MultipleAsync(Queires);
+
+            var result1 = await multiple.ReadAsync<Record1>().SingleAsync();
+            var next1 = multiple.Next();
+            var result2 = await multiple.ReadAsync<Record2>().SingleAsync();
+            var next2 = multiple.Next();
+
+            Assert.True(next1);
+            Assert.False(next2);
+
+            Assert.Equal(2, result1.Id1);
+            Assert.Equal("foo1", result1.Foo1);
+            Assert.Equal("bar1", result1.Bar1);
+
+            Assert.Equal(3, result2.Id2);
+            Assert.Equal("foo2", result2.Foo2);
+            Assert.Equal("bar2", result2.Bar2);
+        }
+
     }
 }

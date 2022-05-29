@@ -23,7 +23,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
+            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this.readerCallback, this);
         }
 
         ///<summary>
@@ -42,7 +42,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this);
+            return new NormMultipleReader(cmd.ExecuteReader(), cancellationToken, this.readerCallback, this);
         }
 
         ///<summary>
@@ -63,9 +63,9 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this);
+                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this.readerCallback, this);
             }
-            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this);
+            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this.readerCallback, this);
         }
 
         ///<summary>
@@ -86,9 +86,9 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this);
+                return new NormMultipleReader(await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this.readerCallback, this);
             }
-            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this);
+            return new NormMultipleReader(await cmd.ExecuteReaderAsync(), cancellationToken, this.readerCallback, this);
         }
     }
 }

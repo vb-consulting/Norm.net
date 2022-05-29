@@ -11,16 +11,19 @@ namespace Norm
     {
         private readonly DbDataReader reader;
         private readonly CancellationToken? cancellationToken;
+        private Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
         private readonly Norm norm;
         private bool disposed = false;
 
         internal NormMultipleReader(
             DbDataReader reader, 
-            CancellationToken? cancellationToken, 
+            CancellationToken? cancellationToken,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
             Norm norm)
         {
             this.reader = reader;
             this.cancellationToken = cancellationToken;
+            this.readerCallback = readerCallback;
             this.norm = norm;
         }
 
@@ -70,9 +73,19 @@ namespace Norm
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
         public IEnumerable<(string name, object value)[]> Read()
         {
-            while (reader.Read())
+            if (this.readerCallback == null)
             {
-                yield return norm.ReadToArray(reader);
+                while (reader.Read())
+                {
+                    yield return norm.ReadToArray(reader);
+                }
+            }
+            else
+            {
+                while (reader.Read())
+                {
+                    yield return norm.ReadToArray(reader, this.readerCallback);
+                }
             }
         }
 
@@ -87,6 +100,7 @@ namespace Norm
         public IEnumerable<T> Read<T>()
         {
             var t1 = TypeCache<T>.GetMetadata();
+            
             if (t1.valueTuple)
             {
                 return Read().MapValueTuple<T>(t1.type);
@@ -446,9 +460,19 @@ namespace Norm
         /// <returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public async IAsyncEnumerable<(string name, object value)[]> ReadAsync()
         {
-            while (await reader.ReadAsync())
+            if (this.readerCallback == null)
             {
-                yield return norm.ReadToArray(reader);
+                while (await reader.ReadAsync())
+                {
+                    yield return norm.ReadToArray(reader);
+                }
+            }
+            else
+            {
+                while (await reader.ReadAsync())
+                {
+                    yield return norm.ReadToArray(reader, this.readerCallback);
+                }
             }
         }
 

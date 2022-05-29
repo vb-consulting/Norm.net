@@ -460,6 +460,44 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public void Map_Callback_Anonymous_Sync()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .WithReaderCallback(r => r.Ordinal switch
+                {
+                    2 => r.Reader.GetInt32(r.Ordinal) + 1,
+                    _ => null
+                })
+                .Read(new
+                {
+                    F1 = default(int),
+                    F2 = default(int),
+                    F3 = default(int),
+                }, @"
+                    select * from (values 
+                        (1, 1, 1),
+                        (2, 2, 2),
+                        (3, 3, 3)
+                    ) t(f1, f2, f3)")
+                .ToArray();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(1, result[0].F1);
+            Assert.Equal(2, result[1].F1);
+            Assert.Equal(3, result[2].F1);
+
+            Assert.Equal(1, result[0].F2);
+            Assert.Equal(2, result[1].F2);
+            Assert.Equal(3, result[2].F2);
+
+            Assert.Equal(2, result[0].F3);
+            Assert.Equal(3, result[1].F3);
+            Assert.Equal(4, result[2].F3);
+        }
+
+        [Fact]
         public async Task Map_Callback_Values_Async()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
@@ -846,6 +884,44 @@ namespace PostgreSqlUnitTests
                     _ => null
                 })
                 .ReadAsync<TestClass33>(@"
+                    select * from (values 
+                        (1, 1, 1),
+                        (2, 2, 2),
+                        (3, 3, 3)
+                    ) t(f1, f2, f3)")
+                .ToArrayAsync();
+
+            Assert.Equal(3, result.Length);
+
+            Assert.Equal(1, result[0].F1);
+            Assert.Equal(2, result[1].F1);
+            Assert.Equal(3, result[2].F1);
+
+            Assert.Equal(1, result[0].F2);
+            Assert.Equal(2, result[1].F2);
+            Assert.Equal(3, result[2].F2);
+
+            Assert.Equal(2, result[0].F3);
+            Assert.Equal(3, result[1].F3);
+            Assert.Equal(4, result[2].F3);
+        }
+
+        [Fact]
+        public async Task Map_Callback_Anonymous_Async()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = await connection
+                .WithReaderCallback(r => r.Ordinal switch
+                {
+                    2 => r.Reader.GetInt32(r.Ordinal) + 1,
+                    _ => null
+                })
+                .ReadAsync(new
+                {
+                    F1 = default(int),
+                    F2 = default(int),
+                    F3 = default(int),
+                }, @"
                     select * from (values 
                         (1, 1, 1),
                         (2, 2, 2),
