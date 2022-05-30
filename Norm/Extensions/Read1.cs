@@ -9,9 +9,6 @@ namespace Norm
     {
         ///<summary>
         /// Maps command results to enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
@@ -27,7 +24,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Parse interpolated (formattable) command as database parameters and map command results to enumerator of single values of type T.
+        ///Parse interpolated (formattable) command as database parameters and map command results to enumerator of single values of type T.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>

@@ -114,7 +114,7 @@ namespace Norm
         ///<summary>
         /// Set the database reader callback for the next command.
         ///</summary>
-        ///<param name="readerCallback">DbCommand callback</param>
+        ///<param name="readerCallback">Reader tuple value object (Name, Ordinal and DbDataReader)</param>
         ///<returns>Norm instance.</returns>
         public Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
@@ -123,7 +123,7 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the custom comment header for the next command.
         /// </summary>
         /// <param name="comment"></param>
         ///<returns>Norm instance.</returns>
@@ -163,7 +163,7 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the comment header to include caller info (source method name, source code file path and line number) for the next command.
         /// </summary>
         ///<returns>Norm instance.</returns>
         public Norm WithCommentCallerInfo()
@@ -182,13 +182,13 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the comment header options for the next command.
         /// </summary>
-        /// <param name="comment">Append this custom user comment to header</param>
-        /// <param name="includeCommandAttributes"></param>
-        /// <param name="includeParameters"></param>
-        /// <param name="includeCallerInfo"></param>
-        /// <param name="includeTimestamp"></param>
+        /// <param name="comment">Custom comment</param>
+        /// <param name="includeParameters">Include command parameters</param>
+        /// <param name="includeCommandAttributes">Include command attributes (command type and timeout)</param>
+        /// <param name="includeCallerInfo">Include command caller info (source method name, source code file path and line number)</param>
+        /// <param name="includeTimestamp">Include execution timestamp</param>
         ///<returns>Norm instance.</returns>
         public Norm WithCommentHeader(
             string comment = null,

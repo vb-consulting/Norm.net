@@ -9,7 +9,7 @@ namespace Norm
     public static partial class NormExtensions
     {
         ///<summary>
-        ///     Maps command results to enumerator of seven value tuples (T1, T2, T3, T4, T5, T6, T7).
+        ///Maps command results to enumerator of seven value tuples (T1, T2, T3, T4, T5, T6, T7).
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text.</param>
@@ -25,7 +25,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Parse interpolated (formattable) command as database parameters and map command results to enumerator of seven value tuples (T1, T2, T3, T4, T5, T6, T7).
+        ///Parse interpolated (formattable) command as database parameters and map command results to enumerator of seven value tuples (T1, T2, T3, T4, T5, T6, T7).
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>

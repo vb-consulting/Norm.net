@@ -26,7 +26,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///Maps command results to enumerator of anonymous values.
+        ///Parse interpolated (formattable) command as database parameters and map command results to enumerator of anonymous values.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>

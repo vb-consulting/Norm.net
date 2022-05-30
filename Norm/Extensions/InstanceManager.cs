@@ -97,7 +97,7 @@ namespace Norm
         }
 
         ///<summary>
-        /// Adds parameters list to query
+        /// Sets the parameters for the next command.
         ///</summary>
         ///<param name="parameters">Parameters list. The parameter can be a simple value (mapped by position), DbParameter instance, or object instances where is each property is mapped to a named database parameter.</param>
         ///<param name="connection">DbConnection instance.</param>
@@ -121,7 +121,7 @@ namespace Norm
         ///<summary>
         /// Set the database reader callback for the next command.
         ///</summary>
-        ///<param name="readerCallback">DbCommand callback</param>
+        ///<param name="readerCallback">Reader tuple value object (Name, Ordinal and DbDataReader)</param>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithReaderCallback(this DbConnection connection, Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
@@ -130,7 +130,7 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the custom comment header for the next command.
         /// </summary>
         /// <param name="comment"></param>
         ///<param name="connection">DbConnection instance.</param>
@@ -141,7 +141,7 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the comment header to include command parameters for the next command.
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
@@ -151,7 +151,7 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the comment header to include caller info (source method name, source code file path and line number) for the next command.
         /// </summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
@@ -161,13 +161,13 @@ namespace Norm
         }
 
         /// <summary>
-        /// 
+        /// Sets the comment header options for the next command.
         /// </summary>
-        /// <param name="comment"></param>
-        /// <param name="includeParameters"></param>
-        /// <param name="includeCommandAttributes"></param>
-        /// <param name="includeCallerInfo"></param>
-        /// <param name="includeTimestamp"></param>
+        /// <param name="comment">Custom comment</param>
+        /// <param name="includeParameters">Include command parameters</param>
+        /// <param name="includeCommandAttributes">Include command attributes (command type and timeout)</param>
+        /// <param name="includeCallerInfo">Include command caller info (source method name, source code file path and line number)</param>
+        /// <param name="includeTimestamp">Include execution timestamp</param>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithCommentHeader(this DbConnection connection,

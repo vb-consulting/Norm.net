@@ -8,7 +8,7 @@ namespace Norm
     public static partial class NormExtensions
     {
         ///<summary>
-        ///Maps command results to async enumerator of single values of type T.
+        ///Maps command results to enumerator of anonymous values.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
@@ -26,7 +26,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///Maps command results to async enumerator of single values of type T.
+        ///Parse interpolated (formattable) command as database parameters and maps command results to enumerator of anonymous values.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>

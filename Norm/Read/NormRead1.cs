@@ -7,10 +7,7 @@ namespace Norm
     public partial class Norm
     {
         ///<summary>
-        /// Maps command results to enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
-        /// Otherwise, single value is mapped.
+        ///Maps command results to enumerator of single values of type T.
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
@@ -50,8 +47,6 @@ namespace Norm
 
         ///<summary>
         /// Parse interpolated (formattable) command as database parameters and map results to enumerator of single values of type T.
-        /// If type T is a class or a record, results will be mapped by name to a class or record instances by name.
-        /// If type T is a named tuple, results will be mapped by name to a named tuple instances by position.
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>

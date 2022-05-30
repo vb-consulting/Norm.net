@@ -101,7 +101,6 @@ namespace Norm
             NormOptions.Value.DbCommandCallback?.Invoke(cmd);
             dbCommandCallback?.Invoke(cmd);
 
-
             if (cmd.CommandType == CommandType.StoredProcedure 
                 && ((this.dbType | NormOptions.Value.OmmitStoredProcCommandCommentHeaderForDbTypes) == NormOptions.Value.OmmitStoredProcCommandCommentHeaderForDbTypes))
             {
