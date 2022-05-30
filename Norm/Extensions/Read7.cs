@@ -21,7 +21,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNormInstance().Read<T1, T2, T3, T4, T5, T6, T7>(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Norm().Read<T1, T2, T3, T4, T5, T6, T7>(command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -38,7 +38,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.GetNormInstance().ReadFormat<T1, T2, T3, T4, T5, T6, T7>(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Norm().ReadFormat<T1, T2, T3, T4, T5, T6, T7>(command, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }

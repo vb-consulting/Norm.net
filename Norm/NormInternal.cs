@@ -33,58 +33,6 @@ namespace Norm
         protected string sourceFilePath = null;
         protected int sourceLineNumber = 0;
 
-        protected Norm(
-            DbConnection connection,
-            CommandType commandType,
-            int? commandTimeout,
-            CancellationToken? cancellationToken,
-            bool prepared,
-            object[] parameters,
-            Action<DbCommand> dbCommandCallback,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            bool commandCommentHeaderEnabled,
-            string comment,
-            bool includeCommandAttributes,
-            bool includeParameters,
-            bool includeCallerInfo,
-            bool includeTimestamp
-        ) : this(connection)
-        {
-            this.commandType = commandType;
-            this.commandTimeout = commandTimeout;
-            this.cancellationToken = cancellationToken;
-            this.prepared = prepared;
-            this.parameters = parameters;
-            this.dbCommandCallback = dbCommandCallback;
-            this.readerCallback = readerCallback;
-            this.commandCommentHeaderEnabled = commandCommentHeaderEnabled;
-            this.comment = comment;
-            this.includeCommandAttributes = includeCommandAttributes;
-            this.includeParameters = includeParameters;
-            this.includeCallerInfo = includeCallerInfo;
-            this.includeTimestamp = includeTimestamp;
-        }
-
-        public Norm Clone()
-        {
-            return new Norm(
-                connection: Connection,
-                commandType: commandType,
-                commandTimeout: commandTimeout,
-                cancellationToken: cancellationToken,
-                prepared: prepared,
-                parameters: parameters,
-                dbCommandCallback: dbCommandCallback,
-                readerCallback: readerCallback,
-                commandCommentHeaderEnabled: commandCommentHeaderEnabled,
-                comment: comment,
-                includeCommandAttributes: includeCommandAttributes,
-                includeParameters: includeParameters,
-                includeCallerInfo: includeCallerInfo,
-                includeTimestamp: includeTimestamp
-            );
-        }
-
         protected virtual void ApplyOptions(DbCommand cmd)
         {
             if (NormOptions.Value.CommandTimeout.HasValue)

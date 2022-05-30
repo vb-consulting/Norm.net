@@ -18,7 +18,6 @@ namespace Norm
         /// Autmoatic command comment header options.
         /// </summary>
         public CommandCommentHeader CommandCommentHeader { get; private set; } = new CommandCommentHeader();
-
         /// <summary>
         /// Escape sequence, when using parameters via string interpolation formats, use this escape to skip parametr parsing and use values as is.
         /// For example: command ReadFormat($"select from {"table":raw}"), that "table" will be interpreted as normal interpolation string.

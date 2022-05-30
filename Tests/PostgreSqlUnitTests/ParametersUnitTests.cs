@@ -621,5 +621,39 @@ namespace PostgreSqlUnitTests
             Assert.Equal("str", s);
             Assert.Equal(999, i);
         }
+
+        /*
+        [Fact]
+        public void Instance_managament_Test()
+        {
+            var strValue = "str";
+            var intValue = 999;
+            var boolValue = true;
+            var dateTimeValue = new DateTime(1977, 5, 19);
+            var nullValue = (string)null;
+
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+
+            connection
+                .WithParameters(new
+                {
+                    strValue = new NpgsqlParameter("StrValue", strValue),
+                    intValue,
+                    boolValue,
+                    dateTimeValue,
+                    nullValue,
+                });
+
+            var (s, i, b, d, @null) = connection
+                .Read<string, int, bool, DateTime, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+        */
     }
 }

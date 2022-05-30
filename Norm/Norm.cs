@@ -20,7 +20,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     returns DbConnection for this instance
+        ///returns DbConnection for this instance
         ///</summary>
         public DbConnection Connection { get; }
 
