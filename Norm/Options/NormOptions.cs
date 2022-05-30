@@ -29,6 +29,11 @@ namespace Norm
         public bool Prepared { get; set; } = false;
 
         /// <summary>
+        /// 
+        /// </summary>
+        public DatabaseType OmmitStoredProcCommandCommentHeaderForDbTypes { get; set; } = DatabaseType.Sql | DatabaseType.MySql;
+
+        /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.
         /// </summary>
         protected virtual Type NormInstanceType { get; set; } = null;

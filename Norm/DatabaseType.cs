@@ -1,10 +1,13 @@
-﻿namespace Norm
+﻿using System;
+
+namespace Norm
 {
+    [Flags]
     public enum DatabaseType
     {
-        Sql,
-        Npgsql,
-        MySql,
-        Other
+        Other = 0,
+        Sql = 1,
+        Npgsql = 2,
+        MySql = 4,
     }
 }
