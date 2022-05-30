@@ -11,7 +11,7 @@ namespace Norm
     {
         private static readonly ConditionalWeakTable<DbConnection, Norm> Table = new ConditionalWeakTable<DbConnection, Norm>();
 
-        private static Norm GetNoOrmInstance(this DbConnection connection)
+        public static Norm GetNormInstance(this DbConnection connection)
         {
             if (Table.TryGetValue(connection, out var instance))
             {
@@ -41,7 +41,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm As(this DbConnection connection, CommandType type)
         {
-            return connection.GetNoOrmInstance().Clone().As(type);
+            return connection.GetNormInstance().Clone().As(type);
         }
 
         ///<summary>
@@ -72,7 +72,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm Timeout(this DbConnection connection, int timeout)
         {
-            return connection.GetNoOrmInstance().Clone().Timeout(timeout);
+            return connection.GetNormInstance().Clone().Timeout(timeout);
         }
 
         ///<summary>
@@ -83,7 +83,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithCancellationToken(this DbConnection connection, CancellationToken cancellationToken)
         {
-            return connection.GetNoOrmInstance().Clone().WithCancellationToken(cancellationToken);
+            return connection.GetNormInstance().Clone().WithCancellationToken(cancellationToken);
         }
 
         ///<summary>
@@ -93,7 +93,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm Prepared(this DbConnection connection)
         {
-            return connection.GetNoOrmInstance().Clone().Prepared();
+            return connection.GetNormInstance().Clone().Prepared();
         }
 
         ///<summary>
@@ -104,7 +104,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithParameters(this DbConnection connection, params object[] parameters)
         {
-            return connection.GetNoOrmInstance().Clone().WithParameters(parameters);
+            return connection.GetNormInstance().Clone().WithParameters(parameters);
         }
 
         ///<summary>
@@ -115,7 +115,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithCommandCallback(this DbConnection connection, Action<DbCommand> dbCommandCallback)
         {
-            return connection.GetNoOrmInstance().Clone().WithCommandCallback(dbCommandCallback);
+            return connection.GetNormInstance().Clone().WithCommandCallback(dbCommandCallback);
         }
 
         ///<summary>
@@ -126,7 +126,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithReaderCallback(this DbConnection connection, Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
-            return connection.GetNoOrmInstance().Clone().WithReaderCallback(readerCallback);
+            return connection.GetNormInstance().Clone().WithReaderCallback(readerCallback);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithComment(this DbConnection connection, string comment)
         {
-            return connection.GetNoOrmInstance().Clone().WithComment(comment);
+            return connection.GetNormInstance().Clone().WithComment(comment);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithCommentParameters(this DbConnection connection)
         {
-            return connection.GetNoOrmInstance().Clone().WithCommentParameters();
+            return connection.GetNormInstance().Clone().WithCommentParameters();
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Norm
         ///<returns>Norm instance that encapsulates the connection.</returns>
         public static Norm WithCommentCallerInfo(this DbConnection connection)
         {
-            return connection.GetNoOrmInstance().Clone().WithCommentCallerInfo();
+            return connection.GetNormInstance().Clone().WithCommentCallerInfo();
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Norm
             bool includeCallerInfo = true,
             bool includeTimestamp = false)
         {
-            return connection.GetNoOrmInstance().Clone().WithCommentHeader(
+            return connection.GetNormInstance().Clone().WithCommentHeader(
                 comment: comment,
                 includeCommandAttributes: includeCommandAttributes,
                 includeParameters: includeParameters,
