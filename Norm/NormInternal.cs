@@ -11,14 +11,6 @@ namespace Norm
 {
     public partial class Norm
     {
-        protected enum DatabaseType
-        {
-            Sql,
-            Npgsql,
-            MySql,
-            Other
-        }
-
         protected string commandText;
         protected string commentHeader;
         protected readonly DatabaseType dbType;
@@ -105,16 +97,26 @@ namespace Norm
             }
 
             ApllyCommentHeader(cmd);
+
             NormOptions.Value.DbCommandCallback?.Invoke(cmd);
             dbCommandCallback?.Invoke(cmd);
+
+            if (cmd.CommandType == CommandType.StoredProcedure && this.dbType == DatabaseType.Sql)
+            {
+                if (this.commentHeader != null)
+                {
+                    cmd.CommandText = cmd.CommandText.Replace(this.commentHeader, "");
+                }
+            }
         }
 
         protected virtual void ApllyCommentHeader(DbCommand cmd)
         {
+            commandText = cmd.CommandText;
+            commentHeader = null;
+
             if (!NormOptions.Value.CommandCommentHeader.Enabled && !this.commandCommentHeaderEnabled)
             {
-                commandText = cmd.CommandText;
-                commentHeader = null;
                 return;
             }
             
@@ -178,9 +180,12 @@ namespace Norm
                 }
             }
 
-            commandText = cmd.CommandText;
-            commentHeader = sb.ToString();
-            cmd.CommandText = string.Concat(commentHeader, commandText);
+            if (sb.Length > 0)
+            {
+                commandText = cmd.CommandText;
+                commentHeader = sb.ToString();
+                cmd.CommandText = string.Concat(commentHeader, commandText);
+            }
         }
 
         protected DbCommand CreateCommand(string command)
