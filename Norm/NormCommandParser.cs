@@ -1,38 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm
 {
     public partial class Norm
     {
-        protected string commandText;
-        protected string commentHeader;
-        protected readonly DatabaseType dbType;
-        protected object[] parameters = null;
-
-        protected CommandType commandType = CommandType.Text;
-        protected int? commandTimeout = null;
-        protected CancellationToken? cancellationToken = null;
-        protected bool prepared = false;
-
-        protected Action<DbCommand> dbCommandCallback = null;
-        protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
-        protected bool commandCommentHeaderEnabled = false;
-        protected string comment = null;
-        protected bool includeCommandAttributes = true;
-        protected bool includeParameters = false;
-        protected bool includeCallerInfo = false;
-        protected bool includeTimestamp = false;
-        protected string memberName = null;
-        protected string sourceFilePath = null;
-        protected int sourceLineNumber = 0;
-
         protected virtual void ApplyOptions(DbCommand cmd)
         {
             if (NormOptions.Value.CommandTimeout.HasValue)

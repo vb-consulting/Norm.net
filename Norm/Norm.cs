@@ -7,6 +7,28 @@ namespace Norm
 {
     public partial class Norm
     {
+        protected string commandText;
+        protected string commentHeader;
+        protected readonly DatabaseType dbType;
+        protected object[] parameters = null;
+
+        protected CommandType commandType = CommandType.Text;
+        protected int? commandTimeout = null;
+        protected CancellationToken? cancellationToken = null;
+        protected bool prepared = false;
+
+        protected Action<DbCommand> dbCommandCallback = null;
+        protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
+        protected bool commandCommentHeaderEnabled = false;
+        protected string comment = null;
+        protected bool includeCommandAttributes = true;
+        protected bool includeParameters = false;
+        protected bool includeCallerInfo = false;
+        protected bool includeTimestamp = false;
+        protected string memberName = null;
+        protected string sourceFilePath = null;
+        protected int sourceLineNumber = 0;
+
         public Norm(DbConnection connection)
         {
             Connection = connection;
@@ -25,8 +47,8 @@ namespace Norm
         public DbConnection Connection { get; }
 
         ///<summary>
-        ///     Set command type for the connection commands and return Norm instance.
-        ///     Default command type for new instance is Text.
+        /// Set command type for the connection commands and return Norm instance.
+        /// Default command type for new instance is Text.
         ///</summary>
         ///<param name="type">
         ///     One of the System.Data.CommandType values.
@@ -40,7 +62,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Set command type to StoredProcedure for the connection commands and return Norm instance.
+        /// Set command type to StoredProcedure for the connection commands and return Norm instance.
         ///</summary>
         ///<returns>Norm instance.</returns>
         public Norm AsProcedure()
@@ -49,7 +71,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Set command type to Text for the connection commands and return Norm instance.
+        /// Set command type to Text for the connection commands and return Norm instance.
         ///</summary>
         ///<returns>Norm instance.</returns>
         public Norm AsText()
@@ -58,7 +80,7 @@ namespace Norm
         }
 
         ///<summary>
-        ///     Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
+        /// Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
         ///</summary>
         ///<param name="timeout">Wait time in seconds.</param>
         ///<returns>Norm instance.</returns>
