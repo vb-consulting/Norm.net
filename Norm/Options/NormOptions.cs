@@ -11,7 +11,7 @@ namespace Norm
         /// </summary>
         public int? CommandTimeout { get; set; } = null;
         /// <summary>
-        /// Callback that, if set will be called before every execution. Useful for lgging commands.
+        /// Command callback that will be called before every execution.
         /// </summary>
         public Action<DbCommand> DbCommandCallback { get; set; } = null;
         /// <summary>
@@ -19,18 +19,14 @@ namespace Norm
         /// </summary>
         public CommandCommentHeader CommandCommentHeader { get; private set; } = new CommandCommentHeader();
         /// <summary>
-        /// Escape sequence, when using parameters via string interpolation formats, use this escape to skip parametr parsing and use values as is.
+        /// Escape sequence, when using parameters via string interpolation formats, use this escape to skip parameter parsing and use values as is.
         /// For example: command ReadFormat($"select from {"table":raw}"), that "table" will be interpreted as normal interpolation string.
         /// </summary>
         public string RawInterpolationParameterEscape { get; set; } = "raw";
         /// <summary>
-        /// Set to true to run all commands in prepared mode every time by calling Prepare() method before execution.
+        /// Set to true to run all commands in prepared mode every time by calling `Prepare()` method before execution.
         /// </summary>
         public bool Prepared { get; set; } = false;
-        /// <summary>
-        /// Ommits comment headers if enabled from a command text when command type is Stored Procedure for the database providers that do not support comments in a Store Procedure calls (SQL Server and MySQL)
-        /// </summary>
-        public DatabaseType OmmitStoredProcCommandCommentHeaderForDbTypes { get; set; } = DatabaseType.Sql | DatabaseType.MySql;
 
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.

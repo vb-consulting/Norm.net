@@ -30,5 +30,17 @@ public partial class PostgreSqlSerialUnitTest
         connection.Execute("select 1");
         Assert.Equal(string.Join(Environment.NewLine, expected), actual);
         Assert.Equal(30, timeout); // the default
+
+        NormOptions.Configure(options =>
+        {
+            options.CommandCommentHeader.Enabled = true;
+            options.CommandCommentHeader.IncludeCallerInfo = false;
+            options.DbCommandCallback = cmd =>
+            {
+                actual = cmd.CommandText;
+                timeout = cmd.CommandTimeout;
+            };
+        });
+
     }
 }

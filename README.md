@@ -70,8 +70,6 @@ await foreach(var i in connection.ReadAsync(new
  
 // etc...
 ```
-
-[See more examples](https://github.com/vb-consulting/Norm.net/blob/master/EXAMPLES.md)
  
 ## Currently supported platforms
  

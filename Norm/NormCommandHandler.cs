@@ -25,9 +25,8 @@ namespace Norm
             NormOptions.Value.DbCommandCallback?.Invoke(cmd);
             dbCommandCallback?.Invoke(cmd);
 
-            if (cmd.CommandType == CommandType.StoredProcedure 
-                && ((this.dbType | NormOptions.Value.OmmitStoredProcCommandCommentHeaderForDbTypes) == NormOptions.Value.OmmitStoredProcCommandCommentHeaderForDbTypes))
-            {
+            if (cmd.CommandType == CommandType.StoredProcedure
+                && ((this.dbType | NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes) == NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes))            {
                 if (this.commentHeader != null)
                 {
                     cmd.CommandText = cmd.CommandText.Replace(this.commentHeader, "");
