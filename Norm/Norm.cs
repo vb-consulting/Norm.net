@@ -55,7 +55,7 @@ namespace Norm
         ///     Values are Text, StoredProcedure or TableDirect.
         ///</param>
         ///<returns>Norm instance.</returns>
-        public Norm As(CommandType type)
+        public virtual Norm As(CommandType type)
         {
             commandType = type;
             return this;
@@ -65,7 +65,7 @@ namespace Norm
         /// Set command type to StoredProcedure for the connection commands and return Norm instance.
         ///</summary>
         ///<returns>Norm instance.</returns>
-        public Norm AsProcedure()
+        public virtual Norm AsProcedure()
         {
             return As(CommandType.StoredProcedure);
         }
@@ -74,7 +74,7 @@ namespace Norm
         /// Set command type to Text for the connection commands and return Norm instance.
         ///</summary>
         ///<returns>Norm instance.</returns>
-        public Norm AsText()
+        public virtual Norm AsText()
         {
             return As(CommandType.Text);
         }
@@ -84,7 +84,7 @@ namespace Norm
         ///</summary>
         ///<param name="timeout">Wait time in seconds.</param>
         ///<returns>Norm instance.</returns>
-        public Norm Timeout(int timeout)
+        public virtual Norm Timeout(int timeout)
         {
             commandTimeout = timeout;
             return this;
@@ -95,7 +95,7 @@ namespace Norm
         /// </summary>
         /// <param name="token">CancellationToken used in asynchronously operations</param>
         ///<returns>Norm instance.</returns>
-        public Norm WithCancellationToken(CancellationToken token)
+        public virtual Norm WithCancellationToken(CancellationToken token)
         {
             this.cancellationToken = token;
             return this;
@@ -105,7 +105,7 @@ namespace Norm
         ///     Sets the next command in prepared mode by calling Prepare for the next command.
         ///</summary>
         ///<returns>Norm instance.</returns>
-        public Norm Prepared()
+        public virtual Norm Prepared()
         {
             prepared = true;
             return this;
@@ -127,7 +127,7 @@ namespace Norm
         ///</summary>
         ///<param name="dbCommandCallback">DbCommand callback</param>
         ///<returns>Norm instance.</returns>
-        public Norm WithCommandCallback(Action<DbCommand> dbCommandCallback)
+        public virtual Norm WithCommandCallback(Action<DbCommand> dbCommandCallback)
         {
             this.dbCommandCallback = dbCommandCallback;
             return this;
@@ -138,7 +138,7 @@ namespace Norm
         ///</summary>
         ///<param name="readerCallback">Reader tuple value object (Name, Ordinal and DbDataReader)</param>
         ///<returns>Norm instance.</returns>
-        public Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
+        public virtual Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             this.readerCallback = readerCallback;
             return this;
@@ -149,7 +149,7 @@ namespace Norm
         /// </summary>
         /// <param name="comment"></param>
         ///<returns>Norm instance.</returns>
-        public Norm WithComment(string comment)
+        public virtual Norm WithComment(string comment)
         {
             if (!this.commandCommentHeaderEnabled)
             {
@@ -169,7 +169,7 @@ namespace Norm
         /// 
         /// </summary>
         ///<returns>Norm instance.</returns>
-        public Norm WithCommentParameters()
+        public virtual Norm WithCommentParameters()
         {
             if (!this.commandCommentHeaderEnabled)
             {
@@ -188,7 +188,7 @@ namespace Norm
         /// Sets the comment header to include caller info (source method name, source code file path and line number) for the next command.
         /// </summary>
         ///<returns>Norm instance.</returns>
-        public Norm WithCommentCallerInfo()
+        public virtual Norm WithCommentCallerInfo()
         {
             if (!this.commandCommentHeaderEnabled)
             {
@@ -212,7 +212,7 @@ namespace Norm
         /// <param name="includeCallerInfo">Include command caller info (source method name, source code file path and line number)</param>
         /// <param name="includeTimestamp">Include execution timestamp</param>
         ///<returns>Norm instance.</returns>
-        public Norm WithCommentHeader(
+        public virtual Norm WithCommentHeader(
             string comment = null,
             bool includeCommandAttributes = true,
             bool includeParameters = true,

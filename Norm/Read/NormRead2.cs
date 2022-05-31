@@ -14,7 +14,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
-        public IEnumerable<(T1, T2)> Read<T1, T2>(string command,
+        public virtual IEnumerable<(T1, T2)> Read<T1, T2>(string command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -37,16 +37,16 @@ namespace Norm
                 {
                     return ReadToArrayInternal(command).Map<T1, T2>(t1.type, t2.type);
                 }
-                return ReadInternal(command, r => (
+                return ReadCallback(command, r => (
                     GetFieldValue<T1>(r, 0, t1.type),
                     GetFieldValue<T2>(r, 1, t2.type)));
             }
 
             if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayWithCallbackInternal(command).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithWithSetInternal(command).Map<T1, T2>(t1.type, t2.type);
             }
-            return ReadInternal(command, r => (
+            return ReadCallback(command, r => (
                 GetFieldValueWithCallback<T1>(r, 0, t1.type),
                 GetFieldValueWithCallback<T2>(r, 1, t2.type)));
         }
@@ -56,7 +56,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IEnumerable enumerator of two value tuples (T1, T2).</returns>
-        public IEnumerable<(T1, T2)> ReadFormat<T1, T2>(FormattableString command,
+        public virtual IEnumerable<(T1, T2)> ReadFormat<T1, T2>(FormattableString command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -79,16 +79,16 @@ namespace Norm
                 {
                     return ReadToArrayInternal(command).Map<T1, T2>(t1.type, t2.type);
                 }
-                return ReadInternal(command, r => (
+                return ReadCallback(command, r => (
                     GetFieldValue<T1>(r, 0, t1.type),
                     GetFieldValue<T2>(r, 1, t2.type)));
             }
 
             if (!t1.simple && !t2.simple)
             {
-                return ReadToArrayWithCallbackInternal(command).Map<T1, T2>(t1.type, t2.type);
+                return ReadToArrayWithSetInternal(command).Map<T1, T2>(t1.type, t2.type);
             }
-            return ReadInternal(command, r => (
+            return ReadCallback(command, r => (
                 GetFieldValueWithCallback<T1>(r, 0, t1.type),
                 GetFieldValueWithCallback<T2>(r, 1, t2.type)));
         }

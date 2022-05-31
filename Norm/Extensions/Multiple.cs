@@ -21,7 +21,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.Norm().Multiple(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().Multiple(command, memberName, sourceFilePath, sourceLineNumber);
         }
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters, execute SQL command and return disposable reader object for multiple result sets.
@@ -36,7 +36,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.Norm().MultipleFormat(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().MultipleFormat(command, memberName, sourceFilePath, sourceLineNumber);
         }
         ///<summary>
         ///     Execute SQL command asynchronously and return disposable reader object for multiple result sets.
@@ -51,7 +51,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.Norm().MultipleAsync(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().MultipleAsync(command, memberName, sourceFilePath, sourceLineNumber);
         }
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters, execute SQL command asynchronously and return disposable reader object for multiple result sets.
@@ -66,7 +66,7 @@ namespace Norm
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            return connection.Norm().MultipleFormatAsync(command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().MultipleFormatAsync(command, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }

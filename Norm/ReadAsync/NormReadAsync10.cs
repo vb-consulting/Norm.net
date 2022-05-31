@@ -12,7 +12,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).</returns>
-        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
+        public virtual IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
             T10>(string command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -45,7 +45,7 @@ namespace Norm
                 {
                     return ReadToArrayInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
                 }
-                return ReadInternalAsync(command, async r => (
+                return ReadCallbackAsync(command, async r => (
                     await GetFieldValueAsync<T1>(r, 0, t1.type),
                     await GetFieldValueAsync<T2>(r, 1, t2.type),
                     await GetFieldValueAsync<T3>(r, 2, t3.type),
@@ -60,9 +60,9 @@ namespace Norm
 
             if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple)
             {
-                return ReadToArrayWithCallbackInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
+                return ReadToArrayWithSetInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
-            return ReadInternalAsync(command, async r => (
+            return ReadCallbackAsync(command, async r => (
                 await GetFieldValueWithReaderCallbackAsync<T1>(r, 0, t1.type),
                 await GetFieldValueWithReaderCallbackAsync<T2>(r, 1, t2.type),
                 await GetFieldValueWithReaderCallbackAsync<T3>(r, 2, t3.type),
@@ -80,7 +80,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).</returns>
-        public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
+        public virtual IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadFormatAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9,
             T10>(FormattableString command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -113,7 +113,7 @@ namespace Norm
                 {
                     return ReadToArrayInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
                 }
-                return ReadInternalAsync(command, async r => (
+                return ReadCallbackAsync(command, async r => (
                     await GetFieldValueAsync<T1>(r, 0, t1.type),
                     await GetFieldValueAsync<T2>(r, 1, t2.type),
                     await GetFieldValueAsync<T3>(r, 2, t3.type),
@@ -128,9 +128,9 @@ namespace Norm
 
             if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple)
             {
-                return ReadToArrayWithCallbackInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
+                return ReadToArrayWithSetInternalAsync(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
-            return ReadInternalAsync(command, async r => (
+            return ReadCallbackAsync(command, async r => (
                 await GetFieldValueWithReaderCallbackAsync<T1>(r, 0, t1.type),
                 await GetFieldValueWithReaderCallbackAsync<T2>(r, 1, t2.type),
                 await GetFieldValueWithReaderCallbackAsync<T3>(r, 2, t3.type),

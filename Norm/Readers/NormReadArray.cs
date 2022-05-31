@@ -1,55 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Threading.Tasks;
 
 namespace Norm
 {
     public partial class Norm
     {
-        internal async IAsyncEnumerable<T> ReadInternalAsync<T>(string command, 
-            Func<DbDataReader, Task<T>> readerAction)
+        internal IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
         {
-            using var cmd = await CreateCommandAsync(command);
-            if (cancellationToken.HasValue)
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+
+            if (this.readerCallback == null)
             {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                while (await reader.ReadAsync(cancellationToken.Value))
+                while (reader.Read())
                 {
-                    yield return await readerAction(reader);
-                    cancellationToken?.ThrowIfCancellationRequested();
+                    yield return ReadToArray(reader);
                 }
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                while (reader.Read())
                 {
-                    yield return await readerAction(reader);
+                    yield return ReadToArray(reader, this.readerCallback);
                 }
             }
         }
-
-        internal async IAsyncEnumerable<T> ReadInternalAsync<T>(FormattableString command, 
-            Func<DbDataReader, Task<T>> readerAction)
+     
+        internal IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithWithSetInternal(string command)
         {
-            using var cmd = await CreateCommandAsync(command);
-            if (cancellationToken.HasValue)
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
-                while (await reader.ReadAsync(cancellationToken.Value))
+                yield return ReadToArrayWithSet(reader);
+            }
+        }
+        
+        internal IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            if (this.readerCallback == null)
+            {
+                while (reader.Read())
                 {
-                    yield return await readerAction(reader);
-                    cancellationToken?.ThrowIfCancellationRequested();
+                    yield return ReadToArray(reader);
                 }
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                while (reader.Read())
                 {
-                    yield return await readerAction(reader);
+                    yield return ReadToArray(reader, readerCallback);
                 }
+            }
+        }
+        
+        internal IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command)
+        {
+            using var cmd = CreateCommand(command);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return ReadToArrayWithSet(reader);
             }
         }
 
@@ -98,7 +112,7 @@ namespace Norm
             }
         }
 
-        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithCallbackInternalAsync(string command)
+        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -166,8 +180,7 @@ namespace Norm
             }
         }
 
-
-        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithCallbackInternalAsync(FormattableString command)
+        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -189,46 +202,68 @@ namespace Norm
             }
         }
 
-        internal async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, Type type)
+        internal (string name, object value)[] ReadToArray(DbDataReader reader)
         {
-            if (await reader.IsDBNullAsync(ordinal))
+            var count = reader.FieldCount;
+            object v;
+            object r;
+            string n;
+            (string name, object value)[] result = new (string name, object value)[count];
+            for (var index = 0; index < count; index++)
             {
-                return default;
+                n = reader.GetName(index);
+                v = reader.GetValue(index);
+                if (v == DBNull.Value) r = null; else r = v;
+                result[index] = (n, r);
             }
-
-            if (type.IsEnum || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum))
-            {
-                var fieldType = reader.GetFieldType(ordinal);
-                if (fieldType == typeof(string))
-                {
-                    if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
-                    {
-                        return (T)Enum.Parse(type.GenericTypeArguments[0], reader.GetString(ordinal));
-                    }
-                    return (T)Enum.Parse(type, reader.GetString(ordinal));
-                }
-                if (fieldType == typeof(int))
-                {
-                    if (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0].IsEnum)
-                    {
-                        return (T)Enum.ToObject(type.GenericTypeArguments[0], reader.GetInt32(ordinal));
-                    }
-                    return (T)Enum.ToObject(type, reader.GetInt32(ordinal));
-                }
-            }
-
-            return await reader.GetFieldValueAsync<T>(ordinal);
+            return result;
         }
 
-        internal async ValueTask<T> GetFieldValueWithReaderCallbackAsync<T>(DbDataReader reader, int ordinal, Type type)
+        internal (string name, object value)[] ReadToArray(DbDataReader reader,
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
-            var name = reader.GetName(ordinal);
-            var callback = readerCallback((name, ordinal, reader));
-            if (callback == null)
+            var count = reader.FieldCount;
+            object v;
+            object r;
+            string n;
+            (string name, object value)[] result = new (string name, object value)[count];
+            for (var index = 0; index < count; index++)
             {
-                return await GetFieldValueAsync<T>(reader, ordinal, type);
+                n = reader.GetName(index);
+                var callback = readerCallback((n, index, reader));
+                if (callback != null)
+                {
+                    result[index] = (n, callback == DBNull.Value ? null : callback);
+                    continue;
+                }
+                v = reader.GetValue(index);
+                if (v == DBNull.Value) r = null; else r = v;
+                result[index] = (n, r);
             }
-            return (T)(callback == DBNull.Value ? null : callback);
+            return result;
+        }
+
+        internal (string name, object value, bool set)[] ReadToArrayWithSet(DbDataReader reader)
+        {
+            var count = reader.FieldCount;
+            object v;
+            object r;
+            string n;
+            (string name, object value, bool set)[] result = new (string name, object value, bool set)[count];
+            for (var index = 0; index < count; index++)
+            {
+                n = reader.GetName(index);
+                var callback = readerCallback((n, index, reader));
+                if (callback != null)
+                {
+                    result[index] = (n, callback == DBNull.Value ? null : callback, true);
+                    continue;
+                }
+                v = reader.GetValue(index);
+                if (v == DBNull.Value) r = null; else r = v;
+                result[index] = (n, r, false);
+            }
+            return result;
         }
     }
 }

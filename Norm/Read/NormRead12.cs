@@ -14,7 +14,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IEnumerable enumerator of twelve value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
-        public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        public virtual IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             string command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -48,7 +48,7 @@ namespace Norm
                 {
                     return ReadToArrayInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
                 }
-                return ReadInternal(command, r => (
+                return ReadCallback(command, r => (
                     GetFieldValue<T1>(r, 0, t1.type),
                     GetFieldValue<T2>(r, 1, t2.type),
                     GetFieldValue<T3>(r, 2, t3.type),
@@ -65,9 +65,9 @@ namespace Norm
 
             if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple && !t12.simple)
             {
-                return ReadToArrayWithCallbackInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
+                return ReadToArrayWithWithSetInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
-            return ReadInternal(command, r => (
+            return ReadCallback(command, r => (
                 GetFieldValueWithCallback<T1>(r, 0, t1.type),
                 GetFieldValueWithCallback<T2>(r, 1, t2.type),
                 GetFieldValueWithCallback<T3>(r, 2, t3.type),
@@ -87,7 +87,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IEnumerable enumerator of ten twelve tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12).</returns>
-        public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        public virtual IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             FormattableString command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -121,7 +121,7 @@ namespace Norm
                 {
                     return ReadToArrayInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
                 }
-                return ReadInternal(command, r => (
+                return ReadCallback(command, r => (
                     GetFieldValue<T1>(r, 0, t1.type),
                     GetFieldValue<T2>(r, 1, t2.type),
                     GetFieldValue<T3>(r, 2, t3.type),
@@ -138,9 +138,9 @@ namespace Norm
 
             if (!t1.simple && !t2.simple && !t3.simple && !t4.simple && !t5.simple && !t6.simple && !t7.simple && !t8.simple && !t9.simple && !t10.simple && !t11.simple && !t12.simple)
             {
-                return ReadToArrayWithCallbackInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
+                return ReadToArrayWithSetInternal(command).Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
-            return ReadInternal(command, r => (
+            return ReadCallback(command, r => (
                 GetFieldValueWithCallback<T1>(r, 0, t1.type),
                 GetFieldValueWithCallback<T2>(r, 1, t2.type),
                 GetFieldValueWithCallback<T3>(r, 2, t3.type),

@@ -22,7 +22,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.Norm().ReadAsync(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().ReadAsync(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -40,7 +40,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.Norm().ReadFormatAsync<T>(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().ReadFormatAsync<T>(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }

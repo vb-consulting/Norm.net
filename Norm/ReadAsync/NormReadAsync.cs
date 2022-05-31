@@ -12,7 +12,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
+        public virtual IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -30,7 +30,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public IAsyncEnumerable<(string name, object value)[]> ReadFormatAsync(FormattableString command,
+        public virtual IAsyncEnumerable<(string name, object value)[]> ReadFormatAsync(FormattableString command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",

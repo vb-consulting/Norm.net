@@ -11,7 +11,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public IAsyncEnumerable<T> ReadAsync<T>(string command,
+        public virtual IAsyncEnumerable<T> ReadAsync<T>(string command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -33,15 +33,15 @@ namespace Norm
                 {
                     return ReadToArrayInternalAsync(command).Map<T>(t1.type);
                 }
-                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
+                return ReadCallbackAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
             }
 
             if (!t1.simple)
             {
-                return ReadToArrayWithCallbackInternalAsync(command).Map<T>(t1.type);
+                return ReadToArrayWithSetInternalAsync(command).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueWithReaderCallbackAsync<T>(r, 0, t1.type));
+            return ReadCallbackAsync(command, async r => await GetFieldValueWithReaderCallbackAsync<T>(r, 0, t1.type));
         }
 
         ///<summary>
@@ -49,7 +49,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text as interpolated (formattable) string.</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public IAsyncEnumerable<T> ReadFormatAsync<T>(FormattableString command,
+        public virtual IAsyncEnumerable<T> ReadFormatAsync<T>(FormattableString command,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -72,15 +72,15 @@ namespace Norm
                 {
                     return ReadToArrayInternalAsync(command).Map<T>(t1.type);
                 }
-                return ReadInternalAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
+                return ReadCallbackAsync(command, async r => await GetFieldValueAsync<T>(r, 0, t1.type));
             }
 
             if (!t1.simple)
             {
-                return ReadToArrayWithCallbackInternalAsync(command).Map<T>(t1.type);
+                return ReadToArrayWithSetInternalAsync(command).Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(command, async r => await GetFieldValueWithReaderCallbackAsync<T>(r, 0, t1.type));
+            return ReadCallbackAsync(command, async r => await GetFieldValueWithReaderCallbackAsync<T>(r, 0, t1.type));
         }
     }
 }

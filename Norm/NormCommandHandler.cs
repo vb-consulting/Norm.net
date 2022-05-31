@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm
@@ -117,7 +118,7 @@ namespace Norm
             var cmd = Connection.CreateCommand();
             cmd.CommandText = command;
             cmd.CommandType = commandType;
-            Connection.EnsureIsOpen();
+            EnsureIsOpen(this.Connection);
             if (this.parameters != null)
             {
                 AddParametersInternal(cmd, this.parameters);
@@ -137,7 +138,7 @@ namespace Norm
             var cmd = Connection.CreateCommand();
             cmd.CommandText = command;
             cmd.CommandType = commandType;
-            await Connection.EnsureIsOpenAsync(cancellationToken);
+            await EnsureIsOpenAsync(this.Connection, cancellationToken);
             if (this.parameters != null)
             {
                 AddParametersInternal(cmd, this.parameters);
@@ -176,6 +177,32 @@ namespace Norm
                 this.parameters = parameters;
             }
             return await CreateCommandAsync(commandString);
+        }
+
+        protected void EnsureIsOpen(DbConnection connection)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+        }
+
+        protected async Task EnsureIsOpenAsync(DbConnection connection, CancellationToken? cancellationToken = null)
+        {
+            if (connection.State == ConnectionState.Open)
+            {
+                return;
+            }
+            cancellationToken?.ThrowIfCancellationRequested();
+            if (cancellationToken.HasValue)
+            {
+                await connection.OpenAsync(cancellationToken.Value);
+            }
+            else
+            {
+                await connection.OpenAsync();
+            }
+            return;
         }
     }
 }

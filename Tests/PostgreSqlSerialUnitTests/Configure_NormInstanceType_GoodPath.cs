@@ -17,6 +17,7 @@ public partial class PostgreSqlSerialUnitTest
             ApplyOptionsCallback?.Invoke(NormOptions.Value);
         }
     }
+
     public class NormCustomOptions : NormOptions
     {
         public static Action? OnConfiguredCallback = null;
