@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## [5.0.1](https://github.com/vb-consulting/Norm.net/tree/5.0.1) (2022-06-16)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.0...5.0.1)
+
+- Fixed weird edge case bug with mapping `datetimeoffset` on SQL Server, when actual type is `datetimeoffset`.
+- Slightly improved parameters parsing when using positional parameters.
+
 ## [5.0.0](https://github.com/vb-consulting/Norm.net/tree/5.0.0) (2022-05-24)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/4.3.0...5.0.0)

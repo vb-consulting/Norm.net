@@ -383,12 +383,26 @@ namespace Norm
                         }
                         else
                         {
-                            ((Action<T, DateTimeOffset?>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                            if (value is DateTimeOffset)
+                            {
+                                ((Action<T, DateTimeOffset?>)method).Invoke(instance, (DateTimeOffset)value);
+                            }
+                            else
+                            {
+                                ((Action<T, DateTimeOffset?>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                            }
                         }
                     }
                     else
                     {
-                        ((Action<T, DateTimeOffset>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                        if (value is DateTimeOffset)
+                        {
+                            ((Action<T, DateTimeOffset>)method).Invoke(instance, (DateTimeOffset)value);
+                        }
+                        else
+                        {
+                            ((Action<T, DateTimeOffset>)method).Invoke(instance, new DateTimeOffset((DateTime)value));
+                        }
                     }
                 }
             }

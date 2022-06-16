@@ -9,7 +9,7 @@ namespace Norm
     public partial class Norm
     {
         protected static readonly char[] NonCharacters =
-            {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.'};
+            {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.', '\''};
 
         protected const string ParamPrefix = "@";
 

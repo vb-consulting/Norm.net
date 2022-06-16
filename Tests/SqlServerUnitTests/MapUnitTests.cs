@@ -77,5 +77,27 @@ namespace SqlServerUnitTests
 
             AssertTestClass(result);
         }
+
+        public class DateTimeOffsetClass
+        {
+            public DateTimeOffset Value { get; set; }
+        }
+
+        [Fact]
+        public void Test_Actual_DateTimeOffset_Sync()
+        {
+            using var connection = new SqlConnection(fixture.ConnectionString);
+
+            connection.Execute(@"
+                create table DateTimeOffsetTest (Value [datetimeoffset](7));
+                insert into DateTimeOffsetTest values ('2022-06-16');");
+
+            var result = connection.Read<DateTimeOffsetClass>("select * from DateTimeOffsetTest").ToList();
+
+            var expected = new DateTimeOffset(new DateTime(2022, 6, 16));
+            var actual = result.FirstOrDefault().Value;
+            Assert.IsType<DateTimeOffset>(actual);
+            Assert.Equal(expected.DateTime, actual.DateTime);
+        }
     }
 }
