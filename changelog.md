@@ -247,7 +247,7 @@ Available options are:
 
 This was previously missing. Now, it is possible to use reader callbacks with multiple queries:
 
-```
+```csharp
 using var multiple = await connection
     .WithReaderCallback(r => r.Ordinal switch
     {
