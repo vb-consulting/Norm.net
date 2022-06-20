@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Reflection;
 
-namespace Norm
+namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {

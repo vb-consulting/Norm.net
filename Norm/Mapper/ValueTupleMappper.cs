@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Norm
+namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        internal static IEnumerable<T> MapValueTuple<T>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<T> MapValueTuple<T>(this IEnumerable<(string name, object value)[]> tuples, 
             Type type)
         {
             var ctorInfo = TypeCache<T>.GetValueTupleCtorInfo(type);
@@ -17,7 +17,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IEnumerable<(string name, object value)[]> tuples, 
             Type type1,
             Type type2)
         {
@@ -33,7 +33,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3)
@@ -52,7 +52,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -74,7 +74,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -99,7 +99,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -127,7 +127,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -158,7 +158,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -192,7 +192,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -229,7 +229,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -269,7 +269,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -312,7 +312,7 @@ namespace Norm
             }
         }
 
-        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -358,7 +358,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+        public static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
         {
             var ctorInfo = TypeCache<T>.GetValueTupleCtorInfo(type);
             await foreach (var t in tuples)
@@ -367,7 +367,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2)
         {
@@ -383,7 +383,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3)
@@ -402,7 +402,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -424,7 +424,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -449,7 +449,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -477,7 +477,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -508,7 +508,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -542,7 +542,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -579,7 +579,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -619,7 +619,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -662,7 +662,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1,
             Type type2,
             Type type3,

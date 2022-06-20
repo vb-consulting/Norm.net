@@ -157,6 +157,8 @@ And now it's possible to do:
 await using var multiple = await connection.MultipleAsync(Queires);
 ```
 
+### Changed member scope from internal to allow greater extendibility
+
 ## [5.0.1](https://github.com/vb-consulting/Norm.net/tree/5.0.1) (2022-06-16)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.0...5.0.1)

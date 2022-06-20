@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Norm
+namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        internal static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1)
         {
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
@@ -23,7 +23,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2)> Map<T1, T2>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2)> Map<T1, T2>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2)
         {
@@ -48,7 +48,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3)
@@ -78,7 +78,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -113,7 +113,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -153,7 +153,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -198,7 +198,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -248,7 +248,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -304,7 +304,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -364,7 +364,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -429,7 +429,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -499,7 +499,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value, bool set)[]> tuples,
             Type type1,
             Type type2,
             Type type3,

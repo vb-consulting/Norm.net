@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Norm
+namespace Norm.Mapper
 {
     internal static class TypeCache<T>
     {

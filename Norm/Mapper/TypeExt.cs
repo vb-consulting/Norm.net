@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Norm
+namespace Norm.Mapper
 {
     public static class TypeExt
     {

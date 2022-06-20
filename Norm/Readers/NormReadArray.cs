@@ -6,7 +6,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        internal IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
+        protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = cmd.ExecuteReader();
@@ -27,7 +27,7 @@ namespace Norm
             }
         }
      
-        internal IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithWithSetInternal(string command)
+        protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithWithSetInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = cmd.ExecuteReader();
@@ -37,7 +37,7 @@ namespace Norm
             }
         }
         
-        internal IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
+        protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = cmd.ExecuteReader();
@@ -57,7 +57,7 @@ namespace Norm
             }
         }
         
-        internal IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command)
+        protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = cmd.ExecuteReader();
@@ -67,7 +67,7 @@ namespace Norm
             }
         }
 
-        internal async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command)
+        protected async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (this.readerCallback == null)
@@ -112,7 +112,7 @@ namespace Norm
             }
         }
 
-        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(string command)
+        protected async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -134,7 +134,7 @@ namespace Norm
             }
         }
 
-        internal async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command)
+        protected async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
 
@@ -180,7 +180,7 @@ namespace Norm
             }
         }
 
-        internal async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(FormattableString command)
+        protected async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -202,7 +202,7 @@ namespace Norm
             }
         }
 
-        internal (string name, object value)[] ReadToArray(DbDataReader reader)
+        protected (string name, object value)[] ReadToArray(DbDataReader reader)
         {
             var count = reader.FieldCount;
             object v;
@@ -219,7 +219,7 @@ namespace Norm
             return result;
         }
 
-        internal (string name, object value)[] ReadToArray(DbDataReader reader,
+        protected (string name, object value)[] ReadToArray(DbDataReader reader,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             var count = reader.FieldCount;
@@ -243,7 +243,7 @@ namespace Norm
             return result;
         }
 
-        internal (string name, object value, bool set)[] ReadToArrayWithSet(DbDataReader reader)
+        protected (string name, object value, bool set)[] ReadToArrayWithSet(DbDataReader reader)
         {
             var count = reader.FieldCount;
             object v;

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Norm
+namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        internal static IEnumerable<T> MapAnonymous<T>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<T> MapAnonymous<T>(this IEnumerable<(string name, object value)[]> tuples, 
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
@@ -20,7 +20,7 @@ namespace Norm
             }
         }
 
-        internal static async IAsyncEnumerable<T> MapAnonymous<T>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<T> MapAnonymous<T>(this IAsyncEnumerable<(string name, object value)[]> tuples,
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
