@@ -63,6 +63,28 @@ namespace Norm
         }
 
         ///<summary>
+        /// Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="timeout">Wait time in seconds.</param>
+        ///<returns>Norm instance that encapsulates the connection.</returns>
+        public static Norm WithTimeout(this DbConnection connection, int timeout)
+        {
+            return connection.Instance<Norm>().WithTimeout(timeout);
+        }
+
+        ///<summary>
+        /// Sets the transaction object for the current database command.
+        ///</summary>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<param name="transaction">Transaction object</param>
+        ///<returns>Norm instance that encapsulates the connection.</returns>
+        public static Norm WithTransaction(this DbConnection connection, DbTransaction transaction)
+        {
+            return connection.Instance<Norm>().WithTransaction(transaction);
+        }
+
+        ///<summary>
         /// Sets the default cancellation token for all asynchronous commands for the connection.
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>

@@ -1,11 +1,43 @@
 ﻿# Changelog
 
-## [5.1.0](https://github.com/vb-consulting/Norm.net/tree/5.1.0) (2022-06-16)
+## [5.1.0](https://github.com/vb-consulting/Norm.net/tree/5.1.0) (2022-06-20)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)
 
-### `MapPrivateSetters` global option
+### `WithTransaction(DbTransaction)` connection extension method.
 
+Support for the transaction control by using `DbTransaction` object. 
+
+`WithTransaction(DbTransaction)` will set the transaction object for the next command.
+
+Example:
+
+```csharp
+using var connection = new NpgsqlConnection(fixture.ConnectionString)
+    .Execute("create temp table transaction_test1 (i int);");
+
+using var transaction = connection.BeginTransaction();
+
+connection
+    .WithTransaction(transaction)
+    .Execute("insert into transaction_test1 values (1),(2),(3);");
+
+var result1 = connection.Read("select * from transaction_test1").ToArray();
+Assert.Equal(3, result1.Length);
+
+transaction.Rollback();
+
+var result2 = connection.Read("select * from transaction_test1").ToArray();
+Assert.Empty(result2);
+```
+
+### `WithTimeout` connection extension method.
+
+This is equivalent to the `Timeout` connection extension, added only for the naming consistency ("with" prefix).
+
+It just sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error.
+
+### `MapPrivateSetters` global option
 
 By the default, it is not possible to map instance properties that don't have a public setter methods.
 
@@ -28,7 +60,7 @@ public class TestClass
 ```csharp
 
 var result = connection
-    .Read<TestMapPrivateProps>("select 1 as private_set_int, 2 as protected_set_int")
+    .Read<TestClass>("select 1 as private_set_int, 2 as protected_set_int")
     .Single();
 
 Assert.Equal(1, result.PrivateSetInt); // true

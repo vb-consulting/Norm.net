@@ -16,6 +16,7 @@ namespace Norm
         protected int? commandTimeout = null;
         protected CancellationToken? cancellationToken = null;
         protected bool prepared = false;
+        protected DbTransaction transaction = null;
 
         protected Action<DbCommand> dbCommandCallback = null;
         protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
@@ -87,6 +88,28 @@ namespace Norm
         public virtual Norm Timeout(int timeout)
         {
             commandTimeout = timeout;
+            return this;
+        }
+
+        ///<summary>
+        /// Sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error
+        ///</summary>
+        ///<param name="timeout">Wait time in seconds.</param>
+        ///<returns>Norm instance.</returns>
+        public virtual Norm WithTimeout(int timeout)
+        {
+            commandTimeout = timeout;
+            return this;
+        }
+
+        ///<summary>
+        /// Sets the transaction object for the current database command.
+        ///</summary>
+        ///<param name="transaction">Transaction object</param>
+        ///<returns>Norm instance.</returns>
+        public virtual Norm WithTransaction(DbTransaction transaction)
+        {
+            this.transaction = transaction;
             return this;
         }
 

@@ -117,6 +117,10 @@ namespace Norm
             var cmd = Connection.CreateCommand();
             cmd.CommandText = command;
             cmd.CommandType = commandType;
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
             EnsureIsOpen(this.Connection);
             if (this.parameters != null)
             {
@@ -137,6 +141,10 @@ namespace Norm
             var cmd = Connection.CreateCommand();
             cmd.CommandText = command;
             cmd.CommandType = commandType;
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
             await EnsureIsOpenAsync(this.Connection, cancellationToken);
             if (this.parameters != null)
             {
