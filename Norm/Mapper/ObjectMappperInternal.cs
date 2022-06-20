@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Reflection;
 
 namespace Norm
@@ -319,11 +320,15 @@ namespace Norm
             {
                 return null;
             }
-            if (setter.IsPrivate)
+            if (NormOptions.Value.MapPrivateSetters)
             {
-                return null;
+                return Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
             }
-            return Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
+            else if (setter.IsPublic)
+            {
+                return Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
+            }
+            return null;
         }
 
         private static Delegate CreateDelegateStruct<T, TProp>(PropertyInfo property, bool nullable) where TProp : struct
@@ -333,7 +338,13 @@ namespace Norm
             {
                 return null;
             }
-            if (setter.IsPublic)
+            if (NormOptions.Value.MapPrivateSetters)
+            {
+                return nullable ?
+                    Delegate.CreateDelegate(typeof(Action<T, TProp?>), setter) :
+                    Delegate.CreateDelegate(typeof(Action<T, TProp>), setter);
+            }
+            else if (setter.IsPublic)
             {
                 return nullable ?
                     Delegate.CreateDelegate(typeof(Action<T, TProp?>), setter) :

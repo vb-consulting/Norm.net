@@ -27,6 +27,10 @@ namespace Norm
         /// Set to true to run all commands in prepared mode every time by calling `Prepare()` method before execution.
         /// </summary>
         public bool Prepared { get; set; } = false;
+        /// <summary>
+        /// Set to true to map instances properties that have private or protected setters.
+        /// </summary>
+        public bool MapPrivateSetters { get; set; } = false;
 
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.

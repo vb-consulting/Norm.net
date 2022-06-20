@@ -1,5 +1,50 @@
 ﻿# Changelog
 
+## [5.1.0](https://github.com/vb-consulting/Norm.net/tree/5.1.0) (2022-06-16)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)
+
+### `MapPrivateSetters` global option
+
+
+By the default, it is not possible to map instance properties that don't have a public setter methods.
+
+Now, it is possible to change that behaviour with global optionsm by using the `MapPrivateSetters` setting, like this:
+
+```csharp
+NormOptions.Configure(options => options.MapPrivateSetters = true); // default is false
+```
+
+This will enable mapping of the instance prtoperties with private and protected setter methods:
+
+```csharp
+public class TestClass
+{
+    public int PrivateSetInt { get; private set; }
+    public int ProtectedSetInt { get; protected set; }
+}
+
+```
+```csharp
+
+var result = connection
+    .Read<TestMapPrivateProps>("select 1 as private_set_int, 2 as protected_set_int")
+    .Single();
+
+Assert.Equal(1, result.PrivateSetInt); // true
+Assert.Equal(2, result.ProtectedSetInt); // true
+```
+
+Note that instance properties without any setter or without public getter are still not going to be mapped.
+
+### Multiple reader now implements IAsyncDisposable
+
+And now it's possible to do:
+
+```csharp
+await using var multiple = await connection.MultipleAsync(Queires);
+```
+
 ## [5.0.1](https://github.com/vb-consulting/Norm.net/tree/5.0.1) (2022-06-16)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.0...5.0.1)

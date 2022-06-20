@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Norm
 {
-    public class NormMultipleReader : IDisposable //INormMultipleReader
+    public class NormMultipleReader : IDisposable, IAsyncDisposable
     {
         private readonly DbDataReader reader;
         private readonly CancellationToken? cancellationToken;
@@ -33,6 +32,11 @@ namespace Norm
             GC.SuppressFinalize(this);
         }
 
+        public ValueTask DisposeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -40,6 +44,18 @@ namespace Norm
                 if (disposing)
                 {
                     reader.Dispose();
+                }
+                disposed = true;
+            }
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    await reader.DisposeAsync();
                 }
                 disposed = true;
             }
