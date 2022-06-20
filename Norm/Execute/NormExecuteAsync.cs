@@ -12,14 +12,20 @@ namespace Norm
         ///     Execute SQL command asynchronously.
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         public async ValueTask<Norm> ExecuteAsync(string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -38,15 +44,21 @@ namespace Norm
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters and execute resulting SQL asynchronously.
         ///</summary>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning the same Norm instance.</returns>
         public async ValueTask<Norm> ExecuteFormatAsync(FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;

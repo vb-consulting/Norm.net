@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading;
 
 namespace Norm
@@ -141,7 +142,21 @@ namespace Norm
         ///<returns>Norm instance.</returns>
         public Norm WithParameters(params object[] parameters)
         {
-            this.parameters = parameters;
+            if (parameters.Length == 1 && parameters[0].GetType().IsArray)
+            {
+                if (parameters[0] is DbParameter[] p)
+                {
+                    parameters = p;
+                }
+            }
+            if (this.parameters == null)
+            {
+                this.parameters = parameters;
+            }
+            else
+            {
+                this.parameters = this.parameters.Union(parameters).ToArray();
+            }
             return this;
         }
 

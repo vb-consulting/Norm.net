@@ -4,6 +4,86 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)
 
+### Parameters can be set again in `Read` and `Execute` extensions methods.
+
+This feature was removed after version 5.0.0.
+
+The reason was that caller info default parameters were added and the `params` array doesn't work well with default parameters.
+
+However, that doesn't mean that optional parameter object `object parameters = null` with null default value can't be used.
+
+There is no convenience of the parameters array, but, it still can be used for an anonymous object which is the most common use case.
+
+For example, now we can do this again:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .Read<string, int, bool, DateTime, string>(
+        "select @strValue, @intValue, @boolValue, @dateTimeValue, @nullValue",
+        new
+        {
+            strValue = "str",
+            intValue = 999,
+            boolValue = true,
+            dateTimeValue = new DateTime(1977, 5, 19),
+            nullValue = (string)null,
+        })
+    .Single();
+
+Assert.Equal("str", s);
+Assert.Equal(999, i);
+Assert.True(b);
+Assert.Equal(new DateTime(1977, 5, 19), d);
+Assert.Null(@null);
+```
+
+However, the current extension methods `WithParameters` was not removed, and it's possible to combine both. The resulting parameters will be merged. Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(new
+    {
+        strValue = "str",
+        intValue = 999,
+    })
+    .Read<string, int, bool, DateTime, string>(
+        "select @strValue, @intValue, @boolValue, @dateTimeValue, @nullValue",
+        new
+        {
+            boolValue = true,
+            dateTimeValue = new DateTime(1977, 5, 19),
+            nullValue = (string)null,
+        })
+    .Single();
+
+Assert.Equal("str", s);
+Assert.Equal(999, i);
+Assert.True(b);
+Assert.Equal(new DateTime(1977, 5, 19), d);
+Assert.Null(@null);
+```
+
+This new optional paramemeter `paramemeters` on `Read` and `Execute` extensions is no longer an array. To be able to pass parameters array, actual array needs to be constructed. Example:
+
+```csharp
+var (s, i, b, d) = connection
+    .Read<string, int, bool, DateTime>(
+        "select @s, @i, @b, @d",
+        new NpgsqlParameter[] 
+        {
+            new NpgsqlParameter("s", "str"),
+            new NpgsqlParameter("i", 999),
+            new NpgsqlParameter("b", true),
+            new NpgsqlParameter("d", new DateTime(1977, 5, 19))
+        })
+    .Single();
+
+Assert.Equal("str", s);
+Assert.Equal(999, i);
+Assert.True(b);
+Assert.Equal(new DateTime(1977, 5, 19), d);
+```
+
 ### `WithTransaction(DbTransaction)` connection extension method.
 
 Support for the transaction control by using `DbTransaction` object. 
@@ -39,15 +119,15 @@ It just sets the wait time in seconds for the connection commands, before termin
 
 ### `MapPrivateSetters` global option
 
-By the default, it is not possible to map instance properties that don't have a public setter methods.
+By default, it is not possible to map instance properties that don't have a public setter method.
 
-Now, it is possible to change that behaviour with global optionsm by using the `MapPrivateSetters` setting, like this:
+Now, it is possible to change that behavior with global options by using the `MapPrivateSetters` setting, like this:
 
 ```csharp
 NormOptions.Configure(options => options.MapPrivateSetters = true); // default is false
 ```
 
-This will enable mapping of the instance prtoperties with private and protected setter methods:
+This will enable mapping of the instance properties with private and protected setter methods:
 
 ```csharp
 public class TestClass
@@ -67,9 +147,9 @@ Assert.Equal(1, result.PrivateSetInt); // true
 Assert.Equal(2, result.ProtectedSetInt); // true
 ```
 
-Note that instance properties without any setter or without public getter are still not going to be mapped.
+Note that instance properties without any setter or a public getter are still not going to be mapped.
 
-### Multiple reader now implements IAsyncDisposable
+### Multiple readers now implement `IAsyncDisposable`
 
 And now it's possible to do:
 

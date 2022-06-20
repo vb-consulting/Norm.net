@@ -12,31 +12,35 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Same DbConnection instance.</returns>
         public static DbConnection Execute(this DbConnection connection, string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            connection.Instance<Norm>().Execute(command, memberName, sourceFilePath, sourceLineNumber);
+            connection.Instance<Norm>().Execute(command, parameters, memberName, sourceFilePath, sourceLineNumber);
             return connection;
         }
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters and execute resulting SQL.
         ///</summary>
         ///<param name="connection">DbConnection instance</param>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Same DbConnection instance.</returns>
         public static DbConnection ExecuteFormat(this DbConnection connection, FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
-            connection.Instance<Norm>().ExecuteFormat(command, memberName, sourceFilePath, sourceLineNumber);
+            connection.Instance<Norm>().ExecuteFormat(command, parameters, memberName, sourceFilePath, sourceLineNumber);
             return connection;
         }
     }

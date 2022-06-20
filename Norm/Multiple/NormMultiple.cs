@@ -11,14 +11,20 @@ namespace Norm
         ///     Execute SQL command and return disposable reader object for multiple result sets.
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
         public NormMultipleReader Multiple(string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -29,15 +35,21 @@ namespace Norm
         ///<summary>
         ///     Parse interpolated (formattable) command as database parameters, execute SQL command and return disposable reader object for multiple result sets.
         ///</summary>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
         public NormMultipleReader MultipleFormat(FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -49,14 +61,20 @@ namespace Norm
         ///     Execute SQL command asynchronously and return disposable reader object for multiple result sets.
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
         public async ValueTask<NormMultipleReader> MultipleAsync(string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -72,14 +90,20 @@ namespace Norm
         ///     Parse interpolated (formattable) command as database parameters, execute SQL command asynchronously and return disposable reader object for multiple result sets.
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
         public async ValueTask<NormMultipleReader> MultipleFormatAsync(FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;

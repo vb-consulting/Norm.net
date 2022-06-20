@@ -13,15 +13,21 @@ namespace Norm
         ///Maps command results to enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IEnumerable enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).</returns>
         public virtual IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
             string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -80,16 +86,22 @@ namespace Norm
         ///<summary>
         /// Parse interpolated (formattable) command as database parameters and map results to enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).
         ///</summary>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IEnumerable enumerator of ten value tuples (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10).</returns>
         public virtual IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> ReadFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
             FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;

@@ -622,30 +622,21 @@ namespace PostgreSqlUnitTests
             Assert.Equal(999, i);
         }
 
-        /*
         [Fact]
-        public void Instance_managament_Test()
+        public void Read_Params_NamedParams_Test()
         {
-            var strValue = "str";
-            var intValue = 999;
-            var boolValue = true;
-            var dateTimeValue = new DateTime(1977, 5, 19);
-            var nullValue = (string)null;
-
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-
-            connection
-                .WithParameters(new
-                {
-                    strValue = new NpgsqlParameter("StrValue", strValue),
-                    intValue,
-                    boolValue,
-                    dateTimeValue,
-                    nullValue,
-                });
-
             var (s, i, b, d, @null) = connection
-                .Read<string, int, bool, DateTime, string>("select @StrValue, @IntValue, @BoolValue, @DateTimeValue, @NullValue")
+                .Read<string, int, bool, DateTime, string>(
+                    "select @strValue, @intValue, @boolValue, @dateTimeValue, @nullValue",
+                    new
+                    {
+                        strValue = "str",
+                        intValue = 999,
+                        boolValue = true,
+                        dateTimeValue = new DateTime(1977, 5, 19),
+                        nullValue = (string)null,
+                    })
                 .Single();
 
             Assert.Equal("str", s);
@@ -654,6 +645,72 @@ namespace PostgreSqlUnitTests
             Assert.Equal(new DateTime(1977, 5, 19), d);
             Assert.Null(@null);
         }
-        */
+
+        [Fact]
+        public void Read_Mixed_Params_NamedParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(new
+                {
+                    strValue = "str",
+                    intValue = 999,
+                })
+                .Read<string, int, bool, DateTime, string>(
+                    "select @strValue, @intValue, @boolValue, @dateTimeValue, @nullValue",
+                    new
+                    {
+                        boolValue = true,
+                        dateTimeValue = new DateTime(1977, 5, 19),
+                        nullValue = (string)null,
+                    })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Read_DbParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d) = connection
+                .Read<string, int, bool, DateTime>(
+                    "select @s, @i, @b, @d",
+                    new NpgsqlParameter[] 
+                    {
+                        new NpgsqlParameter("s", "str"),
+                        new NpgsqlParameter("i", 999),
+                        new NpgsqlParameter("b", true),
+                        new NpgsqlParameter("d", new DateTime(1977, 5, 19))
+                    })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+
+           
+            (s, i, b, d) = connection
+                .Read<string, int, bool, DateTime>(
+                "select @s, @i, @b, @d",
+                    new NpgsqlParameter[]
+                    {
+                        new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
+                        new NpgsqlParameter("b", true),
+                        new NpgsqlParameter("i", 999),
+                        new NpgsqlParameter("s", "str")
+                    })
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+        }
     }
 }

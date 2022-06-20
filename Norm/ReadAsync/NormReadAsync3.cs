@@ -10,14 +10,20 @@ namespace Norm
         ///Maps command results to async enumerator of three value tuples (T1, T2, T3).
         ///</summary>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IAsyncEnumerable async enumerator of three value tuples (T1, T2, T3).</returns>
         public virtual IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
@@ -55,15 +61,21 @@ namespace Norm
         ///<summary>
         /// Parse interpolated (formattable) command as database parameters and map command results to async enumerator of three value tuples (T1, T2, T3).
         ///</summary>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IAsyncEnumerable async enumerator of three value tuples (T1, T2, T3).</returns>
         public virtual IAsyncEnumerable<(T1, T2, T3)> ReadFormatAsync<T1, T2, T3>(FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
         {
+            if (parameters != null)
+            {
+                this.WithParameters(parameters);
+            }
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;

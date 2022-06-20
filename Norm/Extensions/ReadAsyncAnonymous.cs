@@ -13,8 +13,10 @@ namespace Norm
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
         ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
         public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, string command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -22,7 +24,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.Instance<Norm>().ReadAsync(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().ReadAsync(anonymousBlueprintInstance, command, parameters, memberName, sourceFilePath, sourceLineNumber);
         }
 
         ///<summary>
@@ -30,9 +32,11 @@ namespace Norm
         ///</summary>
         ///<param name="connection">DbConnection instance.</param>
         ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
-        ///<param name="command">SQL command text as interpolated (formattable) string.</param>
+        ///<param name="command">SQL command text.</param>
+        ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
         public static IAsyncEnumerable<T> ReadFormatAsync<T>(this DbConnection connection, T anonymousBlueprintInstance, FormattableString command,
+            object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
@@ -40,7 +44,7 @@ namespace Norm
 #pragma warning restore CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             where T : class
         {
-            return connection.Instance<Norm>().ReadFormatAsync<T>(anonymousBlueprintInstance, command, memberName, sourceFilePath, sourceLineNumber);
+            return connection.Instance<Norm>().ReadFormatAsync<T>(anonymousBlueprintInstance, command, parameters, memberName, sourceFilePath, sourceLineNumber);
         }
     }
 }
