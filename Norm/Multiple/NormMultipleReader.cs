@@ -7,24 +7,20 @@ using Norm.Mapper;
 
 namespace Norm
 {
-    public class NormMultipleReader : IDisposable, IAsyncDisposable
+    public class NormMultipleReader : Norm, IDisposable, IAsyncDisposable
     {
         private readonly DbDataReader reader;
-        private readonly CancellationToken? cancellationToken;
-        private Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
-        private readonly Norm norm;
         private bool disposed = false;
 
-        internal NormMultipleReader(
+        public NormMultipleReader(
+            DbConnection connection,
             DbDataReader reader, 
             CancellationToken? cancellationToken,
-            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback,
-            Norm norm)
+            Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback) : base(connection)
         {
             this.reader = reader;
             this.cancellationToken = cancellationToken;
             this.readerCallback = readerCallback;
-            this.norm = norm;
         }
 
         public void Dispose()
@@ -94,14 +90,14 @@ namespace Norm
             {
                 while (reader.Read())
                 {
-                    yield return norm.ReadToArray(reader);
+                    yield return ReadToArray(reader);
                 }
             }
             else
             {
                 while (reader.Read())
                 {
-                    yield return norm.ReadToArray(reader, this.readerCallback);
+                    yield return ReadToArray(reader, this.readerCallback);
                 }
             }
         }
@@ -127,7 +123,7 @@ namespace Norm
                 return Read().Map<T>(t1.type);
             }
 
-            return ReadInternal(r => norm.GetFieldValue<T>(r, 0, t1.type));
+            return ReadInternal(r => GetFieldValue<T>(r, 0, t1.type));
         }
 
         /// <summary>
@@ -147,8 +143,8 @@ namespace Norm
                 return Read().Map<T1, T2>(t1.type, t2.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type)));
         }
 
         /// <summary>
@@ -169,9 +165,9 @@ namespace Norm
                 return Read().Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type)));
         }
 
         /// <summary>
@@ -193,10 +189,10 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type)));
         }
 
         /// <summary>
@@ -219,11 +215,11 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type)));
         }
 
         /// <summary>
@@ -247,12 +243,12 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type)));
         }
 
         /// <summary>
@@ -277,13 +273,13 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type),
+                GetFieldValue<T7>(r, 6, t7.type)));
         }
 
         /// <summary>
@@ -309,14 +305,14 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type),
+                GetFieldValue<T7>(r, 6, t7.type),
+                GetFieldValue<T8>(r, 7, t8.type)));
         }
 
         /// <summary>
@@ -343,15 +339,15 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type),
+                GetFieldValue<T7>(r, 6, t7.type),
+                GetFieldValue<T8>(r, 7, t8.type),
+                GetFieldValue<T9>(r, 8, t9.type)));
         }
 
         /// <summary>
@@ -379,16 +375,16 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type),
-                norm.GetFieldValue<T10>(r, 9, t10.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type),
+                GetFieldValue<T7>(r, 6, t7.type),
+                GetFieldValue<T8>(r, 7, t8.type),
+                GetFieldValue<T9>(r, 8, t9.type),
+                GetFieldValue<T10>(r, 9, t10.type)));
         }
 
         /// <summary>
@@ -417,17 +413,17 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
             }
             return ReadInternal(r => (
-               norm.GetFieldValue<T1>(r, 0, t1.type),
-               norm.GetFieldValue<T2>(r, 1, t2.type),
-               norm.GetFieldValue<T3>(r, 2, t3.type),
-               norm.GetFieldValue<T4>(r, 3, t4.type),
-               norm.GetFieldValue<T5>(r, 4, t5.type),
-               norm.GetFieldValue<T6>(r, 5, t6.type),
-               norm.GetFieldValue<T7>(r, 6, t7.type),
-               norm.GetFieldValue<T8>(r, 7, t8.type),
-               norm.GetFieldValue<T9>(r, 8, t9.type),
-               norm.GetFieldValue<T10>(r, 9, t10.type),
-               norm.GetFieldValue<T11>(r, 10, t11.type)));
+               GetFieldValue<T1>(r, 0, t1.type),
+               GetFieldValue<T2>(r, 1, t2.type),
+               GetFieldValue<T3>(r, 2, t3.type),
+               GetFieldValue<T4>(r, 3, t4.type),
+               GetFieldValue<T5>(r, 4, t5.type),
+               GetFieldValue<T6>(r, 5, t6.type),
+               GetFieldValue<T7>(r, 6, t7.type),
+               GetFieldValue<T8>(r, 7, t8.type),
+               GetFieldValue<T9>(r, 8, t9.type),
+               GetFieldValue<T10>(r, 9, t10.type),
+               GetFieldValue<T11>(r, 10, t11.type)));
         }
 
         /// <summary>
@@ -457,18 +453,18 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type),
-                norm.GetFieldValue<T10>(r, 9, t10.type),
-                norm.GetFieldValue<T11>(r, 10, t11.type),
-                norm.GetFieldValue<T12>(r, 11, t12.type)));
+                GetFieldValue<T1>(r, 0, t1.type),
+                GetFieldValue<T2>(r, 1, t2.type),
+                GetFieldValue<T3>(r, 2, t3.type),
+                GetFieldValue<T4>(r, 3, t4.type),
+                GetFieldValue<T5>(r, 4, t5.type),
+                GetFieldValue<T6>(r, 5, t6.type),
+                GetFieldValue<T7>(r, 6, t7.type),
+                GetFieldValue<T8>(r, 7, t8.type),
+                GetFieldValue<T9>(r, 8, t9.type),
+                GetFieldValue<T10>(r, 9, t10.type),
+                GetFieldValue<T11>(r, 10, t11.type),
+                GetFieldValue<T12>(r, 11, t12.type)));
         }
 
         /// <summary>
@@ -481,14 +477,14 @@ namespace Norm
             {
                 while (await reader.ReadAsync())
                 {
-                    yield return norm.ReadToArray(reader);
+                    yield return ReadToArray(reader);
                 }
             }
             else
             {
                 while (await reader.ReadAsync())
                 {
-                    yield return norm.ReadToArray(reader, this.readerCallback);
+                    yield return ReadToArray(reader, this.readerCallback);
                 }
             }
         }
@@ -512,7 +508,7 @@ namespace Norm
                 return ReadAsync().Map<T>(t1.type);
             }
 
-            return ReadInternalAsync(async r => await norm.GetFieldValueAsync<T>(r, 0, t1.type));
+            return ReadInternalAsync(async r => await GetFieldValueAsync<T>(r, 0, t1.type));
         }
 
         /// <summary>
@@ -532,8 +528,8 @@ namespace Norm
                 return ReadAsync().Map<T1, T2>(t1.type, t2.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type)));
         }
 
         /// <summary>
@@ -554,9 +550,9 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type)));
         }
 
         /// <summary>
@@ -578,10 +574,10 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type)));
         }
 
         /// <summary>
@@ -604,11 +600,11 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type)));
         }
 
         /// <summary>
@@ -632,12 +628,12 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-                await norm.GetFieldValueAsync<T6>(r, 5, t6.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type),
+                await GetFieldValueAsync<T6>(r, 5, t6.type)));
         }
 
         /// <summary>
@@ -662,13 +658,13 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-                await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-                await norm.GetFieldValueAsync<T7>(r, 6, t7.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type),
+                await GetFieldValueAsync<T6>(r, 5, t6.type),
+                await GetFieldValueAsync<T7>(r, 6, t7.type)));
         }
 
         /// <summary>
@@ -694,14 +690,14 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
             }
             return ReadInternalAsync(async r => (
-               await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-               await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-               await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-               await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-               await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-               await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-               await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
-               await norm.GetFieldValueAsync<T8>(r, 7, t8.type)));
+               await GetFieldValueAsync<T1>(r, 0, t1.type),
+               await GetFieldValueAsync<T2>(r, 1, t2.type),
+               await GetFieldValueAsync<T3>(r, 2, t3.type),
+               await GetFieldValueAsync<T4>(r, 3, t4.type),
+               await GetFieldValueAsync<T5>(r, 4, t5.type),
+               await GetFieldValueAsync<T6>(r, 5, t6.type),
+               await GetFieldValueAsync<T7>(r, 6, t7.type),
+               await GetFieldValueAsync<T8>(r, 7, t8.type)));
         }
 
         /// <summary>
@@ -728,15 +724,15 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
             }
             return ReadInternalAsync(async r => (
-               await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-               await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-               await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-               await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-               await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-               await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-               await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
-               await norm.GetFieldValueAsync<T8>(r, 7, t8.type),
-               await norm.GetFieldValueAsync<T9>(r, 8, t9.type)));
+               await GetFieldValueAsync<T1>(r, 0, t1.type),
+               await GetFieldValueAsync<T2>(r, 1, t2.type),
+               await GetFieldValueAsync<T3>(r, 2, t3.type),
+               await GetFieldValueAsync<T4>(r, 3, t4.type),
+               await GetFieldValueAsync<T5>(r, 4, t5.type),
+               await GetFieldValueAsync<T6>(r, 5, t6.type),
+               await GetFieldValueAsync<T7>(r, 6, t7.type),
+               await GetFieldValueAsync<T8>(r, 7, t8.type),
+               await GetFieldValueAsync<T9>(r, 8, t9.type)));
         }
 
         /// <summary>
@@ -764,16 +760,16 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-                await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-                await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
-                await norm.GetFieldValueAsync<T8>(r, 7, t8.type),
-                await norm.GetFieldValueAsync<T9>(r, 8, t9.type),
-                await norm.GetFieldValueAsync<T10>(r, 9, t10.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type),
+                await GetFieldValueAsync<T6>(r, 5, t6.type),
+                await GetFieldValueAsync<T7>(r, 6, t7.type),
+                await GetFieldValueAsync<T8>(r, 7, t8.type),
+                await GetFieldValueAsync<T9>(r, 8, t9.type),
+                await GetFieldValueAsync<T10>(r, 9, t10.type)));
         }
 
         /// <summary>
@@ -802,17 +798,17 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-                await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-                await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
-                await norm.GetFieldValueAsync<T8>(r, 7, t8.type),
-                await norm.GetFieldValueAsync<T9>(r, 8, t9.type),
-                await norm.GetFieldValueAsync<T10>(r, 9, t10.type),
-                await norm.GetFieldValueAsync<T11>(r, 10, t11.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type),
+                await GetFieldValueAsync<T6>(r, 5, t6.type),
+                await GetFieldValueAsync<T7>(r, 6, t7.type),
+                await GetFieldValueAsync<T8>(r, 7, t8.type),
+                await GetFieldValueAsync<T9>(r, 8, t9.type),
+                await GetFieldValueAsync<T10>(r, 9, t10.type),
+                await GetFieldValueAsync<T11>(r, 10, t11.type)));
         }
 
         /// <summary>
@@ -842,18 +838,18 @@ namespace Norm
                 return ReadAsync().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
             return ReadInternalAsync(async r => (
-                await norm.GetFieldValueAsync<T1>(r, 0, t1.type),
-                await norm.GetFieldValueAsync<T2>(r, 1, t2.type),
-                await norm.GetFieldValueAsync<T3>(r, 2, t3.type),
-                await norm.GetFieldValueAsync<T4>(r, 3, t4.type),
-                await norm.GetFieldValueAsync<T5>(r, 4, t5.type),
-                await norm.GetFieldValueAsync<T6>(r, 5, t6.type),
-                await norm.GetFieldValueAsync<T7>(r, 6, t7.type),
-                await norm.GetFieldValueAsync<T8>(r, 7, t8.type),
-                await norm.GetFieldValueAsync<T9>(r, 8, t9.type),
-                await norm.GetFieldValueAsync<T10>(r, 9, t10.type),
-                await norm.GetFieldValueAsync<T11>(r, 10, t11.type),
-                await norm.GetFieldValueAsync<T12>(r, 11, t12.type)));
+                await GetFieldValueAsync<T1>(r, 0, t1.type),
+                await GetFieldValueAsync<T2>(r, 1, t2.type),
+                await GetFieldValueAsync<T3>(r, 2, t3.type),
+                await GetFieldValueAsync<T4>(r, 3, t4.type),
+                await GetFieldValueAsync<T5>(r, 4, t5.type),
+                await GetFieldValueAsync<T6>(r, 5, t6.type),
+                await GetFieldValueAsync<T7>(r, 6, t7.type),
+                await GetFieldValueAsync<T8>(r, 7, t8.type),
+                await GetFieldValueAsync<T9>(r, 8, t9.type),
+                await GetFieldValueAsync<T10>(r, 9, t10.type),
+                await GetFieldValueAsync<T11>(r, 10, t11.type),
+                await GetFieldValueAsync<T12>(r, 11, t12.type)));
         }
 
         ///<summary>
