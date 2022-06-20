@@ -9,7 +9,7 @@ namespace Norm
         protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader();
+            using var reader = cmd.ExecuteReader(this.behavior);
 
             if (this.readerCallback == null)
             {
@@ -30,7 +30,7 @@ namespace Norm
         protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithWithSetInternal(string command)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader();
+            using var reader = cmd.ExecuteReader(this.behavior);
             while (reader.Read())
             {
                 yield return ReadToArrayWithSet(reader);
@@ -40,7 +40,7 @@ namespace Norm
         protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader();
+            using var reader = cmd.ExecuteReader(this.behavior);
             if (this.readerCallback == null)
             {
                 while (reader.Read())
@@ -60,7 +60,7 @@ namespace Norm
         protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader();
+            using var reader = cmd.ExecuteReader(this.behavior);
             while (reader.Read())
             {
                 yield return ReadToArrayWithSet(reader);
@@ -74,7 +74,7 @@ namespace Norm
             {
                 if (cancellationToken.HasValue)
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                     while (await reader.ReadAsync(cancellationToken.Value))
                     {
                         yield return ReadToArray(reader);
@@ -83,7 +83,7 @@ namespace Norm
                 }
                 else
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync();
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                     while (await reader.ReadAsync())
                     {
                         yield return ReadToArray(reader);
@@ -94,7 +94,7 @@ namespace Norm
             {
                 if (cancellationToken.HasValue)
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                     while (await reader.ReadAsync(cancellationToken.Value))
                     {
                         yield return ReadToArray(reader, this.readerCallback);
@@ -103,7 +103,7 @@ namespace Norm
                 }
                 else
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync();
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                     while (await reader.ReadAsync())
                     {
                         yield return ReadToArray(reader, this.readerCallback);
@@ -117,7 +117,7 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
                     yield return ReadToArrayWithSet(reader);
@@ -126,7 +126,7 @@ namespace Norm
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync();
+                await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                 while (await reader.ReadAsync())
                 {
                     yield return ReadToArrayWithSet(reader);
@@ -142,7 +142,7 @@ namespace Norm
             {
                 if (cancellationToken.HasValue)
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                     while (await reader.ReadAsync(cancellationToken.Value))
                     {
                         yield return ReadToArray(reader);
@@ -151,7 +151,7 @@ namespace Norm
                 }
                 else
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync();
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                     while (await reader.ReadAsync())
                     {
                         yield return ReadToArray(reader);
@@ -162,7 +162,7 @@ namespace Norm
             {
                 if (cancellationToken.HasValue)
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                     while (await reader.ReadAsync(cancellationToken.Value))
                     {
                         yield return ReadToArray(reader, readerCallback);
@@ -171,7 +171,7 @@ namespace Norm
                 }
                 else
                 {
-                    await using var reader = await cmd.ExecuteReaderAsync();
+                    await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                     while (await reader.ReadAsync())
                     {
                         yield return ReadToArray(reader, readerCallback);
@@ -185,7 +185,7 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken.Value);
+                await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
                     yield return ReadToArrayWithSet(reader);
@@ -194,7 +194,7 @@ namespace Norm
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync();
+                await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
                 while (await reader.ReadAsync())
                 {
                     yield return ReadToArrayWithSet(reader);

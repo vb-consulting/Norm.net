@@ -14,6 +14,7 @@ namespace Norm
         protected object[] parameters = null;
 
         protected CommandType commandType = CommandType.Text;
+        protected CommandBehavior behavior = CommandBehavior.Default;
         protected int? commandTimeout = null;
         protected CancellationToken? cancellationToken = null;
         protected bool prepared = false;
@@ -140,7 +141,7 @@ namespace Norm
         ///</summary>
         ///<param name="parameters">Parameters list. The parameter can be a simple value (mapped by position), DbParameter instance, or object instances where is each property is mapped to a named database parameter.</param>
         ///<returns>Norm instance.</returns>
-        public Norm WithParameters(params object[] parameters)
+        public virtual Norm WithParameters(params object[] parameters)
         {
             if (parameters.Length == 1 && parameters[0].GetType().IsArray)
             {
@@ -263,6 +264,17 @@ namespace Norm
             this.includeParameters = includeParameters;
             this.includeCallerInfo = includeCallerInfo;
             this.includeTimestamp = includeTimestamp;
+            return this;
+        }
+
+        ///<summary>
+        /// Sets the database reader command behavior.
+        ///</summary>
+        ///<param name="behavior">CommandBehavior enum value</param>
+        ///<returns>Norm instance.</returns>
+        public virtual Norm WithCommandBehavior(CommandBehavior behavior)
+        {
+            this.behavior = behavior;
             return this;
         }
     }

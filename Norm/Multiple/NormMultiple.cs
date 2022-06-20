@@ -29,7 +29,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(), cancellationToken, this.readerCallback);
+            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(this.behavior), cancellationToken, this.readerCallback);
         }
 
         ///<summary>
@@ -54,7 +54,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(), cancellationToken, this.readerCallback);
+            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(this.behavior), cancellationToken, this.readerCallback);
         }
 
         ///<summary>
@@ -81,9 +81,9 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this.readerCallback);
+                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value), cancellationToken, this.readerCallback);
             }
-            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(), cancellationToken, this.readerCallback);
+            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior), cancellationToken, this.readerCallback);
         }
 
         ///<summary>
@@ -110,9 +110,9 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(cancellationToken.Value), cancellationToken, this.readerCallback);
+                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value), cancellationToken, this.readerCallback);
             }
-            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(), cancellationToken, this.readerCallback);
+            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior), cancellationToken, this.readerCallback);
         }
     }
 }

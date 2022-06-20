@@ -193,5 +193,16 @@ namespace Norm
                 includeCallerInfo: includeCallerInfo,
                 includeTimestamp: includeTimestamp);
         }
+
+        ///<summary>
+        /// Sets the database reader command behavior.
+        ///</summary>
+        ///<param name="behavior">CommandBehavior enum value</param>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<returns>Norm instance that encapsulates the connection.</returns>
+        public static Norm WithCommandBehavior(this DbConnection connection, CommandBehavior behavior)
+        {
+            return connection.Instance<Norm>().WithCommandBehavior(behavior);
+        }
     }
 }

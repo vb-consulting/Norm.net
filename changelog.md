@@ -4,7 +4,85 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)
 
-### Parameters can be set again in `Read` and `Execute` extensions methods.
+### `WithCommandBehavior(CommandBehavior)` connection extension method
+
+New extensions method that sets the command behavior of the data read for the next command.
+
+You can combine `CommandBehavior` values as flags. For example:
+
+```csharp
+connection
+    .WithCommandBehavior(CommandBehavior.CloseConnection | CommandBehavior.SingleRow)
+    .Read(...);
+```
+
+Here are all command behaviors available:
+
+```csharp
+namespace System.Data
+{
+    //
+    // Summary:
+    //     Provides a description of the results of the query and its effect on the database.
+    [Flags]
+    public enum CommandBehavior
+    {
+        //
+        // Summary:
+        //     The query may return multiple result sets. Execution of the query may affect
+        //     the database state. Default sets no System.Data.CommandBehavior flags, so calling
+        //     ExecuteReader(CommandBehavior.Default) is functionally equivalent to calling
+        //     ExecuteReader().
+        Default = 0,
+        //
+        // Summary:
+        //     The query returns a single result set.
+        SingleResult = 1,
+        //
+        // Summary:
+        //     The query returns column information only. When using System.Data.CommandBehavior.SchemaOnly,
+        //     the .NET Framework Data Provider for SQL Server precedes the statement being
+        //     executed with SET FMTONLY ON.
+        SchemaOnly = 2,
+        //
+        // Summary:
+        //     The query returns column and primary key information. The provider appends extra
+        //     columns to the result set for existing primary key and timestamp columns.
+        KeyInfo = 4,
+        //
+        // Summary:
+        //     The query is expected to return a single row of the first result set. Execution
+        //     of the query may affect the database state. Some .NET Framework data providers
+        //     may, but are not required to, use this information to optimize the performance
+        //     of the command. When you specify System.Data.CommandBehavior.SingleRow with the
+        //     System.Data.OleDb.OleDbCommand.ExecuteReader method of the System.Data.OleDb.OleDbCommand
+        //     object, the .NET Framework Data Provider for OLE DB performs binding using the
+        //     OLE DB IRow interface if it is available. Otherwise, it uses the IRowset interface.
+        //     If your SQL statement is expected to return only a single row, specifying System.Data.CommandBehavior.SingleRow
+        //     can also improve application performance. It is possible to specify SingleRow
+        //     when executing queries that are expected to return multiple result sets. In that
+        //     case, where both a multi-result set SQL query and single row are specified, the
+        //     result returned will contain only the first row of the first result set. The
+        //     other result sets of the query will not be returned.
+        SingleRow = 8,
+        //
+        // Summary:
+        //     Provides a way for the DataReader to handle rows that contain columns with large
+        //     binary values. Rather than loading the entire row, SequentialAccess enables the
+        //     DataReader to load data as a stream. You can then use the GetBytes or GetChars
+        //     method to specify a byte location to start the read operation, and a limited
+        //     buffer size for the data being returned.
+        SequentialAccess = 16,
+        //
+        // Summary:
+        //     When the command is executed, the associated Connection object is closed when
+        //     the associated DataReader object is closed.
+        CloseConnection = 32
+    }
+}
+```
+
+### Parameters can be set again in `Read` and `Execute` extensions methods
 
 This feature was removed after version 5.0.0.
 
@@ -84,7 +162,7 @@ Assert.True(b);
 Assert.Equal(new DateTime(1977, 5, 19), d);
 ```
 
-### `WithTransaction(DbTransaction)` connection extension method.
+### `WithTransaction(DbTransaction)` connection extension method
 
 Support for the transaction control by using `DbTransaction` object. 
 
@@ -111,7 +189,7 @@ var result2 = connection.Read("select * from transaction_test1").ToArray();
 Assert.Empty(result2);
 ```
 
-### `WithTimeout` connection extension method.
+### `WithTimeout` connection extension method
 
 This is equivalent to the `Timeout` connection extension, added only for the naming consistency ("with" prefix).
 
