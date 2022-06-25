@@ -3,12 +3,32 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Xml.Linq;
 using Norm.Mapper;
 
 namespace Norm
 {
     public partial class Norm
     {
+        protected void MergeParameters(object[] parameters)
+        {
+            if (parameters.Length == 1 && parameters[0].GetType().IsArray)
+            {
+                if (parameters[0] is DbParameter[] p)
+                {
+                    parameters = p;
+                }
+            }
+            if (this.parameters == null)
+            {
+                this.parameters = parameters;
+            }
+            else
+            {
+                this.parameters = this.parameters.Union(parameters).ToArray();
+            }
+        }
+
         protected static readonly char[] NonCharacters =
             {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.', '\''};
 
@@ -17,7 +37,7 @@ namespace Norm
         protected void AddParametersInternal(DbCommand cmd, params object[] parameters)
         {
             var command = cmd.CommandText;
-            var valueList = new List<object>();
+            var values = new List<object>(parameters.Length);
             var names = new HashSet<string>(parameters.Length);
 
             void AddPropValues(Type type, object p)
@@ -70,7 +90,7 @@ new {{
                 {
                     if (p == null)
                     {
-                        valueList.Add(p);
+                        values.Add(p);
                         continue;
                     }
                     var type = p.GetType();
@@ -84,22 +104,23 @@ new {{
                     var meta = type.GetMetadata();
                     if (meta.simple)
                     {
-                        valueList.Add(p);
+                        values.Add(p);
                         continue;
                     }
 
                     AddPropValues(type, p);
                 }
             }
-            var values = valueList.ToArray();
-            if (values.Length == 0)
+            
+            if (values.Count == 0)
             {
                 return;
             }
 
             var paramIndex = 0;
-            var used = new HashSet<string>(values.Length);
-            foreach (var name in EnumerateParams(command, names).Select(t => t.name))
+            var used = new HashSet<string>(values.Count);
+            var usedIndexes = new HashSet<int>(values.Count);
+            foreach (var name in EnumerateParams(command, names))
             {
                 if (used.Contains(name))
                 {
@@ -109,8 +130,18 @@ new {{
                 {
                     throw new NormPositionalParametersWithStoredProcedureException();
                 }
+                usedIndexes.Add(paramIndex);
                 AddParamWithValueInternal(cmd, name, values[paramIndex++]);
                 used.Add(name);
+            }
+            paramIndex = 0;
+            foreach (var value in values)
+            {
+                if (!usedIndexes.Contains(paramIndex))
+                {
+                    AddParamWithValueInternal(cmd, null, values[paramIndex]);
+                }
+                paramIndex++;
             }
         }
 
@@ -169,7 +200,7 @@ new {{
             cmd.Parameters.Add(dbParameter);
         }
 
-        protected static IEnumerable<(string name, int index, int count)> EnumerateParams(string command, ICollection<string> skip = null)
+        protected static IEnumerable<string> EnumerateParams(string command, ICollection<string> skip = null)
         {
             for (var index = 0; ; index += ParamPrefix.Length)
             {
@@ -201,7 +232,7 @@ new {{
                 {
                     continue;
                 }
-                yield return (name, index, name.Length);
+                yield return name;
                 if (endOf == -1)
                     break;
                 index = endOf;

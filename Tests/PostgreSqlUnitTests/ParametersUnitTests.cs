@@ -25,8 +25,69 @@ namespace PostgreSqlUnitTests
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
             var (s, i, b, d, @null) = connection
                 .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
-                .Read<string, int, bool, DateTime, string>(
-                "select @s, @i, @b, @d, @null")
+                .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+                .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Postgres_Mixed_PositionalParams_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            Assert.Throws<NotSupportedException>(() =>
+            {
+                var (s, i, b, d, @null) = connection
+                    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+                    .Read<string, int, bool, DateTime, string>("select $1, @i, $3, $4, $5")
+                    .Single();
+            });
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_MultipleCommand_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            Assert.Throws<PostgresException>(() =>
+            {
+                var (s, i, b, d, @null) = connection
+                    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+                    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5; select 1")
+                    .Single();
+            });
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_Instances_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(new NpgsqlParameter{ Value = "str" },
+                    new NpgsqlParameter { Value = 999 },
+                    new NpgsqlParameter { Value = true },
+                    new NpgsqlParameter { Value = new DateTime(1977, 5, 19) },
+                    new NpgsqlParameter { Value = DBNull.Value })
+                .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
                 .Single();
 
             Assert.Equal("str", s);
@@ -602,7 +663,7 @@ namespace PostgreSqlUnitTests
             var exception = Assert.Throws<NormParametersException>(() => 
                 connection.WithParameters(1, 2).Read<int, int>("select @p, @p").Single());
 
-            Assert.Equal("Parameter name \"p\" appears more than once. Parameter names must be unique.", exception.Message);
+            Assert.Equal("Parameter name \"p\" appears more than once. Parameter names must be unique when using positional parameters. Try using named parameters instead.", exception.Message);
         }
 
         [Fact]

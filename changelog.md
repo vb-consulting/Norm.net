@@ -1,5 +1,88 @@
 ﻿# Changelog
 
+## [5.2.0](https://github.com/vb-consulting/Norm.net/tree/5.2.0) (2022-06-23)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.1.0...5.2.0)
+
+### Support for PostgreSQL native positional parameters
+
+You can now use PostgreSQL **native positional parameters** (or any other database provider that supports unnamed positional parameters).
+
+PostgreSQL example by using [standard dollar notation](https://www.postgresql.org/docs/8.1/sql-expressions.html#AEN1626) to set parameters positions:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+    .Single();
+
+Assert.Equal("str", s); // true
+Assert.Equal(999, i); // true
+Assert.True(b); // true
+Assert.Equal(new DateTime(1977, 5, 19), d); // true
+Assert.Null(@null); // true
+```
+
+Here the `$1` references the value of the first function argument, `$2` for the second, and so on.
+
+There are two conditions to enable using PostgreSQL native positional parameters:
+
+1) Connection must be an instance of `NpgsqlConnection` from `Npgsql` version 6 or higher.
+2) All supplied parameters must be a simple type (`int`, `string`, `DateTime`, `bool`, etc). Using class or record instance values of complex types will force using named parameters again.
+
+Mixing named and positional parameters in a query like this `SELECT * FROM employees WHERE first_name = $1 AND age = @age` will trow `System.NotSupportedException : Mixing named and positional parameters isn't supported` error.
+
+Other then setting simple values, you can also use native `NpgsqlParameter` objects by setting only values, like this:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(new NpgsqlParameter { Value = "str" },
+                    new NpgsqlParameter { Value = 999 },
+                    new NpgsqlParameter { Value = true },
+                    new NpgsqlParameter { Value = new DateTime(1977, 5, 19) },
+                    new NpgsqlParameter { Value = DBNull.Value })
+    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+    .Single();
+
+Assert.Equal("str", s); // true
+Assert.Equal(999, i); // true
+Assert.True(b); // true
+Assert.Equal(new DateTime(1977, 5, 19), d); // true
+Assert.Null(@null); // true
+```
+
+** Important: **
+
+Using PostgreSQL native positional parameters will disable SQL rewriting by the `Npgsql` drivers for that command. 
+
+That has a positive performance impact since the driver doesn't have to parse the command anymore. 
+
+However, sending multiple commands in one command string separated by a semicolon will be disabled and will throw `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`.
+
+See following [article](https://www.roji.org/parameters-batching-and-sql-rewriting).
+
+## `NpgsqlEnableSqlRewriting` global setting
+
+You can force all `Npgsql` commands to "raw" mode that disables `Npgsql` parser for all `Npgsql` commands globally.
+
+Set global `NpgsqlEnableSqlRewriting` settings to false:
+
+```csharp
+NormOptions.Configure(options => options.NpgsqlEnableSqlRewriting = false);
+```
+
+Notes:
+
+- This option only has an impact if it is set before any `Npgsql` command is executed. `NpgsqlCommand` caches internally this value.
+
+- Default value is `null` which doesn't change anything, uses `Npgsql` default which is true.
+
+- Only available for `Npgsql` version 6 or higher.
+
+- When in "raw" mode (SQL rewriting disabled) following features are disabled:
+   - Named parameters are disabled, and positional parameters with $ syntax must be used always (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
+   - Multiple commands in one command string separated by a semicolon (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`)
+
 ## [5.1.0](https://github.com/vb-consulting/Norm.net/tree/5.1.0) (2022-06-20)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)

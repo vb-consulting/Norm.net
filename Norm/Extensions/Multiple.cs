@@ -15,7 +15,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public static NormMultipleReader Multiple(this DbConnection connection, string command,
+        public static NormMultipleBatch Multiple(this DbConnection connection, string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -32,7 +32,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public static NormMultipleReader MultipleFormat(this DbConnection connection, FormattableString command,
+        public static NormMultipleBatch MultipleFormat(this DbConnection connection, FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -49,7 +49,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public static ValueTask<NormMultipleReader> MultipleAsync(this DbConnection connection, string command,
+        public static ValueTask<NormMultipleBatch> MultipleAsync(this DbConnection connection, string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -66,7 +66,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public static ValueTask<NormMultipleReader> MultipleFormatAsync(this DbConnection connection, FormattableString command,
+        public static ValueTask<NormMultipleBatch> MultipleFormatAsync(this DbConnection connection, FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",

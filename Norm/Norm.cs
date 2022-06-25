@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Norm
 {
@@ -48,6 +49,16 @@ namespace Norm
         ///returns DbConnection for this instance
         ///</summary>
         public DbConnection Connection { get; }
+
+        ///<summary>
+        ///returns CancellationToken for this instance or null if CancellationToken is not set
+        ///</summary>
+        public CancellationToken? CancellationToken { get => cancellationToken; }
+
+        ///<summary>
+        ///returns ReaderCallback for this instance or null of ReaderCallback is not set
+        ///</summary>
+        public Func<(string Name, int Ordinal, DbDataReader Reader), object> ReaderCallback { get => readerCallback; }
 
         ///<summary>
         /// Set command type for the connection commands and return Norm instance.
@@ -143,21 +154,7 @@ namespace Norm
         ///<returns>Norm instance.</returns>
         public virtual Norm WithParameters(params object[] parameters)
         {
-            if (parameters.Length == 1 && parameters[0].GetType().IsArray)
-            {
-                if (parameters[0] is DbParameter[] p)
-                {
-                    parameters = p;
-                }
-            }
-            if (this.parameters == null)
-            {
-                this.parameters = parameters;
-            }
-            else
-            {
-                this.parameters = this.parameters.Union(parameters).ToArray();
-            }
+            MergeParameters(parameters);
             return this;
         }
 
@@ -276,6 +273,118 @@ namespace Norm
         {
             this.behavior = behavior;
             return this;
+        }
+
+        /// <summary>
+        /// Creates a DbCommand object
+        /// </summary>
+        /// <param name="command">SQL Command</param>
+        /// <returns>DbCommand</returns>
+        public DbCommand CreateCommand(string command)
+        {
+            var cmd = Connection.CreateCommand();
+            cmd.CommandText = command;
+            cmd.CommandType = commandType;
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
+            EnsureIsOpen(this.Connection);
+            if (this.parameters != null)
+            {
+                AddParametersInternal(cmd, this.parameters);
+            }
+            if (NormOptions.Value.Prepared || prepared)
+            {
+                cmd.Prepare();
+                prepared = false;
+            }
+            ApplyOptions(cmd);
+            return cmd;
+        }
+
+        /// <summary>
+        /// Creates a DbCommand object
+        /// </summary>
+        /// <param name="command">SQL Command</param>
+        /// <returns>DbCommand</returns>
+        public async ValueTask<DbCommand> CreateCommandAsync(string command)
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
+            var cmd = Connection.CreateCommand();
+            cmd.CommandText = command;
+            cmd.CommandType = commandType;
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
+            await EnsureIsOpenAsync(this.Connection, cancellationToken);
+            if (this.parameters != null)
+            {
+                AddParametersInternal(cmd, this.parameters);
+            }
+            if (NormOptions.Value.Prepared || prepared)
+            {
+                if (cancellationToken.HasValue)
+                {
+                    await cmd.PrepareAsync(cancellationToken.Value);
+                }
+                else
+                {
+                    await cmd.PrepareAsync();
+                }
+                prepared = false;
+            }
+            ApplyOptions(cmd);
+            return cmd;
+        }
+
+        /// <summary>
+        /// Creates a DbCommand object
+        /// </summary>
+        /// <param name="command">SQL Command</param>
+        /// <returns>DbCommand</returns>
+        public DbCommand CreateCommand(FormattableString command)
+        {
+            var (commandString, parameters) = ParseFormattableCommand(command);
+            MergeParameters(parameters);
+            return CreateCommand(commandString);
+        }
+
+        /// <summary>
+        /// Creates a DbCommand object
+        /// </summary>
+        /// <param name="command">SQL Command</param>
+        /// <returns>DbCommand</returns>
+        public async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
+        {
+            var (commandString, parameters) = ParseFormattableCommand(command);
+            MergeParameters(parameters);
+            return await CreateCommandAsync(commandString);
+        }
+
+        /// <summary>
+        /// Executes DbReader
+        /// </summary>
+        /// <param name="cmd">DbCommand</param>
+        /// <returns>DbDataReader</returns>
+        public DbDataReader ExecuteReader(DbCommand cmd)
+        {
+            return cmd.ExecuteReader(this.behavior);
+        }
+
+        /// <summary>
+        /// Executes DbReader
+        /// </summary>
+        /// <param name="cmd">DbCommand</param>
+        /// <returns>DbDataReader</returns>
+        public async ValueTask<DbDataReader> ExecuteReaderAsync(DbCommand cmd)
+        {
+            if (this.cancellationToken.HasValue)
+            {
+                return await cmd.ExecuteReaderAsync(this.behavior, this.cancellationToken.Value);
+            }
+            return await cmd.ExecuteReaderAsync(this.behavior);
         }
     }
 }

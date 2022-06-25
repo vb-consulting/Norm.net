@@ -12,7 +12,7 @@ namespace Norm
     public class NormParametersException : NormException
     {
         public NormParametersException(string name) :
-            base($"Parameter name \"{name}\" appears more than once. Parameter names must be unique.")
+            base($"Parameter name \"{name}\" appears more than once. Parameter names must be unique when using positional parameters. Try using named parameters instead.")
         { }
     }
 

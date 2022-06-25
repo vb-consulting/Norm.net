@@ -31,6 +31,22 @@ namespace Norm
         /// Set to true to map instances properties that have private or protected setters.
         /// </summary>
         public bool MapPrivateSetters { get; set; } = false;
+        /// <summary>
+        /// Uses batch command for multiple commands processing if available. 
+        /// Batch interfaces are available in .NET6 assemblies only for PostgreSQL and MySQL currently.
+        /// Otherwise, fallbacks to multiple commands separated by semicolon.
+        /// Set to default to disable batch processing for all connection types.
+        /// </summary>
+        public bool UseBatchIfAvailable { get; set; } = true;
+        /// <summary>
+        /// Enables SQL rewriting for Npgsql driver by setting global Npgsql.EnableSqlRewriting switch
+        /// Only for Npgsql version 6 and above.
+        /// Default is null, Npgsql driver default.
+        /// When SQL rewriting is disabled, only positional parameters can be used ($1, $2, 3, etc), but it has perfomance benefits.
+        /// see https://github.com/npgsql/npgsql/blob/main/src/Npgsql/NpgsqlCommand.cs#L94
+        /// This option only have impact before any of the commands are executed.
+        /// </summary>
+        public bool? NpgsqlEnableSqlRewriting { get; set; } = null;
 
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.
@@ -54,6 +70,11 @@ namespace Norm
             Value = new NormOptions();
             NormCtor = null;
             options(Value);
+            if (Value.NpgsqlEnableSqlRewriting.HasValue)
+            {
+                AppContext.SetSwitch("Npgsql.EnableSqlRewriting", Value.NpgsqlEnableSqlRewriting.Value);
+            }
+            Value.OnConfigured();
         }
 
         /// <summary>
@@ -67,6 +88,10 @@ namespace Norm
             NormCtor = null;
             options(Value as T);
             AssignExtensionCtor();
+            if (Value.NpgsqlEnableSqlRewriting.HasValue)
+            {
+                AppContext.SetSwitch("Npgsql.EnableSqlRewriting", Value.NpgsqlEnableSqlRewriting.Value);
+            }
             Value.OnConfigured();
         }
 

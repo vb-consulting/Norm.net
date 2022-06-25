@@ -10,7 +10,7 @@ namespace Norm
         protected IEnumerable<T> ReadCallback<T>(string command, Func<DbDataReader, T> readerAction)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader(this.behavior);
+            using var reader = this.ExecuteReader(cmd);
             while (reader.Read())
             {
                 yield return readerAction(reader);
@@ -20,7 +20,7 @@ namespace Norm
         protected IEnumerable<T> ReadCallback<T>(FormattableString command, Func<DbDataReader, T> readerAction)
         {
             using var cmd = CreateCommand(command);
-            using var reader = cmd.ExecuteReader(this.behavior);
+            using var reader = this.ExecuteReader(cmd);
             while (reader.Read())
             {
                 yield return readerAction(reader);
@@ -33,7 +33,7 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
+                await using var reader = await this.ExecuteReaderAsync(cmd);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
                     yield return await readerAction(reader);
@@ -42,7 +42,7 @@ namespace Norm
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
+                await using var reader = await this.ExecuteReaderAsync(cmd);
                 while (await reader.ReadAsync())
                 {
                     yield return await readerAction(reader);
@@ -56,7 +56,7 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await using var reader = await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value);
+                await using var reader = await this.ExecuteReaderAsync(cmd);
                 while (await reader.ReadAsync(cancellationToken.Value))
                 {
                     yield return await readerAction(reader);
@@ -65,7 +65,7 @@ namespace Norm
             }
             else
             {
-                await using var reader = await cmd.ExecuteReaderAsync(this.behavior);
+                await using var reader = await this.ExecuteReaderAsync(cmd);
                 while (await reader.ReadAsync())
                 {
                     yield return await readerAction(reader);

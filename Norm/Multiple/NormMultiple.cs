@@ -13,7 +13,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader Multiple(string command,
+        public NormMultipleBatch Multiple(string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -28,8 +28,7 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            using var cmd = CreateCommand(command);
-            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(this.behavior), cancellationToken, this.readerCallback);
+            return new NormMultipleBatch(this).Init(command, null);
         }
 
         ///<summary>
@@ -38,7 +37,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>Disposable NormMultipleReader instance.</returns>
-        public NormMultipleReader MultipleFormat(FormattableString command,
+        public NormMultipleBatch MultipleFormat(FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -53,8 +52,7 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            using var cmd = CreateCommand(command);
-            return new NormMultipleReader(this.Connection, cmd.ExecuteReader(this.behavior), cancellationToken, this.readerCallback);
+            return new NormMultipleBatch(this).Init(null, command);
         }
 
         ///<summary>
@@ -63,7 +61,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public async ValueTask<NormMultipleReader> MultipleAsync(string command,
+        public async ValueTask<NormMultipleBatch> MultipleAsync(string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -78,12 +76,7 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            using var cmd = await CreateCommandAsync(command);
-            if (cancellationToken.HasValue)
-            {
-                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value), cancellationToken, this.readerCallback);
-            }
-            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior), cancellationToken, this.readerCallback);
+            return await new NormMultipleBatch(this).InitAsync(command, null);
         }
 
         ///<summary>
@@ -92,7 +85,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
-        public async ValueTask<NormMultipleReader> MultipleFormatAsync(FormattableString command,
+        public async ValueTask<NormMultipleBatch> MultipleFormatAsync(FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -107,12 +100,7 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            using var cmd = await CreateCommandAsync(command);
-            if (cancellationToken.HasValue)
-            {
-                return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior, cancellationToken.Value), cancellationToken, this.readerCallback);
-            }
-            return new NormMultipleReader(this.Connection, await cmd.ExecuteReaderAsync(this.behavior), cancellationToken, this.readerCallback);
+            return await new NormMultipleBatch(this).InitAsync(null, command);
         }
     }
 }
