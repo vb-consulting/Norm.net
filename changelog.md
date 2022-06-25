@@ -51,7 +51,7 @@ Assert.Equal(new DateTime(1977, 5, 19), d); // true
 Assert.Null(@null); // true
 ```
 
-** Important: **
+****Important:****
 
 Using PostgreSQL native positional parameters will disable SQL rewriting by the `Npgsql` drivers for that command. 
 
