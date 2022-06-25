@@ -15,7 +15,7 @@
 		<PackageTags>Norm;norm;data acceess;orm;no-orm;micro-orm;sql</PackageTags>
 		<Version>5.2.0</Version>
 		<AssemblyVersion>5.2.0</AssemblyVersion>
-		<PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/CHANGES.md</PackageReleaseNotes>
+		<PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/changelog.md</PackageReleaseNotes>
 		<PackageId>Norm.net</PackageId>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<FileVersion>5.2.0</FileVersion>

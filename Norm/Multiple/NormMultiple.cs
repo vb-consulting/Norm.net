@@ -12,7 +12,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>Disposable NormMultipleReader instance.</returns>
+        ///<returns>Disposable NormMultipleBatch instance.</returns>
         public NormMultipleBatch Multiple(string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
@@ -36,7 +36,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>Disposable NormMultipleReader instance.</returns>
+        ///<returns>Disposable NormMultipleBatch instance.</returns>
         public NormMultipleBatch MultipleFormat(FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
@@ -60,7 +60,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleBatch instance.</returns>
         public async ValueTask<NormMultipleBatch> MultipleAsync(string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
@@ -84,7 +84,7 @@ namespace Norm
         ///</summary>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleReader instance.</returns>
+        ///<returns>A value task representing the asynchronous operation returning disposable NormMultipleBatch instance.</returns>
         public async ValueTask<NormMultipleBatch> MultipleFormatAsync(FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)

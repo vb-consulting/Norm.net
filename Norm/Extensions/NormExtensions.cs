@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Norm
 {
- 
+
     public static partial class NormExtensions
     {
         private static T Instance<T>(this DbConnection connection) where T : Norm
@@ -203,6 +203,19 @@ namespace Norm
         public static Norm WithCommandBehavior(this DbConnection connection, CommandBehavior behavior)
         {
             return connection.Instance<Norm>().WithCommandBehavior(behavior);
+        }
+
+        ///<summary>
+        /// Sets PostgreSQL results behavior.
+        /// Call WithUnknownResultType() to set all results as unknown or add true to result position to set type to unknown.
+        /// Unkown result type is serialized as raw string and there is no type matching. Useful for fast json retreival.
+        ///</summary>
+        ///<param name="list">List booleans matching rsult poistion or empty for all</param>
+        ///<param name="connection">DbConnection instance.</param>
+        ///<returns>Norm instance.</returns>
+        public static Norm WithUnknownResultType(this DbConnection connection, params bool[] list)
+        {
+            return connection.Instance<Norm>().WithUnknownResultType(list);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Norm

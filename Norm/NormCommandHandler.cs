@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -136,6 +137,39 @@ namespace Norm
                 await connection.OpenAsync();
             }
             return;
+        }
+
+        protected void MergeParameters(object[] parameters)
+        {
+            if (parameters.Length == 1 && parameters[0].GetType().IsArray)
+            {
+                if (parameters[0] is DbParameter[] p)
+                {
+                    parameters = p;
+                }
+            }
+            if (this.parameters == null)
+            {
+                this.parameters = parameters;
+            }
+            else
+            {
+                this.parameters = this.parameters.Union(parameters).ToArray();
+            }
+        }
+
+        protected void ApplyUnknownResultTypes(DbCommand cmd)
+        {
+            if (allResultTypesAreUnknown)
+            {
+                var prop = cmd.GetType().GetProperties().First(p => string.Equals(p.Name, "AllResultTypesAreUnknown", StringComparison.InvariantCulture));
+                prop.SetValue(cmd, true);
+            }
+            if (unknownResultTypeList != null)
+            {
+                var prop = cmd.GetType().GetProperties().First(p => string.Equals(p.Name, "UnknownResultTypeList", StringComparison.InvariantCulture));
+                prop.SetValue(cmd, unknownResultTypeList);
+            }
         }
     }
 }

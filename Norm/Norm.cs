@@ -21,6 +21,9 @@ namespace Norm
         protected bool prepared = false;
         protected DbTransaction transaction = null;
 
+        protected bool allResultTypesAreUnknown = false;
+        protected bool[] unknownResultTypeList = null;
+
         protected Action<DbCommand> dbCommandCallback = null;
         protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
         protected bool commandCommentHeaderEnabled = false;
@@ -32,6 +35,8 @@ namespace Norm
         protected string memberName = null;
         protected string sourceFilePath = null;
         protected int sourceLineNumber = 0;
+
+        public DatabaseType DbType => dbType;
 
         public Norm(DbConnection connection)
         {
@@ -275,6 +280,32 @@ namespace Norm
             return this;
         }
 
+        ///<summary>
+        /// Sets PostgreSQL results behavior.
+        /// Call WithUnknownResultType() to set all results as unknown or add true to result position to set type to unknown.
+        /// Unkown result type is serialized as raw string and there is no type matching. Useful for fast json retreival.
+        ///</summary>
+        ///<param name="list">List booleans matching rsult poistion or empty for all</param>
+        ///<returns>Norm instance.</returns>
+        public virtual Norm WithUnknownResultType(params bool[] list)
+        {
+            if (dbType != DatabaseType.Npgsql)
+            {
+                throw new NotSupportedException("WithUnknownResultType is only available on PostgreSQL");
+            }
+            if (list == null || list.Length == 0)
+            {
+                allResultTypesAreUnknown = true;
+                unknownResultTypeList = null;
+            }
+            else
+            {
+                allResultTypesAreUnknown = false;
+                unknownResultTypeList = list;
+            }
+            return this;
+        }
+
         /// <summary>
         /// Creates a DbCommand object
         /// </summary>
@@ -292,12 +323,15 @@ namespace Norm
             EnsureIsOpen(this.Connection);
             if (this.parameters != null)
             {
-                AddParametersInternal(cmd, this.parameters);
+                NormParameterParser.AddParameters(this, cmd, this.parameters);
             }
             if (NormOptions.Value.Prepared || prepared)
             {
                 cmd.Prepare();
-                prepared = false;
+            }
+            if ((allResultTypesAreUnknown || unknownResultTypeList != null) && dbType == DatabaseType.Npgsql)
+            {
+                ApplyUnknownResultTypes(cmd);
             }
             ApplyOptions(cmd);
             return cmd;
@@ -321,7 +355,7 @@ namespace Norm
             await EnsureIsOpenAsync(this.Connection, cancellationToken);
             if (this.parameters != null)
             {
-                AddParametersInternal(cmd, this.parameters);
+                NormParameterParser.AddParameters(this, cmd, this.parameters);
             }
             if (NormOptions.Value.Prepared || prepared)
             {
@@ -335,6 +369,10 @@ namespace Norm
                 }
                 prepared = false;
             }
+            if ((allResultTypesAreUnknown || unknownResultTypeList != null) && dbType == DatabaseType.Npgsql)
+            {
+                ApplyUnknownResultTypes(cmd);
+            }
             ApplyOptions(cmd);
             return cmd;
         }
@@ -346,7 +384,7 @@ namespace Norm
         /// <returns>DbCommand</returns>
         public DbCommand CreateCommand(FormattableString command)
         {
-            var (commandString, parameters) = ParseFormattableCommand(command);
+            var (commandString, parameters) = NormParameterParser.ParseFormattableCommand(command);
             MergeParameters(parameters);
             return CreateCommand(commandString);
         }
@@ -358,7 +396,7 @@ namespace Norm
         /// <returns>DbCommand</returns>
         public async ValueTask<DbCommand> CreateCommandAsync(FormattableString command)
         {
-            var (commandString, parameters) = ParseFormattableCommand(command);
+            var (commandString, parameters) = NormParameterParser.ParseFormattableCommand(command);
             MergeParameters(parameters);
             return await CreateCommandAsync(commandString);
         }

@@ -4,7 +4,7 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.1.0...5.2.0)
 
-### Support for PostgreSQL native positional parameters
+### Support for PostgreSQL native positional parameters - Npgsql (PostgreSQL) 6+ only
 
 You can now use PostgreSQL **native positional parameters** (or any other database provider that supports unnamed positional parameters).
 
@@ -61,7 +61,7 @@ However, sending multiple commands in one command string separated by a semicolo
 
 See following [article](https://www.roji.org/parameters-batching-and-sql-rewriting).
 
-## `NpgsqlEnableSqlRewriting` global setting
+## `NpgsqlEnableSqlRewriting` global setting - Npgsql (PostgreSQL) 6+ only
 
 You can force all `Npgsql` commands to "raw" mode that disables `Npgsql` parser for all `Npgsql` commands globally.
 
@@ -82,6 +82,54 @@ Notes:
 - When in "raw" mode (SQL rewriting disabled) following features are disabled:
    - Named parameters are disabled, and positional parameters with $ syntax must be used always (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
    - Multiple commands in one command string separated by a semicolon (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`)
+
+### `WithUnknownResultType(params bool[] list)` connection extension method - Npgsql (PostgreSQL) 6+ only
+
+This new method extension will tell the underlying `Npgsql` command results parser not to map command results and return raw strings only.
+
+For example, results of this PostgreSQL query are all strings:
+
+```csharp
+var (@int, @bool, @date, @num, @json) = connection
+    .WithUnknownResultType()
+    .Read<string, string, string, string, string>(
+        "select 1::int, true::bool, '1977-05-19'::date, 3.14::numeric, '{\"x\": \"y\"}'::json")
+    .Single();
+
+Assert.Equal("1", @int);
+Assert.Equal("t", @bool);
+Assert.Equal("1977-05-19", @date);
+Assert.Equal("3.14", @num);
+Assert.Equal("{\"x\": \"y\"}", @json);
+```
+
+In this case, the results parser didn't even bother trying to map and just returned the raw string.
+
+This, of course, has certain performance benefits. Sometimes, results don't have to be mapped and they can be passed as-is.
+
+But sometimes, this can be useful when mapping rare and exotic PostgreSQL types which are not supported by the official `Npgsql` drivers.
+
+PostgreSQL is unkown to have a variety of different and custom types and not all may be supported by the `Npgsql`. See this [FAQ](https://www.npgsql.org/doc/faq.html#a-nameunknowntypei-get-an-exception-the-field-field1-has-a-type-currently-unknown-to-npgsql-oid-xxxxx-you-can-retrieve-it-as-a-string-by-marking-it-as-unknowna)
+
+If you supply array parameters for this method, you can tell the `Npgsql` that unknown types are only at certain position, by setting `true` at same paramater position. For example:
+
+```csharp
+var (@int, @bool, @date, @num, @json) = connection
+    .WithUnknownResultType(true, false, true, false, true)
+    .Read<string, bool, string, decimal, string>(sql
+        "select 1::int, true::bool, '1977-05-19'::date, 3.14::numeric, '{\"x\": \"y\"}'::json")
+    .Single();
+
+Assert.Equal("1", @int);
+Assert.Equal(true, @bool);
+Assert.Equal("1977-05-19", @date);
+Assert.Equal(3.14m, @num);
+Assert.Equal("{\"x\": \"y\"}", @json);
+```
+
+So, in this case only the first, third, and fourth results are unknown and therefore returned as raw strings.
+
+If simply called this method without any parameters like this `.WithUnknownResultType()` - it would set all results to unknown raw mode.
 
 ## [5.1.0](https://github.com/vb-consulting/Norm.net/tree/5.1.0) (2022-06-20)
 

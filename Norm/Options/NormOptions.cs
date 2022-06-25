@@ -32,13 +32,6 @@ namespace Norm
         /// </summary>
         public bool MapPrivateSetters { get; set; } = false;
         /// <summary>
-        /// Uses batch command for multiple commands processing if available. 
-        /// Batch interfaces are available in .NET6 assemblies only for PostgreSQL and MySQL currently.
-        /// Otherwise, fallbacks to multiple commands separated by semicolon.
-        /// Set to default to disable batch processing for all connection types.
-        /// </summary>
-        public bool UseBatchIfAvailable { get; set; } = true;
-        /// <summary>
         /// Enables SQL rewriting for Npgsql driver by setting global Npgsql.EnableSqlRewriting switch
         /// Only for Npgsql version 6 and above.
         /// Default is null, Npgsql driver default.

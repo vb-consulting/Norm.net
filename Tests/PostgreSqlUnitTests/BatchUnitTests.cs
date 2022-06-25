@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Norm;
-using Npgsql;
+﻿using Npgsql;
 using Xunit;
 
 namespace PostgreSqlUnitTests

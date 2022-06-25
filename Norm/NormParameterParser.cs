@@ -3,38 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Xml.Linq;
 using Norm.Mapper;
 
 namespace Norm
 {
-    public partial class Norm
+    public static class NormParameterParser
     {
-        protected void MergeParameters(object[] parameters)
-        {
-            if (parameters.Length == 1 && parameters[0].GetType().IsArray)
-            {
-                if (parameters[0] is DbParameter[] p)
-                {
-                    parameters = p;
-                }
-            }
-            if (this.parameters == null)
-            {
-                this.parameters = parameters;
-            }
-            else
-            {
-                this.parameters = this.parameters.Union(parameters).ToArray();
-            }
-        }
-
-        protected static readonly char[] NonCharacters =
+        private static readonly char[] NonCharacters =
             {' ', '\n', '\r', ',', ';', ':', '-', '!', '"', '#', '$', '%', '&', '/', '(', ')', '=', '?', '*', '\\', '.', '\''};
 
-        protected const string ParamPrefix = "@";
+        private const string ParamPrefix = "@";
 
-        protected void AddParametersInternal(DbCommand cmd, params object[] parameters)
+        public static void AddParameters(Norm instance, IDbCommand cmd, params object[] parameters)
         {
             var command = cmd.CommandText;
             var values = new List<object>(parameters.Length);
@@ -46,7 +26,7 @@ namespace Norm
                 {
                     if (prop.PropertyType.BaseType == typeof(DbParameter) || prop.PropertyType == typeof(DbParameter))
                     {
-                        AddDbParamInternal(cmd, prop.GetValue(p) as DbParameter);
+                        AddDbParamInternal(instance, cmd, prop.GetValue(p) as DbParameter);
                     }
                     else
                     {
@@ -68,11 +48,11 @@ new {{
 }}
 ");
                             }
-                            AddParamWithValueInternal(cmd, prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
+                            AddParamWithValueInternal(instance, cmd, prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
                         }
                         else if (propMeta.simple)
                         {
-                            AddParamWithValueInternal(cmd, prop.Name, prop.GetValue(p));
+                            AddParamWithValueInternal(instance, cmd, prop.Name, prop.GetValue(p));
                             names.Add(prop.Name);
                         }
                     }
@@ -83,7 +63,7 @@ new {{
             {
                 if (p is DbParameter dbParameter)
                 {
-                    AddDbParamInternal(cmd, dbParameter);
+                    AddDbParamInternal(instance, cmd, dbParameter);
                     names.Add(dbParameter.ParameterName);
                 }
                 else
@@ -131,7 +111,7 @@ new {{
                     throw new NormPositionalParametersWithStoredProcedureException();
                 }
                 usedIndexes.Add(paramIndex);
-                AddParamWithValueInternal(cmd, name, values[paramIndex++]);
+                AddParamWithValueInternal(instance, cmd, name, values[paramIndex++]);
                 used.Add(name);
             }
             paramIndex = 0;
@@ -139,21 +119,47 @@ new {{
             {
                 if (!usedIndexes.Contains(paramIndex))
                 {
-                    AddParamWithValueInternal(cmd, null, values[paramIndex]);
+                    AddParamWithValueInternal(instance, cmd, null, values[paramIndex]);
                 }
                 paramIndex++;
             }
         }
 
-        protected void AddParamWithValueInternal(DbCommand cmd, string name, object value)
+        public static (string commandString, object[] parameters) ParseFormattableCommand(FormattableString command)
+        {
+            var args = command.GetArguments();
+            var parameters = new List<object>(args.Length);
+            var commandString = string.Format(command.Format, args.Select((p, idx) =>
+            {
+                if (p is DbParameter dbParameter)
+                {
+                    dbParameter.ParameterName = $"p{idx}";
+                    parameters.Add(p);
+                    return $"@p{idx}";
+                }
+                if (p is string)
+                {
+                    if (command.Format.Contains($"{{{idx}:{NormOptions.Value.RawInterpolationParameterEscape}"))
+                    {
+                        return p;
+                    }
+                }
+                parameters.Add(p);
+                return $"@p{idx}";
+            }).ToArray());
+
+            return (commandString, parameters.ToArray());
+        }
+
+        private static void AddParamWithValueInternal(Norm instance, IDbCommand cmd, string name, object value)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
             param.Value = value ?? DBNull.Value;
-            AddDbParamInternal(cmd, param);
+            AddDbParamInternal(instance, cmd, param);
         }
 
-        protected void AddParamWithValueInternal(DbCommand cmd, string name, object value, object type)
+        private static void AddParamWithValueInternal(Norm instance, IDbCommand cmd, string name, object value, object type)
         {
             var param = cmd.CreateParameter();
             param.ParameterName = name;
@@ -169,12 +175,12 @@ new {{
                 var propertyInfo = param.GetType().GetProperty(paramTypeName);
                 propertyInfo.SetValue(param, type);
             }
-            AddDbParamInternal(cmd, param);
+            AddDbParamInternal(instance, cmd, param);
         }
 
-        protected void AddDbParamInternal(DbCommand cmd, DbParameter dbParameter)
+        private static void AddDbParamInternal(Norm instance, IDbCommand cmd, IDbDataParameter dbParameter)
         {
-            if (this.dbType != DatabaseType.Npgsql)
+            if (instance.DbType != DatabaseType.Npgsql)
             {
                 if (dbParameter.Value is System.Collections.ICollection)
                 {
@@ -200,7 +206,7 @@ new {{
             cmd.Parameters.Add(dbParameter);
         }
 
-        protected static IEnumerable<string> EnumerateParams(string command, ICollection<string> skip = null)
+        private static IEnumerable<string> EnumerateParams(string command, ICollection<string> skip = null)
         {
             for (var index = 0; ; index += ParamPrefix.Length)
             {
@@ -237,32 +243,6 @@ new {{
                     break;
                 index = endOf;
             }
-        }
-
-        protected (string commandString, object[] parameters) ParseFormattableCommand(FormattableString command)
-        {
-            var args = command.GetArguments();
-            var parameters = new List<object>(args.Length);
-            var commandString = string.Format(command.Format, args.Select((p, idx) =>
-            {
-                if (p is DbParameter dbParameter)
-                {
-                    dbParameter.ParameterName = $"p{idx}";
-                    parameters.Add(p);
-                    return $"@p{idx}";
-                }
-                if (p is string)
-                {
-                    if (command.Format.Contains($"{{{idx}:{NormOptions.Value.RawInterpolationParameterEscape}"))
-                    {
-                        return p;
-                    }
-                }
-                parameters.Add(p);
-                return $"@p{idx}";
-            }).ToArray());
-
-            return (commandString, parameters.ToArray());
         }
     }
 }

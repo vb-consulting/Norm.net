@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data.Common;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Norm
 {
@@ -9,7 +11,6 @@ namespace Norm
     public partial class NormMultipleBatch : IDisposable, IAsyncDisposable
     {
         private readonly Norm norm;
-        private object dbBatch = null;
         private DbCommand dbCommand = null;
         private DbDataReader dbReader = null;
         private bool disposed = false;
@@ -25,9 +26,10 @@ namespace Norm
             GC.SuppressFinalize(this);
         }
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            throw new NotImplementedException();
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -36,11 +38,6 @@ namespace Norm
             {
                 if (disposing)
                 {
-                    if (dbBatch != null)
-                    {
-                        ExecuteMethod<object>(dbBatch, "Dispose");
-                        //dbBatch.Dispose();
-                    }
                     if (dbCommand != null)
                     {
                         dbCommand.Dispose();
@@ -60,11 +57,6 @@ namespace Norm
             {
                 if (disposing)
                 {
-                    if (dbBatch != null)
-                    {
-                        await ExecuteMethod<ValueTask>(dbBatch, "DisposeAsync");
-                        //await dbBatch.DisposeAsync();
-                    }
                     if (dbCommand != null)
                     {
                         dbCommand.Dispose();
@@ -102,13 +94,6 @@ namespace Norm
 
         internal NormMultipleBatch Init(string command, FormattableString formattable)
         {
-            /*
-            if (NormOptions.Value.UseBatchIfAvailable)
-            {
-                dbBatch = ExecuteMethod<object>(this.norm.Connection, "CreateBatch");
-                var commands = GetProperty<object>(dbBatch, "BatchCommands");
-            }
-            */
             if (formattable != null)
             {
                 dbCommand = norm.CreateCommand(formattable);
@@ -133,28 +118,6 @@ namespace Norm
             }
             dbReader = await norm.ExecuteReaderAsync(dbCommand);
             return this;
-        }
-
-        private T ExecuteMethod<T>(object instance, string name, params object[] paramaters)
-        {
-            var method = instance.GetType().GetMethod(name);
-            if (method != null)
-            {
-                return (T)method.Invoke(instance, paramaters);
-            }
-            return default;
-        }
-
-        private T GetProperty<T>(object instance, string name)
-            where T : class
-        {
-            var prop = instance.GetType().GetProperty(name, BindingFlags.Public);
-            if (prop != null)
-            {
-                var value = prop.GetValue(instance);
-                return value as T;
-            }
-            return default;
         }
     }
 }
