@@ -98,6 +98,97 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public void Postgres_PositionalParams_ParamType_Test()
+        {
+            var p1 = "_b_";
+            var p2 = ((string)null, DbType.AnsiString);
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .WithParameters(p1, p2)
+                .Read<string>(@"select * from 
+                    (values ('abc'), ('bcd')) t (t1) 
+                    where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+                .Single();
+
+            Assert.Equal("abc", result);
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_NpgsqlDbType_Test()
+        {
+            var p1 = "_b_";
+            var p2 = ((string)null, NpgsqlDbType.Text);
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .WithParameters(p1, p2)
+                .Read<string>(@"select * from 
+                    (values ('abc'), ('bcd')) t (t1) 
+                    where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+                .Single();
+
+            Assert.Equal("abc", result);
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_WithTypes_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(
+                    ("str", DbType.String), 
+                    (999, DbType.Int32), 
+                    (true, DbType.Boolean), 
+                    (new DateTime(1977, 5, 19), DbType.Date), 
+                    ((string)null, DbType.String))
+                .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Postgres_PositionalParams_WithNpgsqlDbTypes_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(
+                    ("str", NpgsqlDbType.Text),
+                    (999, NpgsqlDbType.Bigint),
+                    (true, NpgsqlDbType.Boolean),
+                    (new DateTime(1977, 5, 19), NpgsqlDbType.Date),
+                    ((string)null, NpgsqlDbType.Text))
+                .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void Postgres_MultipleInstancePositionalParams_Test()
+        {
+            var p1 = new NpgsqlParameter { Value = "_b_", DbType = DbType.AnsiString };
+            var p2 = new NpgsqlParameter { Value = DBNull.Value, DbType = DbType.AnsiString };
+
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var result = connection
+                .WithParameters(p1, p2)
+                .Read<string>(@"select * from 
+                    (values ('abc'), ('bcd')) t (t1) 
+                    where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+                .Single();
+
+            Assert.Equal("abc", result);
+        }
+
+        [Fact]
         public void NamedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);

@@ -119,7 +119,29 @@ new {{
             {
                 if (!usedIndexes.Contains(paramIndex))
                 {
-                    AddParamWithValueInternal(instance, cmd, null, values[paramIndex]);
+                    if (value != null)
+                    {
+                        var type = value.GetType();
+                        var meta = type.GetMetadata();
+                        if (meta.valueTuple)
+                        {
+                            var f1 = type.GetField("Item1");
+                            var f2 = type.GetField("Item2");
+                            if (f1 == null || f2 == null)
+                            {
+                                throw new ArgumentException(@$"Wrong parameter at index: {paramIndex}. Tuples in parameter values are only allowed to set specific database type like this for example: (1, NpgsqlDbType.Integer), (""some text"", DbType.String), etc");
+                            }
+                            AddParamWithValueInternal(instance, cmd, null, f1.GetValue(value), f2.GetValue(value));
+                        }
+                        else if (meta.simple)
+                        {
+                            AddParamWithValueInternal(instance, cmd, null, value);
+                        }
+                    }
+                    else
+                    {
+                        AddParamWithValueInternal(instance, cmd, null, value);
+                    }
                 }
                 paramIndex++;
             }

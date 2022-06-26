@@ -1,5 +1,77 @@
 ﻿# Changelog
 
+## [5.2.1](https://github.com/vb-consulting/Norm.net/tree/5.2.1) (2022-06-26)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.0...5.2.1)
+
+### Support for specific parameter types when using PostgreSQL native positional parameters
+
+In previous version with could set PostgreSQL positional paramters like this:
+
+```csharp
+var p1 = "_b_";
+var p2 = "a__";
+
+var result = connection
+    .WithParameters(p1, p2)
+    .Read<string>(@"select * from 
+        (values ('abc'), ('bcd')) t (t1) 
+        where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+    .Single();
+
+Assert.Equal("abc", result);
+```
+
+However, sometimes when the parameter value is null, and the parameter type has not been set explicitly and PostgreSQL could not determine the data type of that parameter.
+
+In fact, this would throw an exception:
+
+```csharp
+var p1 = "_b_";
+var p2 = (string)null;
+
+var result = connection
+    .WithParameters(p1, p2)
+    .Read<string>(@"select * from 
+        (values ('abc'), ('bcd')) t (t1) 
+        where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+    .Single();
+
+Unhandled exception. Npgsql.PostgresException (0x80004005): 42P08: could not determine data type of parameter $1
+```
+
+From this version 5.2.1, positional parameter can be value tuple where first tuple is actual value and second value is database type:
+
+```csharp
+var p1 = "_b_";
+var p2 = ((string)null, DbType.AnsiString);
+
+var result = connection
+    .WithParameters(p1, p2)
+    .Read<string>(@"select * from 
+        (values ('abc'), ('bcd')) t (t1) 
+        where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+    .Single();
+```
+
+This will set the parameter type correctly and solve the error.
+
+It is also possible to use native parameter type, for example:
+
+```csharp
+var p1 = "_b_";
+var p2 = ((string)null, NpgsqlDbType.Text);
+
+var result = connection
+    .WithParameters(p1, p2)
+    .Read<string>(@"select * from 
+        (values ('abc'), ('bcd')) t (t1) 
+        where ($1 is null or t1 similar to $1) and ($2 is null or t1 similar to $2)")
+    .Single();
+```
+
+Note that this approach will also save the underlying database driver of mapping correct types, and give another performance increase.
+
 ## [5.2.0](https://github.com/vb-consulting/Norm.net/tree/5.2.0) (2022-06-23)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.1.0...5.2.0)
