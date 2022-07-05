@@ -17,14 +17,14 @@ namespace Norm
             {
                 while (dbReader.Read())
                 {
-                    yield return norm.ReadToArray(dbReader);
+                    yield return Norm.ReadToArray(dbReader);
                 }
             }
             else
             {
                 while (dbReader.Read())
                 {
-                    yield return norm.ReadToArray(dbReader, norm.ReaderCallback);
+                    yield return Norm.ReadToArray(dbReader, norm.ReaderCallback);
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace Norm
                 return Read().Map<T>(t1.type);
             }
 
-            return ReadInternal(r => norm.GetFieldValue<T>(r, 0, t1.type));
+            return ReadInternal(r => Norm.GetFieldValue<T>(r, 0, t1.type));
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace Norm
                 return Read().Map<T1, T2>(t1.type, t2.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type)));
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace Norm
                 return Read().Map<T1, T2, T3>(t1.type, t2.type, t3.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type)));
         }
 
         /// <summary>
@@ -116,10 +116,10 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4>(t1.type, t2.type, t3.type, t4.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type)));
         }
 
         /// <summary>
@@ -142,11 +142,11 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5>(t1.type, t2.type, t3.type, t4.type, t5.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type)));
         }
 
         /// <summary>
@@ -170,12 +170,12 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type)));
         }
 
         /// <summary>
@@ -200,13 +200,13 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type),
+                Norm.GetFieldValue<T7>(r, 6, t7.type)));
         }
 
         /// <summary>
@@ -232,14 +232,14 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type),
+                Norm.GetFieldValue<T7>(r, 6, t7.type),
+                Norm.GetFieldValue<T8>(r, 7, t8.type)));
         }
 
         /// <summary>
@@ -266,15 +266,15 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type),
+                Norm.GetFieldValue<T7>(r, 6, t7.type),
+                Norm.GetFieldValue<T8>(r, 7, t8.type),
+                Norm.GetFieldValue<T9>(r, 8, t9.type)));
         }
 
         /// <summary>
@@ -302,16 +302,16 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type),
-                norm.GetFieldValue<T10>(r, 9, t10.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type),
+                Norm.GetFieldValue<T7>(r, 6, t7.type),
+                Norm.GetFieldValue<T8>(r, 7, t8.type),
+                Norm.GetFieldValue<T9>(r, 8, t9.type),
+                Norm.GetFieldValue<T10>(r, 9, t10.type)));
         }
 
         /// <summary>
@@ -340,17 +340,17 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type);
             }
             return ReadInternal(r => (
-               norm.GetFieldValue<T1>(r, 0, t1.type),
-               norm.GetFieldValue<T2>(r, 1, t2.type),
-               norm.GetFieldValue<T3>(r, 2, t3.type),
-               norm.GetFieldValue<T4>(r, 3, t4.type),
-               norm.GetFieldValue<T5>(r, 4, t5.type),
-               norm.GetFieldValue<T6>(r, 5, t6.type),
-               norm.GetFieldValue<T7>(r, 6, t7.type),
-               norm.GetFieldValue<T8>(r, 7, t8.type),
-               norm.GetFieldValue<T9>(r, 8, t9.type),
-               norm.GetFieldValue<T10>(r, 9, t10.type),
-               norm.GetFieldValue<T11>(r, 10, t11.type)));
+               Norm.GetFieldValue<T1>(r, 0, t1.type),
+               Norm.GetFieldValue<T2>(r, 1, t2.type),
+               Norm.GetFieldValue<T3>(r, 2, t3.type),
+               Norm.GetFieldValue<T4>(r, 3, t4.type),
+               Norm.GetFieldValue<T5>(r, 4, t5.type),
+               Norm.GetFieldValue<T6>(r, 5, t6.type),
+               Norm.GetFieldValue<T7>(r, 6, t7.type),
+               Norm.GetFieldValue<T8>(r, 7, t8.type),
+               Norm.GetFieldValue<T9>(r, 8, t9.type),
+               Norm.GetFieldValue<T10>(r, 9, t10.type),
+               Norm.GetFieldValue<T11>(r, 10, t11.type)));
         }
 
         /// <summary>
@@ -380,18 +380,18 @@ namespace Norm
                 return Read().Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(t1.type, t2.type, t3.type, t4.type, t5.type, t6.type, t7.type, t8.type, t9.type, t10.type, t11.type, t12.type);
             }
             return ReadInternal(r => (
-                norm.GetFieldValue<T1>(r, 0, t1.type),
-                norm.GetFieldValue<T2>(r, 1, t2.type),
-                norm.GetFieldValue<T3>(r, 2, t3.type),
-                norm.GetFieldValue<T4>(r, 3, t4.type),
-                norm.GetFieldValue<T5>(r, 4, t5.type),
-                norm.GetFieldValue<T6>(r, 5, t6.type),
-                norm.GetFieldValue<T7>(r, 6, t7.type),
-                norm.GetFieldValue<T8>(r, 7, t8.type),
-                norm.GetFieldValue<T9>(r, 8, t9.type),
-                norm.GetFieldValue<T10>(r, 9, t10.type),
-                norm.GetFieldValue<T11>(r, 10, t11.type),
-                norm.GetFieldValue<T12>(r, 11, t12.type)));
+                Norm.GetFieldValue<T1>(r, 0, t1.type),
+                Norm.GetFieldValue<T2>(r, 1, t2.type),
+                Norm.GetFieldValue<T3>(r, 2, t3.type),
+                Norm.GetFieldValue<T4>(r, 3, t4.type),
+                Norm.GetFieldValue<T5>(r, 4, t5.type),
+                Norm.GetFieldValue<T6>(r, 5, t6.type),
+                Norm.GetFieldValue<T7>(r, 6, t7.type),
+                Norm.GetFieldValue<T8>(r, 7, t8.type),
+                Norm.GetFieldValue<T9>(r, 8, t9.type),
+                Norm.GetFieldValue<T10>(r, 9, t10.type),
+                Norm.GetFieldValue<T11>(r, 10, t11.type),
+                Norm.GetFieldValue<T12>(r, 11, t12.type)));
         }
 
         ///<summary>

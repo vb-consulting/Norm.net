@@ -340,3 +340,5 @@ ASALocalRun/
 healthchecksdb
 
 testsettings.local.json
+PostgreSqlBatchingUnitTests/
+Norm.Batching/

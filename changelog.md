@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+## [5.2.2](https://github.com/vb-consulting/Norm.net/tree/5.2.2) (2022-07-05)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.1...5.2.2)
+
+- Smaller internal improvements and fixed async disposal for the Multiple Batch class implementation.
+
+- New performance tests. They are showing that Norm is now at similar levels as Dapper. This might be due to the new feature implementations that have been added since version 4.3.0.
+
 ## [5.2.1](https://github.com/vb-consulting/Norm.net/tree/5.2.1) (2022-06-26)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.0...5.2.1)

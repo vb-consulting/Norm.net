@@ -6,7 +6,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        public (string name, object value)[] ReadToArray(DbDataReader reader)
+        public static (string name, object value)[] ReadToArray(DbDataReader reader)
         {
             var count = reader.FieldCount;
             object v;
@@ -23,7 +23,7 @@ namespace Norm
             return result;
         }
 
-        public (string name, object value)[] ReadToArray(DbDataReader reader,
+        public static (string name, object value)[] ReadToArray(DbDataReader reader,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             var count = reader.FieldCount;
