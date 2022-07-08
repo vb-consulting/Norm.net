@@ -33,7 +33,7 @@ public partial class PostgreSqlSerialUnitTest
         });
 
         connection
-            .WithParameters("foo\nbar", $"foo{Environment.NewLine}bar")
+            .WithParameters("foo\nbar", $"foo\r\nbar")
             .Execute("select $1, $2");
 
         Assert.Equal(string.Join("\n", expected), actual);
