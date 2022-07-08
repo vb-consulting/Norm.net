@@ -10,7 +10,9 @@ public partial class PostgreSqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- at WithCommentHeader_CallerInfo_Test in ",
+            "/*",
+        "at WithCommentHeader_CallerInfo_Test in ",
+        "*/",
         "select 1"
         };
         string actual = "";
@@ -21,25 +23,25 @@ public partial class PostgreSqlSerialUnitTest
             .WithCommandCallback(c => actual = c.CommandText)
             .Execute("select 1");
 
-        var actualLines = actual.Split(Environment.NewLine);
+        var actualLines = actual.Split("\n");
 
-        Assert.Equal(2, actualLines.Length);
+        Assert.Equal(4, actualLines.Length);
         Assert.Equal(expected.Length, actualLines?.Length);
-        Assert.StartsWith(expected[0], actualLines?[0]);
+        Assert.StartsWith(expected[1], actualLines?[1]);
         //Assert.EndsWith(" 184", actualLines?[0]);
-        Assert.Equal(expected[1], actualLines?[1]);
+        Assert.Equal(expected[2], actualLines?[2]);
 
         connection
             .WithCommentCallerInfo()
             .WithCommandCallback(c => actual = c.CommandText)
             .Execute("select 1");
 
-        actualLines = actual.Split(Environment.NewLine);
+        actualLines = actual.Split("\n");
 
-        Assert.Equal(2, actualLines.Length);
+        Assert.Equal(4, actualLines.Length);
         Assert.Equal(expected.Length, actualLines?.Length);
-        Assert.StartsWith(expected[0], actualLines?[0]);
+        Assert.StartsWith(expected[1], actualLines?[1]);
         //Assert.EndsWith(" 197", actualLines?[0]);
-        Assert.Equal(expected[1], actualLines?[1]);
+        Assert.Equal(expected[2], actualLines?[2]);
     }
 }

@@ -10,7 +10,9 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- Sql Text Command. Timeout: 60 seconds.",
+            "/*",
+        "Sql Text Command. Timeout: 60 seconds.",
+        "*/",
         "select 1"
         };
         string? actual = null;
@@ -27,6 +29,6 @@ public partial class SqlSerialUnitTest
         });
 
         connection.Execute("select 1");
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
     }
 }

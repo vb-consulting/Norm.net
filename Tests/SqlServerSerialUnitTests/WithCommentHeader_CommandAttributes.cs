@@ -11,7 +11,9 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- Sql Text Command. Timeout: 30 seconds.",
+            "/*",
+        "Sql Text Command. Timeout: 30 seconds.",
+        "*/",
         "select 1"
         };
         string actual = "";
@@ -22,6 +24,6 @@ public partial class SqlSerialUnitTest
             .WithCommandCallback(c => actual = c.CommandText)
             .Execute("select 1");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
     }
 }

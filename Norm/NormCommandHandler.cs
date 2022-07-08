@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -49,32 +50,34 @@ namespace Norm
 
             if (this.commandCommentHeaderEnabled && this.comment != null)
             {
-                sb.AppendLine($"-- {this.comment}");
+                sb.Append($"{this.comment}\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCommandAttributes) ||
                 (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
             {
-                sb.AppendLine($"-- {(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType.ToString()} Command. Timeout: {cmd.CommandTimeout} seconds.");
+                sb.Append($"{(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType} Command. Timeout: {cmd.CommandTimeout} seconds.\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
                 (this.commandCommentHeaderEnabled && this.includeCallerInfo))
             {
-                sb.AppendLine($"-- at {memberName} in {sourceFilePath} {sourceLineNumber}");
+                sb.Append($"at {memberName} in {sourceFilePath} {sourceLineNumber}\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) ||
                 (this.commandCommentHeaderEnabled && this.includeTimestamp))
             {
-                sb.AppendLine($"-- Timestamp: {DateTime.Now:o}");
+                sb.Append($"Timestamp: {DateTime.Now:o}\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeParameters) ||
                 (this.commandCommentHeaderEnabled && this.includeParameters))
             {
+                int paramIndex = 0;
                 foreach (DbParameter p in cmd.Parameters)
                 {
+                    paramIndex++;
                     string paramType;
                     if (this.dbType == DatabaseType.Other)
                     {
@@ -91,24 +94,39 @@ namespace Norm
                         {
                             paramType = this.dbType.ToString().ToLowerInvariant();
                         }
+                        if (int.TryParse(paramType, out _))
+                        {
+                            paramType = "";
+                        }
                     }
                     object value = p.Value is DateTime time ? time.ToString("o") : p.Value;
                     if (value is string)
                     {
-                        value = $"\"{value}\"";
+                        value = $"\"{value}\"".Replace("/*", "??").Replace("*/", "??");
                     }
                     else if (value is bool)
                     {
                         value = value.ToString().ToLowerInvariant();
                     }
-                    sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, p.ParameterName, paramType, value));
+                    else if (value is System.Collections.ICollection)
+                    {
+                        var array = new List<string>();
+                        var enumerator = (value as System.Collections.IEnumerable).GetEnumerator();
+                        while (enumerator.MoveNext())
+                        {
+                            array.Add(enumerator.Current.ToString());
+                        }
+                        value = $"{{{string.Join(", ", array)}}}";
+                    }
+                    var name = string.IsNullOrEmpty(p.ParameterName) ? $"${paramIndex}" : $"@{p.ParameterName}";
+                    sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, name, paramType, value));
                 }
             }
 
             if (sb.Length > 0)
             {
                 commandText = cmd.CommandText;
-                commentHeader = sb.ToString();
+                commentHeader = $"/*\n{sb}*/\n";
                 cmd.CommandText = string.Concat(commentHeader, commandText);
             }
         }

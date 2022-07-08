@@ -10,7 +10,9 @@ public partial class PostgreSqlSerialUnitTest
 
         var expected = new string[]
         {
-            "-- Npgsql Text Command. Timeout: 30 seconds.",
+            "/*",
+            "Npgsql Text Command. Timeout: 30 seconds.",
+            "*/",
             "select 1"
         };
         string? actual = null;
@@ -28,7 +30,7 @@ public partial class PostgreSqlSerialUnitTest
         });
 
         connection.Execute("select 1");
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
         Assert.Equal(30, timeout); // the default
 
         NormOptions.Configure(options =>

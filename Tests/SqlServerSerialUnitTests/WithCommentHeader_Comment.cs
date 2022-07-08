@@ -10,7 +10,9 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- This is my comment",
+            "/*",
+        "This is my comment",
+        "*/",
         "select 1"
         };
         string actual = "";
@@ -21,11 +23,13 @@ public partial class SqlSerialUnitTest
             .WithCommandCallback(c => actual = c.CommandText)
             .Execute("select 1");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
 
         var expected2 = new string[]
         {
-        "-- This is my second comment",
+            "/*",
+        "This is my second comment",
+        "*/",
         "select 2"
         };
 
@@ -34,6 +38,6 @@ public partial class SqlSerialUnitTest
             .WithCommandCallback(c => actual = c.CommandText)
             .Execute("select 2");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected2), actual);
+        Assert.Equal(string.Join("\n", expected2), actual);
     }
 }

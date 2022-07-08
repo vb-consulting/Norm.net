@@ -13,8 +13,6 @@ namespace Norm
         private readonly Norm norm;
         private DbCommand dbCommand = null;
         private DbDataReader dbReader = null;
-        private bool disposed = false;
-
         internal NormMultipleBatch(Norm norm)
         {
             this.norm = norm;

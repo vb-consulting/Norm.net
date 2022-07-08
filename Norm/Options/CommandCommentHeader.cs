@@ -23,7 +23,7 @@ namespace Norm
         /// <summary>
         /// Format string for parameters in comment headers. Placeholder 0 is the parameter name, 1 is the parameter type and 2 is the parameter value. Used only when `IncludeParameters` is `true`.
         /// </summary>
-        public string ParametersFormat { get; set; } = $"-- @{{0}} {{1}} = {{2}}{Environment.NewLine}";
+        public string ParametersFormat { get; set; } = $"{{0}} {{1}} = {{2}}\n";
         /// <summary>
         /// Include command execution timestamp in comment headers.
         /// </summary>

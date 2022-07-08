@@ -10,13 +10,15 @@ public partial class PostgreSqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- My foo bar query",
-        "-- Npgsql Text Command. Timeout: 30 seconds.",
-        "-- at ChangeLogExample1 in ",
-        $"-- Timestamp: {DateTime.Now.ToString("o")[..11]}",
-        "-- @foo text = \"foo value\"",
-        "-- @bar text = \"bar value\"",
-        "select @foo, @bar"
+        "/*",
+        "My foo bar query",
+        "Npgsql Text Command. Timeout: 30 seconds.",
+        "at ChangeLogExample1 in ",
+        $"Timestamp: {DateTime.Now.ToString("o")[..11]}",
+        "@foo text = \"foo value\"",
+        "@bar text = \"bar value\"",
+        "*/",
+        "select @foo, @bar",
         };
         string actual = "";
         using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
@@ -28,21 +30,21 @@ public partial class PostgreSqlSerialUnitTest
             .Read<string, string>("select @foo, @bar")
             .Single();
 
-        var actualLines = actual.Split(Environment.NewLine);
+        var actualLines = actual.Split("\n");
 
         Assert.Equal("foo value", foo);
         Assert.Equal("bar value", bar);
 
-        Assert.Equal(7, actualLines.Length);
+        Assert.Equal(9, actualLines.Length);
         Assert.Equal(expected.Length, actualLines?.Length);
-        Assert.Equal(expected[0], actualLines?[0]);
         Assert.Equal(expected[1], actualLines?[1]);
+        Assert.Equal(expected[2], actualLines?[2]);
 
-        Assert.StartsWith(expected[2], actualLines?[2]);
         Assert.StartsWith(expected[3], actualLines?[3]);
+        Assert.StartsWith(expected[4], actualLines?[4]);
 
-        Assert.Equal(expected[4], actualLines?[4]);
         Assert.Equal(expected[5], actualLines?[5]);
         Assert.Equal(expected[6], actualLines?[6]);
+        Assert.Equal(expected[7], actualLines?[7]);
     }
 }

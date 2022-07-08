@@ -8,10 +8,10 @@ public partial class SqlSerialUnitTest
         // reset to default
         NormOptions.Configure(o => { });
 
-        string actual1 = "", expected1 = $"-- comment1{Environment.NewLine}select 1";
-        string actual2 = "", expected2 = $"-- comment2{Environment.NewLine}select 2";
-        string actual3 = "", expected3 = $"-- comment3{Environment.NewLine}select 3";
-        string actual4 = "", expected4 = $"-- comment4{Environment.NewLine}select 4";
+        string actual1 = "", expected1 = $"/*\ncomment1\n*/\nselect 1";
+        string actual2 = "", expected2 = $"/*\ncomment2\n*/\nselect 2";
+        string actual3 = "", expected3 = $"/*\ncomment3\n*/\nselect 3";
+        string actual4 = "", expected4 = $"/*\ncomment4\n*/\nselect 4";
 
         Task.WaitAll(
             Task.Factory.StartNew(() =>

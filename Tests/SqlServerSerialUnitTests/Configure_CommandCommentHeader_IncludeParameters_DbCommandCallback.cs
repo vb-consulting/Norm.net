@@ -10,11 +10,13 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- Sql Text Command. Timeout: 30 seconds.",
-        "-- @1 int = 1",
-        "-- @2 nvarchar = \"foo\"",
-        "-- @3 bit = false",
-        "-- @4 datetime = \"2022-05-19T00:00:00.0000000\"",
+            "/*",
+        "Sql Text Command. Timeout: 30 seconds.",
+        "@1 int = 1",
+        "@2 nvarchar = \"foo\"",
+        "@3 bit = false",
+        "@4 datetime = \"2022-05-19T00:00:00.0000000\"",
+        "*/",
         "select @1, @2, @3, @4"
         };
 
@@ -31,6 +33,6 @@ public partial class SqlSerialUnitTest
         });
 
         connection.WithParameters(1, "foo", false, new DateTime(2022, 5, 19)).Execute("select @1, @2, @3, @4");
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
     }
 }

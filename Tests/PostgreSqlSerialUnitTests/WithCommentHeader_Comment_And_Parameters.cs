@@ -10,11 +10,13 @@ public partial class PostgreSqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- This is my comment",
-        "-- @1 integer = 1",
-        "-- @2 text = \"foo\"",
-        "-- @3 boolean = false",
-        "-- @4 timestamp = \"2022-05-19T00:00:00.0000000\"",
+            "/*",
+        "This is my comment",
+        "@1 integer = 1",
+        "@2 text = \"foo\"",
+        "@3 boolean = false",
+        "@4 timestamp = \"2022-05-19T00:00:00.0000000\"",
+        "*/",
         "select @1, @2, @3, @4"
         };
         string actual = "";
@@ -27,6 +29,6 @@ public partial class PostgreSqlSerialUnitTest
             .WithParameters(1, "foo", false, new DateTime(2022, 5, 19))
             .Execute("select @1, @2, @3, @4");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
     }
 }

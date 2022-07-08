@@ -10,10 +10,12 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- @1 int = 1",
-        "-- @2 nvarchar = \"foo\"",
-        "-- @3 bit = false",
-        "-- @4 datetime = \"2022-05-19T00:00:00.0000000\"",
+            "/*",
+        "@1 int = 1",
+        "@2 nvarchar = \"foo\"",
+        "@3 bit = false",
+        "@4 datetime = \"2022-05-19T00:00:00.0000000\"",
+        "*/",
         "select @1, @2, @3, @4"
         };
         string actual = "";
@@ -25,14 +27,16 @@ public partial class SqlSerialUnitTest
             .WithParameters(1, "foo", false, new DateTime(2022, 5, 19))
             .Execute("select @1, @2, @3, @4");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
 
         var expected2 = new string[]
         {
-        "-- @1 int = 2",
-        "-- @2 nvarchar = \"bar\"",
-        "-- @3 bit = false",
-        "-- @4 datetime = \"1977-05-19T00:00:00.0000000\"",
+            "/*",
+        "@1 int = 2",
+        "@2 nvarchar = \"bar\"",
+        "@3 bit = false",
+        "@4 datetime = \"1977-05-19T00:00:00.0000000\"",
+        "*/",
         "select @1, @2, @3, @4"
         };
 
@@ -42,6 +46,6 @@ public partial class SqlSerialUnitTest
             .WithParameters(2, "bar", false, new DateTime(1977, 5, 19))
             .Execute("select @1, @2, @3, @4");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected2), actual);
+        Assert.Equal(string.Join("\n", expected2), actual);
     }
 }

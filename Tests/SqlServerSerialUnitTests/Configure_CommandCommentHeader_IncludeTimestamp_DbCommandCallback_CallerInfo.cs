@@ -10,9 +10,11 @@ public partial class SqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- Sql Text Command. Timeout: 30 seconds.",
-        "-- at Configure_CommandCommentHeader_IncludeTimestamp_DbCommandCallback_CallerInfo_Test",
-        $"-- Timestamp: {DateTime.Now.ToString("o")[..11]}",
+            "/*",
+        "Sql Text Command. Timeout: 30 seconds.",
+        "at Configure_CommandCommentHeader_IncludeTimestamp_DbCommandCallback_CallerInfo_Test",
+        $"Timestamp: {DateTime.Now.ToString("o")[..11]}",
+        "*/",
         "select 1"
         };
         string? actual = null;
@@ -30,11 +32,11 @@ public partial class SqlSerialUnitTest
 
         connection.Execute("select 1");
 
-        var actualLines = actual?.Split(Environment.NewLine);
+        var actualLines = actual?.Split("\n");
         Assert.Equal(expected?.Length, actualLines?.Length);
-        Assert.Equal(actualLines?[0], expected?[0]);
-        Assert.StartsWith(expected?[1], actualLines?[1]);
+        Assert.Equal(actualLines?[1], expected?[1]);
         Assert.StartsWith(expected?[2], actualLines?[2]);
-        Assert.Equal(expected?[3], actualLines?[3]);
+        Assert.StartsWith(expected?[3], actualLines?[3]);
+        Assert.Equal(expected?[4], actualLines?[4]);
     }
 }

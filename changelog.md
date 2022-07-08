@@ -1,5 +1,47 @@
 ﻿# Changelog
 
+## [5.2.3](https://github.com/vb-consulting/Norm.net/tree/5.2.3) (2022-07-08)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.2...5.2.3)
+
+Comment headers are now always multi-line SQL comments.
+
+Quick example:
+
+```csharp
+public void ChangeLogExample1()
+{
+    var (foo, bar) = connection
+        .WithCommentHeader(comment: "My foo bar query", includeCommandAttributes: true, includeParameters: true, includeCallerInfo: true)
+        .WithParameters(new { foo = "foo value", bar = "bar value" })
+        .Read<string, string>("select @foo, @bar")
+        .Single();
+}
+```
+
+This will produce the following command on SQL Server:
+
+```
+/*
+My foo bar query
+Sql Text Command. Timeout: 30 seconds.
+at ChangeLogExample1 in /SourcePath/ChangeLogExample.cs 28
+@foo nvarchar = "foo value"
+@bar nvarchar = "bar value"
+*/
+select @foo, @bar
+```
+
+Single line comments, when showing parameter values that contain multiple lines could break comments and cause runtime errors.
+
+This solves this problem.
+
+Additionally, parameter values are parsed to replace comment start and end sequences (`/*` and `*/`) with `??`.
+
+Comment header parameters now support PostgreSQL native positional parameters.
+
+PostgreSQL array parameter output to comment header is also supported.
+
 ## [5.2.2](https://github.com/vb-consulting/Norm.net/tree/5.2.2) (2022-07-05)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.1...5.2.2)

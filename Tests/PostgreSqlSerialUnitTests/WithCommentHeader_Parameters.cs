@@ -10,10 +10,12 @@ public partial class PostgreSqlSerialUnitTest
 
         var expected = new string[]
         {
-        "-- @1 integer = 1",
-        "-- @2 text = \"foo\"",
-        "-- @3 boolean = false",
-        "-- @4 timestamp = \"2022-05-19T00:00:00.0000000\"",
+             "/*",
+        "@1 integer = 1",
+        "@2 text = \"foo\"",
+        "@3 boolean = false",
+        "@4 timestamp = \"2022-05-19T00:00:00.0000000\"",
+         "*/",
         "select @1, @2, @3, @4"
         };
         string actual = "";
@@ -25,14 +27,16 @@ public partial class PostgreSqlSerialUnitTest
             .WithParameters(1, "foo", false, new DateTime(2022, 5, 19))
             .Execute("select @1, @2, @3, @4");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected), actual);
+        Assert.Equal(string.Join("\n", expected), actual);
 
         var expected2 = new string[]
         {
-        "-- @1 integer = 2",
-        "-- @2 text = \"bar\"",
-        "-- @3 boolean = false",
-        "-- @4 timestamp = \"1977-05-19T00:00:00.0000000\"",
+            "/*",
+        "@1 integer = 2",
+        "@2 text = \"bar\"",
+        "@3 boolean = false",
+        "@4 timestamp = \"1977-05-19T00:00:00.0000000\"",
+        "*/",
         "select @1, @2, @3, @4"
         };
 
@@ -42,6 +46,6 @@ public partial class PostgreSqlSerialUnitTest
             .WithParameters(2, "bar", false, new DateTime(1977, 5, 19))
             .Execute("select @1, @2, @3, @4");
 
-        Assert.Equal(string.Join(Environment.NewLine, expected2), actual);
+        Assert.Equal(string.Join("\n", expected2), actual);
     }
 }
