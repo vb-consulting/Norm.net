@@ -1,6 +1,53 @@
+<!-- vscode-markdown-toc -->
+* 1. [Prerequisites and Notes](#PrerequisitesandNotes)
+* 2. [Execution](#Execution)
+	* 2.1. [Simple execution](#Simpleexecution)
+	* 2.2. [Chaining calls](#Chainingcalls)
+* 3. [Single row mappings](#Singlerowmappings)
+	* 3.1. [Single value](#Singlevalue)
+	* 3.2. [Multiple value mappings](#Multiplevaluemappings)
+	* 3.3. [ARRAY types (PostgreSQL only)](#ARRAYtypesPostgreSQLonly)
+	* 3.4. [Named tuples](#Namedtuples)
+	* 3.5. [Multiple named tuples](#Multiplenamedtuples)
+	* 3.6. [Named Tuples with ARRAY types (PostgreSQL only)](#NamedTupleswithARRAYtypesPostgreSQLonly)
+	* 3.7. [Class instance properties](#Classinstanceproperties)
+	* 3.8. [Class instance properties mapping with different naming styles (different case, snake case)](#Classinstancepropertiesmappingwithdifferentnamingstylesdifferentcasesnakecase)
+	* 3.9. [Ignored class instance properties](#Ignoredclassinstanceproperties)
+	* 3.10. [Multiple class instances](#Multipleclassinstances)
+	* 3.11. [Multiple class instances with the same name](#Multipleclassinstanceswiththesamename)
+	* 3.12. [Class instances and map ARRAY types (PostgreSQL only)](#ClassinstancesandmapARRAYtypesPostgreSQLonly)
+	* 3.13. [Record instances](#Recordinstances)
+* 4. [Multiple values](#Multiplevalues)
+* 5. [Anonymous type instances](#Anonymoustypeinstances)
+	* 5.1. [Iterations](#Iterations)
+	* 5.2. [Mapping to lists and array](#Mappingtolistsandarray)
+	* 5.3. [Mapping to a dictionary](#Mappingtoadictionary)
+	* 5.4. [Mapping to a dictionary using named tuples](#Mappingtoadictionaryusingnamedtuples)
+	* 5.5. [Using GroupBy with the class instances](#UsingGroupBywiththeclassinstances)
+* 6. [Batching multiple commands](#Batchingmultiplecommands)
+* 7. [Database command parameters](#Databasecommandparameters)
+	* 7.1. [Using formattable strings to supply parameters](#Usingformattablestringstosupplyparameters)
+	* 7.2. [Using formattable strings to supply parameters and skipping parameters (raw)](#Usingformattablestringstosupplyparametersandskippingparametersraw)
+	* 7.3. [Using formattable strings to supply native database parameters](#Usingformattablestringstosupplynativedatabaseparameters)
+	* 7.4. [Simple parameters by position](#Simpleparametersbyposition)
+	* 7.5. [Simple parameters by position and native database parameters](#Simpleparametersbypositionandnativedatabaseparameters)
+	* 7.6. [Passing class instance and mapping values to parameters](#Passingclassinstanceandmappingvaluestoparameters)
+	* 7.7. [Passing anonymous class instance and mapping values to parameters](#Passinganonymousclassinstanceandmappingvaluestoparameters)
+	* 7.8. [Passing anonymous class instance and mapping values to parameters](#Passinganonymousclassinstanceandmappingvaluestoparameters-1)
+	* 7.9. [Mixing class instance, database native, and simple parameters](#Mixingclassinstancedatabasenativeandsimpleparameters)
+	* 7.10. [Using anonymous class instance to provide value, specific name and specific database type](#Usinganonymousclassinstancetoprovidevaluespecificnameandspecificdatabasetype)
+	* 7.11. [Mapping parameters by specific name and specific custom database type](#Mappingparametersbyspecificnameandspecificcustomdatabasetype)
+* 8. [Using reader callback](#Usingreadercallback)
+* 9. [Command object options](#Commandobjectoptions)
+	* 9.1. [Command type](#Commandtype)
+	* 9.2. [Command timeout](#Commandtimeout)
+	* 9.3. [Passing the cancellation token](#Passingthecancellationtoken)
+	* 9.4. [Prepared statements](#Preparedstatements)
+
+
 # Norm.net Data Access at a glance
 
-## Prerequisites and Notes
+##  1. <a name='PrerequisitesandNotes'></a>Prerequisites and Notes
 
 - All Norm read operations are returning `IEnumerable<?>` or `IAsyncEnumerable<?>` for asynchronous operations.
 
@@ -25,11 +72,11 @@ dotnet add package System.Linq.Async
 
 - System.Linq.Async shares the same namespace with the `System.Linq`, so no new `using` is needed.
 
-## Execution
+##  2. <a name='Execution'></a>Execution
 
 - Methods `Execute` and `ExecuteAsync` do not return values.
 
-### Simple execution
+###  2.1. <a name='Simpleexecution'></a>Simple execution
 
 ```csharp
 connection.Execute("sql statements to execute");
@@ -39,7 +86,7 @@ connection.Execute("sql statements to execute");
 await connection.ExecuteAsync("sql statements to execute");
 ```
 
-### Chaining calls
+###  2.2. <a name='Chainingcalls'></a>Chaining calls
 
 ```csharp
 connection
@@ -49,13 +96,13 @@ connection
     .Execute("rollback");
 ```
 
-## Single row mappings
+##  3. <a name='Singlerowmappings'></a>Single row mappings
 
 - Use any of the `Linq` extensions available to get a single value from the enumeration, such as `First`, `Single`, `FirstOrDefault` or `SingleOrDefault`.
 
 - Single row mappings demonstrate different mapping techniques like values, names tuples, class instances, etc
 
-### Single value
+###  3.1. <a name='Singlevalue'></a>Single value
 
 ```csharp
 var value1 = connection.Read<int>("select 1").FirstOrDefault();
@@ -65,7 +112,7 @@ var value1 = connection.Read<int>("select 1").FirstOrDefault();
 var value1 = await connection.ReadAsync<int>("select 1").FirstOrDefaultAsync();
 ```
 
-### Multiple value mappings
+###  3.2. <a name='Multiplevaluemappings'></a>Multiple value mappings
 
 - Up to 12 values the most.
 - Mapped by position (name is not present).
@@ -80,7 +127,7 @@ var (number1, str1, date1) = await connection.ReadAsync<int, string, DateTime>("
 var (v1, v2, v3, v4) = await connection.ReadAsync<int, int, int, int>("select 1, 2, 3, 4").FirstOrDefaultAsync();
 ```
 
-### ARRAY types (PostgreSQL only)
+###  3.3. <a name='ARRAYtypesPostgreSQLonly'></a>ARRAY types (PostgreSQL only)
 
 ```csharp
 var arr = connection.Read<int[]>("select array[1, 2]").FirstOrDefault();
@@ -89,7 +136,7 @@ var (arr1, arr2) = connection.Read<int[], int[]>("select array[1, 2], array[1, 2
 Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", arr[0], arr[1], arr1[0], arr1[1], arr2[0], arr2[1], arr2[2], arr2[3]); 
 ```
 
-### Named tuples
+###  3.4. <a name='Namedtuples'></a>Named tuples
 
 - If you use `Read<T1, T2>`, the result will be an unnamed tuple that you can map to single values: `var (t1, t2) = conn.Read<T1, T2>(sql);`
 - If you use `Read<(T1, T2)>`, the result will be named tuple which will have IntelliSense autocomplete enabled from your IDE.
@@ -102,7 +149,7 @@ var myTuple = connection.Read<(int Value1, int Value2, int Value3)>("select 1, 2
 Console.WriteLine("{0}, {1}, {2}", myTuple.Value1, myTuple.Value2, myTuple.Value3); 
 ```
 
-### Multiple named tuples
+###  3.5. <a name='Multiplenamedtuples'></a>Multiple named tuples
 
 - You can map multiple named tuples at the same time, up to 12 tuples the most:
 
@@ -113,7 +160,7 @@ var (myTuple1, myTuple2) = connection.Read<(int Value1, int Value2), (int Value1
 Console.WriteLine("{0}, {1}, {2}, {3}, {4}", myTuple1.Value1, myTuple1.Value2, myTuple2.Value1, myTuple2.Value2, myTuple2.Value3); 
 ```
 
-### Named Tuples with ARRAY types (PostgreSQL only)
+###  3.6. <a name='NamedTupleswithARRAYtypesPostgreSQLonly'></a>Named Tuples with ARRAY types (PostgreSQL only)
 
 ```csharp
 var tuple = connection.Read<(int[] Arr1, int[] Arr2)>("select array[1, 2], array[1, 2, 3, 4]").FirstOrDefault();
@@ -121,7 +168,7 @@ var tuple = connection.Read<(int[] Arr1, int[] Arr2)>("select array[1, 2], array
 Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}, {6}", tuple.Arr1[0], tuple.Arr1[1], tuple.Arr2[0], tuple.Arr2[1], tuple.Arr2[2], tuple.Arr2[3]);
 ```
 
-### Class instance properties
+###  3.7. <a name='Classinstanceproperties'></a>Class instance properties
 
 - Unlimited number of class instance properties (limited only by .NET internal number of class properties)of any type.
 
@@ -140,7 +187,7 @@ var instance = await connection.ReadAsync<MyClass>("select 1 as Value1, 2 as Val
 Console.WriteLine("{0}, {1}", instance.Value1, instance.Value2); 
 ```
 
-### Class instance properties mapping with different naming styles (different case, snake case)
+###  3.8. <a name='Classinstancepropertiesmappingwithdifferentnamingstylesdifferentcasesnakecase'></a>Class instance properties mapping with different naming styles (different case, snake case)
 
 - Mapping by name is case insensitive.
 - Mapping by name works with snake case naming out of the box.
@@ -168,7 +215,7 @@ var instance = connection.Read<MyClass>("@select
 Console.WriteLine("{0}, {1}", instance.MyValue1, instance.MyValue2); 
 ```
 
-### Ignored class instance properties
+###  3.9. <a name='Ignoredclassinstanceproperties'></a>Ignored class instance properties
 
 - Only properties with the public setter are mapped
 
@@ -194,7 +241,7 @@ var instance = connection.Read<MyClass>(@"select
                                             7 as value7").FirstOrDefault();
 ```
 
-### Multiple class instances
+###  3.10. <a name='Multipleclassinstances'></a>Multiple class instances
 
 - Map up to 12 class instances at the same time.
 - Class instance properties are always **mapped by name.**
@@ -218,7 +265,7 @@ Console.WriteLine("{0}, {1}, {2}, {3}", instance1.Value1, instance1.Value2, inst
 // outputs 1, 2, 3, 4
 ```
 
-### Multiple class instances with the same name
+###  3.11. <a name='Multipleclassinstanceswiththesamename'></a>Multiple class instances with the same name
 
 - When mapping multiple class instances, properties with the same name are mapped by the position they appear.
 - From left to right: `MyClass1` maps the first appearances of `value1` and `value2` as they appear in the query from left to right.
@@ -243,7 +290,7 @@ Console.WriteLine("{0}, {1}, {2}, {3}", instance1.Value1, instance1.Value2, inst
 // outputs 1, 2, 3, 4
 ```
 
-### Class instances and map ARRAY types (PostgreSQL only)
+###  3.12. <a name='ClassinstancesandmapARRAYtypesPostgreSQLonly'></a>Class instances and map ARRAY types (PostgreSQL only)
 
 - Array types are mapped normally
 
@@ -259,7 +306,7 @@ var instance = connection.Read<MyClass>(@"select array[1,2] as array1, array[3,4
 Console.WriteLine("{0}, {1}, {2}, {3}", instance.Array1[0], instance.Array1[1], instance.Array2[0], instance.Array2[1]); 
 ```
 
-### Record instances
+###  3.13. <a name='Recordinstances'></a>Record instances
 
 - Everything true for class instance mapping is also true for Record instance mapping:
   - Mapping by name (case insensitive, snake case, etc)
@@ -276,11 +323,11 @@ var instance = await connection.ReadAsync<MyRecord>("select 1 as value1, 2 as va
 Console.WriteLine("{0}, {1}", instance.Value1, instance.Value2);
 ```
 
-## Multiple values
+##  4. <a name='Multiplevalues'></a>Multiple values
 
 - Everything in regards to mapping is also true when returning multiple records from your query
 
-## Anonymous type instances
+##  5. <a name='Anonymoustypeinstances'></a>Anonymous type instances
 
 var instance = connection.Read(new
 { 
@@ -296,7 +343,7 @@ var instance = await connection.ReadAsync<MyClass>(new
 
 Console.WriteLine("{0}, {1}", instance.Value1, instance.Value2); 
 
-### Iterations
+###  5.1. <a name='Iterations'></a>Iterations
 
 - Mapped by position, no field name is required in a query:
 
@@ -359,7 +406,7 @@ await foreach (var instance in connection.ReadAsync<MyRecord>(query))
 }
 ```
 
-### Mapping to lists and array
+###  5.2. <a name='Mappingtolistsandarray'></a>Mapping to lists and array
 
 - Using `Linq` to map to any other data structure will do, such as `ToHashset` for example
 
@@ -373,7 +420,7 @@ var list = await connection.ReadAsync<T>(query).ToListAsync();
 var array = await connection.ReadAsync<T>(query).ToArrayAsync();
 ```
 
-### Mapping to a dictionary
+###  5.3. <a name='Mappingtoadictionary'></a>Mapping to a dictionary
 
 - Reading generic values yields unnamed tuples, so, to map to dictionary generic names `Item1` and `Item2` must be used.
 
@@ -385,7 +432,7 @@ var dict = connection.Read<int, string>("select id, value from my_table").ToDict
 var dict = await connection.ReadAsync<int, string>("select id, value from my_table").ToDictionaryAsync(t => t.Item1, t => t.Item2);
 ```
 
-### Mapping to a dictionary using named tuples
+###  5.4. <a name='Mappingtoadictionaryusingnamedtuples'></a>Mapping to a dictionary using named tuples
 
 ```csharp
 var dict = connection.Read<(int Key, string Value)>("select id, value from my_table").ToDictionary(t => t.Key, t => t.Value);
@@ -395,7 +442,7 @@ var dict = connection.Read<(int Key, string Value)>("select id, value from my_ta
 var dict = await connection.ReadAsync<(int Key, string Value)>("select id, value from my_table").ToDictionaryAsync(t => t.Key, t => t.Value);
 ```
 
-### Using GroupBy with the class instances
+###  5.5. <a name='UsingGroupBywiththeclassinstances'></a>Using GroupBy with the class instances
 
 - Note: any other `Linq` extension that transforms enumeration will do.
 
@@ -409,7 +456,7 @@ public class MyClass
 var grouped = connection.Read<MyClass>(sql).GroupBy(g => g.Key);
 ```
 
-## Batching multiple commands
+##  6. <a name='Batchingmultiplecommands'></a>Batching multiple commands
 
 - Batches are executed by using `Multiple(Async)` extension that returns a disposable object that can do `Execute(Async)` and/or `Read(Async)`.
 - SQL Commands (and potential parameters) are supplied to `Multiple(Async)` extension, subsequent `Execute(Async)` and/or `Read(Async)` calls are parameterless. 
@@ -431,7 +478,7 @@ var valuefromTran = multiple.Read<string>().Single();
 multiple.Execute();
 ```
 
-## Database command parameters
+##  7. <a name='Databasecommandparameters'></a>Database command parameters
 
 - Parameters can be supplied to following extensions:
   - `Execute` and `ExecuteAsync`
@@ -441,7 +488,7 @@ multiple.Execute();
   - `ReadFormat` and `ReadFormatAsync`
   - `MultipleFormat` and `MultipleFormatAsync`
 
-### Using formattable strings to supply parameters
+###  7.1. <a name='Usingformattablestringstosupplyparameters'></a>Using formattable strings to supply parameters
 
 - You can supply parameters using formattable string commands by using extension versions with `Format` suffix:
 
@@ -453,7 +500,7 @@ var p = "xyz";
 connection.ReadFormat<T>($"select * from table where id = {p}");
 ```
 
-### Using formattable strings to supply parameters and skipping parameters (raw)
+###  7.2. <a name='Usingformattablestringstosupplyparametersandskippingparametersraw'></a>Using formattable strings to supply parameters and skipping parameters (raw)
 
 ```csharp
 var p = "xyz";
@@ -462,7 +509,7 @@ var where = "where 1=1";
 connection.ReadFormat<T>($"select * from {table:raw} {where:raw} and id = {p}");
 ```
 
-### Using formattable strings to supply native database parameters
+###  7.3. <a name='Usingformattablestringstosupplynativedatabaseparameters'></a>Using formattable strings to supply native database parameters
 
 - Native parameters allow you to set more precise parameter types.
 - Note: Native parameters may require parameter names, which is in this case meaningless.
@@ -476,7 +523,7 @@ var p = "xyz";
 connection.ReadFormat<T>($"select * from table where id = {new SqlParameter("p1", 1)}");
 ```
 
-### Simple parameters by position
+###  7.4. <a name='Simpleparametersbyposition'></a>Simple parameters by position
 
 - Note: parameter names are meaningless but required since they are mapped by position.
 
@@ -488,20 +535,20 @@ var p = "xyz";
 connection.Read<T>("select * from table where id = @p", p);
 ```
 
-### Simple parameters by position and native database parameters
+###  7.5. <a name='Simpleparametersbypositionandnativedatabaseparameters'></a>Simple parameters by position and native database parameters
 
 - If the supplied parameter is a native database parameter, it will be interpreted as such
 - In this case, parameter name matters
 
 ```csharp
-connection.Read<T>("select @p1, @p2, @p3", new SqlParameter("p1", 1), new SqlParameter("p2", 1), {new SqlParameter("p3", 3));
+connection.WithParameters(new SqlParameter("p1", 1), new SqlParameter("p2", 1), new SqlParameter("p3", 3)).Read<T>("select @p1, @p2, @p3");
 connection.Read<T>("select * from table where id = @p", new SqlParameter("p1", 1));
 
 var p =  new SqlParameter("p", 1)
 connection.Read<T>("select * from table where id = @p", p);
 ```
 
-### Passing class instance and mapping values to parameters
+###  7.6. <a name='Passingclassinstanceandmappingvaluestoparameters'></a>Passing class instance and mapping values to parameters
 
 - In this case, parameter name matters
 
@@ -518,13 +565,13 @@ var instance = new MyClass{ Param1 = "value1", Param2 = "value2", Param3 = "valu
 connection.Read<T>("select @Param1, @Param2, @Param3", instance);
 ```
 
-### Passing anonymous class instance and mapping values to parameters
+###  7.7. <a name='Passinganonymousclassinstanceandmappingvaluestoparameters'></a>Passing anonymous class instance and mapping values to parameters
 
 ```csharp
 connection.Read<T>("select @Param1, @Param2, @Param3", new { param1 = "value1", param2 = "value2", param3 = "value3" });
 ```
 
-### Passing anonymous class instance and mapping values to parameters
+###  7.8. <a name='Passinganonymousclassinstanceandmappingvaluestoparameters-1'></a>Passing anonymous class instance and mapping values to parameters
 
 ```csharp
 var param1 = "value1";
@@ -534,7 +581,7 @@ connection.Read<T>("select @Param1, @Param2, @Param3", new { param1, param2, par
 ```
 
 
-### Mixing class instance, database native, and simple parameters
+###  7.9. <a name='Mixingclassinstancedatabasenativeandsimpleparameters'></a>Mixing class instance, database native, and simple parameters
 
 - Instance parameters and native database parameters are mapped by name first and what remains is mapped by position.
 
@@ -553,24 +600,24 @@ connection.Read<T>("select @X, @Param1, @Param2, @Param3, @Y", instance, new Sql
 ```
 
 
-### Using anonymous class instance to provide value, specific name and specific database type
+###  7.10. <a name='Usinganonymousclassinstancetoprovidevaluespecificnameandspecificdatabasetype'></a>Using anonymous class instance to provide value, specific name and specific database type
 
 ```csharp
 connection.Read<T>("select @p1, @p2, @p3", new { p1 = (1, DbType.Int32), p2 = (2, DbType.Int32), p3 = (1, DbType.Int32)}
 connection.Read<T>("select * from table where id = @p", new {p = (1, DbType.Int32)});
 ```
 
-### Mapping parameters by specific name and specific custom database type
+###  7.11. <a name='Mappingparametersbyspecificnameandspecificcustomdatabasetype'></a>Mapping parameters by specific name and specific custom database type
 
 ```csharp
-connection.Read<T>("select @p1, @p2, @p3", ("p1", 1, NpgsqlDbType.Integer), ("p2", 2, NpgsqlDbType.Integer), ("p3", 1, NpgsqlDbType.Integer));
+connection.Read<T>("select @p1, @p2, @p3", new { p1 =, (1, NpgsqlDbType.Integer), p2 = (2, NpgsqlDbType.Integer), p3 = (1, NpgsqlDbType.Integer));
 connection.Read<T>("select * from table where id = @p", ("p", 1, NpgsqlDbType.Integer));
 
 connection.Read<T>("select @p1, @p2, @p3", new { p1 = (1, NpgsqlDbType.Integer), p2 = (2, NpgsqlDbType.Integer), p3 = (1, NpgsqlDbType.Integer)}
 connection.Read<T>("select * from table where id = @p", new {p = (1, NpgsqlDbType.Integer)});
 ```
 
-## Using reader callback
+##  8. <a name='Usingreadercallback'></a>Using reader callback
 
 You can pass reader callback lambda function to:
 - Change the value or type
@@ -706,14 +753,14 @@ var array = connection.Read<TestClass>(query, r => r switch
 }).ToArray();
 ```
 
-## Command object options
+##  9. <a name='Commandobjectoptions'></a>Command object options
 - `AsProcedure` sets all command types to the procedure for this connection instance.
 
 ```csharp
 connection.AsProcedure().Read<T>(name, parameters);
 ```
 
-### Command type
+###  9.1. <a name='Commandtype'></a>Command type
 
 - `As` sets command type to specific type for all commands in this connection instance.
 - Command types can be `StoredProcedure`, `TableDirect` or `Text`.
@@ -724,7 +771,7 @@ using System.Data;
 connection.As(CommandType.TableDirect).Read<T>("my_table");
 ```
 
-### Command timeout
+###  9.2. <a name='Commandtimeout'></a>Command timeout
 
 - Sets all database commands for this connection to wait time in seconds given by timeout parameter.
 
@@ -733,7 +780,7 @@ var timeoutSec = 100; // 100 seconds timeout for this connection
 connection.WithCommandTimeout(timeoutSec).Read<T>(sql, parameters);
 ```
 
-### Passing the cancellation token
+###  9.3. <a name='Passingthecancellationtoken'></a>Passing the cancellation token
 
 - Sets the token to monitor for cancellation requests for all async database commands for this connection.
 
@@ -742,7 +789,7 @@ var timeoutSec = 100; // 100 seconds timeout for this connection
 connection.WithCancellationToken(cancellationToken).Execute(sql, parameters);
 ```
 
-### Prepared statements
+###  9.4. <a name='Preparedstatements'></a>Prepared statements
 
 - Sets all database commands for this connection to prepared mode.
 
