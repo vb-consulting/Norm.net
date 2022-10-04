@@ -1,10 +1,10 @@
-﻿# Changelog
+# Changelog
 
 ## [5.2.4](https://github.com/vb-consulting/Norm.net/tree/5.2.4) (2022-10-04)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.3...5.2.4)
 
-Fix anonymous parameter parser to allow complex values.
+Fix anonymous parameter parser to allow for complex values.
 
 ## [5.2.3](https://github.com/vb-consulting/Norm.net/tree/5.2.3) (2022-07-08)
 
