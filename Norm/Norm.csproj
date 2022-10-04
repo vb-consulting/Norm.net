@@ -13,12 +13,12 @@
 		<Description>High performance micro-ORM modern Dapper replacement for .NET Standard 2.1 and higher</Description>
 		<Copyright>VB-Consulting</Copyright>
 		<PackageTags>Norm;norm;data acceess;orm;no-orm;micro-orm;sql</PackageTags>
-		<Version>5.2.3</Version>
-		<AssemblyVersion>5.2.3</AssemblyVersion>
+		<Version>5.2.4</Version>
+		<AssemblyVersion>5.2.4</AssemblyVersion>
 		<PackageReleaseNotes>https://github.com/vb-consulting/Norm.net/blob/master/changelog.md</PackageReleaseNotes>
 		<PackageId>Norm.net</PackageId>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<FileVersion>5.2.3</FileVersion>
+		<FileVersion>5.2.4</FileVersion>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<IncludeSymbols>true</IncludeSymbols>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
