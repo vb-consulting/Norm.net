@@ -15,7 +15,7 @@ namespace Norm
         /// </summary>
         public Action<DbCommand> DbCommandCallback { get; set; } = null;
         /// <summary>
-        /// Autmoatic command comment header options.
+        /// Automatic command comment header options.
         /// </summary>
         public CommandCommentHeader CommandCommentHeader { get; private set; } = new CommandCommentHeader();
         /// <summary>
@@ -35,7 +35,7 @@ namespace Norm
         /// Enables SQL rewriting for Npgsql driver by setting global Npgsql.EnableSqlRewriting switch
         /// Only for Npgsql version 6 and above.
         /// Default is null, Npgsql driver default.
-        /// When SQL rewriting is disabled, only positional parameters can be used ($1, $2, 3, etc), but it has perfomance benefits.
+        /// When SQL rewriting is disabled, only positional parameters can be used ($1, $2, 3, etc), but it has performance benefits.
         /// see https://github.com/npgsql/npgsql/blob/main/src/Npgsql/NpgsqlCommand.cs#L94
         /// This option only have impact before any of the commands are executed.
         /// </summary>

@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.2.5](https://github.com/vb-consulting/Norm.net/tree/5.2.5) (2022-10-06)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.4...5.2.5)
+
+Very small change that affects how caller info is formatted.
+
+Instead of this `at ChangeLogExample1 in /SourcePath/ChangeLogExample.cs 28`, hashtag was added now we have this `at ChangeLogExample1 in /SourcePath/ChangeLogExample.cs#28`.
+
+This is because, when caller info is displayed with a hashtag in Visual Studio Code, `Ctrl+Click` will navigate editor to that exact line.
+
 ## [5.2.4](https://github.com/vb-consulting/Norm.net/tree/5.2.4) (2022-10-04)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.3...5.2.4)

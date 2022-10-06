@@ -50,7 +50,7 @@ new {{
                             }
                             AddParamWithValueInternal(instance, cmd, prop.Name, f1.GetValue(tupleValue), f2.GetValue(tupleValue));
                         }
-                        else //if (propMeta.simple)
+                        else
                         {
                             AddParamWithValueInternal(instance, cmd, prop.Name, prop.GetValue(p));
                             names.Add(prop.Name);

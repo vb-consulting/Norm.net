@@ -62,7 +62,7 @@ namespace Norm
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
                 (this.commandCommentHeaderEnabled && this.includeCallerInfo))
             {
-                sb.Append($"at {memberName} in {sourceFilePath} {sourceLineNumber}\n");
+                sb.Append($"at {memberName} in {sourceFilePath}#{sourceLineNumber}\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) ||
