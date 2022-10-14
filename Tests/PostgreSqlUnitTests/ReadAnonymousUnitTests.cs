@@ -29,7 +29,7 @@ namespace PostgreSqlUnitTests
                 bar = default(string),
                 day = default(DateTime?),
                 @bool = default(bool?),
-                s = default(string),
+                myString = default(string),
             }, @"
 
                 select * from (
@@ -37,7 +37,7 @@ namespace PostgreSqlUnitTests
                     (1, 'foo1', '1977-05-19'::date, true, null),
                     (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
                     (3, 'foo3', null::date, null, 'bar3')
-                ) t(first, bar, day, bool, s)
+                ) t(first, bar, day, bool, my_string)
                 
             ").ToList();
 
@@ -48,19 +48,19 @@ namespace PostgreSqlUnitTests
             Assert.Equal("foo1", result[0].bar);
             Assert.Equal(new DateTime(1977, 5, 19), result[0].day);
             Assert.Equal(true, result[0].@bool);
-            Assert.Null(result[0].s);
+            Assert.Null(result[0].myString);
 
             Assert.Equal(2, result[1].first);
             Assert.Equal("foo2", result[1].bar);
             Assert.Equal(new DateTime(1978, 5, 19), result[1].day);
             Assert.Equal(false, result[1].@bool);
-            Assert.Equal("bar2", result[1].s);
+            Assert.Equal("bar2", result[1].myString);
 
             Assert.Equal(3, result[2].first);
             Assert.Equal("foo3", result[2].bar);
             Assert.Null(result[2].day);
             Assert.Null(result[2].@bool);
-            Assert.Equal("bar3", result[2].s);
+            Assert.Equal("bar3", result[2].myString);
         }
 
         [Fact]

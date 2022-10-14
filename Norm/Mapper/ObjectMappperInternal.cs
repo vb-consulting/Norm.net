@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Dynamic;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Norm.Mapper
 {
@@ -9,7 +11,7 @@ namespace Norm.Mapper
     {
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
 
-        private static T MapInstance<T>(this (string name, object value)[] tuple,
+        private static void MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
@@ -47,7 +49,26 @@ namespace Norm.Mapper
                     used.Add(index);
                 }
             }
-            return instance;
+            if (i == 0 && instance.GetType() == typeof(ExpandoObject))
+            {
+                foreach (var (name, value) in tuple)
+                {
+                    var parsedName = ParseName(name);
+                    if (!names.TryGetValue(parsedName, out var index))
+                    {
+                        continue;
+                    }
+                    if (used != null && used.Contains(index))
+                    {
+                        continue;
+                    }
+                    (instance as ExpandoObject).TryAdd(parsedName, value);
+                    if (used != null)
+                    {
+                        used.Add(index);
+                    }
+                }
+            }
         }
 
         private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
@@ -56,24 +77,38 @@ namespace Norm.Mapper
             {
                 return null;
             }
-            var hashes = new HashSet<string>();
             var result = new Dictionary<string, ushort>();
             ushort i = 0;
             foreach (var t in tuple)
             {
-                var name = t.name.ToLowerInvariant().Replace("@", "").Replace("_", "");
-                if (hashes.Contains(name))
-                {
-                    i++;
-                    continue;
-                }
-                hashes.Add(name);
+                var name = ParseName(t.name);
                 result[name] = i++;
             }
             return result;
         }
 
-        private static T MapInstance<T>(this (string name, object value, bool set)[] tuple,
+        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value, bool set)[] tuple)
+        {
+            if (tuple == null)
+            {
+                return null;
+            }
+            var result = new Dictionary<string, ushort>();
+            ushort i = 0;
+            foreach (var t in tuple)
+            {
+                var name = ParseName(t.name);
+                result[name] = i++;
+            }
+            return result;
+        }
+
+        private static string ParseName(string input)
+        {
+            return input.ToLowerInvariant().Replace("@", "").Replace("_", "");
+        }
+
+        private static void MapInstance<T>(this (string name, object value, bool set)[] tuple,
             ref T instance,
             ref Dictionary<string, ushort> names,
             ref HashSet<ushort> used,
@@ -125,30 +160,31 @@ namespace Norm.Mapper
                     used.Add(index);
                 }
             }
-            return instance;
-        }
-
-        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value, bool set)[] tuple)
-        {
-            if (tuple == null)
+            if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
-                return null;
-            }
-            var hashes = new HashSet<string>();
-            var result = new Dictionary<string, ushort>();
-            ushort i = 0;
-            foreach (var t in tuple)
-            {
-                var name = t.name.ToLowerInvariant().Replace("_", "");
-                if (hashes.Contains(name))
+                foreach (var (name, value, set) in tuple)
                 {
-                    i++;
-                    continue;
+                    var parsedName = ParseName(name);
+                    if (!names.TryGetValue(parsedName, out var index))
+                    {
+                        continue;
+                    }
+                    if (used != null && used.Contains(index))
+                    {
+                        continue;
+                    }
+                    if (set)
+                    {
+                        (instance as ExpandoObject).TryAdd(parsedName, value);
+                        if (used != null)
+                        {
+                            used.Add(index);
+                        }
+                    }
+                    
                 }
-                hashes.Add(name);
-                result[name] = i++;
             }
-            return result;
+            //return instance;
         }
 
         private static void SetEnum<T>(

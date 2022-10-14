@@ -12,10 +12,7 @@ namespace Norm.Mapper
             Dictionary<string, ushort> names = null;
             foreach (var tuple in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(tuple);
-                }
+                names ??= GetNamesDictFromTuple(tuple);
                 yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref names, tuple));
             }
         }
@@ -27,10 +24,7 @@ namespace Norm.Mapper
             Dictionary<string, ushort> names = null;
             await foreach (var tuple in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(tuple);
-                }
+                names ??= GetNamesDictFromTuple(tuple);
                 yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref names, tuple));
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 
@@ -59,6 +60,10 @@ namespace Norm.Mapper
                 if (_ctorInfo.Item1 != null)
                 {
                     return _ctorInfo;
+                }
+                if (type == typeof(object))
+                {
+                    type = typeof(ExpandoObject);
                 }
                 var defaultCtor = type.GetConstructors()[0];
                 return _ctorInfo = (
