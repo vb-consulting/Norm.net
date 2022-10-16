@@ -13,7 +13,7 @@ namespace Norm.Mapper
 
         private static void MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
-            ref Dictionary<string, ushort> names,
+            ref MapDescriptor descriptor,
             ref HashSet<ushort> used,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
@@ -23,7 +23,7 @@ namespace Norm.Mapper
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
                 if (!created)
                 {
-                    if (!names.TryGetValue(property.name, out index))
+                    if (!descriptor.Names.TryGetValue(property.name, out index))
                     {
                         continue;
                     }
@@ -54,7 +54,7 @@ namespace Norm.Mapper
                 foreach (var (name, value) in tuple)
                 {
                     var parsedName = ParseName(name);
-                    if (!names.TryGetValue(parsedName, out var index))
+                    if (!descriptor.Names.TryGetValue(parsedName, out var index))
                     {
                         continue;
                     }
@@ -71,18 +71,19 @@ namespace Norm.Mapper
             }
         }
 
-        private static Dictionary<string, ushort> GetNamesDictFromTuple((string name, object value)[] tuple)
+        private static MapDescriptor BuildDescriptor((string name, object value)[] tuple)
         {
+            var result = new MapDescriptor();
             if (tuple == null)
             {
-                return null;
+                return result;
             }
-            var result = new Dictionary<string, ushort>();
+            result.Names = new Dictionary<string, ushort>();
             ushort i = 0;
             foreach (var t in tuple)
             {
                 var name = ParseName(t.name);
-                result[name] = i++;
+                result.Names[name] = i++;
             }
             return result;
         }

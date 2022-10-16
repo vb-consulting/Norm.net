@@ -9,14 +9,14 @@ namespace Norm.Mapper
             Type type1)
         {
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                names ??= GetNamesDictFromTuple(t);
+                descriptor ??= BuildDescriptor(t);
                 HashSet<ushort> used = null;
                 var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates);
                 yield return t1;
             }
         }
@@ -28,20 +28,17 @@ namespace Norm.Mapper
             var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
                 yield return (t1, t2);
             }
         }
@@ -55,23 +52,20 @@ namespace Norm.Mapper
             var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
             var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
                 yield return (t1, t2, t3);
             }
         }
@@ -87,26 +81,23 @@ namespace Norm.Mapper
             var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
             var delegates4 = CreateDelegateArray(TypeCache<T4>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
                 yield return (t1, t2, t3, t4);
             }
         }
@@ -124,7 +115,7 @@ namespace Norm.Mapper
             var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -132,21 +123,18 @@ namespace Norm.Mapper
             var delegates5 = CreateDelegateArray(TypeCache<T5>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
                 yield return (t1, t2, t3, t4, t5);
             }
         }
@@ -166,7 +154,7 @@ namespace Norm.Mapper
             var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -175,10 +163,7 @@ namespace Norm.Mapper
             var delegates6 = CreateDelegateArray(TypeCache<T6>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -186,12 +171,12 @@ namespace Norm.Mapper
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
                 yield return (t1, t2, t3, t4, t5, t6);
             }
         }
@@ -213,7 +198,7 @@ namespace Norm.Mapper
             var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -223,10 +208,7 @@ namespace Norm.Mapper
             var delegates7 = CreateDelegateArray(TypeCache<T7>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -235,13 +217,13 @@ namespace Norm.Mapper
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
                 yield return (t1, t2, t3, t4, t5, t6, t7);
             }
         }
@@ -265,7 +247,7 @@ namespace Norm.Mapper
             var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -276,10 +258,7 @@ namespace Norm.Mapper
             var delegates8 = CreateDelegateArray(TypeCache<T8>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -289,14 +268,14 @@ namespace Norm.Mapper
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref names, ref used, ref delegates8);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
 
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
@@ -323,7 +302,7 @@ namespace Norm.Mapper
             var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -335,10 +314,7 @@ namespace Norm.Mapper
             var delegates9 = CreateDelegateArray(TypeCache<T9>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                if (names == null)
-                {
-                    names = GetNamesDictFromTuple(t);
-                }
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -349,15 +325,15 @@ namespace Norm.Mapper
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref names, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref names, ref used, ref delegates9);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             }
         }
@@ -385,7 +361,7 @@ namespace Norm.Mapper
             var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -398,7 +374,7 @@ namespace Norm.Mapper
             var delegates10 = CreateDelegateArray(TypeCache<T10>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                names ??= GetNamesDictFromTuple(t);
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -410,16 +386,16 @@ namespace Norm.Mapper
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref names, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref names, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref names, ref used, ref delegates10);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
             }
         }
@@ -449,7 +425,7 @@ namespace Norm.Mapper
             var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -463,7 +439,7 @@ namespace Norm.Mapper
             var delegates11 = CreateDelegateArray(TypeCache<T11>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                names ??= GetNamesDictFromTuple(t);
+                descriptor ??= BuildDescriptor(t);
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
@@ -476,17 +452,17 @@ namespace Norm.Mapper
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref names, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref names, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref names, ref used, ref delegates10);
-                t.MapInstance(ref t11, ref names, ref used, ref delegates11);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
+                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
             }
         }
@@ -518,7 +494,7 @@ namespace Norm.Mapper
             var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
             var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
 
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
             var delegates2 = CreateDelegateArray(TypeCache<T2>.GetPropertiesLength());
             var delegates3 = CreateDelegateArray(TypeCache<T3>.GetPropertiesLength());
@@ -533,7 +509,7 @@ namespace Norm.Mapper
             var delegates12 = CreateDelegateArray(TypeCache<T12>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
-                names ??= GetNamesDictFromTuple(t);
+                descriptor ??= BuildDescriptor(t);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
@@ -547,18 +523,18 @@ namespace Norm.Mapper
                 var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
                 var t12 = TypeCache<T12>.CreateInstance(ctorInfo12);
                 var used = new HashSet<ushort>(t.Length);
-                t.MapInstance(ref t1, ref names, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref names, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref names, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref names, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref names, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref names, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref names, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref names, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref names, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref names, ref used, ref delegates10);
-                t.MapInstance(ref t11, ref names, ref used, ref delegates11);
-                t.MapInstance(ref t12, ref names, ref used, ref delegates12);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
+                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11);
+                t.MapInstance(ref t12, ref descriptor, ref used, ref delegates12);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
             }
         }

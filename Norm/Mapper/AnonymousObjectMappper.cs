@@ -9,11 +9,11 @@ namespace Norm.Mapper
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             foreach (var tuple in tuples)
             {
-                names ??= GetNamesDictFromTuple(tuple);
-                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref names, tuple));
+                descriptor ??= BuildDescriptor(tuple);
+                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
             }
         }
 
@@ -21,17 +21,17 @@ namespace Norm.Mapper
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
-            Dictionary<string, ushort> names = null;
+            MapDescriptor descriptor = null;
             await foreach (var tuple in tuples)
             {
-                names ??= GetNamesDictFromTuple(tuple);
-                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref names, tuple));
+                descriptor ??= BuildDescriptor(tuple);
+                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
             }
         }
 
         private static object[] BuildAnonParameters(
             ref (string name, Type type)[] props, 
-            ref Dictionary<string, ushort> names, 
+            ref MapDescriptor descriptor, 
             (string name, object value)[] tuple)
         {
             var parameters = new object[props.Length];
@@ -40,7 +40,7 @@ namespace Norm.Mapper
             foreach (var (name, type) in props)
             {
                 object value;
-                if (!names.TryGetValue(name, out var index))
+                if (!descriptor.Names.TryGetValue(name, out var index))
                 {
                     value = default;
                 }
