@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Norm.Mapper
 {
-
-    internal class MapDescriptor
-    {
-        public Dictionary<string, ushort> Names;
-    }
-
     public static partial class NormExtensions
     {
         public static IEnumerable<T> Map<T>(this IEnumerable<(string name, object value)[]> tuples, 
