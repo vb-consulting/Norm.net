@@ -7,7 +7,7 @@ namespace Norm.Mapper
 {
     internal class MapDescriptor
     {
-        public Dictionary<string, ushort> Names;
+        public Dictionary<string, ushort[]> Names;
         public HashSet<ushort> Used;
         public int Length;
 
@@ -24,8 +24,7 @@ namespace Norm.Mapper
         private static void MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
             ref MapDescriptor descriptor,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
-            ushort pass)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
@@ -33,14 +32,40 @@ namespace Norm.Mapper
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
                 if (!created)
                 {
-                    if (!descriptor.Names.TryGetValue(property.name, out index))
+
+                    if (!descriptor.Names.TryGetValue(property.name, out var indexArr))
                     {
                         continue;
                     }
-                    if (descriptor.Used != null && descriptor.Used.Contains(index))
+                    if (descriptor.Used != null)
                     {
-                        continue;
+                        if (descriptor.Used.Count == 0)
+                        {
+                            index = indexArr[0];
+                        }
+                        else
+                        {
+                            bool found = false;
+                            foreach(var val in new Span<ushort>(indexArr, 0, indexArr.Length))
+                            {
+                                if (!descriptor.Used.Contains(val))
+                                {
+                                    index = val;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                continue;
+                            }
+                        }
                     }
+                    else
+                    {
+                        index = indexArr[0];
+                    }
+
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
                     (method, code, isArray, structType) = CreateDelegate<T>(property.info, nullable);
                     delegates[i] = (method, nullable, code, isArray, index, structType, true);
@@ -59,18 +84,44 @@ namespace Norm.Mapper
                     descriptor.Used.Add(index);
                 }
             }
+
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
+                ushort index = 0; 
                 foreach (var (name, value) in tuple)
                 {
                     var parsedName = ParseName(name);
-                    if (!descriptor.Names.TryGetValue(parsedName, out var index))
+                    if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
                     {
                         continue;
                     }
-                    if (descriptor.Used != null && descriptor.Used.Contains(index))
+                    if (descriptor.Used != null)
                     {
-                        continue;
+                        if (descriptor.Used.Count == 0)
+                        {
+                            index = indexArr[0];
+                        }
+                        else
+                        {
+                            bool found = false;
+                            foreach (var val in new Span<ushort>(indexArr, 0, indexArr.Length))
+                            {
+                                if (!descriptor.Used.Contains(val))
+                                {
+                                    index = val;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        index = indexArr[0];
                     }
                     (instance as ExpandoObject).TryAdd(parsedName, value);
                     if (descriptor.Used != null)
@@ -84,8 +135,7 @@ namespace Norm.Mapper
         private static void MapInstance<T>(this (string name, object value, bool set)[] tuple,
             ref T instance,
             ref MapDescriptor descriptor,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
-            ushort pass)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
@@ -93,14 +143,39 @@ namespace Norm.Mapper
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
                 if (!created)
                 {
-                    if (!descriptor.Names.TryGetValue(property.name, out index))
+                    if (!descriptor.Names.TryGetValue(property.name, out var indexArr))
                     {
                         continue;
                     }
-                    if (descriptor.Used != null && descriptor.Used.Contains(index))
+                    if (descriptor.Used != null)
                     {
-                        continue;
+                        if (descriptor.Used.Count == 0)
+                        {
+                            index = indexArr[0];
+                        }
+                        else
+                        {
+                            bool found = false;
+                            foreach (var val in new Span<ushort>(indexArr, 0, indexArr.Length))
+                            {
+                                if (!descriptor.Used.Contains(val))
+                                {
+                                    index = val;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                continue;
+                            }
+                        }
                     }
+                    else
+                    {
+                        index = indexArr[0];
+                    }
+
                     i++;
                     var current = tuple[index];
                     if (current.set)
@@ -135,16 +210,41 @@ namespace Norm.Mapper
             }
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
+                ushort index = 0;
                 foreach (var (name, value, set) in tuple)
                 {
                     var parsedName = ParseName(name);
-                    if (!descriptor.Names.TryGetValue(parsedName, out var index))
+                    if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
                     {
                         continue;
                     }
-                    if (descriptor.Used != null && descriptor.Used.Contains(index))
+                    if (descriptor.Used != null)
                     {
-                        continue;
+                        if (descriptor.Used.Count == 0)
+                        {
+                            index = indexArr[0];
+                        }
+                        else
+                        {
+                            bool found = false;
+                            foreach (var val in new Span<ushort>(indexArr, 0, indexArr.Length))
+                            {
+                                if (!descriptor.Used.Contains(val))
+                                {
+                                    index = val;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        index = indexArr[0];
                     }
                     if (set)
                     {
@@ -166,13 +266,24 @@ namespace Norm.Mapper
             {
                 return descriptor;
             }
-            descriptor.Names = new Dictionary<string, ushort>();
+            descriptor.Names = new Dictionary<string, ushort[]>();
             descriptor.Length = tuple.Length;
             ushort i = 0;
             foreach (var t in tuple)
             {
                 var name = ParseName(t.name);
-                descriptor.Names[name] = i++;
+                if (descriptor.Names.TryGetValue(name, out var arr))
+                {
+                    var len = arr.Length;
+                    Array.Resize(ref arr, len + 1);
+                    arr[len] = i;
+                    descriptor.Names[name] = arr;
+                }
+                else
+                {
+                    descriptor.Names.Add(name, new ushort[1] { i });
+                }
+                i++;
             }
             return descriptor;
         }
@@ -184,13 +295,24 @@ namespace Norm.Mapper
             {
                 return descriptor;
             }
-            descriptor.Names = new Dictionary<string, ushort>();
+            descriptor.Names = new Dictionary<string, ushort[]>();
             descriptor.Length = tuple.Length;
             ushort i = 0;
             foreach (var t in tuple)
             {
                 var name = ParseName(t.name);
-                descriptor.Names[name] = i++;
+                if (descriptor.Names.TryGetValue(name, out var arr))
+                {
+                    var len = arr.Length;
+                    Array.Resize(ref arr, len + 1);
+                    arr[len] = i;
+                    descriptor.Names[name] = arr;
+                }
+                else
+                {
+                    descriptor.Names.Add(name, new ushort[1] { i });
+                }
+                i++;
             }
             return descriptor;
         }

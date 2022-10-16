@@ -95,6 +95,5 @@ namespace PostgreSqlUnitTests
             Assert.Equal("bar2", result[1].Item2.foobar);
             Assert.Equal("bar3", result[2].Item2.foobar);
         }
-
     }
 }

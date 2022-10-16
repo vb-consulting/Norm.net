@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Norm.Mapper
 {
@@ -37,15 +38,17 @@ namespace Norm.Mapper
             var parameters = new object[props.Length];
 
             ushort propIndex = 0;
+            ushort index = 0;
             foreach (var (name, type) in props)
             {
                 object value;
-                if (!descriptor.Names.TryGetValue(name, out var index))
+                if (!descriptor.Names.TryGetValue(name, out var indexArr))
                 {
                     value = default;
                 }
                 else
                 {
+                    index = indexArr[0];
                     value = tuple[index].value;
                     if (value != null)
                     {

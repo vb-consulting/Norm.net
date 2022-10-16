@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.3.0](https://github.com/vb-consulting/Norm.net/tree/5.3.0) (2022-10-16)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.5...5.3.0)
+
+- dynamic expando mapping
+
+- fixed multimapping names
+
+- new benchmarks
+
 ## [5.2.5](https://github.com/vb-consulting/Norm.net/tree/5.2.5) (2022-10-06)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.4...5.2.5)
