@@ -16,7 +16,7 @@ namespace Norm.Mapper
                 descriptor ??= BuildDescriptor(t);
                 HashSet<ushort> used = null;
                 var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates, 0);
                 yield return t1;
             }
         }
@@ -37,8 +37,8 @@ namespace Norm.Mapper
                 var used = new HashSet<ushort>(t.Length);
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
                 yield return (t1, t2);
             }
         }
@@ -63,9 +63,9 @@ namespace Norm.Mapper
                 var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
                 yield return (t1, t2, t3);
             }
         }
@@ -94,10 +94,10 @@ namespace Norm.Mapper
                 var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
                 yield return (t1, t2, t3, t4);
             }
         }
@@ -130,11 +130,11 @@ namespace Norm.Mapper
                 var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
                 yield return (t1, t2, t3, t4, t5);
             }
         }
@@ -171,12 +171,12 @@ namespace Norm.Mapper
                 var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
                 yield return (t1, t2, t3, t4, t5, t6);
             }
         }
@@ -217,13 +217,13 @@ namespace Norm.Mapper
                 var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
                 yield return (t1, t2, t3, t4, t5, t6, t7);
             }
         }
@@ -268,14 +268,14 @@ namespace Norm.Mapper
                 var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8, 7);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
         }
@@ -324,15 +324,15 @@ namespace Norm.Mapper
                 var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8, 7);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9, 8);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             }
         }
@@ -385,16 +385,16 @@ namespace Norm.Mapper
                 var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8, 7);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9, 8);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10, 9);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
             }
         }
@@ -451,17 +451,17 @@ namespace Norm.Mapper
                 var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
                 var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
-                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8, 7);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9, 8);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10, 9);
+                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11, 10);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
             }
         }
@@ -522,18 +522,18 @@ namespace Norm.Mapper
                 var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
                 var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
                 var t12 = TypeCache<T12>.CreateInstance(ctorInfo12);
-                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1);
-                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2);
-                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3);
-                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4);
-                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5);
-                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6);
-                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7);
-                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8);
-                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9);
-                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10);
-                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11);
-                t.MapInstance(ref t12, ref descriptor, ref used, ref delegates12);
+                t.MapInstance(ref t1, ref descriptor, ref used, ref delegates1, 0);
+                t.MapInstance(ref t2, ref descriptor, ref used, ref delegates2, 1);
+                t.MapInstance(ref t3, ref descriptor, ref used, ref delegates3, 2);
+                t.MapInstance(ref t4, ref descriptor, ref used, ref delegates4, 3);
+                t.MapInstance(ref t5, ref descriptor, ref used, ref delegates5, 4);
+                t.MapInstance(ref t6, ref descriptor, ref used, ref delegates6, 5);
+                t.MapInstance(ref t7, ref descriptor, ref used, ref delegates7, 6);
+                t.MapInstance(ref t8, ref descriptor, ref used, ref delegates8, 7);
+                t.MapInstance(ref t9, ref descriptor, ref used, ref delegates9, 8);
+                t.MapInstance(ref t10, ref descriptor, ref used, ref delegates10, 9);
+                t.MapInstance(ref t11, ref descriptor, ref used, ref delegates11, 10);
+                t.MapInstance(ref t12, ref descriptor, ref used, ref delegates12, 11);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
             }
         }

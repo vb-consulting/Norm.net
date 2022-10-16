@@ -5,6 +5,11 @@ using System.Reflection;
 
 namespace Norm.Mapper
 {
+    internal class MapDescriptor
+    {
+        public Dictionary<string, ushort> Names;
+    }
+
     public static partial class NormExtensions
     {
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
@@ -13,7 +18,8 @@ namespace Norm.Mapper
             ref T instance,
             ref MapDescriptor descriptor,
             ref HashSet<ushort> used,
-            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
+            ushort pass)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
@@ -70,10 +76,11 @@ namespace Norm.Mapper
         }
 
         private static void MapInstance<T>(this (string name, object value, bool set)[] tuple,
-    ref T instance,
-    ref MapDescriptor descriptor,
-    ref HashSet<ushort> used,
-    ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
+            ref T instance,
+            ref MapDescriptor descriptor,
+            ref HashSet<ushort> used,
+            ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
+            ushort pass)
         {
             ushort i = 0;
             foreach (var property in TypeCache<T>.GetProperties())
@@ -145,41 +152,40 @@ namespace Norm.Mapper
 
                 }
             }
-            //return instance;
         }
 
         private static MapDescriptor BuildDescriptor((string name, object value)[] tuple)
         {
-            var result = new MapDescriptor();
+            var descriptor = new MapDescriptor();
             if (tuple == null)
             {
-                return result;
+                return descriptor;
             }
-            result.Names = new Dictionary<string, ushort>();
+            descriptor.Names = new Dictionary<string, ushort>();
             ushort i = 0;
             foreach (var t in tuple)
             {
                 var name = ParseName(t.name);
-                result.Names[name] = i++;
+                descriptor.Names[name] = i++;
             }
-            return result;
+            return descriptor;
         }
 
         private static MapDescriptor BuildDescriptor((string name, object value, bool set)[] tuple)
         {
-            var result = new MapDescriptor();
+            var descriptor = new MapDescriptor();
             if (tuple == null)
             {
-                return result;
+                return descriptor;
             }
-            result.Names = new Dictionary<string, ushort>();
+            descriptor.Names = new Dictionary<string, ushort>();
             ushort i = 0;
             foreach (var t in tuple)
             {
                 var name = ParseName(t.name);
-                result.Names[name] = i++;
+                descriptor.Names[name] = i++;
             }
-            return result;
+            return descriptor;
         }
 
         private static string ParseName(string input)
