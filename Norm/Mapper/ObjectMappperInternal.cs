@@ -8,6 +8,13 @@ namespace Norm.Mapper
     internal class MapDescriptor
     {
         public Dictionary<string, ushort> Names;
+        public HashSet<ushort> Used;
+        public int Length;
+
+        public void Reset()
+        {
+            Used = new HashSet<ushort>(Length);
+        }
     }
 
     public static partial class NormExtensions
@@ -17,7 +24,6 @@ namespace Norm.Mapper
         private static void MapInstance<T>(this (string name, object value)[] tuple,
             ref T instance,
             ref MapDescriptor descriptor,
-            ref HashSet<ushort> used,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
             ushort pass)
         {
@@ -31,7 +37,7 @@ namespace Norm.Mapper
                     {
                         continue;
                     }
-                    if (used != null && used.Contains(index))
+                    if (descriptor.Used != null && descriptor.Used.Contains(index))
                     {
                         continue;
                     }
@@ -48,9 +54,9 @@ namespace Norm.Mapper
                 {
                     SetEnum(tuple[index].value, instance, property, nullable, isArray);
                 }
-                if (used != null)
+                if (descriptor.Used != null)
                 {
-                    used.Add(index);
+                    descriptor.Used.Add(index);
                 }
             }
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
@@ -62,14 +68,14 @@ namespace Norm.Mapper
                     {
                         continue;
                     }
-                    if (used != null && used.Contains(index))
+                    if (descriptor.Used != null && descriptor.Used.Contains(index))
                     {
                         continue;
                     }
                     (instance as ExpandoObject).TryAdd(parsedName, value);
-                    if (used != null)
+                    if (descriptor.Used != null)
                     {
-                        used.Add(index);
+                        descriptor.Used.Add(index);
                     }
                 }
             }
@@ -78,7 +84,6 @@ namespace Norm.Mapper
         private static void MapInstance<T>(this (string name, object value, bool set)[] tuple,
             ref T instance,
             ref MapDescriptor descriptor,
-            ref HashSet<ushort> used,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates,
             ushort pass)
         {
@@ -92,7 +97,7 @@ namespace Norm.Mapper
                     {
                         continue;
                     }
-                    if (used != null && used.Contains(index))
+                    if (descriptor.Used != null && descriptor.Used.Contains(index))
                     {
                         continue;
                     }
@@ -101,9 +106,9 @@ namespace Norm.Mapper
                     if (current.set)
                     {
                         property.info.SetValue(instance, current.value);
-                        if (used != null)
+                        if (descriptor.Used != null)
                         {
-                            used.Add(index);
+                            descriptor.Used.Add(index);
                         }
                         continue;
                     }
@@ -123,9 +128,9 @@ namespace Norm.Mapper
                 {
                     SetEnum(tuple[index].value, instance, property, nullable, isArray);
                 }
-                if (used != null)
+                if (descriptor.Used != null)
                 {
-                    used.Add(index);
+                    descriptor.Used.Add(index);
                 }
             }
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
@@ -137,16 +142,16 @@ namespace Norm.Mapper
                     {
                         continue;
                     }
-                    if (used != null && used.Contains(index))
+                    if (descriptor.Used != null && descriptor.Used.Contains(index))
                     {
                         continue;
                     }
                     if (set)
                     {
                         (instance as ExpandoObject).TryAdd(parsedName, value);
-                        if (used != null)
+                        if (descriptor.Used != null)
                         {
-                            used.Add(index);
+                            descriptor.Used.Add(index);
                         }
                     }
 
@@ -162,6 +167,7 @@ namespace Norm.Mapper
                 return descriptor;
             }
             descriptor.Names = new Dictionary<string, ushort>();
+            descriptor.Length = tuple.Length;
             ushort i = 0;
             foreach (var t in tuple)
             {
@@ -179,6 +185,7 @@ namespace Norm.Mapper
                 return descriptor;
             }
             descriptor.Names = new Dictionary<string, ushort>();
+            descriptor.Length = tuple.Length;
             ushort i = 0;
             foreach (var t in tuple)
             {
