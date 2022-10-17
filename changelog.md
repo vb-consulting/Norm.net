@@ -4,11 +4,127 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.5...5.3.0)
 
-- dynamic expando mapping
+### New feature - dynamic mapping support
 
-- fixed multimapping names
+For this version `5.3.0` it is possible to map objects to a dynamic class.
 
-- new benchmarks
+Simply, instead of class or record name - use `dynamic` and the mapper will return a dynamic instance of `ExpandoObjects` objects:
+
+```csharp
+var result = connection.Read<dynamic>(@"select *
+                from (
+                values 
+                    (1, 'foo1', '1977-05-19'::date, true, null),
+                    (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
+                    (3, 'foo3', '1979-05-19'::date, null, 'bar3')
+                ) t(id, foo, day, bool, foo_bar)")
+    .ToList();
+
+Assert.Equal(3, result.Count);
+Assert.Equal(1, result[0].id);
+Assert.Equal(2, result[1].id);
+Assert.Equal(3, result[2].id);
+
+Assert.Equal("foo1", result[0].foo);
+Assert.Equal("foo2", result[1].foo);
+Assert.Equal("foo3", result[2].foo);
+```
+
+Note that `ExpandoObjects` are a bit slow and you will lose on auto-complete features as well as static typing.
+
+`dynamic` can also be mixed with mapping to normal classes, for example:
+
+```
+var result = connection.Read<Class1, dynamic>(@"select *
+                from (
+                values 
+                    (1, 'foo1', '1977-05-19'::date, true, null),
+                    (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
+                    (3, 'foo3', '1979-05-19'::date, null, 'bar3')
+                ) t(id, foo, day, bool, foo_bar)")
+    .ToList();
+```
+
+In this example, whatever is not mapped to `Class1` will be mapped to a dynamic type.
+
+See examples in [this unit tests](https://github.com/vb-consulting/Norm.net/blob/5.3.0/Tests/PostgreSqlUnitTests/DynamicMapUnitTests.cs).
+
+### Fix - duplicate field names in multi mapping
+
+Some queries can return duplicate field names. 
+
+For example, if we have these multiple mappings:
+
+```csharp
+public class Shop
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public IList<Account> Accounts { get; set; }
+}
+
+public class Account
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
+    public string Country { get; set; }
+    public int ShopId { get; set; }
+    public Shop Shop { get; set; }
+}
+
+//...
+connection.Read<Shop, Account>(@"
+        select s.*, a.*
+        from shop s 
+        inner join account a on s.id = a.shop_id")
+//...
+```
+
+This query returns duplicate names (`id` and `name`):
+
+| **id** | **name** | **id** | **name** | address | country | shop_id |
+| -- | ---- | -- | ---- | ------- | ------- | ------- |
+| 1 | shop1 | 3 | account3 | addr3 | country3 | 1 |
+| 1 | shop1 | 2 | account2 | addr2 | country2 | 1 |
+| 1 | shop1 | 1 | account1 | addr1 | country1 | 1 |
+| 2 | shop2 | 5 | account5 | addr5 | country5 | 2 |
+| 2 | shop2 | 4 | account4 | addr4 | country4 | 2 |
+
+In previous versions, duplicate names were not handled correctly. 
+In this example, only `Id` and `Name` from `Shop` class would be mapped correctly and the `Id` and `Name` from `Account` class would be skipped because the mapper would incorrectly conclude that those fields were already mapped. 
+
+In this version, this is fixed and classes `Shop` and `Account` are mapped correctly.
+
+This makes it easier to build nested object maps with the `Linq` expressions for example:
+
+```csharp
+var shops = connection.Read<Shop, Account>(@"
+    select s.*, a.*
+    from shop s 
+    inner join account a on s.id = a.shop_id")
+    .GroupBy(item => item.Item1.Id)
+    .Select(group =>
+    {
+        var shop = group.First().Item1;
+        shop.Accounts = group.Select(item =>
+        {
+            var account = item.Item2;
+            account.Shop = shop;
+            return account;
+        }).ToList();
+        return shop;
+    })
+    .ToList();
+```
+
+This will build a nested object tree where each shop contains a list of accounts and that every account has a reference to a shop instance, and so on.
+
+See the example in [this unit tests](https://github.com/vb-consulting/Norm.net/blob/5.3.0/Tests/PostgreSqlUnitTests/NestedObjectMapUnitTests.cs).
+
+### New benchmarks
+
+Since the mapper code was changed, there are also new benchmarks for this version: [PERFOMANCE-TESTS](https://github.com/vb-consulting/Norm.net/blob/5.3.0/PERFOMANCE-TESTS.md)
 
 ## [5.2.5](https://github.com/vb-consulting/Norm.net/tree/5.2.5) (2022-10-06)
 
