@@ -34,7 +34,7 @@ Note that `ExpandoObjects` are a bit slow and you will lose on auto-complete fea
 
 `dynamic` can also be mixed with mapping to normal classes, for example:
 
-```
+```csharp
 var result = connection.Read<Class1, dynamic>(@"select *
                 from (
                 values 
