@@ -79,11 +79,6 @@ await foreach(var i in connection.ReadAsync(new
  
 This is open-source software developed and maintained freely without any compensation whatsoever.
  
-If you find it useful please consider rewarding me on my effort by [buying me a beer](https://www.paypal.me/vbsoftware/5)🍻 or [buying me a pizza](https://www.paypal.me/vbsoftware/10)🍕
- 
-Or if you prefer bitcoin:
-bitcoincash:qp93skpzyxtvw3l3lqqy7egwv8zrszn3wcfygeg0mv
- 
 ## Licence
  
 Copyright (c) Vedran Bilopavlović - VB Consulting and VB Software 2020
