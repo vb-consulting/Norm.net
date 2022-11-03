@@ -41,6 +41,19 @@ This is very useful debugging info that:
 
 - How to build a nested objects tree from a multiple tables join query - Norm vs Dapper comparison:
 
+The goal is to map query results to an object tree, where each Shop object from the list has a collection of Account objects and each Account object has a reference to a Shop object to whom it belongs, and so on.
+
+Norm works differently from Dapper.
+
+Norm builds an iterator over the data reader which means that the read operation will not start until the iteration is triggered (ToList in this example).
+
+That means that we can build a Linq expression tree before we start with the iteration and it will still iterate and read data only once.
+
+On another hand, Dapper accepts the lambda function as a parameter that allows you to build the object tree using lookups.
+
+I think that the Norm version is cleaner, more elegant, more flexible, and faster.
+
+
 ![](https://github.com/vb-consulting/Norm.net/blob/master/nested.png)
 
 ## Usage
