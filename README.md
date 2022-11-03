@@ -19,11 +19,12 @@ _High performance micro-ORM database mapper and modernized Dapper replacement fo
 - Map to arrays and other exotic types available on databases such as PostgreSQL.
 - Implement your custom mapping logic to handle custom types such as geometry types from PostGIS.
 
-Some examples:
+## Some examples:
 
-- At least three things that Norm data access for .NET can do - but Dapper can't: ![](https://github.com/vb-consulting/Norm.net/blob/master/norm-mapping.jpg)
+###  At least three things that Norm data access for .NET can do - but Dapper can't: 
+![](https://github.com/vb-consulting/Norm.net/blob/master/norm-mapping.jpg)
 
-- Advanced logging and analytics:
+### Advanced logging and analytics:
 
 You can configure Norm to automatically add a comment header to all your commands that will contain stuff like:
 
@@ -39,7 +40,7 @@ This is very useful debugging info that:
 
 ![](https://github.com/vb-consulting/Norm.net/blob/master/norm-logging.jpg)
 
-- How to build a nested objects tree from a multiple tables join query - Norm vs Dapper comparison:
+### How to build a nested objects tree from a multiple tables join query - Norm vs Dapper comparison:
 
 The goal is to map query results to an object tree, where each Shop object from the list has a collection of Account objects and each Account object has a reference to a Shop object to whom it belongs, and so on.
 
