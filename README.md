@@ -19,7 +19,30 @@ _High performance micro-ORM database mapper and modernized Dapper replacement fo
 - Map to arrays and other exotic types available on databases such as PostgreSQL.
 - Implement your custom mapping logic to handle custom types such as geometry types from PostGIS.
 
- 
+Some examples:
+
+- At least three things that Norm data access for .NET can do - but Dapper can't: ![](https://github.com/vb-consulting/Norm.net/blob/master/norm-mapping.jpg)
+
+- Advanced logging and analytics:
+
+You can configure Norm to automatically add a comment header to all your commands that will contain stuff like:
+
+1) Caller info containing calling method name and source code file name with exact line number.
+2) Full parameter list containing parameter name, type, and value.
+
+Why we would ever want to do this?
+
+This is very useful debugging info that:
+
+1) Will be visible in your console if we add a logging callback (see example). You can actually use Ctrl+Click in your Visual Studio Code to navigate to that source line instantly.
+2) Will be visible in your database monitoring tools like Activity Monitor for SQL Server or pg_stat_activity on PostgreSQL, since it is just a command comment header.
+
+![](https://github.com/vb-consulting/Norm.net/blob/master/norm-logging.jpg)
+
+- How to build a nested objects tree from a multiple tables join query - Norm vs Dapper comparison:
+
+![](https://github.com/vb-consulting/Norm.net/blob/master/nested.png)
+
 ## Usage
  
 ### Get it on Nuget
