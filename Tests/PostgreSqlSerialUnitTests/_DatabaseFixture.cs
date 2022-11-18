@@ -20,6 +20,7 @@ public static class _DatabaseFixture
     [ModuleInitializer]
     internal static void Initializer()
     {
+        AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
         Init();
         AppDomain.CurrentDomain.ProcessExit += (_, _) => Dispose();
     }

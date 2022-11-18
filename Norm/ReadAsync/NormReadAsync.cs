@@ -13,7 +13,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public virtual IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
+        public virtual async IAsyncEnumerable<(string name, object value)[]> ReadAsync(string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -28,7 +28,10 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternalAsync(command);
+            await foreach(var t in ReadToArrayInternalAsync(command))
+            {
+                yield return t.ToArray();
+            }
         }
 
         ///<summary>
@@ -37,7 +40,7 @@ namespace Norm
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
         ///<returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
-        public virtual IAsyncEnumerable<(string name, object value)[]> ReadFormatAsync(FormattableString command,
+        public virtual async IAsyncEnumerable<(string name, object value)[]> ReadFormatAsync(FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -52,7 +55,10 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternalAsync(command);
+            await foreach (var t in ReadToArrayInternalAsync(command))
+            {
+                yield return t.ToArray();
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace PostgreSqlUnitTests
 
         public PostgreSqlFixture()
         {
+            AppContext.SetSwitch("Npgsql.EnableStoredProcedureCompatMode", true);
             config = TestConfig.Config.Value;
             var builder = new NpgsqlConnectionStringBuilder(config.Default)
             {

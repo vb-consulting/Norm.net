@@ -6,7 +6,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(string command)
+        protected IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -27,7 +27,7 @@ namespace Norm
             }
         }
      
-        protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithWithSetInternal(string command)
+        protected IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithWithSetInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -37,7 +37,7 @@ namespace Norm
             }
         }
         
-        protected IEnumerable<(string name, object value)[]> ReadToArrayInternal(FormattableString command)
+        protected IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -57,7 +57,7 @@ namespace Norm
             }
         }
         
-        protected IEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternal(FormattableString command)
+        protected IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -67,7 +67,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(string command)
+        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (this.readerCallback == null)
@@ -112,7 +112,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(string command)
+        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -134,7 +134,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<(string name, object value)[]> ReadToArrayInternalAsync(FormattableString command)
+        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
 
@@ -180,7 +180,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<(string name, object value, bool set)[]> ReadToArrayWithSetInternalAsync(FormattableString command)
+        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -200,29 +200,6 @@ namespace Norm
                     yield return ReadToArrayWithSet(reader);
                 }
             }
-        }
-
-        protected (string name, object value, bool set)[] ReadToArrayWithSet(DbDataReader reader)
-        {
-            var count = reader.FieldCount;
-            object v;
-            object r;
-            string n;
-            (string name, object value, bool set)[] result = new (string name, object value, bool set)[count];
-            for (var index = 0; index < count; index++)
-            {
-                n = reader.GetName(index);
-                var callback = readerCallback((n, index, reader));
-                if (callback != null)
-                {
-                    result[index] = (n, callback == DBNull.Value ? null : callback, true);
-                    continue;
-                }
-                v = reader.GetValue(index);
-                if (v == DBNull.Value) r = null; else r = v;
-                result[index] = (n, r, false);
-            }
-            return result;
         }
     }
 }

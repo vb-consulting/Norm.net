@@ -7,17 +7,17 @@ namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> MapValueTuple<T>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<T> MapValueTuple<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type)
         {
             var ctorInfo = TypeCache<T>.GetValueTupleCtorInfo(type);
             foreach (var t in tuples)
             {
-                yield return t.MapInstance<T>(ctorInfo);
+                yield return MapInstance<T>(t, ref ctorInfo);
             }
         }
 
-        public static IEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1,
             Type type2)
         {
@@ -27,13 +27,13 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
                 yield return (t1, t2);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3)
@@ -45,14 +45,14 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
                 yield return (t1, t2, t3);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -66,15 +66,15 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
                 yield return (t1, t2, t3, t4);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -90,16 +90,16 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
                 yield return (t1, t2, t3, t4, t5);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -117,17 +117,17 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
                 yield return (t1, t2, t3, t4, t5, t6);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -147,18 +147,18 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -180,19 +180,19 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -216,20 +216,20 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -255,21 +255,21 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -297,22 +297,22 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
-                var t11 = t.MapInstance<T11>(ctorInfo11, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
+                var t11 = MapInstance<T11>(t, ref ctorInfo11, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<(string name, object value)[]> tuples,
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -342,32 +342,32 @@ namespace Norm.Mapper
             foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
-                var t11 = t.MapInstance<T11>(ctorInfo11, ref start);
-                var t12 = t.MapInstance<T12>(ctorInfo12, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
+                var t11 = MapInstance<T11>(t, ref ctorInfo11, ref start);
+                var t12 = MapInstance<T12>(t, ref ctorInfo12, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
             }
         }
 
-        public static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<(string name, object value)[]> tuples, Type type = null)
+        public static async IAsyncEnumerable<T> MapValueTuple<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, Type type = null)
         {
             var ctorInfo = TypeCache<T>.GetValueTupleCtorInfo(type);
             await foreach (var t in tuples)
             {
-                yield return t.MapInstance<T>(ctorInfo);
+                yield return MapInstance<T>(t, ref ctorInfo);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2)> MapValueTuple<T1, T2>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2)
         {
@@ -377,13 +377,13 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
                 yield return (t1, t2);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3)> MapValueTuple<T1, T2, T3>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3)
@@ -395,14 +395,14 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
                 yield return (t1, t2, t3);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4)> MapValueTuple<T1, T2, T3, T4>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -416,15 +416,15 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
                 yield return (t1, t2, t3, t4);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5)> MapValueTuple<T1, T2, T3, T4, T5>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -440,16 +440,16 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
                 yield return (t1, t2, t3, t4, t5);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6)> MapValueTuple<T1, T2, T3, T4, T5, T6>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -467,17 +467,17 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
                 yield return (t1, t2, t3, t4, t5, t6);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -497,18 +497,18 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -530,19 +530,19 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -566,20 +566,20 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -605,21 +605,21 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -647,22 +647,22 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
-                var t11 = t.MapInstance<T11>(ctorInfo11, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
+                var t11 = MapInstance<T11>(t, ref ctorInfo11, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
             }
         }
 
-        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> MapValueTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -692,31 +692,32 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 int start = 0;
-                var t1 = t.MapInstance<T1>(ctorInfo1, ref start);
-                var t2 = t.MapInstance<T2>(ctorInfo2, ref start);
-                var t3 = t.MapInstance<T3>(ctorInfo3, ref start);
-                var t4 = t.MapInstance<T4>(ctorInfo4, ref start);
-                var t5 = t.MapInstance<T5>(ctorInfo5, ref start);
-                var t6 = t.MapInstance<T6>(ctorInfo6, ref start);
-                var t7 = t.MapInstance<T7>(ctorInfo7, ref start);
-                var t8 = t.MapInstance<T8>(ctorInfo8, ref start);
-                var t9 = t.MapInstance<T9>(ctorInfo9, ref start);
-                var t10 = t.MapInstance<T10>(ctorInfo10, ref start);
-                var t11 = t.MapInstance<T11>(ctorInfo11, ref start);
-                var t12 = t.MapInstance<T12>(ctorInfo12, ref start);
+                var t1 = MapInstance<T1>(t, ref ctorInfo1, ref start);
+                var t2 = MapInstance<T2>(t, ref ctorInfo2, ref start);
+                var t3 = MapInstance<T3>(t, ref ctorInfo3, ref start);
+                var t4 = MapInstance<T4>(t, ref ctorInfo4, ref start);
+                var t5 = MapInstance<T5>(t, ref ctorInfo5, ref start);
+                var t6 = MapInstance<T6>(t, ref ctorInfo6, ref start);
+                var t7 = MapInstance<T7>(t, ref ctorInfo7, ref start);
+                var t8 = MapInstance<T8>(t, ref ctorInfo8, ref start);
+                var t9 = MapInstance<T9>(t, ref ctorInfo9, ref start);
+                var t10 = MapInstance<T10>(t, ref ctorInfo10, ref start);
+                var t11 = MapInstance<T11>(t, ref ctorInfo11, ref start);
+                var t12 = MapInstance<T12>(t, ref ctorInfo12, ref start);
                 yield return (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
             }
         }
 
-        private static T MapInstance<T>(this (string name, object value)[] tuple,
-            (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) ctorInfo)
+        private static T MapInstance<T>(
+            ReadOnlyMemory<(string name, object value)> tuple,
+            ref (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) ctorInfo)
         {
             if (ctorInfo.lastCtor == null)
             {
                 var p = new object[ctorInfo.defaultCtorLen];
                 for (int i = 0; i < ctorInfo.defaultCtorLen; i++)
                 {
-                    p[i] = tuple[i].value;
+                    p[i] = tuple.Span[i].value;
                 }
                 return (T)ctorInfo.defaultCtor.Invoke(p);
             }
@@ -725,20 +726,21 @@ namespace Norm.Mapper
                 var p = new object[ctorInfo.defaultCtorLen];
                 for (int i = 0; i < ctorInfo.defaultCtorLen - 1; i++)
                 {
-                    p[i] = tuple[i].value;
+                    p[i] = tuple.Span[i].value;
                 }
                 var lp = new object[ctorInfo.lastCtorLen];
                 for (int i = 0; i < ctorInfo.lastCtorLen; i++)
                 {
-                    lp[i] = tuple[ctorInfo.defaultCtorLen + i - 1].value;
+                    lp[i] = tuple.Span[ctorInfo.defaultCtorLen + i - 1].value;
                 }
                 p[ctorInfo.defaultCtorLen - 1] = ctorInfo.lastCtor.Invoke(lp);
                 return (T)ctorInfo.defaultCtor.Invoke(p);
             }
         }
 
-        private static T MapInstance<T>(this (string name, object value)[] tuple,
-            (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) ctorInfo,
+        private static T MapInstance<T>(
+            ReadOnlyMemory<(string name, object value)> tuple,
+            ref (ConstructorInfo defaultCtor, int defaultCtorLen, ConstructorInfo lastCtor, int lastCtorLen) ctorInfo,
             ref int start)
         {
             if (ctorInfo.lastCtor == null)
@@ -746,7 +748,7 @@ namespace Norm.Mapper
                 var p = new object[ctorInfo.defaultCtorLen];
                 for (int i = start; i < start + ctorInfo.defaultCtorLen; i++)
                 {
-                    p[i - start] = tuple[i].value;
+                    p[i - start] = tuple.Span[i].value;
                 }
                 start = start + ctorInfo.defaultCtorLen;
                 return (T)ctorInfo.defaultCtor.Invoke(p);
@@ -756,12 +758,12 @@ namespace Norm.Mapper
                 var p = new object[ctorInfo.defaultCtorLen];
                 for (int i = start; i < start + ctorInfo.defaultCtorLen - 1; i++)
                 {
-                    p[i - start] = tuple[i].value;
+                    p[i - start] = tuple.Span[i].value;
                 }
                 var lp = new object[ctorInfo.lastCtorLen];
                 for (int i = start; i < start + ctorInfo.lastCtorLen; i++)
                 {
-                    lp[i - start] = tuple[ctorInfo.defaultCtorLen + i - 1].value;
+                    lp[i - start] = tuple.Span[ctorInfo.defaultCtorLen + i - 1].value;
                 }
                 p[ctorInfo.defaultCtorLen - 1] = ctorInfo.lastCtor.Invoke(lp);
                 start = start + ctorInfo.defaultCtorLen + ctorInfo.lastCtorLen - 1;

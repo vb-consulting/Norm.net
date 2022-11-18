@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.3.1](https://github.com/vb-consulting/Norm.net/tree/5.3.0) (2022-11-18)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.0...5.3.1)
+
+Minor optimizations and improvements.
+
 ## [5.3.0](https://github.com/vb-consulting/Norm.net/tree/5.3.0) (2022-10-16)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.2.5...5.3.0)

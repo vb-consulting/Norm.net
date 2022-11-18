@@ -6,7 +6,7 @@ namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> MapAnonymous<T>(this IEnumerable<(string name, object value)[]> tuples, 
+        public static IEnumerable<T> MapAnonymous<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
@@ -18,7 +18,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static async IAsyncEnumerable<T> MapAnonymous<T>(this IAsyncEnumerable<(string name, object value)[]> tuples,
+        public static async IAsyncEnumerable<T> MapAnonymous<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1)
         {
             var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
@@ -33,7 +33,7 @@ namespace Norm.Mapper
         private static object[] BuildAnonParameters(
             ref (string name, Type type)[] props, 
             ref MapDescriptor descriptor, 
-            (string name, object value)[] tuple)
+            ReadOnlyMemory<(string name, object value)> tuple)
         {
             var parameters = new object[props.Length];
 
@@ -49,7 +49,7 @@ namespace Norm.Mapper
                 else
                 {
                     index = indexArr[0];
-                    value = tuple[index].value;
+                    value = tuple.Span[index].value;
                     if (value != null)
                     {
                         var valueType = value.GetType();

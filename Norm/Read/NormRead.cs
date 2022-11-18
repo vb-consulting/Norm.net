@@ -28,7 +28,10 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternal(command);
+            foreach(var t in ReadToArrayInternal(command))
+            {
+                yield return t.ToArray();
+            }
         }
 
         ///<summary>
@@ -52,7 +55,10 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternal(command);
+            foreach (var t in ReadToArrayInternal(command))
+            {
+                yield return t.ToArray();
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Norm.Mapper
 {
@@ -21,7 +22,8 @@ namespace Norm.Mapper
     {
         private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
 
-        private static void MapInstance<T>(this (string name, object value)[] tuple,
+        private static void MapInstance<T>(
+            ReadOnlyMemory<(string name, object value)> tuple,
             ref T instance,
             ref MapDescriptor descriptor,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
@@ -73,11 +75,11 @@ namespace Norm.Mapper
                 i++;
                 if (method != null)
                 {
-                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                    InvokeSet(method, nullable, code, instance, tuple.Span[index].value, isArray, structType);
                 }
                 else if (structType == StructType.Enum)
                 {
-                    SetEnum(tuple[index].value, instance, property, nullable, isArray);
+                    SetEnum(tuple.Span[index].value, instance, property, nullable, isArray);
                 }
                 if (descriptor.Used != null)
                 {
@@ -87,9 +89,11 @@ namespace Norm.Mapper
 
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
-                ushort index = 0; 
-                foreach (var (name, value) in tuple)
+                ushort index = 0;
+                for(int j = 0; j < tuple.Length; j++)
                 {
+                    var (name, value) = tuple.Span[j];
+     
                     var parsedName = ParseName(name);
                     if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
                     {
@@ -132,7 +136,8 @@ namespace Norm.Mapper
             }
         }
 
-        private static void MapInstance<T>(this (string name, object value, bool set)[] tuple,
+        private static void MapInstance<T>(
+            ReadOnlyMemory<(string name, object value, bool set)> tuple,
             ref T instance,
             ref MapDescriptor descriptor,
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
@@ -177,7 +182,7 @@ namespace Norm.Mapper
                     }
 
                     i++;
-                    var current = tuple[index];
+                    var current = tuple.Span[index];
                     if (current.set)
                     {
                         property.info.SetValue(instance, current.value);
@@ -197,11 +202,11 @@ namespace Norm.Mapper
                 }
                 if (method != null)
                 {
-                    InvokeSet(method, nullable, code, instance, tuple[index].value, isArray, structType);
+                    InvokeSet(method, nullable, code, instance, tuple.Span[index].value, isArray, structType);
                 }
                 else if (structType == StructType.Enum)
                 {
-                    SetEnum(tuple[index].value, instance, property, nullable, isArray);
+                    SetEnum(tuple.Span[index].value, instance, property, nullable, isArray);
                 }
                 if (descriptor.Used != null)
                 {
@@ -211,8 +216,10 @@ namespace Norm.Mapper
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
                 ushort index = 0;
-                foreach (var (name, value, set) in tuple)
+                for(int j = 0; j < tuple.Span.Length; j++)
                 {
+                    var (name, value, set) = tuple.Span[j];
+
                     var parsedName = ParseName(name);
                     if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
                     {
@@ -259,18 +266,20 @@ namespace Norm.Mapper
             }
         }
 
-        private static MapDescriptor BuildDescriptor((string name, object value)[] tuple)
+        private static MapDescriptor BuildDescriptor(ReadOnlyMemory<(string name, object value)> tuple)
         {
             var descriptor = new MapDescriptor();
-            if (tuple == null)
+            if (tuple.Span == null)
             {
                 return descriptor;
             }
             descriptor.Names = new Dictionary<string, ushort[]>();
             descriptor.Length = tuple.Length;
             ushort i = 0;
-            foreach (var t in tuple)
+            for (int j = 0; j < tuple.Span.Length; j++)
             {
+                var t = tuple.Span[j];
+
                 var name = ParseName(t.name);
                 if (descriptor.Names.TryGetValue(name, out var arr))
                 {
@@ -288,18 +297,20 @@ namespace Norm.Mapper
             return descriptor;
         }
 
-        private static MapDescriptor BuildDescriptor((string name, object value, bool set)[] tuple)
+        private static MapDescriptor BuildDescriptor(ReadOnlyMemory<(string name, object value, bool set)> tuple)
         {
             var descriptor = new MapDescriptor();
-            if (tuple == null)
+            if (tuple.Span == null)
             {
                 return descriptor;
             }
             descriptor.Names = new Dictionary<string, ushort[]>();
             descriptor.Length = tuple.Length;
             ushort i = 0;
-            foreach (var t in tuple)
+            for (int j = 0; j < tuple.Span.Length; j++)
             {
+                var t = tuple.Span[j];
+
                 var name = ParseName(t.name);
                 if (descriptor.Names.TryGetValue(name, out var arr))
                 {

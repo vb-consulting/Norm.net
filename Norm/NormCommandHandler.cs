@@ -50,25 +50,42 @@ namespace Norm
 
             if (this.commandCommentHeaderEnabled && this.comment != null)
             {
-                sb.Append($"{this.comment}\n");
+                sb.Append(this.comment);
+                sb.Append("\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCommandAttributes) ||
                 (this.commandCommentHeaderEnabled && this.includeCommandAttributes))
             {
-                sb.Append($"{(this.dbType == DatabaseType.Other ? "" : $"{this.dbType} ")}{cmd.CommandType} Command. Timeout: {cmd.CommandTimeout} seconds.\n");
+                if (this.dbType != DatabaseType.Other)
+                {
+                    sb.Append(this.dbType.ToString());
+                    sb.Append(" ");
+                    sb.Append(cmd.CommandType.ToString());
+                    sb.Append(" Command. Timeout: ");
+                    sb.Append(cmd.CommandTimeout.ToString());
+                    sb.Append(" seconds.\n");
+                }
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeCallerInfo) ||
                 (this.commandCommentHeaderEnabled && this.includeCallerInfo))
             {
-                sb.Append($"at {memberName} in {sourceFilePath}#{sourceLineNumber}\n");
+                sb.Append("at ");
+                sb.Append(memberName);
+                sb.Append(" in ");
+                sb.Append(sourceFilePath);
+                sb.Append("#");
+                sb.Append(sourceLineNumber);
+                sb.Append("\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeTimestamp) ||
                 (this.commandCommentHeaderEnabled && this.includeTimestamp))
             {
-                sb.Append($"Timestamp: {DateTime.Now:o}\n");
+                sb.Append("Timestamp: ");
+                sb.Append(DateTime.Now.ToString("o"));
+                sb.Append("\n");
             }
 
             if ((NormOptions.Value.CommandCommentHeader.Enabled && NormOptions.Value.CommandCommentHeader.IncludeParameters) ||
@@ -85,7 +102,7 @@ namespace Norm
                     }
                     else
                     {
-                        var prop = p.GetType().GetProperty($"{this.dbType}DbType");
+                        var prop = p.GetType().GetProperty(string.Concat(this.dbType.ToString(), "DbType"));
                         if (prop != null)
                         {
                             paramType = prop.GetValue(p).ToString().ToLowerInvariant();
@@ -102,7 +119,8 @@ namespace Norm
                     object value = p.Value is DateTime time ? time.ToString("o") : p.Value;
                     if (value is string)
                     {
-                        value = $"\"{value}\"".Replace("/*", "??").Replace("*/", "??");
+  
+                        value = string.Concat("\"", value, "\"").Replace("/*", "??").Replace("*/", "??");
                     }
                     else if (value is bool)
                     {
@@ -116,18 +134,18 @@ namespace Norm
                         {
                             array.Add(enumerator.Current.ToString());
                         }
-                        value = $"{{{string.Join(", ", array)}}}";
+                        value = string.Concat("{", string.Join(", ", array), "}");
                     }
-                    var name = string.IsNullOrEmpty(p.ParameterName) ? $"${paramIndex}" : $"@{p.ParameterName}";
+                    var name = string.IsNullOrEmpty(p.ParameterName) ? 
+                        string.Concat("$", paramIndex.ToString()) :
+                        string.Concat("@", p.ParameterName);
                     sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, name, paramType, value));
                 }
             }
 
             if (sb.Length > 0)
             {
-                commandText = cmd.CommandText;
-                commentHeader = $"/*\n{sb}*/\n";
-                cmd.CommandText = string.Concat(commentHeader, commandText);
+                cmd.CommandText = string.Concat("/*\n", sb.ToString(), "*/\n", cmd.CommandText);
             }
         }
 
