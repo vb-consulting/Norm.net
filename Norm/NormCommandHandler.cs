@@ -28,7 +28,8 @@ namespace Norm
             dbCommandCallback?.Invoke(cmd);
 
             if (cmd.CommandType == CommandType.StoredProcedure
-                && ((this.dbType | NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes) == NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes))            {
+                && ((this.dbType | NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes) == NormOptions.Value.CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes))
+            {
                 if (this.commentHeader != null)
                 {
                     cmd.CommandText = cmd.CommandText.Replace(this.commentHeader, "");
@@ -45,7 +46,7 @@ namespace Norm
             {
                 return;
             }
-            
+
             var sb = new StringBuilder();
 
             if (this.commandCommentHeaderEnabled && this.comment != null)
@@ -119,7 +120,7 @@ namespace Norm
                     object value = p.Value is DateTime time ? time.ToString("o") : p.Value;
                     if (value is string)
                     {
-  
+
                         value = string.Concat("\"", value, "\"").Replace("/*", "??").Replace("*/", "??");
                     }
                     else if (value is bool)
@@ -136,7 +137,7 @@ namespace Norm
                         }
                         value = string.Concat("{", string.Join(", ", array), "}");
                     }
-                    var name = string.IsNullOrEmpty(p.ParameterName) ? 
+                    var name = string.IsNullOrEmpty(p.ParameterName) ?
                         string.Concat("$", paramIndex.ToString()) :
                         string.Concat("@", p.ParameterName);
                     sb.Append(string.Format(NormOptions.Value.CommandCommentHeader.ParametersFormat, name, paramType, value));
@@ -145,7 +146,9 @@ namespace Norm
 
             if (sb.Length > 0)
             {
-                cmd.CommandText = string.Concat("/*\n", sb.ToString(), "*/\n", cmd.CommandText);
+                commandText = cmd.CommandText;
+                commentHeader = string.Concat("/*\n", sb.ToString(), "*/\n");
+                cmd.CommandText = string.Concat(commentHeader, commandText);
             }
         }
 
