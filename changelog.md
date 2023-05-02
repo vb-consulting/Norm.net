@@ -4,11 +4,54 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.1...5.3.2)
 
+### New feature - NullableInstances
 
-### New feature - 
+- There is a new option `NullableInstances` that can be used to control whether to return `null` instances or not. 
+
+- The default is `false` which means that if a query returns `null` values, the mapper will return a default instance of the class.
 
 
 
+    [Fact]
+    public void Configure_NullableInstances_Test()
+    {
+        // reset to default
+        NormOptions.Configure(o => { });
+
+        using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
+        
+        NormOptions.Configure(options =>
+        {
+            options.NullableInstances = true;
+        });
+
+        var (result1, result2) = connection
+            .Read<TestClass1?, TestClass2?>("select 1 as foo1, 'bar' as bar1, null as foo2, null as bar2")
+            .Single();
+
+        Assert.NotNull(result1);
+        Assert.Equal(1, result1?.Foo1);
+        Assert.Equal("bar", result1?.Bar1);
+
+        Assert.Null(result2);
+
+        NormOptions.Configure(options =>
+        {
+            options.NullableInstances = false;
+        });
+
+        (result1, result2) = connection
+            .Read<TestClass1?, TestClass2?>("select 1 as foo1, 'bar' as bar1, null as foo2, null as bar2")
+            .Single();
+
+        Assert.NotNull(result1);
+        Assert.Equal(1, result1?.Foo1);
+        Assert.Equal("bar", result1?.Bar1);
+
+        Assert.NotNull(result2);
+        Assert.Null(result2?.Foo2);
+        Assert.Null(result2?.Bar2);
+    }
 
 ## [5.3.1](https://github.com/vb-consulting/Norm.net/tree/5.3.1) (2022-11-18)
 
