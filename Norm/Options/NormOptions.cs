@@ -40,6 +40,10 @@ namespace Norm
         /// This option only have impact before any of the commands are executed.
         /// </summary>
         public bool? NpgsqlEnableSqlRewriting { get; set; } = null;
+        /// <summary>
+        /// Automatically sets mapped instances to null if all properties are null.
+        /// </summary>
+        public bool NullableInstances { get; set; } = false;
 
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.

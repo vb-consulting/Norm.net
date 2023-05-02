@@ -29,6 +29,7 @@ namespace Norm.Mapper
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
+            bool allNulls = true;
             foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
@@ -85,6 +86,10 @@ namespace Norm.Mapper
                 {
                     descriptor.Used.Add(index);
                 }
+                if (allNulls == true && tuple.Span[index].value != null)
+                {
+                    allNulls = false;
+                }
             }
 
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
@@ -134,6 +139,13 @@ namespace Norm.Mapper
                     }
                 }
             }
+            else
+            {
+                if (allNulls && NormOptions.Value.NullableInstances)
+                {
+                    instance = default;
+                }
+            }
         }
 
         private static void MapInstance<T>(
@@ -143,6 +155,7 @@ namespace Norm.Mapper
             ref (Delegate method, bool nullable, TypeCode code, bool isArray, ushort index, StructType structType, bool created)[] delegates)
         {
             ushort i = 0;
+            bool allNulls = true;
             foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
@@ -190,6 +203,10 @@ namespace Norm.Mapper
                         {
                             descriptor.Used.Add(index);
                         }
+                        if (allNulls == true && current.value != null)
+                        {
+                            allNulls = false;
+                        }
                         continue;
                     }
                     nullable = Nullable.GetUnderlyingType(property.type) != null;
@@ -212,7 +229,12 @@ namespace Norm.Mapper
                 {
                     descriptor.Used.Add(index);
                 }
+                if (allNulls == true && tuple.Span[index].value != null)
+                {
+                    allNulls = false;
+                }
             }
+
             if (i == 0 && instance.GetType() == typeof(ExpandoObject))
             {
                 ushort index = 0;
@@ -262,6 +284,13 @@ namespace Norm.Mapper
                         }
                     }
 
+                }
+            }
+            else
+            {
+                if (allNulls && NormOptions.Value.NullableInstances)
+                {
+                    instance = default;
                 }
             }
         }
