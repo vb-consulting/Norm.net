@@ -1,6 +1,6 @@
 {
   "db": {
-    "Default": "Data Source=localhost;Initial Catalog=master;User Id=sa;Password=SqlSever123123;",
+    "Default": "Data Source=localhost;Initial Catalog=master;User Id=sa;Password=SqlSever123123;TrustServerCertificate=true",
     "TestDatabase": "NormSqlServerUnitTests"
   }
 }

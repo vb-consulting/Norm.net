@@ -32,7 +32,7 @@ NormOptions.Configure(options =>
         public string? Bar { get; set; }
     }
 
-    var result = connection.Read<TestClass?>("select null as foo, null as bar").Single();
+    var result = connection.Read<TestClass?>("select NULL as foo, NULL as bar").Single();
     
     // result is null since all properties are null
     Assert.Null(result);
