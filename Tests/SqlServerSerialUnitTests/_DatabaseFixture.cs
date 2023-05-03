@@ -3,7 +3,7 @@ global using Xunit;
 global using Norm;
 global using System;
 global using System.Linq;
-global using System.Data.SqlClient;
+global using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly, DisableTestParallelization = true, MaxParallelThreads = 1)]
