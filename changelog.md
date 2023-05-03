@@ -1,57 +1,64 @@
 # Changelog
 
-## [5.3.2](https://github.com/vb-consulting/Norm.net/tree/5.3.2) (2022-11-18)
+## [5.3.2](https://github.com/vb-consulting/Norm.net/tree/5.3.2) (2023-05-03)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.1...5.3.2)
 
-### New feature - NullableInstances
+### New Feature - `NullableInstances`
 
 - There is a new option `NullableInstances` that can be used to control whether to return `null` instances or not. 
 
-- The default is `false` which means that if a query returns `null` values, the mapper will return a default instance of the class.
+- When this option is set to `true`, the mapper will return `null` instances for all classes that have all properties set to `null`.
 
+- The default is `false` which is the same behavior as before (no changes).
 
+- Example:
 
-    [Fact]
-    public void Configure_NullableInstances_Test()
+1) Set this option switch to true in your program startup:
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.NullableInstances = true;
+});
+```
+
+2) When all mapped property values are `NULL`, instance will be null as well:
+
+```csharp
+    class TestClass
     {
-        // reset to default
-        NormOptions.Configure(o => { });
-
-        using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
-        
-        NormOptions.Configure(options =>
-        {
-            options.NullableInstances = true;
-        });
-
-        var (result1, result2) = connection
-            .Read<TestClass1?, TestClass2?>("select 1 as foo1, 'bar' as bar1, null as foo2, null as bar2")
-            .Single();
-
-        Assert.NotNull(result1);
-        Assert.Equal(1, result1?.Foo1);
-        Assert.Equal("bar", result1?.Bar1);
-
-        Assert.Null(result2);
-
-        NormOptions.Configure(options =>
-        {
-            options.NullableInstances = false;
-        });
-
-        (result1, result2) = connection
-            .Read<TestClass1?, TestClass2?>("select 1 as foo1, 'bar' as bar1, null as foo2, null as bar2")
-            .Single();
-
-        Assert.NotNull(result1);
-        Assert.Equal(1, result1?.Foo1);
-        Assert.Equal("bar", result1?.Bar1);
-
-        Assert.NotNull(result2);
-        Assert.Null(result2?.Foo2);
-        Assert.Null(result2?.Bar2);
+        public int? Foo { get; set; }
+        public string? Bar { get; set; }
     }
+
+    var result = connection.Read<TestClass?>("select null as foo, null as bar").Single();
+    
+    // result is null since all properties are null
+    Assert.Null(result);
+```
+
+This is can be useful when doing left joins and you want to know if join is matched. Example:
+
+```csharp
+    var (asset, vehicle) = connection.ReadAsync<Asset, Vehicle?>(
+        """
+        select a.*, v.*
+        from assets a
+        left join vehicles v on a.id = v.id
+        """
+    )
+    .Single();
+    
+    if (vehicle is null)
+    {
+        // no matching vehicle
+    }
+```
+
+### Improvements
+
+- All tests with SqlServer are now using Microsoft.Data.SqlClient instead of System.Data.SqlClient.
 
 ## [5.3.1](https://github.com/vb-consulting/Norm.net/tree/5.3.1) (2022-11-18)
 
