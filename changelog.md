@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.3.3](https://github.com/vb-consulting/Norm.net/tree/5.3.3) (2023-05-16)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.2...5.3.3)
+
+### Fix - `NullableInstances` option turned on but have non-nullable properties
+
+- In previous version a new feature - when `NullableInstances` option is turned on, the mapper will return `null` instances if all mapped values are `null`.
+
+- However, there was a edge-case bug in this implementation: Mapper tried first to assign a `null` value to instance, and if the property being mapped is not nullable - mapper would crash.
+
+- This is now fixed in this version - if all mapped values are null, and `NullableInstances` option is on - return instance will be null, regardless of property types.
+
+### New feature - `NormNullException`
+
+- Attempted mapping of database null value to a non-nullable property will now throw `NormNullException` exception with nice message, for example: `Can't map null value for database field "foo" to non-nullable property "Foo".`.
+
 ## [5.3.2](https://github.com/vb-consulting/Norm.net/tree/5.3.2) (2023-05-03)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.1...5.3.2)

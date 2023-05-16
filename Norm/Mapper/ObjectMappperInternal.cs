@@ -30,6 +30,7 @@ namespace Norm.Mapper
         {
             ushort i = 0;
             bool allNulls = true;
+            NormNullException exception = null;
             foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
@@ -74,19 +75,24 @@ namespace Norm.Mapper
                     delegates[i] = (method, nullable, code, isArray, index, structType, true);
                 }
                 i++;
-                if (method != null)
+                var value = tuple.Span[index].value;
+                if (value == null && !nullable && property.type != typeof(string))
                 {
-                    InvokeSet(method, nullable, code, instance, tuple.Span[index].value, isArray, structType);
+                    exception ??= new NormNullException(tuple.Span[index].name, property.info.Name);
+                }
+                else if (method != null)
+                {
+                    InvokeSet(method, nullable, code, instance, value, isArray, structType);
                 }
                 else if (structType == StructType.Enum)
                 {
-                    SetEnum(tuple.Span[index].value, instance, property, nullable, isArray);
+                    SetEnum(value, instance, property, nullable, isArray);
                 }
                 if (descriptor.Used != null)
                 {
                     descriptor.Used.Add(index);
                 }
-                if (allNulls == true && tuple.Span[index].value != null)
+                if (allNulls == true && value != null)
                 {
                     allNulls = false;
                 }
@@ -145,6 +151,10 @@ namespace Norm.Mapper
                 {
                     instance = default;
                 }
+                else if (exception != null)
+                {
+                    throw exception;
+                }
             }
         }
 
@@ -156,6 +166,7 @@ namespace Norm.Mapper
         {
             ushort i = 0;
             bool allNulls = true;
+            NormNullException exception = null;
             foreach (var property in TypeCache<T>.GetProperties())
             {
                 var (method, nullable, code, isArray, index, structType, created) = delegates[i];
@@ -217,19 +228,26 @@ namespace Norm.Mapper
                 {
                     i++;
                 }
-                if (method != null)
+
+                var value = tuple.Span[index].value;
+                if (value == null && !nullable && property.type != typeof(string))
                 {
-                    InvokeSet(method, nullable, code, instance, tuple.Span[index].value, isArray, structType);
+                    exception ??= new NormNullException(tuple.Span[index].name, property.info.Name);
+                }
+                else if (method != null)
+                {
+                    InvokeSet(method, nullable, code, instance, value, isArray, structType);
                 }
                 else if (structType == StructType.Enum)
                 {
-                    SetEnum(tuple.Span[index].value, instance, property, nullable, isArray);
+                    SetEnum(value, instance, property, nullable, isArray);
                 }
+
                 if (descriptor.Used != null)
                 {
                     descriptor.Used.Add(index);
                 }
-                if (allNulls == true && tuple.Span[index].value != null)
+                if (allNulls == true && value != null)
                 {
                     allNulls = false;
                 }
@@ -291,6 +309,10 @@ namespace Norm.Mapper
                 if (allNulls && NormOptions.Value.NullableInstances)
                 {
                     instance = default;
+                }
+                else if (exception != null)
+                {
+                    throw exception;
                 }
             }
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Norm
 {
@@ -26,6 +24,13 @@ namespace Norm
     {
         public NormValueTupleTooLongException() :
             base("Too many named tuple members. Maximum is 14.")
+        { }
+    }
+
+    public class NormNullException : NormException
+    {
+        public NormNullException(string fieldName, string propertyName) :
+            base($"Can't map null value for database field \"{fieldName}\" to non-nullable property \"{propertyName}\".")
         { }
     }
 }

@@ -22,7 +22,12 @@ public class NullableInstancesUnitTests
         public int? Foo { get; set; }
         public string? Bar { get; set; }
     }
-    
+
+    class NoneNullTestClass
+    {
+        public int Foo { get; set; }
+    }
+
     public NullableInstancesUnitTests(PostgreSqlFixture fixture)
     {
         this.fixture = fixture;
@@ -46,5 +51,22 @@ public class NullableInstancesUnitTests
         Assert.NotNull(result);
         Assert.Null(result?.Foo);
         Assert.Null(result?.Bar);
+    }
+
+    [Fact]
+    public void Throw_NormNullException_Test()
+    {
+        Exception? exception = null;
+        using var connection = new NpgsqlConnection(fixture.ConnectionString);
+        try
+        {
+            var result = connection.Read<NoneNullTestClass>("select null as foo").Single();
+        }
+        catch (Exception e)
+        {
+            exception = e;
+        }
+        Assert.IsType<NormNullException>(exception);
+        Assert.Equal("Can't map null value for database field \"foo\" to non-nullable property \"Foo\".", exception.Message);
     }
 }
