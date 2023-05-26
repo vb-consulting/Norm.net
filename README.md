@@ -8,7 +8,7 @@ _High performance micro-ORM database mapper and modernized Dapper replacement fo
  
 ## **High-performance mapping**
 
-- Outstanding perfomances. [See benchmarsks here](https://github.com/vb-consulting/Norm.net/blob/master/PERFOMANCE-TESTS.md#results-round-1)
+- Outstanding perfomances. [See benchmarsks here](https://github.com/vb-consulting/Norm.net/blob/master/performance-tests.md)
 - Build an iterator over database reader to avoid unnecessary iterations.
 - Use asynchronous streaming directly from the database.
 

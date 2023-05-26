@@ -27,6 +27,7 @@ namespace Benchmarks6
     [KeepBenchmarkFiles]
     [MarkdownExporter]
     [MarkdownExporterAttribute.GitHub]
+    [MemoryDiagnoser]
     public class Benchmarks
     {
         private static string GetQuery(int records)
@@ -51,7 +52,7 @@ namespace Benchmarks6
         private NpgsqlConnection connection = default!;
         private PostgreSqlFixture fixture = default!;
 
-        [Params(10, 1_000, 10_000, 100_000, 1_000_000)]
+        [Params(10, 1_000, 10_000, 100_000)]
         public int Records { get; set; }
 
         [GlobalSetup]
@@ -74,6 +75,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Query<PocoClass>(query))
             {
+                var c = i;
             }
         }
 
@@ -82,6 +84,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Query<PocoClass>(query, buffered: false))
             {
+                var c = i;
             }
         }
 
@@ -90,6 +93,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Read(query))
             {
+                var c = i;
             }
         }
 
@@ -98,6 +102,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Read<PocoClass>(query))
             {
+                var c = i;
             }
         }
 
@@ -106,6 +111,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query))
             {
+                var c = i;
             }
         }
 
@@ -114,6 +120,7 @@ namespace Benchmarks6
         {
             foreach (var i in connection.Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query))
             {
+                var c = i;
             }
         }
 
@@ -135,6 +142,7 @@ namespace Benchmarks6
             }, 
             query))
             {
+                var c = i;
             }
         }
 
@@ -149,6 +157,7 @@ namespace Benchmarks6
                 })
                 .Read<PocoClass>(query))
             {
+                var c = i;
             }
         }
 
@@ -163,6 +172,7 @@ namespace Benchmarks6
                 })
                 .Read<int, string, string, DateTime, int, string, string, DateTime, string, bool>(query))
             {
+                var c = i;
             }
         }
 
@@ -177,6 +187,7 @@ namespace Benchmarks6
                 })
                 .Read<(int id1, string foo1, string bar1, DateTime datetime1, int id2, string foo2, string bar2, DateTime datetime2, string longFooBar, bool isFooBar)>(query))
             {
+                var c = i;
             }
         }
 
@@ -191,7 +202,7 @@ namespace Benchmarks6
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var instance = new PocoClass
+                var i = new PocoClass
                 {
                     Id1 = reader.GetInt32(0),
                     Foo1 = reader.GetString(1),
@@ -204,6 +215,8 @@ namespace Benchmarks6
                     LongFooBar = reader.GetString(8),
                     IsFooBar = reader.GetBoolean(9),
                 };
+
+                var c = i;
             }
         }
     }

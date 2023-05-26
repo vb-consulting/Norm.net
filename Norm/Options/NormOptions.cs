@@ -44,6 +44,12 @@ namespace Norm
         /// Automatically sets mapped instances to null if all properties are null.
         /// </summary>
         public bool NullableInstances { get; set; } = false;
+        /// <summary>
+        /// By default all database field names are stripped of underscores and @ at characters.
+        /// This is done to make it easier to map to C# properties (field_name to FieldName).
+        /// Set this option to true to skip this behavior and keep original names.
+        /// </summary>
+        public bool KeepOriginalNames { get; set; } = false;
 
         /// <summary>
         /// Norm instance type, used internally for Norm extensions. Must inherit Norm type. Set to null for default behavior.

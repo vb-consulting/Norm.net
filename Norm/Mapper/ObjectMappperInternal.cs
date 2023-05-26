@@ -2,21 +2,9 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace Norm.Mapper
 {
-    internal class MapDescriptor
-    {
-        public Dictionary<string, ushort[]> Names;
-        public HashSet<ushort> Used;
-        public int Length;
-
-        public void Reset()
-        {
-            Used = new HashSet<ushort>(Length);
-        }
-    }
 
     public static partial class NormExtensions
     {
@@ -104,9 +92,8 @@ namespace Norm.Mapper
                 for(int j = 0; j < tuple.Length; j++)
                 {
                     var (name, value) = tuple.Span[j];
-     
-                    var parsedName = ParseName(name);
-                    if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
+                    NameParser.Parse(ref name);
+                    if (!descriptor.Names.TryGetValue(name, out var indexArr))
                     {
                         continue;
                     }
@@ -138,7 +125,7 @@ namespace Norm.Mapper
                     {
                         index = indexArr[0];
                     }
-                    (instance as ExpandoObject).TryAdd(parsedName, value);
+                    (instance as ExpandoObject).TryAdd(name, value);
                     if (descriptor.Used != null)
                     {
                         descriptor.Used.Add(index);
@@ -259,9 +246,8 @@ namespace Norm.Mapper
                 for(int j = 0; j < tuple.Span.Length; j++)
                 {
                     var (name, value, set) = tuple.Span[j];
-
-                    var parsedName = ParseName(name);
-                    if (!descriptor.Names.TryGetValue(parsedName, out var indexArr))
+                    NameParser.Parse(ref name);
+                    if (!descriptor.Names.TryGetValue(name, out var indexArr))
                     {
                         continue;
                     }
@@ -295,7 +281,7 @@ namespace Norm.Mapper
                     }
                     if (set)
                     {
-                        (instance as ExpandoObject).TryAdd(parsedName, value);
+                        (instance as ExpandoObject).TryAdd(name, value);
                         if (descriptor.Used != null)
                         {
                             descriptor.Used.Add(index);
@@ -330,18 +316,17 @@ namespace Norm.Mapper
             for (int j = 0; j < tuple.Span.Length; j++)
             {
                 var t = tuple.Span[j];
-
-                var name = ParseName(t.name);
-                if (descriptor.Names.TryGetValue(name, out var arr))
+                NameParser.Parse(ref t.name);
+                if (descriptor.Names.TryGetValue(t.name, out var arr))
                 {
                     var len = arr.Length;
                     Array.Resize(ref arr, len + 1);
                     arr[len] = i;
-                    descriptor.Names[name] = arr;
+                    descriptor.Names[t.name] = arr;
                 }
                 else
                 {
-                    descriptor.Names.Add(name, new ushort[1] { i });
+                    descriptor.Names.Add(t.name, new ushort[1] { i });
                 }
                 i++;
             }
@@ -361,27 +346,21 @@ namespace Norm.Mapper
             for (int j = 0; j < tuple.Span.Length; j++)
             {
                 var t = tuple.Span[j];
-
-                var name = ParseName(t.name);
-                if (descriptor.Names.TryGetValue(name, out var arr))
+                NameParser.Parse(ref t.name);
+                if (descriptor.Names.TryGetValue(t.name, out var arr))
                 {
                     var len = arr.Length;
                     Array.Resize(ref arr, len + 1);
                     arr[len] = i;
-                    descriptor.Names[name] = arr;
+                    descriptor.Names[t.name] = arr;
                 }
                 else
                 {
-                    descriptor.Names.Add(name, new ushort[1] { i });
+                    descriptor.Names.Add(t.name, new ushort[1] { i });
                 }
                 i++;
             }
             return descriptor;
-        }
-
-        private static string ParseName(string input)
-        {
-            return input.ToLowerInvariant().Replace("@", "").Replace("_", "");
         }
 
         private static void SetEnum<T>(
