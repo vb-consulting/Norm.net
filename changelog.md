@@ -45,7 +45,7 @@ Assert.Null(result.FooBar);
 
 Some missed performance optimizations were added in this version. See the [changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.3...5.3.4) for more details.
 
-Also, see [performance tests results](https://github.com/vb-consulting/Norm.net/blob/5.3.4/PERFOMANCE-TESTS.md).
+Also, see [performance tests results](https://github.com/vb-consulting/Norm.net/blob/5.3.4/performance-tests.md).
 
 
 ## [5.3.3](https://github.com/vb-consulting/Norm.net/tree/5.3.3) (2023-05-16)
