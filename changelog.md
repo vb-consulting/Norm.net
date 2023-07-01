@@ -4,7 +4,7 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.4...5.3.5)
 
-When using method for mapping anonymous instances based on instance prototype, e.g.:
+When using the method for mapping anonymous instances based on instance prototype, e.g.:
 
 ```csharp
 var result1 = connection
@@ -35,9 +35,7 @@ Assert.Equal(1, result1.Id);
 Assert.Equal("foo", result1.Name);
 ```
 
-When mapper encounters an instance that is not anonymous, it will use standard method of mapping instances.
-
-```csharp
+When the mapper encounters an instance that is not anonymous, it will use the standard method of mapping instances.
 
 ## [5.3.4](https://github.com/vb-consulting/Norm.net/tree/5.3.4) (2023-05-26)
 
@@ -45,11 +43,11 @@ When mapper encounters an instance that is not anonymous, it will use standard m
 
 ### New option - `KeepOriginalNames` 
 
-When matching by name, default behavior is to strip all database names of underscores and @ at characters.
+When matching by name, the default behavior is to strip all database names of underscores and @ at characters.
 
-This is done to make it easier to map underscore separated names to C# properties (`field_name` to `FieldName` for example).
+This is done to make it easier to map underscore-separated names to C# properties (`field_name` to `FieldName` for example).
 
-Set this option to true to skip this behavior and keep original names.
+Set this option to true to skip this behavior and keep the original names.
 
 Example:
 
