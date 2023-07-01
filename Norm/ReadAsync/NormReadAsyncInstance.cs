@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Runtime.CompilerServices;
 using Norm.Mapper;
 
@@ -9,13 +8,13 @@ namespace Norm
     public partial class Norm
     {
         ///<summary>
-        ///Maps command results to enumerator of anonymous values.
+        ///Maps command results to async enumerator of single values of type T.
         ///</summary>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<param name="bluePrintInstance">Instance used as blueprint to create new instances of same instance types</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>IEnumerable enumerator of single values of type T.</returns>
-        public virtual IEnumerable<T> Read<T>(T anonymousBlueprintInstance, string command,
+        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
+        public virtual IAsyncEnumerable<T> ReadAsync<T>(T bluePrintInstance, string command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -31,17 +30,17 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternal(command).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
+            return ReadToArrayInternalAsync(command).MapInstance<T>(bluePrintInstance.GetType());
         }
 
         ///<summary>
-        ///Maps command results to enumerator of anonymous values.
+        ///Maps command results to async enumerator of single values of type T.
         ///</summary>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<param name="bluePrintInstance">Instance used as blueprint to create new instances of same instance types</param>
         ///<param name="command">SQL command text.</param>
         ///<param name="parameters">Database parameters object (anonymous object or SqlParameter array).</param>
-        ///<returns>IEnumerable enumerator of single values of type T.</returns>
-        public virtual IEnumerable<T> ReadFormat<T>(T anonymousBlueprintInstance, FormattableString command,
+        ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
+        public virtual IAsyncEnumerable<T> ReadFormatAsync<T>(T bluePrintInstance, FormattableString command,
             object parameters = null,
 #pragma warning disable CS1573 // Parameter has no matching param tag in the XML comment (but other parameters do)
             [CallerMemberName] string memberName = "",
@@ -57,7 +56,7 @@ namespace Norm
             this.memberName = memberName;
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
-            return ReadToArrayInternal(command).MapAnonymous<T>(anonymousBlueprintInstance.GetType());
+            return ReadToArrayInternalAsync(command).MapInstance<T>(bluePrintInstance.GetType());
         }
     }
 }

@@ -413,14 +413,14 @@ namespace Norm
         }
 
         ///<summary>
-        ///Maps command results to enumerator of anonymous values.
+        ///Maps command results to enumerator of new instance values.
         ///</summary>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<param name="bluePrintInstance">Instance used as blueprint to create new instances of same instance types</param>
         ///<returns>IEnumerable enumerator of single values of type T.</returns>
-        public IEnumerable<T> Read<T>(T anonymousBlueprintInstance)
+        public IEnumerable<T> Read<T>(T bluePrintInstance)
             where T : class
         {
-            return ReadReadOnlyMemory().MapAnonymous<T>(anonymousBlueprintInstance.GetType());
+            return ReadReadOnlyMemory().MapInstance<T>(bluePrintInstance.GetType());
         }
 
         private IEnumerable<T> ReadInternal<T>(Func<DbDataReader, T> readerAction)

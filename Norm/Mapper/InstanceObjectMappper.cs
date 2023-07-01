@@ -6,27 +6,57 @@ namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> MapAnonymous<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
+        public static IEnumerable<T> MapInstance<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1)
         {
-            var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
             MapDescriptor descriptor = null;
-            foreach (var tuple in tuples)
+            var (ctorInfo, props, anon) = TypeCache<T>.GetInstInfo(type1);
+            if (anon)
             {
-                descriptor ??= BuildDescriptor(tuple);
-                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
+                foreach (var tuple in tuples)
+                {
+                    descriptor ??= BuildDescriptor(tuple);
+                    yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
+                }
+            }
+            else
+            {
+                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+                var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
+                foreach (var t in tuples)
+                {
+                    descriptor ??= BuildDescriptor(t);
+                    var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                    MapInstance(t, ref t1, ref descriptor, ref delegates);
+                    yield return t1;
+                }
             }
         }
 
-        public static async IAsyncEnumerable<T> MapAnonymous<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        public static async IAsyncEnumerable<T> MapInstance<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1)
         {
-            var (ctorInfo, props) = TypeCache<T>.GetAnonInfo(type1);
             MapDescriptor descriptor = null;
-            await foreach (var tuple in tuples)
+            var (ctorInfo, props, anon) = TypeCache<T>.GetInstInfo(type1);
+            if (anon)
             {
-                descriptor ??= BuildDescriptor(tuple);
-                yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
+                await foreach (var tuple in tuples)
+                {
+                    descriptor ??= BuildDescriptor(tuple);
+                    yield return (T)ctorInfo.Invoke(BuildAnonParameters(ref props, ref descriptor, tuple));
+                }
+            }
+            else
+            {
+                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+                var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
+                await foreach (var t in tuples)
+                {
+                    descriptor ??= BuildDescriptor(t);
+                    var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                    MapInstance(t, ref t1, ref descriptor, ref delegates);
+                    yield return t1;
+                }
             }
         }
 

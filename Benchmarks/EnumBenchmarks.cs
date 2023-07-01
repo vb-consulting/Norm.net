@@ -73,7 +73,7 @@ namespace Benchmarks6
         [Benchmark(Baseline = true)]
         public void Dapper()
         {
-            foreach (var i in connection.Query<EnumBenchmarks>(query))
+            foreach (var i in connection.Query<TestEnumClass>(query))
             {
             }
         }
@@ -81,7 +81,7 @@ namespace Benchmarks6
         [Benchmark()]
         public void Norm_PocoClass_Instances()
         {
-            foreach (var i in connection.Read<EnumBenchmarks>(query))
+            foreach (var i in connection.Read<TestEnumClass>(query))
             {
             }
         }

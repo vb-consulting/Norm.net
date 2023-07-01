@@ -414,12 +414,12 @@ namespace Norm
         ///<summary>
         ///Maps command results to async enumerator of single values of type T.
         ///</summary>
-        ///<param name="anonymousBlueprintInstance">Anonymous instance used as blueprint to create new instances of same anonymous types</param>
+        ///<param name="bluePrintInstance">Instance used as blueprint to create new instances of same instance types</param>
         ///<returns>IAsyncEnumerable async enumerator of single values of type T.</returns>
-        public IAsyncEnumerable<T> ReadAsync<T>(T anonymousBlueprintInstance)
+        public IAsyncEnumerable<T> ReadAsync<T>(T bluePrintInstance)
             where T : class
         {
-            return ReadReadOnlyMemoryAsync().MapAnonymous<T>(anonymousBlueprintInstance.GetType());
+            return ReadReadOnlyMemoryAsync().MapInstance<T>(bluePrintInstance.GetType());
         }
 
         private async IAsyncEnumerable<T> ReadInternalAsync<T>(Func<DbDataReader, Task<T>> readerAction)

@@ -72,24 +72,20 @@ namespace Norm.Mapper
             }
         }
 
-        private static readonly object AnonInfoLocker = new object();
-        private static (ConstructorInfo ctorInfo, (string name, Type type)[] props) _anonInfoInfo;
+        private static readonly object InstInfoLocker = new object();
+        private static (ConstructorInfo ctorInfo, (string name, Type type)[] props, bool anon) _instInfo;
 
-        internal static (ConstructorInfo ctorInfo, (string name, Type type)[] props) GetAnonInfo(Type type)
+        internal static (ConstructorInfo ctorInfo, (string name, Type type)[] props, bool anon) GetInstInfo(Type type)
         {
-            if (_anonInfoInfo.ctorInfo != null)
+            if (_instInfo.ctorInfo != null)
             {
-                return _anonInfoInfo;
+                return _instInfo;
             }
-            lock (AnonInfoLocker)
+            lock (InstInfoLocker)
             {
-                if (_anonInfoInfo.ctorInfo != null)
+                if (_instInfo.ctorInfo != null)
                 {
-                    return _anonInfoInfo;
-                }
-                if (!type.IsAnonymousType())
-                {
-                    throw new ArgumentException("Anonymous Type is required for this call.");
+                    return _instInfo;
                 }
                 var defaultCtor = type.GetConstructors()[0];
                 var ctorParams = defaultCtor.GetParameters();
@@ -98,7 +94,7 @@ namespace Norm.Mapper
                 {
                     p[i] = (ctorParams[i].Name.ToLowerInvariant().Replace("_", ""), ctorParams[i].ParameterType);
                 }
-                return _anonInfoInfo = (defaultCtor, p);
+                return _instInfo = (defaultCtor, p, type.IsAnonymousType());
             }
         }
 

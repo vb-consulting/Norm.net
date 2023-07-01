@@ -19,6 +19,38 @@ namespace PostgreSqlUnitTests
             this.fixture = fixture;
         }
 
+        class Class1
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        [Fact]
+        public void ReadInstance_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var instance1 = new Class1();
+            var result1 = connection
+                .Read(instance1, "select 1 as id, 'foo' as name")
+                .Single();
+
+            Assert.Equal(1, result1.Id);
+            Assert.Equal("foo", result1.Name);
+        }
+
+        [Fact]
+        public async Task ReadInstance_Test_Async()
+        {
+            await using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var instance1 = new Class1();
+            var result1 = await connection
+                .ReadAsync(instance1, "select 1 as id, 'foo' as name")
+                .SingleAsync();
+
+            Assert.Equal(1, result1.Id);
+            Assert.Equal("foo", result1.Name);
+        }
+
         [Fact]
         public void ReadAnonymous_Test()
         {

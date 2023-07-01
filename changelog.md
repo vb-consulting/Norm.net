@@ -1,5 +1,41 @@
 # Changelog
 
+## [5.3.4](https://github.com/vb-consulting/Norm.net/tree/5.3.5) (2023-07-01)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.4...5.3.5)
+
+When using method for mapping anonymous instances based on instance prototype, e.g.:
+
+```csharp
+var result1 = connection
+    .Read(
+        new {id = default(int), name = default(string)}, // anonymous instance prototype
+        "select 1 as id, 'foo' as name")
+    .Single();
+```
+
+From version `5.3.5` you can use a normal instance as a prototype, e.g.:
+
+```sharp
+class Class1
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+var instance1 = new Class1();
+var result1 = connection
+    .Read(instance1, "select 1 as id, 'foo' as name")
+    .Single();
+
+Assert.Equal(1, result1.Id);
+Assert.Equal("foo", result1.Name);
+```
+
+When mapper encounters an instance that is not anonymous, it will use standard method of mapping instances.
+
+```csharp
+
 ## [5.3.4](https://github.com/vb-consulting/Norm.net/tree/5.3.4) (2023-05-26)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.3...5.3.4)
