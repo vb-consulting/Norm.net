@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.3.4](https://github.com/vb-consulting/Norm.net/tree/5.3.5) (2023-07-01)
+## [5.3.5](https://github.com/vb-consulting/Norm.net/tree/5.3.5) (2023-07-01)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.4...5.3.5)
 
@@ -12,6 +12,9 @@ var result1 = connection
         new {id = default(int), name = default(string)}, // anonymous instance prototype
         "select 1 as id, 'foo' as name")
     .Single();
+
+Assert.Equal(1, result1.Id);
+Assert.Equal("foo", result1.Name);
 ```
 
 From version `5.3.5` you can use a normal instance as a prototype, e.g.:
