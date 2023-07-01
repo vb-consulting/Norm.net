@@ -19,7 +19,7 @@ Assert.Equal("foo", result1.Name);
 
 From version `5.3.5` you can use a normal instance as a prototype, e.g.:
 
-```sharp
+```csharp
 class Class1
 {
     public int Id { get; set; }
