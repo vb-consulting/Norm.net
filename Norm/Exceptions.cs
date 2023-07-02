@@ -33,4 +33,11 @@ namespace Norm
             base($"Can't map null value for database field \"{fieldName}\" to non-nullable property \"{propertyName}\".")
         { }
     }
+
+    public class NormReaderAlreadyAssignedException : NormException
+    {
+        public NormReaderAlreadyAssignedException() :
+            base("DbReader callback has been already assigned. You can't assign it twice. It may be global handler in options or double call on WithReaderCallback method on same instance.")
+        { }
+    }
 }

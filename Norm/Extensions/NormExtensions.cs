@@ -130,6 +130,7 @@ namespace Norm
         ///<summary>
         /// Set the database reader callback for the next command.
         ///</summary>
+        ///<exception cref="NormReaderAlreadyAssignedException">Thrown when the reader callback is set more than once.</exception>
         ///<param name="readerCallback">Reader tuple value object (Name, Ordinal and DbDataReader)</param>
         ///<param name="connection">DbConnection instance.</param>
         ///<returns>Norm instance that encapsulates the connection.</returns>

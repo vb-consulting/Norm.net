@@ -15,6 +15,10 @@ namespace Norm
         /// </summary>
         public Action<DbCommand> DbCommandCallback { get; set; } = null;
         /// <summary>
+        /// Set the global reader callback that will be called for every reader.
+        /// </summary>
+        public Func<(string Name, int Ordinal, DbDataReader Reader), object> DbReaderCallback { get; set; } = null;
+        /// <summary>
         /// Automatic command comment header options.
         /// </summary>
         public CommandCommentHeader CommandCommentHeader { get; private set; } = new CommandCommentHeader();

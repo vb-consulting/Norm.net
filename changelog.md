@@ -1,5 +1,83 @@
 # Changelog
 
+## [5.3.6](https://github.com/vb-consulting/Norm.net/tree/5.3.6) (2023-07-02)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.5...5.3.6)
+
+### Added global handler that can be set for all Read operations globally via options:
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.DbReaderCallback = r => r.Ordinal switch
+    {
+        0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first tuple named "a"
+        _ => null                       // for all other fields, use the default mapping
+    });
+});
+```
+
+This would be equivalent to executing every Read operation with the `WithReaderCallback` method like this:
+
+```csharp
+var array = connection
+    .WithReaderCallback(r => r.Ordinal switch
+    {
+        0 => r.Reader.GetInt32(0) + 1,  // add 1 to the first field with ordinal 0, mapped to the first tuple named "a"
+        _ => null                       // for all other fields, use the default mapping
+    })
+    .Read<(int a, int b, int c)>("select * from (values (1, 1, 1), (2, 2, 2), (3, 3, 3)) t(a, b, c)")
+    .ToArray();
+```
+
+> Important: reader callback can be set only once per read operation and that includes global reader callbacks.
+
+If you set global reader callback and another reader callback with `WithReaderCallback` - a `NormReaderAlreadyAssignedException` exception will be thrown.
+
+- You can assign reader callbacks from private methods, for example:
+
+```csharp
+private object? ReaderCallback((string Name, int Ordinal, DbDataReader Reader) arg) => 
+    arg.Reader.GetDataTypeName(arg.Ordinal) switch
+{
+    "json" => JsonNode.Parse(arg.Reader.GetString(arg.Ordinal))?.AsObject(),
+    _ => null
+};
+
+//
+// in your startup
+NormOptions.Configure(o => o.DbReaderCallback = ReaderCallback);
+```
+
+The example above of the global reader handler shows how to implement a custom type mapping in your application: 
+If the record type is `json` it will be automatically parsed to `JsonObject` object.
+
+Example:
+```csharp
+
+private object? ReaderCallback((string Name, int Ordinal, DbDataReader Reader) arg) => 
+    arg.Reader.GetDataTypeName(arg.Ordinal) switch
+{
+    "json" => JsonNode.Parse(arg.Reader.GetString(arg.Ordinal))?.AsObject(),
+    _ => null
+};
+
+//
+// in your startup
+NormOptions.Configure(o => o.DbReaderCallback = ReaderCallback);
+
+private class JsonTest
+{
+    public string I { get; set; }
+    public JsonObject J { get; set; }
+}
+
+// all `json` types are automatically converted to `JsonObject` object
+var instance = connection
+    .Read<JsonTest>("select '{\"a\": 1}'::text as i, '{\"a\": 1}'::json as j")
+    .Single();
+```
+
 ## [5.3.5](https://github.com/vb-consulting/Norm.net/tree/5.3.5) (2023-07-01)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.4...5.3.5)

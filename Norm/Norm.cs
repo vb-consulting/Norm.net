@@ -48,6 +48,10 @@ namespace Norm
                 "MySqlConnection" => DatabaseType.MySql,
                 _ => DatabaseType.Other
             };
+            if (NormOptions.Value.DbReaderCallback != null)
+            {
+                this.readerCallback = NormOptions.Value.DbReaderCallback;
+            }
         }
 
         ///<summary>
@@ -181,6 +185,10 @@ namespace Norm
         ///<returns>Norm instance.</returns>
         public virtual Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
+            if (this.readerCallback != null)
+            {
+                throw new NormReaderAlreadyAssignedException();
+            }
             this.readerCallback = readerCallback;
             return this;
         }
