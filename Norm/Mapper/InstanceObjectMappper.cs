@@ -21,12 +21,12 @@ namespace Norm.Mapper
             }
             else
             {
-                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+                var ctorInfo1 = TypeCache<T>.GetCtorInfo(ref type1);
                 var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
                 foreach (var t in tuples)
                 {
                     descriptor ??= BuildDescriptor(t);
-                    var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                    var t1 = TypeCache<T>.CreateInstance(ref ctorInfo1);
                     MapInstance(t, ref t1, ref descriptor, ref delegates);
                     yield return t1;
                 }
@@ -48,12 +48,12 @@ namespace Norm.Mapper
             }
             else
             {
-                var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+                var ctorInfo1 = TypeCache<T>.GetCtorInfo(ref type1);
                 var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
                 await foreach (var t in tuples)
                 {
                     descriptor ??= BuildDescriptor(t);
-                    var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                    var t1 = TypeCache<T>.CreateInstance(ref ctorInfo1);
                     MapInstance(t, ref t1, ref descriptor, ref delegates);
                     yield return t1;
                 }

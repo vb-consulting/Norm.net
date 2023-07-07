@@ -47,12 +47,15 @@ public partial class PostgreSqlSerialUnitTest
 
         Assert.IsType<string>(r1[0].value);
         Assert.IsType<JsonObject>(r1[1].value);
+        Assert.Equal(1, (int)(r1[1].value as JsonObject)["a"]);
 
         Assert.IsType<string>(r2.Item1);
         Assert.IsType<JsonObject>(r2.Item2);
+        Assert.Equal(1, (int)r2.Item2["a"]);
 
         Assert.IsType<string>(r3.I);
         Assert.IsType<JsonObject>(r3.J);
+        Assert.Equal(1, (int)r3.J["a"]);
 
         Assert.Throws<NormReaderAlreadyAssignedException>(() =>
         {

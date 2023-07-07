@@ -10,7 +10,14 @@ namespace Norm.Mapper
 
         public void Reset()
         {
-            Used = new HashSet<ushort>(Length);
+            if (Used == null)
+            {
+                Used = new HashSet<ushort>(Length);
+            }
+            else
+            {
+                Used.Clear();
+            }
         }
     }
 }

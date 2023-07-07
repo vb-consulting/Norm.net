@@ -8,13 +8,13 @@ namespace Norm.Mapper
         public static async IAsyncEnumerable<T> Map<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> tuples,
             Type type1)
         {
-            var ctorInfo1 = TypeCache<T>.GetCtorInfo(type1);
+            var ctorInfo1 = TypeCache<T>.GetCtorInfo(ref type1);
             MapDescriptor descriptor = null;
             var delegates = CreateDelegateArray(TypeCache<T>.GetPropertiesLength());
             await foreach (var t in tuples)
             {
                 descriptor ??= BuildDescriptor(t);
-                var t1 = TypeCache<T>.CreateInstance(ctorInfo1);
+                var t1 = TypeCache<T>.CreateInstance(ref ctorInfo1);
                 MapInstance(t, ref t1, ref descriptor, ref delegates);
                 yield return t1;
             }
@@ -24,8 +24,8 @@ namespace Norm.Mapper
             Type type1,
             Type type2)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -34,8 +34,8 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 yield return (t1, t2);
@@ -47,9 +47,9 @@ namespace Norm.Mapper
             Type type2,
             Type type3)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -59,9 +59,9 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -75,10 +75,10 @@ namespace Norm.Mapper
             Type type3,
             Type type4)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -89,10 +89,10 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -108,11 +108,11 @@ namespace Norm.Mapper
             Type type4,
             Type type5)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -124,11 +124,11 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -146,12 +146,12 @@ namespace Norm.Mapper
             Type type5,
             Type type6)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -164,12 +164,12 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -189,13 +189,13 @@ namespace Norm.Mapper
             Type type6,
             Type type7)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -209,13 +209,13 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -237,14 +237,14 @@ namespace Norm.Mapper
             Type type7,
             Type type8)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(ref type8);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -259,14 +259,14 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
+                var t8 = TypeCache<T8>.CreateInstance(ref ctorInfo8);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -291,15 +291,15 @@ namespace Norm.Mapper
             Type type8,
             Type type9)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
-            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(ref type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(ref type9);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -315,15 +315,15 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
+                var t8 = TypeCache<T8>.CreateInstance(ref ctorInfo8);
+                var t9 = TypeCache<T9>.CreateInstance(ref ctorInfo9);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -349,16 +349,16 @@ namespace Norm.Mapper
             Type type9,
             Type type10)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
-            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
-            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(ref type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(ref type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(ref type10);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -375,16 +375,16 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
+                var t8 = TypeCache<T8>.CreateInstance(ref ctorInfo8);
+                var t9 = TypeCache<T9>.CreateInstance(ref ctorInfo9);
+                var t10 = TypeCache<T10>.CreateInstance(ref ctorInfo10);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -412,17 +412,17 @@ namespace Norm.Mapper
             Type type10,
             Type type11)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
-            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
-            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
-            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(ref type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(ref type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(ref type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(ref type11);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -440,17 +440,17 @@ namespace Norm.Mapper
             {
                 descriptor ??= BuildDescriptor(t);
                 descriptor.Reset();
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
-                var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
+                var t8 = TypeCache<T8>.CreateInstance(ref ctorInfo8);
+                var t9 = TypeCache<T9>.CreateInstance(ref ctorInfo9);
+                var t10 = TypeCache<T10>.CreateInstance(ref ctorInfo10);
+                var t11 = TypeCache<T11>.CreateInstance(ref ctorInfo11);
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);
                 MapInstance(t, ref t3, ref descriptor, ref delegates3);
@@ -480,18 +480,18 @@ namespace Norm.Mapper
             Type type11,
             Type type12)
         {
-            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(type1);
-            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(type2);
-            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(type3);
-            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(type4);
-            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(type5);
-            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(type6);
-            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(type7);
-            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(type8);
-            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(type9);
-            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(type10);
-            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(type11);
-            var ctorInfo12 = TypeCache<T12>.GetCtorInfo(type12);
+            var ctorInfo1 = TypeCache<T1>.GetCtorInfo(ref type1);
+            var ctorInfo2 = TypeCache<T2>.GetCtorInfo(ref type2);
+            var ctorInfo3 = TypeCache<T3>.GetCtorInfo(ref type3);
+            var ctorInfo4 = TypeCache<T4>.GetCtorInfo(ref type4);
+            var ctorInfo5 = TypeCache<T5>.GetCtorInfo(ref type5);
+            var ctorInfo6 = TypeCache<T6>.GetCtorInfo(ref type6);
+            var ctorInfo7 = TypeCache<T7>.GetCtorInfo(ref type7);
+            var ctorInfo8 = TypeCache<T8>.GetCtorInfo(ref type8);
+            var ctorInfo9 = TypeCache<T9>.GetCtorInfo(ref type9);
+            var ctorInfo10 = TypeCache<T10>.GetCtorInfo(ref type10);
+            var ctorInfo11 = TypeCache<T11>.GetCtorInfo(ref type11);
+            var ctorInfo12 = TypeCache<T12>.GetCtorInfo(ref type12);
 
             MapDescriptor descriptor = null;
             var delegates1 = CreateDelegateArray(TypeCache<T1>.GetPropertiesLength());
@@ -509,18 +509,18 @@ namespace Norm.Mapper
             await foreach (var t in tuples)
             {
                 descriptor ??= BuildDescriptor(t);
-                var t1 = TypeCache<T1>.CreateInstance(ctorInfo1);
-                var t2 = TypeCache<T2>.CreateInstance(ctorInfo2);
-                var t3 = TypeCache<T3>.CreateInstance(ctorInfo3);
-                var t4 = TypeCache<T4>.CreateInstance(ctorInfo4);
-                var t5 = TypeCache<T5>.CreateInstance(ctorInfo5);
-                var t6 = TypeCache<T6>.CreateInstance(ctorInfo6);
-                var t7 = TypeCache<T7>.CreateInstance(ctorInfo7);
-                var t8 = TypeCache<T8>.CreateInstance(ctorInfo8);
-                var t9 = TypeCache<T9>.CreateInstance(ctorInfo9);
-                var t10 = TypeCache<T10>.CreateInstance(ctorInfo10);
-                var t11 = TypeCache<T11>.CreateInstance(ctorInfo11);
-                var t12 = TypeCache<T12>.CreateInstance(ctorInfo12);
+                var t1 = TypeCache<T1>.CreateInstance(ref ctorInfo1);
+                var t2 = TypeCache<T2>.CreateInstance(ref ctorInfo2);
+                var t3 = TypeCache<T3>.CreateInstance(ref ctorInfo3);
+                var t4 = TypeCache<T4>.CreateInstance(ref ctorInfo4);
+                var t5 = TypeCache<T5>.CreateInstance(ref ctorInfo5);
+                var t6 = TypeCache<T6>.CreateInstance(ref ctorInfo6);
+                var t7 = TypeCache<T7>.CreateInstance(ref ctorInfo7);
+                var t8 = TypeCache<T8>.CreateInstance(ref ctorInfo8);
+                var t9 = TypeCache<T9>.CreateInstance(ref ctorInfo9);
+                var t10 = TypeCache<T10>.CreateInstance(ref ctorInfo10);
+                var t11 = TypeCache<T11>.CreateInstance(ref ctorInfo11);
+                var t12 = TypeCache<T12>.CreateInstance(ref ctorInfo12);
                 descriptor.Reset();
                 MapInstance(t, ref t1, ref descriptor, ref delegates1);
                 MapInstance(t, ref t2, ref descriptor, ref delegates2);

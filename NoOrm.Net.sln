@@ -13,8 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		changelog-archive.md = changelog-archive.md
 		changelog.md = changelog.md
 		.github\FUNDING.yml = .github\FUNDING.yml
-		README.md = README.md
 		performance-tests.md = performance-tests.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norm", "Norm\Norm.csproj", "{8874B51F-4010-465D-85DF-B389B076F06D}"

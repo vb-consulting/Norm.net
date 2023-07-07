@@ -49,7 +49,7 @@ namespace Norm.Mapper
         private static readonly object CtorLocker = new object();
         private static (T, Func<T, object>) _ctorInfo;
 
-        internal static (T, Func<T, object>) GetCtorInfo(Type type)
+        internal static (T, Func<T, object>) GetCtorInfo(ref Type type)
         {
             if (_ctorInfo.Item1 != null)
             {
@@ -98,7 +98,7 @@ namespace Norm.Mapper
             }
         }
 
-        internal static T CreateInstance((T instance, Func<T, object> clone) info)
+        internal static T CreateInstance(ref (T instance, Func<T, object> clone) info)
         {
             return (T)info.clone.Invoke(info.instance);
         }
