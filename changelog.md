@@ -4,7 +4,9 @@
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.5...5.3.6)
 
-### Added global handler that can be set for all Read operations globally via options:
+### Global handler for reader callback
+
+Added global handler that can be set for all Read operations globally via options:
 
 ```csharp
 NormOptions.Configure(options =>
@@ -167,7 +169,7 @@ Also, see [performance tests results](https://github.com/vb-consulting/Norm.net/
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.2...5.3.3)
 
-### Fix - `NullableInstances` option turned on but have non-nullable properties
+### Fix - NullableInstances option turned on but have non-nullable properties
 
 - In previous version a new feature - when `NullableInstances` option is turned on, the mapper will return `null` instances if all mapped values are `null`.
 
@@ -175,7 +177,7 @@ Also, see [performance tests results](https://github.com/vb-consulting/Norm.net/
 
 - This is now fixed in this version - if all mapped values are null, and `NullableInstances` option is on - return instance will be null, regardless of property types.
 
-### New feature - `NormNullException`
+### New feature - NormNullException
 
 - Attempted mapping of database null value to a non-nullable property will now throw `NormNullException` exception with nice message, for example: `Can't map null value for database field "foo" to non-nullable property "Foo".`.
 
@@ -183,7 +185,7 @@ Also, see [performance tests results](https://github.com/vb-consulting/Norm.net/
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.1...5.3.2)
 
-### New Feature - `NullableInstances`
+### New Feature - NullableInstances
 
 - There is a new option `NullableInstances` that can be used to control whether to return `null` instances or not. 
 
@@ -570,7 +572,7 @@ However, sending multiple commands in one command string separated by a semicolo
 
 See following [article](https://www.roji.org/parameters-batching-and-sql-rewriting).
 
-## `NpgsqlEnableSqlRewriting` global setting - Npgsql (PostgreSQL) 6+ only
+## NpgsqlEnableSqlRewriting global setting - Npgsql (PostgreSQL) 6+ only
 
 You can force all `Npgsql` commands to "raw" mode that disables `Npgsql` parser for all `Npgsql` commands globally.
 
@@ -592,7 +594,7 @@ Notes:
    - Named parameters are disabled, and positional parameters with $ syntax must be used always (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
    - Multiple commands in one command string separated by a semicolon (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`)
 
-### `WithUnknownResultType(params bool[] list)` connection extension method - Npgsql (PostgreSQL) 6+ only
+### WithUnknownResultType(params bool[] list) connection extension method - Npgsql (PostgreSQL) 6+ only
 
 This new method extension will tell the underlying `Npgsql` command results parser not to map command results and return raw strings only.
 
@@ -644,7 +646,7 @@ If simply called this method without any parameters like this `.WithUnknownResul
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.0.1...5.1.0)
 
-### `WithCommandBehavior(CommandBehavior)` connection extension method
+### WithCommandBehavior(CommandBehavior) connection extension method
 
 New extensions method that sets the command behavior of the data read for the next command.
 
@@ -722,7 +724,7 @@ namespace System.Data
 }
 ```
 
-### Parameters can be set again in `Read` and `Execute` extensions methods
+### Parameters can be set again in Rea` and Execute extensions methods
 
 This feature was removed after version 5.0.0.
 
@@ -829,13 +831,13 @@ var result2 = connection.Read("select * from transaction_test1").ToArray();
 Assert.Empty(result2);
 ```
 
-### `WithTimeout` connection extension method
+### WithTimeout connection extension method
 
 This is equivalent to the `Timeout` connection extension, added only for the naming consistency ("with" prefix).
 
 It just sets the wait time in seconds for the connection commands, before terminating the attempt to execute a command and generating an error.
 
-### `MapPrivateSetters` global option
+### MapPrivateSetters global option
 
 By default, it is not possible to map instance properties that don't have a public setter method.
 
@@ -982,7 +984,7 @@ connection
 }
 ```
 
-#### `WithParameters(params object[] parameters)`
+#### WithParameters(params object[] parameters)
 
 Sets parameters for the next command.
 
@@ -1002,7 +1004,7 @@ connection
     .Execute("command");
 ```
 
-#### `WithCommandCallback(Action<DbCommand> dbCommandCallback)`
+#### WithCommandCallback(Action<DbCommand> dbCommandCallback)
 
 Executes supplied action with constructed `DbCommand` as a single parameter just before the actual execution.
 
@@ -1010,7 +1012,7 @@ This exposes created `DbCommand` object and allows for eventual changes to be ma
 
 There is also a global version of this method that is commonly used for logging tasks.
 
-#### `WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)`
+#### WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
 
 Executes reader callback function for each value just before assigning mapper results.
 
@@ -1050,19 +1052,19 @@ connection.Read("command", r => { /*...*/});
 ```
 From version 5, the `WithReaderCallback` extension method is used to supply this callback to the next read operation.
 
-#### `WithComment(string comment)`
+#### WithComment(string comment)
 
 Adds a custom comment header to the next command.
 
-#### `WithCommentParameters()`
+#### WithCommentParameters()
 
 Adds a comment header with command parameters described with names, database types, and values to the next command.
 
-#### `WithCommentCallerInfo()`
+#### WithCommentCallerInfo()
 
 Adds a comment header with caller info data (calling method names, source code file, and line number) to the next command.
 
-#### `WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false)`
+#### WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false)
 
 Adds a comment header  to the next command and configures options:
 
@@ -1120,7 +1122,7 @@ Available options are:
 | `IncludeTimestamp` | Include command execution timestamp in comment headers. | `false` |
 | `OmmitStoredProcCommandCommentHeaderForDbTypes` | Omits comment headers if enabled from a command text when command type is Stored Procedure for the database providers that do not support comments in a Stored Procedure calls (SQL Server and MySQL). | ` DatabaseType.Sql | DatabaseType.MySql` |
 
-### New feature - `Multiple` and `MultipleAsync` now support reader callbacks
+### New feature - Multiple and MultipleAsync now support reader callbacks
 
 This was previously missing. Now, it is possible to use reader callbacks with multiple queries:
 
@@ -1146,7 +1148,7 @@ var next2 = multiple.Next();  // false
 // ...
 ```
 
-### New feature - anonymous `Read` and `ReadAsync` overloads for anonymous types added to `Multiple` and `MultipleAsync`
+### New feature - anonymous Read and ReadAsync overloads for anonymous types added to Multiple and MultipleAsync
 
 This was previously missing. Now, it is possible to map anonymous types with multiple queries:
 
