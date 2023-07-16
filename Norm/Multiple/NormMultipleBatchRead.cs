@@ -13,36 +13,38 @@ namespace Norm
         ///<returns>IEnumerable enumerator of name and value tuple arrays.</returns>
         public IEnumerable<(string name, object value)[]> Read()
         {
+            norm.ResetNames();
             if (norm.ReaderCallback == null)
             {
                 while (dbReader.Read())
                 {
-                    yield return Norm.ReadToArray(dbReader).ToArray();
+                    yield return norm.ReadToArray(dbReader).ToArray();
                 }
             }
             else
             {
                 while (dbReader.Read())
                 {
-                    yield return Norm.ReadToArray(dbReader, norm.ReaderCallback).ToArray();
+                    yield return norm.ReadToArray(dbReader, norm.ReaderCallback).ToArray();
                 }
             }
         }
 
         private IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadReadOnlyMemory()
         {
+            norm.ResetNames();
             if (norm.ReaderCallback == null)
             {
                 while (dbReader.Read())
                 {
-                    yield return Norm.ReadToArray(dbReader);
+                    yield return norm.ReadToArray(dbReader);
                 }
             }
             else
             {
                 while (dbReader.Read())
                 {
-                    yield return Norm.ReadToArray(dbReader, norm.ReaderCallback);
+                    yield return norm.ReadToArray(dbReader, norm.ReaderCallback);
                 }
             }
         }

@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Norm.Mapper
 {
-    public static class TypeExt
+    internal static class TypeExt
     {
         private static readonly HashSet<Type> ValueTupleTypes = new HashSet<Type>(
             new[]

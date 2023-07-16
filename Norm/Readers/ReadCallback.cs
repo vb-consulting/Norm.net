@@ -7,7 +7,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        protected IEnumerable<T> ReadCallback<T>(string command, Func<DbDataReader, T> readerAction)
+        internal IEnumerable<T> ReadCallback<T>(string command, Func<DbDataReader, T> readerAction)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -17,7 +17,7 @@ namespace Norm
             }
         }
 
-        protected IEnumerable<T> ReadCallback<T>(FormattableString command, Func<DbDataReader, T> readerAction)
+        internal IEnumerable<T> ReadCallback<T>(FormattableString command, Func<DbDataReader, T> readerAction)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -27,7 +27,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<T> ReadCallbackAsync<T>(string command,
+        internal async IAsyncEnumerable<T> ReadCallbackAsync<T>(string command,
             Func<DbDataReader, Task<T>> readerAction)
         {
             using var cmd = await CreateCommandAsync(command);
@@ -50,7 +50,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<T> ReadCallbackAsync<T>(FormattableString command,
+        internal async IAsyncEnumerable<T> ReadCallbackAsync<T>(FormattableString command,
             Func<DbDataReader, Task<T>> readerAction)
         {
             using var cmd = await CreateCommandAsync(command);

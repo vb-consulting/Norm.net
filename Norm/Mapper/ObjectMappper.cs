@@ -5,7 +5,7 @@ namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> Map<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
+        internal static IEnumerable<T> Map<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1)
         {
             var ctorInfo1 = TypeCache<T>.GetCtorInfo(ref type1);
@@ -20,7 +20,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2)> Map<T1, T2>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
+        internal static IEnumerable<(T1, T2)> Map<T1, T2>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1, 
             Type type2)
         {
@@ -42,7 +42,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3)> Map<T1, T2, T3>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1, 
             Type type2, 
             Type type3)
@@ -69,7 +69,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4)> Map<T1, T2, T3, T4>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1, 
             Type type2, 
             Type type3, 
@@ -101,7 +101,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5)> Map<T1, T2, T3, T4, T5>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1, 
             Type type2, 
             Type type3, 
@@ -138,7 +138,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6)> Map<T1, T2, T3, T4, T5, T6>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -180,7 +180,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Map<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -227,7 +227,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Map<T1, T2, T3, T4, T5, T6, T7, T8>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -279,7 +279,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -336,7 +336,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -398,7 +398,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,
@@ -465,7 +465,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Map<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1,
             Type type2,
             Type type3,

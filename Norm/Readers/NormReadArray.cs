@@ -5,16 +5,58 @@ namespace Norm
 {
     public partial class Norm
     {
-        public static ReadOnlyMemory<(string name, object value)> ReadToArray(DbDataReader reader)
+        internal static void Parse(ref string input)
+        {
+            if (NormOptions.Value.KeepOriginalNames)
+            {
+                input = input.ToLowerInvariant();
+                return;
+            }
+            var result = new Span<char>(new char[input.Length]);
+            int index = 0;
+            for (int i = 0; i < input.Length; i++)
+            {
+                var ch = input[i];
+                if (ch != '@' && ch != '_')
+                {
+                    result[index] = char.ToLowerInvariant(input[i]);
+                    index++;
+                }
+            }
+            input = result[..index].ToString();
+        }
+
+        internal void ResetNames()
+        {
+            // For GC Ready!
+            names = null;
+        }
+
+
+        internal ReadOnlyMemory<(string name, object value)> ReadToArray(DbDataReader reader)
         {
             var count = reader.FieldCount;
             object v;
             object r;
             string n;
+            bool hasNames = names != null;
+            if (!hasNames)
+            {
+                names = new string[count];
+            }
             var result = new (string name, object value)[count];
             for (var index = 0; index < count; index++)
             {
-                n = reader.GetName(index);
+                if (hasNames)
+                {
+                    n = names[index];
+                }
+                else
+                {
+                    n = reader.GetName(index);
+                    Parse(ref n);
+                    names[index] = n;
+                }
                 v = reader.GetValue(index);
                 if (v == DBNull.Value) r = null; else r = v;
                 result[index] = (n, r);
@@ -22,17 +64,31 @@ namespace Norm
             return new ReadOnlyMemory<(string name, object value)>(result);
         }
 
-        public static ReadOnlyMemory<(string name, object value)> ReadToArray(DbDataReader reader,
+        internal ReadOnlyMemory<(string name, object value)> ReadToArray(DbDataReader reader,
             Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)
         {
             var count = reader.FieldCount;
             object v;
             object r;
             string n;
+            bool hasNames = names != null;
+            if (!hasNames)
+            {
+                names = new string[count];
+            }
             var result = new (string name, object value)[count];
             for (var index = 0; index < count; index++)
             {
-                n = reader.GetName(index);
+                if (hasNames)
+                {
+                    n = names[index];
+                }
+                else
+                {
+                    n = reader.GetName(index);
+                    Parse(ref n);
+                    names[index] = n;
+                }
                 var callback = readerCallback((n, index, reader));
                 if (callback != null)
                 {
@@ -46,16 +102,30 @@ namespace Norm
             return new ReadOnlyMemory<(string name, object value)>(result);
         }
 
-        protected ReadOnlyMemory<(string name, object value, bool set)> ReadToArrayWithSet(DbDataReader reader)
+        internal ReadOnlyMemory<(string name, object value, bool set)> ReadToArrayWithSet(DbDataReader reader)
         {
             var count = reader.FieldCount;
             object v;
             object r;
             string n;
+            bool hasNames = names != null;
+            if (!hasNames)
+            {
+                names = new string[count];
+            }
             var result = new (string name, object value, bool set)[count];
             for (var index = 0; index < count; index++)
             {
-                n = reader.GetName(index);
+                if (hasNames)
+                {
+                    n = names[index];
+                }
+                else
+                {
+                    n = reader.GetName(index);
+                    Parse(ref n);
+                    names[index] = n;
+                }
                 var callback = readerCallback((n, index, reader));
                 if (callback != null)
                 {

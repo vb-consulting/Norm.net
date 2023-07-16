@@ -76,21 +76,6 @@ namespace PostgreSqlUnitTests
                                 (3, 'foo3', '1979-05-19'::date, null, 'bar3')
                             ) t(my_id, my_foo, my_day, my_bool, my_bar)";
 
-        private const string ArraysQuery = @"
-                            select 
-                                array_agg(id) as id,
-                                array_agg(foo) as foo,
-                                array_agg(day) as day,
-                                array_agg(bool) as bool,
-                                array_agg(bar) as bar
-                            from (
-                            values 
-                                (1, 'foo1', '1977-05-19'::date, true, 'bar1'),
-                                (2, 'foo2', '1978-05-19'::date, false, 'bar2'),
-                                (3, 'foo3', '1979-05-19'::date, true, 'bar3'),
-                                (4, 'foo4', '1980-05-19'::date, false, 'bar4')
-                            ) t(id, foo, day, bool, bar)";
-
         public MapUnitTests(PostgreSqlFixture fixture)
         {
             this.fixture = fixture;

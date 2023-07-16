@@ -14,36 +14,38 @@ namespace Norm
         /// <returns>IAsyncEnumerable async enumerator of name and value tuple arrays.</returns>
         public async IAsyncEnumerable<(string name, object value)[]> ReadAsync()
         {
+            norm.ResetNames();
             if (norm.ReaderCallback == null)
             {
                 while (await dbReader.ReadAsync())
                 {
-                    yield return Norm.ReadToArray(dbReader).ToArray();
+                    yield return norm.ReadToArray(dbReader).ToArray();
                 }
             }
             else
             {
                 while (await dbReader.ReadAsync())
                 {
-                    yield return Norm.ReadToArray(dbReader, norm.ReaderCallback).ToArray();
+                    yield return norm.ReadToArray(dbReader, norm.ReaderCallback).ToArray();
                 }
             }
         }
 
         public async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadReadOnlyMemoryAsync()
         {
+            norm.ResetNames();
             if (norm.ReaderCallback == null)
             {
                 while (await dbReader.ReadAsync())
                 {
-                    yield return Norm.ReadToArray(dbReader);
+                    yield return norm.ReadToArray(dbReader);
                 }
             }
             else
             {
                 while (await dbReader.ReadAsync())
                 {
-                    yield return Norm.ReadToArray(dbReader, norm.ReaderCallback);
+                    yield return norm.ReadToArray(dbReader, norm.ReaderCallback);
                 }
             }
         }

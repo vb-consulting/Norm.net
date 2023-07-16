@@ -7,7 +7,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        public static T GetFieldValue<T>(DbDataReader reader, int ordinal,Type type)
+        internal static T GetFieldValue<T>(DbDataReader reader, int ordinal,Type type)
         {
             if (reader.IsDBNull(ordinal))
             {
@@ -38,7 +38,7 @@ namespace Norm
             return reader.GetFieldValue<T>(ordinal);
         }
 
-        public T GetFieldValueWithCallback<T>(DbDataReader reader, int ordinal, Type type)
+        internal T GetFieldValueWithCallback<T>(DbDataReader reader, int ordinal, Type type)
         {
             var name = reader.GetName(ordinal);
             var callback = readerCallback((name, ordinal, reader));
@@ -49,7 +49,7 @@ namespace Norm
             return (T)(callback == DBNull.Value ? null : callback);
         }
 
-        public static async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, Type type)
+        internal static async ValueTask<T> GetFieldValueAsync<T>(DbDataReader reader, int ordinal, Type type)
         {
             if (await reader.IsDBNullAsync(ordinal))
             {
@@ -80,7 +80,7 @@ namespace Norm
             return await reader.GetFieldValueAsync<T>(ordinal);
         }
 
-        public async ValueTask<T> GetFieldValueWithReaderCallbackAsync<T>(DbDataReader reader, int ordinal, Type type)
+        internal async ValueTask<T> GetFieldValueWithReaderCallbackAsync<T>(DbDataReader reader, int ordinal, Type type)
         {
             var name = reader.GetName(ordinal);
             var callback = readerCallback((name, ordinal, reader));

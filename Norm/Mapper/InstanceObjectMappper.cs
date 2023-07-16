@@ -6,7 +6,7 @@ namespace Norm.Mapper
 {
     public static partial class NormExtensions
     {
-        public static IEnumerable<T> MapInstance<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
+        internal static IEnumerable<T> MapInstance<T>(this IEnumerable<ReadOnlyMemory<(string name, object value)>> tuples, 
             Type type1)
         {
             MapDescriptor descriptor = null;
@@ -33,7 +33,7 @@ namespace Norm.Mapper
             }
         }
 
-        public static async IAsyncEnumerable<T> MapInstance<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
+        internal static async IAsyncEnumerable<T> MapInstance<T>(this IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> tuples,
             Type type1)
         {
             MapDescriptor descriptor = null;

@@ -6,7 +6,7 @@ namespace Norm
 {
     public partial class Norm
     {
-        protected IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(string command)
+        internal IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -26,8 +26,8 @@ namespace Norm
                 }
             }
         }
-     
-        protected IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithWithSetInternal(string command)
+
+        internal IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithWithSetInternal(string command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -36,8 +36,8 @@ namespace Norm
                 yield return ReadToArrayWithSet(reader);
             }
         }
-        
-        protected IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(FormattableString command)
+
+        internal IEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -56,8 +56,8 @@ namespace Norm
                 }
             }
         }
-        
-        protected IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternal(FormattableString command)
+
+        internal IEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternal(FormattableString command)
         {
             using var cmd = CreateCommand(command);
             using var reader = this.ExecuteReader(cmd);
@@ -67,7 +67,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(string command)
+        internal async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (this.readerCallback == null)
@@ -112,7 +112,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(string command)
+        internal async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(string command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
@@ -134,7 +134,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(FormattableString command)
+        internal async IAsyncEnumerable<ReadOnlyMemory<(string name, object value)>> ReadToArrayInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
 
@@ -180,7 +180,7 @@ namespace Norm
             }
         }
 
-        protected async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(FormattableString command)
+        internal async IAsyncEnumerable<ReadOnlyMemory<(string name, object value, bool set)>> ReadToArrayWithSetInternalAsync(FormattableString command)
         {
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)

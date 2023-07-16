@@ -35,6 +35,7 @@ namespace Norm
         protected string memberName = null;
         protected string sourceFilePath = null;
         protected int sourceLineNumber = 0;
+        private string[] names = null;
 
         public DatabaseType DbType => dbType;
 
