@@ -23,5 +23,5 @@ RUN echo '\
 > /Norm.net/Benchmarks/bin/Release/net7.0/testsettings.local.json
 
 ENTRYPOINT service postgresql start && \ 
-/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
+/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks -c "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;" && \ 
 /bin/bash

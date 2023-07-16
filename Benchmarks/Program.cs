@@ -21,11 +21,11 @@ if (args.Contains("e") ||
     args.Contains("enum") || 
     args.Contains("--enum"))
 {
-    BenchmarkRunner.Run<EnumBenchmarks>(args: args);
+    BenchmarkRunner.Run<EnumBenchmarks>();
 }
 else
 {
-    BenchmarkRunner.Run<Benchmarks>(args: args);
+    BenchmarkRunner.Run<Benchmarks>();
 }
 
 public static class Connection
