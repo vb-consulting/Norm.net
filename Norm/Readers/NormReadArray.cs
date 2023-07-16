@@ -5,8 +5,12 @@ namespace Norm
 {
     public partial class Norm
     {
-        internal static void Parse(ref string input)
+        internal static void Parse(ref string input, ref int columnIndex)
         {
+            if (NormOptions.Value.NameParserCallback != null)
+            {
+                input = NormOptions.Value.NameParserCallback((input, columnIndex));
+            }
             if (NormOptions.Value.KeepOriginalNames)
             {
                 input = input.ToLowerInvariant();
@@ -54,7 +58,7 @@ namespace Norm
                 else
                 {
                     n = reader.GetName(index);
-                    Parse(ref n);
+                    Parse(ref n, ref index);
                     names[index] = n;
                 }
                 v = reader.GetValue(index);
@@ -86,7 +90,7 @@ namespace Norm
                 else
                 {
                     n = reader.GetName(index);
-                    Parse(ref n);
+                    Parse(ref n, ref index);
                     names[index] = n;
                 }
                 var callback = readerCallback((n, index, reader));
@@ -123,7 +127,7 @@ namespace Norm
                 else
                 {
                     n = reader.GetName(index);
-                    Parse(ref n);
+                    Parse(ref n, ref index);
                     names[index] = n;
                 }
                 var callback = readerCallback((n, index, reader));

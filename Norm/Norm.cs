@@ -26,6 +26,7 @@ namespace Norm
 
         protected Action<DbCommand> dbCommandCallback = null;
         protected Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback = null;
+        protected Func<(string Name, int Ordinal), string> nameParserCallback { get; set; } = null;
         protected bool commandCommentHeaderEnabled = false;
         protected string comment = null;
         protected bool includeCommandAttributes = true;
@@ -52,6 +53,10 @@ namespace Norm
             if (NormOptions.Value.DbReaderCallback != null)
             {
                 this.readerCallback = NormOptions.Value.DbReaderCallback;
+            }
+            if (NormOptions.Value.NameParserCallback != null)
+            {
+                this.nameParserCallback = NormOptions.Value.NameParserCallback;
             }
         }
 
