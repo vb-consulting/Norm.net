@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Npgsql;
-using PostgreSqlUnitTests;
 
 using Dapper;
 using Norm;
@@ -50,7 +43,6 @@ namespace Benchmarks6
 
         private string query = default!;
         private NpgsqlConnection connection = default!;
-        private PostgreSqlFixture fixture = default!;
 
         [Params(10, 100, 1000, 10_000, 100_000)]
         public int Records { get; set; }
@@ -59,14 +51,12 @@ namespace Benchmarks6
         public void Setup()
         {
             query = GetQuery(Records);
-            fixture = new PostgreSqlFixture();
-            connection = new NpgsqlConnection(Connection.ConnectionString ?? fixture.ConnectionString);
+            connection = new NpgsqlConnection(Connection.ConnectionString);
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
-            fixture.Dispose();
             connection.Dispose();
         }
 

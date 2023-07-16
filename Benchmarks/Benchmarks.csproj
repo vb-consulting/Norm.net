@@ -10,11 +10,11 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.5" />
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Npgsql" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Norm\Norm.csproj" />
-    <ProjectReference Include="..\Tests\PostgreSqlUnitTests\PostgreSqlUnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
