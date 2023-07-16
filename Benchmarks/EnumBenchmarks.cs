@@ -60,7 +60,7 @@ namespace Benchmarks6
         {
             query = GetQuery(Records);
             fixture = new PostgreSqlFixture();
-            connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection = new NpgsqlConnection(Connection.ConnectionString ?? fixture.ConnectionString);
         }
 
         [GlobalCleanup]
