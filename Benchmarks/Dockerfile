@@ -2,7 +2,7 @@
 # docker run --rm -it --name norm_benchmarks norm_benchmarks:latest
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS sdk
-RUN git clone -b 5.3.7 https://github.com/vb-consulting/Norm.net.git
+RUN git clone https://github.com/vb-consulting/Norm.net.git
 
 WORKDIR "/Norm.net/Benchmarks"
 RUN dotnet restore Benchmarks.csproj
@@ -14,14 +14,23 @@ RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-k
 RUN apt-get update && apt-get install -y postgresql
 
 RUN echo '\
-{\n\
-  "db": {\n\
-    "Default": "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;",\n\
-    "TestDatabase": "norm_postgresql_unit_tests"\n\
-  }\n\
-}'\
-> /Norm.net/Benchmarks/bin/Release/net7.0/testsettings.local.json
+local   all             postgres                                trust\n\
+local   all             all                                     trust\n\
+host    all             all             127.0.0.1/32            trust\n\
+host    all             all             ::1/128                 trust\n\
+local   replication     all                                     trust\n\
+host    replication     all             127.0.0.1/32            trust\n\
+host    replication     all             ::1/128                 trust'\
+> /etc/postgresql/15/main/pg_hba.conf
 
-ENTRYPOINT service postgresql start && \ 
-/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks -c "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;" && \ 
+RUN mkdir /results/
+
+ENTRYPOINT service postgresql start && \
+/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round1.md && \ 
+/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round2.md && \
+/Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round1.md && \
+cd /results/ && \
 /bin/bash

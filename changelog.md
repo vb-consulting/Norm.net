@@ -1,5 +1,80 @@
 # Changelog
 
+## [5.3.7](https://github.com/vb-consulting/Norm.net/tree/5.3.7) (2023-07-17)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.6...5.3.7)
+
+### New feature NameParserCallback option
+
+This is a new global option that can be set for all `Read` operations globally via options:
+
+```csharp
+public class NormOptions
+{
+    // ...
+
+    /// <summary>
+    /// Set the global name parser to return custom names for columns.
+    /// </summary>
+    public Func<(string Name, int Ordinal), string> NameParserCallback { get; set; } = null;
+
+    // ...
+}
+```
+
+This callback is invoked once per query for every column when column names are retrieved before any mapping.
+
+It is very useful in situations where you need to map column names to a different format, or in general to be able to map to different names.
+
+Input parameter is a tuple with the column name (as it is retrieved from database connection) and ordinal position. Use return value to set the name for the column.
+
+For example, if you want to remove a prefix (`prefix_` for example) string from all column names where it appears, you can do it like this:
+
+```csharp
+
+//
+// Program startup
+//
+
+NormOptions.Configure(o =>
+{
+    o.NameParserCallback = arg =>
+        arg.Name.StartsWith("prefix_") ? arg.Name[7..] : arg.Name;
+});
+
+//
+// In your code, when mapping by name, target class doesn't require prefix "prefix_" in property name
+//
+private class NameParserTest
+{
+    public string? Foo { get; set; }
+    public string? Bar { get; set; }
+}
+
+// Read to single result:
+var result = connection
+    .Read<NameParserTest>("select * from name_parser_test")
+    .Single();
+```
+
+Since this callback, if defined, is executed once per query it doesn't have any impact on mapping performances.
+
+### More internal optimizations
+
+There were two missed optimization opportunities in the code that were fixed in this release:
+
+- Passing some structures by references instead of values.
+- Retrieving column names from the reader once per query instead of once per row.
+
+These optimizations aren't significant and are hardly noticeable, but they required a completely new set of performance tests.
+See [performance test results here.](https://github.com/vb-consulting/Norm.net/blob/5.3.4/performance-tests.md)
+
+To facilitate easier performance testing, there is a [docker file](https://github.com/vb-consulting/Norm.net/blob/master/Benchmarks/Dockerfile) that can be used to run performance tests in a docker environment.
+
+### Changed access modifiers for internal mappers
+
+Previously public parts of internal mappers that were marked as `public` are now `internal`.
+
 ## [5.3.6](https://github.com/vb-consulting/Norm.net/tree/5.3.6) (2023-07-02)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.5...5.3.6)

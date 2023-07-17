@@ -92,7 +92,7 @@ namespace Norm.Mapper
                 for(int j = 0; j < tuple.Length; j++)
                 {
                     var (name, value) = tuple.Span[j];
-                    // NameParser.Parse(ref name);
+
                     if (!descriptor.Names.TryGetValue(name, out var indexArr))
                     {
                         continue;
@@ -246,7 +246,7 @@ namespace Norm.Mapper
                 for(int j = 0; j < tuple.Span.Length; j++)
                 {
                     var (name, value, set) = tuple.Span[j];
-                    //NameParser.Parse(ref name);
+
                     if (!descriptor.Names.TryGetValue(name, out var indexArr))
                     {
                         continue;
@@ -316,7 +316,7 @@ namespace Norm.Mapper
             for (int j = 0; j < tuple.Span.Length; j++)
             {
                 var t = tuple.Span[j];
-                //NameParser.Parse(ref t.name);
+
                 if (descriptor.Names.TryGetValue(t.name, out var arr))
                 {
                     var len = arr.Length;
@@ -346,7 +346,7 @@ namespace Norm.Mapper
             for (int j = 0; j < tuple.Span.Length; j++)
             {
                 var t = tuple.Span[j];
-                //NameParser.Parse(ref t.name);
+
                 if (descriptor.Names.TryGetValue(t.name, out var arr))
                 {
                     var len = arr.Length;
