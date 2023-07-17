@@ -196,7 +196,7 @@ When the mapper encounters an instance that is not anonymous, it will use the st
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.3...5.3.4)
 
-### New option - `KeepOriginalNames` 
+### New option - KeepOriginalNames
 
 When matching by name, the default behavior is to strip all database names of underscores and @ at characters.
 

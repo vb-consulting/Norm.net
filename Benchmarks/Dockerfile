@@ -31,6 +31,6 @@ cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks
 /Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round2.md && \
 /Norm.net/Benchmarks/bin/Release/net7.0/Benchmarks && \ 
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round1.md && \
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round3.md && \
 cd /results/ && \
 /bin/bash
