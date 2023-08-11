@@ -1,14 +1,14 @@
 ---
 title: Introduction
-next: read-mapping.md
-nextTitle: Mapping The Results
 ---
 
 # Introduction
 
-`Norm` is a Micro-ORM library for efficient data access in the `.NET` ecosystem (see the [compatibility table](/#compatibility).)
+`Norm` is a Micro-ORM library for efficient data access in the `.NET` ecosystem. 
 
-Micro-ORM library implements one-way database mapping only - from your database commands and queries to  `.NET` types and structures.
+It supports .NET Standard 2.1 or higher and .NET Core 3.0 and higher (.NET Core 3, .NET 5, 6, 7, 8, etc). See the full [compatibility table](/#compatibility).
+
+Micro-ORM libraries generally implement one-way database mapping - from your database commands and queries to  `.NET` types and structures.
 
 `Norm` is a **set of extensions** over the [`System.Data.Common.DbConnection`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection) object.
 
@@ -18,7 +18,7 @@ That means that if the connection implements `System.Data.Common.DbConnection` t
 - [`NpgsqlConnection`](https://www.npgsql.org/doc/api/Npgsql.NpgsqlConnection.html) for PostgreSQL databases.
 - [`SqliteConnection`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlite.sqliteconnection) for SQLite databases.
 - [`MySqlConnection`](https://mysqlconnector.net/api/mysqlconnector/mysqlconnectiontype/) for MySQL databases.
-- etc
+- Any database provider that implements [`System.Data.Common.DbConnection`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection)
 
 ## Installation
 
@@ -85,7 +85,7 @@ Obtain a database connection reference, either by creating a new instance:
 ```csharp
 using Norm;
 
-using var connection = new NpgsqlConnection("Server=localhost;Database=dvdrental;Port=5433;User Id=postgres;Password=postgres;");
+using var connection = new NpgsqlConnection("Server=localhost;Database=dvdrental;Port=5432;User Id=postgres;Password=postgres;");
 
 // ...
 
@@ -142,18 +142,24 @@ You can find detailed instructions on installing this sample database on [this p
 
 ### Connection Extensions
 
-There are two main extensions to the `System.Data.Common.DbConnection` type (plus another two for the `async` versions):
+There are two main extensions to the `System.Data.Common.DbConnection` type:
 
 1) `Execute` - execute a command without returning any values.
-2) `Read` - execute a command and return some values.
+2) `Read` - execute and return an iterator over return values.
 
 Both extensions will attempt to **open the underlying connection (if not already open)** - and initiate command execution.
 
+There are another two versions of these extensions for the `async` operations (`ExecuteAsync` and `ReadAsync`), plus another two versions for passing parameters with `FormattableString` (`ExecuteFormat` and `ReadFormat`) and their `async` versions (`ExecuteFormatAsync` and `ReadAFormatsync`).
+
+`Execute` extensions are generally simple since they don't return any values, while `Read` extensions implement many generic overload versions to support many different type mappings.
+
 ### Fluid Syntax
 
-There are also many other extensions to the `System.Data.Common.DbConnection` type that will do anything with the database but instead return the new `Norm` instance that implements the same methods as extensions on the `System.Data.Common.DbConnection` type.
+There are also many other extensions to the `System.Data.Common.DbConnection` type that **doesn't do anything with the database**.
 
-That allows for a fluid syntax, for example:
+Instead, they will return **the new `Norm` instance** that implements the same methods as extensions on the `System.Data.Common.DbConnection` type (`Execute`, `Read`, etc).
+
+This is useful for setting a different behavior or settings for the `Execute` and `Read` commands and to have more readable **fluid syntax.** For example:
 
 ```csharp
 //
@@ -167,25 +173,35 @@ connection
 
 ### Read Iterators
 
-The `Read` extension method and all the overload versions of that method - will always return an instance of the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators) of either [`IEnumerable`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.ienumerable) or [`Enumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) types.
+The `Read` extension method and all the overload versions of that method - will always return **the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)** of the [`Enumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) interface type.
 
-This means that database values are **[yielded](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)** as they are returned from the database.
+Values are **[yielded](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield) to the iterator** as they are returned from the database.
 
 For example, the following statements:
 
 ```csharp
 using Norm;
 
+// doesn't do anything with the database
 var result1 = connection.Read<int>("select count(*) from actor");
 
+// doesn't do anything with the database
 var result2 = connection.Read("select title from film");
 ```
 
-These two lines will not send or execute any commands to database. Instead, they will create an [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators) over the database connection, that will be executed when the actual iteration starts:
+These two lines will not send or execute any commands to the database. 
+
+Instead, they will create an [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators) over the database connection that will be executed when the actual iteration starts:
 
 ```csharp
 using System.Linq;
 using Norm;
+
+// doesn't do anything with the database, return iterator
+var result1 = connection.Read<int>("select count(*) from actor");
+
+// doesn't do anything with the database, return iterator
+var result2 = connection.Read("select title from film");
 
 // executes select count(*) from actor and retuns int
 var count = result1.Single();
@@ -194,7 +210,7 @@ var count = result1.Single();
 var list = result2.Tolist();
 ```
 
-Or combine `Linq` statements with the iterator returned from the Read method:
+Or, simply combine `Linq` statements with the iterator returned from the `Read` method:
 
 ```csharp
 using System.Linq;
@@ -210,7 +226,6 @@ var list = connection.Read("select title from film").Tolist();
 Or, for example, a standard `foreach` iteration without `Linq`:
 
 ```csharp
-using System.Linq;
 using Norm;
 
 // executes select title from film and iterate titles
@@ -220,37 +235,59 @@ foreach(var title in connection.Read("select title from film"))
 }
 ```
 
-As we can see, the actual execution is delayed until the first iteration. This approach allows us to build `Linq` expressions over the iterator, which are then executed only once per iteration, and there is no need for any additional buffering.
+As we can see, the actual execution is **delayed until the first iteration starts**. 
 
-## Command Execution
+This approach allows us to build `Linq` expressions over the iterator, which are then executed only once per iteration, and there is no need for additional buffering.
 
-For the command execution that doesn't return any values - there are two simple extension methods: `Execute` and `ExecuteAsync`. Since there are no results, mapping isn't involved, and therefore, these extension methods are simple.
+### Async Read Iterators
 
-Both of these extension methods will execute the command immediately (no delayed execution). And they have a couple of more default parameters (like parameters object) that we will discuss later.
+The asynchronous version `ReadAsync` extension method and all the overload versions of that method - will always return **the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)** of the [`IAsyncEnumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1) interface type.
 
-### Execute
-
-Executes synchronous command.
+The asynchronous version `ReadAsync` - behaves exactly the same as the synchronous `Read` method - execution is **delayed until the first iteration starts**. 
+ 
+[`IAsyncEnumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1) enumerator interface that provides **asynchronous iteration over values:**
 
 ```csharp
+using System.Linq;
 using Norm;
 
-public void DeleteInactiveCustomers(NpgsqlConnection connection)
-{
-    connection.Execute("delete from customer where active = 0");
-}
+// doesn't do anything with the database, return iterator
+var result1 = connection.ReadAsync<int>("select count(*) from actor");
+
+// doesn't do anything with the database, return iterator
+var result2 = connection.ReadAsync("select title from film");
+
+// executes select count(*) from actor and retuns int
+var count = await result1.SingleAsync();
+
+// executes select title from film and builds a list of film titles
+var list = await result2.ToListAsync();
 ```
 
-### ExecuteAsync
+The example above uses [`System.Linq.Async` package](https://www.nuget.org/packages/System.Linq.Async).
 
-Executes command and returns asynchronous task. 
+`System.Linq.Async` is an official .NET Foundation implementation of asynchronous LINQ extension methods. It provides an asynchronous version of every LINQ extension method over the [`IAsyncEnumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1) interface.
+
+### Working With Tuples
+
+Both `Read` and  `ReadAsync` methods implement a complex mapping system, but they both return a single generic value (`IEnumerable<T>` and `IAsyncEnumerable<T>`, respectively).
+
+When those iterators should return multiple values, that generic value is a [tuple type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples). For example:
+
+- `IEnumerable<(T1, T2)>` - two value tuple `(T1, T2)` for two values.
+- `IEnumerable<(T1, T2, T3)>` - three value tuple `(T1, T2, T3)` for three values.
+- etc.
+
+The same goes for the `IAsyncEnumerable<T>` type.
+
+This allows for a convenient [tuple deconstruction](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples#tuple-assignment-and-deconstruction), for example:
 
 ```csharp
-using System.Threading.Tasks;
 using Norm;
 
-public async Task DeleteInactiveCustomersAsync(NpgsqlConnection connection)
+foreach(var (title, description, year) in 
+        connection.Read<string, string, int>("select title, description, release_year from film"))
 {
-    await connection.ExecuteAsync("delete from customer where active = 0");
+    Console.WriteLine("Title: {0}, Descrioption: {1}, Year: {2}", title, description, year)
 }
 ```
