@@ -55,7 +55,7 @@ using Norm;
 var result1 = connection.Read<int>("select count(*) from actor");
 
 // doesn't do anything with the database
-var result2 = connection.Read("select title from film");
+var result2 = connection.Read<string>("select title from film");
 ```
 
 These two lines will not send or execute any commands to the database. 
@@ -70,7 +70,7 @@ using Norm;
 var result1 = connection.Read<int>("select count(*) from actor");
 
 // doesn't do anything with the database, return iterator
-var result2 = connection.Read("select title from film");
+var result2 = connection.Read<string>("select title from film");
 
 // executes select count(*) from actor and retuns int
 var count = result1.Single();
@@ -89,7 +89,7 @@ using Norm;
 var count = connection.Read<int>("select count(*) from actor").Single();
 
 // executes select title from film and builds a list of film titles
-var list = connection.Read("select title from film").Tolist();
+var list = connection.Read<string>("select title from film").Tolist();
 ```
 
 Or, for example, a standard `foreach` iteration without `Linq`:
@@ -98,7 +98,7 @@ Or, for example, a standard `foreach` iteration without `Linq`:
 using Norm;
 
 // executes select title from film and iterate titles
-foreach(var title in connection.Read("select title from film"))
+foreach(var title in connection.Read<string>("select title from film"))
 {
     // ...
 }
@@ -124,7 +124,7 @@ using Norm;
 var result1 = connection.ReadAsync<int>("select count(*) from actor");
 
 // doesn't do anything with the database, return iterator
-var result2 = connection.ReadAsync("select title from film");
+var result2 = connection.ReadAsync<string>("select title from film");
 
 // executes select count(*) from actor and retuns int
 var count = await result1.SingleAsync();
@@ -176,4 +176,6 @@ NormOptions.Configure(options =>
 
 This will set a global option for a command timeout of 60 seconds for all commands executed by `Norm`.
 
-Important note: This `NormOptions.Configure` call is not thread-safe. It is intended to be executed only once from the application's startup code, typically `Startup.cs` or `Program.cs, before the first database command.
+Important note: This `NormOptions.Configure` call is not thread-safe. 
+
+It is intended to be executed only once from the application's startup code, typically `Startup.cs` or `Program.cs`, before the first database command.
