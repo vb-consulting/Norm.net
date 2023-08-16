@@ -1,6 +1,10 @@
 ---
 title: Installation
-position: 2
+order: 2
+nextUrl: /docs/getting-started/first-use/
+nextTitle: First Use
+prevUrl: /docs/getting-started/introduction/
+prevTitle: Introduction
 ---
 
 # Installation

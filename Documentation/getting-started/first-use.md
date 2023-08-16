@@ -1,6 +1,10 @@
 ---
 title: First Use
-position: 3
+order: 3
+nextUrl: /docs/getting-started/basic-concepts/
+nextTitle: Basic Concepts
+prevUrl: /docs/getting-started/installation/
+prevTitle: Installation
 ---
 
 # First Use

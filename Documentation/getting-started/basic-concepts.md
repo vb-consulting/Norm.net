@@ -1,6 +1,10 @@
 ---
 title: Basic Concepts
-position: 4
+order: 4
+nextUrl: /docs/mapping/simple/
+nextTitle: Simple Mapping
+prevUrl: /docs/getting-started/first-use/
+prevTitle: First Use
 ---
 
 ## Basic Concepts
@@ -159,4 +163,17 @@ foreach(var (title, description, year) in
 
 ### Global Settings
 
-...
+You can modify `Norm` behavior for the entire application by setting global settings, for example:
+
+```csharp
+using Norm;
+
+NormOptions.Configure(options =>
+{
+    options.CommandTimeout = 60;
+});
+```
+
+This will set a global option for a command timeout of 60 seconds for all commands executed by `Norm`.
+
+Important note: This `NormOptions.Configure` call is not thread-safe. It is intended to be executed only once from the application's startup code, typically `Startup.cs` or `Program.cs, before the first database command.
