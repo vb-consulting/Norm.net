@@ -3,11 +3,11 @@ title: Mappings
 order: 2
 nextUrl: /docs/fundamentals/advanced-mappings/
 nextTitle: Advanced Mappings
-prevUrl: /docs/fundamentals/read-method/
-prevTitle: Read Method
+prevUrl: /docs/fundamentals/non-generic-read/
+prevTitle: Non-Generic Read Method
 ---
 
-## Mappings
+### Read Mappings
 
 There are also a few different types of mappings To .NET types, such as:
 
@@ -18,48 +18,10 @@ There are also a few different types of mappings To .NET types, such as:
 - Existing instances of complex types 
 - Anonymous types mapping
 
-### Name and Value Tuples
 
-A non-generic version of `Read` extension method returns the enumerator over the array where each element is the name and value tuple:
+### Single-Value Types
 
-```csharp
-IEnumerable<(string name, object value)[]> Read(string command);
-```
-
-This version can be helpful in different scenarios. 
-
-For example, it is convenient to easily build a dictionary where the dictionary is the database `id` and the value is some other database value:
-
-```csharp
-var dict = connection
-    .Read("select film_id, title from film")
-    .ToDictionary(
-        tuples => (int)tuples.First().value,
-        tuples => tuples.Last().value?.ToString());
-```
-
-The example above creates a dictionary where the key is `film_id` from the table `film`, and the value is `title` for that `id`.
-
-Since `Read` method returns the iterator, `ToDictionary` method iterates the data. 
-
-That means that **multiple iterations are avoided.**
-
-However, this version mapping is not yet a real mapping. First value is mapped to `int` with `(int)tuples.First().value` and second version convrted manually to `string` with `tuples.Last().value?.ToString()`.
-
-Most common use of non-generic version is in combination with [`Any`](https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.any) method - to quickly check does the record exists.
-
-Since there is no actual mapping - this is the fastest way to determine does any element of a sequence exist and, consequently, does the provided query returns any data:
-
-```csharp
-// does film_id=111 exists?
-connection
-    .Read("select 1 from film where film_id=111")
-    .Any();
-```
-
-### Single Value Types
-
-Single value types are types returned by single value from database. 
+Single-value types are types returned by single-value from the database. 
 
 In `.NET` they are all [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) such as:
 - [Integral types (`int`, `short`, `long`, etc)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types)
@@ -67,17 +29,17 @@ In `.NET` they are all [value types](https://learn.microsoft.com/en-us/dotnet/cs
 - `bool`
 - `char`
 
-Plus some basic reference types such as `string`, `DateTime`, `Timespan`, `Guid`, etc.
+Plus, some basic reference types that include `string`, `DateTime`, `Timespan`, `Guid`, etc.
 
-In short, anything implemnted by database provider that is mapped to a field value.
+In short, anything implemented by the database provider that is mapped to a field value.
 
-Provide a single value type as generic parameter:
+Provide a single-value type as a generic parameter:
 
 ```csharp
 var count = connection.Read<int>("select count(*) from actor").Single();
 ```
 
-Multiple single value types are mapped **by position** only and returned as tuple:
+Multiple single value types are mapped **by position only** and returned as a tuple:
 
 ```csharp
 public static void PrintTuples(NpgsqlConnection connection)
@@ -96,7 +58,7 @@ public static void PrintTuples(NpgsqlConnection connection)
 }
 ```
 
-Tuples can be deconstructed:
+Tuples can be **deconstructed to values**:
 
 ```csharp
 public static void PrintDeconstructedTuples(NpgsqlConnection connection)
@@ -115,7 +77,7 @@ public static void PrintDeconstructedTuples(NpgsqlConnection connection)
 }
 ```
 
-This makes a bit easier to build a dictionary from example above:
+This makes it a bit easier to build a dictionary from the example above:
 
 ```csharp
 var dict = connection
@@ -130,9 +92,9 @@ var dict = connection
 
 ### Named Tuples
 
-Generic type parameters can also be a **named tuples of single value types**.
+Generic type parameters can also be a **named tuple of single value types**.
 
-That means that instead of `Read<string, string, int>` we can used named tuple like this `Read<(string title, string description, int year)>`. Example:
+That means that instead of `Read<string, string, int>(...)` - we can use a named tuples like this: `Read<(string title, string description, int year)>(...)`. Example:
 
 ```csharp
 public static void PrintNamedTuples(NpgsqlConnection connection)
@@ -152,7 +114,7 @@ public static void PrintNamedTuples(NpgsqlConnection connection)
 }
 ```
 
-And now, building a dictionary from example above is even easier:
+And now, building a dictionary from the example above is even easier:
 
 ```csharp
 var dict = connection
@@ -162,9 +124,9 @@ var dict = connection
         tuple => tuple.name);
 ```
 
-All modern IDE tools (Visual Studio, Visual Studio Code, Raider, etc) will provide auto-complete functionality for named tuples which this approach even easier.
+All modern IDE tools (Visual Studio, Visual Studio Code, Raider, etc.) will provide auto-complete functionality for named tuples, which makes this approach even easier.
 
-And since generic `Read` method accepts up to 12 generic parameters, we can even map to multiple named tuples:
+And since the generic `Read` method accepts up to 12 generic parameters, we can even map to multiple named tuples:
 
 ```csharp
 foreach (var (actor, film) in

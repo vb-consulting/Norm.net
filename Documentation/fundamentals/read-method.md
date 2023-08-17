@@ -1,8 +1,8 @@
 ---
 title: Read Method
-order: 1
-nextUrl: /docs/fundamentals/mappings/
-nextTitle: Mappings
+order: 2
+nextUrl: /docs/fundamentals/non-generic-read/
+nextTitle: Non-Generic Read Method
 prevUrl: /docs/getting-started/basic-concepts/
 prevTitle: Basic Concepts
 ---
