@@ -1,6 +1,6 @@
 ---
-title: Mappings
-order: 2
+title: Read Mappings
+order: 3
 nextUrl: /docs/fundamentals/advanced-mappings/
 nextTitle: Advanced Mappings
 prevUrl: /docs/fundamentals/non-generic-read/

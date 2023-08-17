@@ -1,5 +1,5 @@
 ---
-title: Non-Generic Read Method
+title: Non-Generic Read
 order: 2
 nextUrl: /docs/fundamentals/read-mappings/
 nextTitle: Read Mappings
