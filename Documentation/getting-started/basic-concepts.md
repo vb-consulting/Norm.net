@@ -1,8 +1,8 @@
 ---
 title: Basic Concepts
 order: 4
-nextUrl: /docs/mapping/simple/
-nextTitle: Simple Mapping
+nextUrl: /docs/fundamentals/mappings/
+nextTitle: Mappings
 prevUrl: /docs/getting-started/first-use/
 prevTitle: First Use
 ---
@@ -106,7 +106,20 @@ foreach(var title in connection.Read<string>("select title from film"))
 
 As we can see, the actual execution is **delayed until the first iteration starts**. 
 
-This approach allows us to build `Linq` expressions over the iterator, which are then executed only once per iteration, and there is no need for additional buffering.
+In simple pseudo-code, this is what the `Read` method does:
+
+
+```csharp
+IEnumerable<TResult> Read()
+{
+    foreach(var record in reader)
+    {
+        yield return record;
+    }
+}
+```
+
+This approach allows us to build `Linq` expressions over the iterator - which are then executed **only once per iteration**, and there is no need for additional buffering.
 
 ### Async Read Iterators
 
@@ -157,13 +170,13 @@ using Norm;
 foreach(var (title, description, year) in 
         connection.Read<string, string, int>("select title, description, release_year from film"))
 {
-    Console.WriteLine("Title: {0}, Descrioption: {1}, Year: {2}", title, description, year)
+    Console.WriteLine("Title: {0}, Description: {1}, Year: {2}", title, description, year)
 }
 ```
 
 ### Global Settings
 
-You can modify `Norm` behavior for the entire application by setting global settings, for example:
+It is possible to modify `Norm`'s default behavior for the entire application by setting the global settings. For example:
 
 ```csharp
 using Norm;
@@ -174,8 +187,8 @@ NormOptions.Configure(options =>
 });
 ```
 
-This will set a global option for a command timeout of 60 seconds for all commands executed by `Norm`.
+This example sets a global option for all commands executed by `Norm` to have a timeout of 60 seconds.
 
-Important note: This `NormOptions.Configure` call is not thread-safe. 
+> Important note: `NormOptions.Configure` call is **not thread-safe.**
 
-It is intended to be executed only once from the application's startup code, typically `Startup.cs` or `Program.cs`, before the first database command.
+`NormOptions.Configure` call is intended to be executed **only once from the application's startup code**, typically `Startup.cs` or `Program.cs`, before any database command.
