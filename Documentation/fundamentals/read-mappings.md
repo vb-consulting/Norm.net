@@ -29,9 +29,9 @@ In `.NET` they are all [value types](https://learn.microsoft.com/en-us/dotnet/cs
 - `bool`
 - `char`
 
-Plus, some basic reference types that include `string`, `DateTime`, `Timespan`, `Guid`, etc.
+Plus, some basic reference types like `string`, `DateTime`, `Timespan`, `Guid`, etc.
 
-In short, anything implemented by the database provider that is mapped to a field value.
+In short - anything implemented by the database provider.
 
 Provide a single-value type as a generic parameter:
 
@@ -42,7 +42,7 @@ var count = connection.Read<int>("select count(*) from actor").Single();
 Multiple single value types are mapped **by position only** and returned as a tuple:
 
 ```csharp
-public static void PrintTuples(NpgsqlConnection connection)
+public static void PrintTuples(DbConnection connection)
 {
     // tuples mapping
     foreach (var tuple in 
@@ -61,7 +61,7 @@ public static void PrintTuples(NpgsqlConnection connection)
 Tuples can be **deconstructed to values**:
 
 ```csharp
-public static void PrintDeconstructedTuples(NpgsqlConnection connection)
+public static void PrintDeconstructedTuples(DbConnection connection)
 {
     // tuples deconstruction
     foreach (var (title, description, year) in 
@@ -87,6 +87,8 @@ var dict = connection
         tuple => tuple.Item2);
 ```
 
+Again, **multiple iterations are avoided.**
+
 **Important:** 
 **Single values are always mapped by position.**
 
@@ -94,10 +96,10 @@ var dict = connection
 
 Generic type parameters can also be a **named tuple of single value types**.
 
-That means that instead of `Read<string, string, int>(...)` - we can use a named tuples like this: `Read<(string title, string description, int year)>(...)`. Example:
+That means that instead of `Read<string, string, int>(...)` - we can use named tuples like this: `Read<(string title, string description, int year)>(...)`. Example:
 
 ```csharp
-public static void PrintNamedTuples(NpgsqlConnection connection)
+public static void PrintNamedTuples(DbConnection connection)
 {
     // named tuples
     foreach (var tuple in
@@ -123,6 +125,8 @@ var dict = connection
         tuple => tuple.id,
         tuple => tuple.name);
 ```
+
+Again, **multiple iterations are avoided.**
 
 All modern IDE tools (Visual Studio, Visual Studio Code, Raider, etc.) will provide auto-complete functionality for named tuples, which makes this approach even easier.
 
