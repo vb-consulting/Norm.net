@@ -1,6 +1,10 @@
 ﻿using Norm;
 using Npgsql;
 
+//
+// Sample database: https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
+//
+
 using var connection = new NpgsqlConnection("Server=localhost;Database=dvdrental;Port=5432;User Id=postgres;Password=postgres;");
 
 // Iterate public static methods in Examples class
@@ -82,7 +86,7 @@ public class Examples
             Console.WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.title, tuple.description, tuple.year);
         }
     }
-
+    
     public static void ConfigureGlobalSettings(NpgsqlConnection connection)
     {
         // set global command timeout to 60 seconds
@@ -98,25 +102,60 @@ public class Examples
 
     public static void NonGeneric(NpgsqlConnection connection)
     {
-        // list of dictionaries where key is field name and value is value
-        var list1 = connection
-            .Read("select film_id, title, release_year from film limit 3")
-            .Select(tuples =>
-                tuples.ToDictionary(
-                        tuple => tuple.name,
-                        tuple => tuple.value))
-            .ToList();
-
         // dictionary where key is film_id and value is file title
         var dict = connection
             .Read("select film_id, title from film limit 3")
             .ToDictionary(
                 tuples => (int)tuples.First().value,
                 tuples => tuples.Last().value?.ToString());
+
+        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
     }
 
     public static void NonGenericAny(NpgsqlConnection connection)
     {
         Console.WriteLine($"Film id=111 {(connection.Read("select 1 from film where film_id=111").Any() ? "exists" : "not exists")}");
+    }
+
+    public static void TuplesDictionary(NpgsqlConnection connection)
+    {
+        // dictionary where key is film_id and value is file title
+        var dict = connection
+            .Read<int, string>("select film_id, title from film limit 3")
+            .ToDictionary(
+                tuple => tuple.Item1,
+                tuple => tuple.Item2);
+
+        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+    }
+
+    public static void NamedTuplesDictionary(NpgsqlConnection connection)
+    {
+        // dictionary where key is film_id and value is file title
+        var dict = connection
+            .Read<(int id, string name)>("select film_id, title from film limit 3")
+            .ToDictionary(
+                tuple => tuple.id,
+                tuple => tuple.name);
+
+        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+    }
+
+
+    public static void PrintMultipleNamedTuples(NpgsqlConnection connection)
+    {
+        // deconstruction of named tuples
+        foreach (var (actor, film) in
+            connection.Read<(int id, string name), (int id, string name)>(@"
+                select 
+                    actor_id, first_name || ' ' || last_name, film_id, title
+                from 
+                    actor
+                    join film_actor using (actor_id)
+                    join film using (film_id)
+                limit 3"))
+        {
+            Console.WriteLine("Actor: {0}-{1}, Film: {1}-{2}", actor.id, actor.name, film.id, film.name);
+        }
     }
 }
