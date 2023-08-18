@@ -24,13 +24,12 @@ IEnumerable<(T1, T2, T3, T4, T5, T6)> Read<T1, T2, T3, T4, T5, T6>(string comman
 IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command);
 ```
 
-There are five different types of mapping, depending on the target types:
+There are four different types of mapping, depending on the target types:
 
 1) Single-value types (`int`, `string`, `DateTime`, `Guid`, etc.)
 2) Named tuples (`(int id, string name)` for example)
 3) New instances of complex types (classes, records, etc.)
-4) Existing instances of complex types (classes, records, etc.)
-5) Anonymous types mapping
+4) Existing instances of complex types (classes, records, etc.) and anonymous types mapping
 
 ### Single-Value Types
 
@@ -186,9 +185,10 @@ And we want to print the first film from the query:
 
 ```csharp
 var film = connection
-    .Read<Film>(@"  select film_id, title, release_year, rental_rate
-                    from film 
-                    limit 1")
+    .Read<Film>(@"
+        select film_id, title, release_year, rental_rate
+        from film 
+        limit 1")
     .Single();
 
 WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}", film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
@@ -208,15 +208,120 @@ foreach (var film in connection.Read<Film>(@"
 
 Important things to notice:
 
-> Mapping is **by name**.
+#### Mapping is by name
 
+> All class or record instance mapping is by name.
 
-That means that
+That means that position is not important, and we can reverse the order of columns in the query, and we will end up with the same result.
 
->
-> - Mapping by name supports snake-case.
->
+```csharp
+var film = connection
+    .Read<Film>(@"
+        select rental_rate, release_year, title, film_id
+        from film 
+        limit 1")
+    .Single();
 
-### Existing Instances 
+WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}", film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+```
 
-### Anonymous Types
+We can also select all fields, and those that are not matched (by name) will be ignored:
+
+```csharp
+var film = connection
+    .Read<Film>("select * from film limit 1")
+    .Single();
+
+WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}", film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+```
+
+Also, if we had an extra property in a class - that is not matched by a query - that property is ignored:
+
+```csharp
+public class ExtraFilm : Film
+{
+    public string Extra { get; set; } = "not-mapped";
+}
+
+var film = connection
+    .Read<ExtraFilm>("select * from film limit 1")
+    .Single();
+
+WriteLine("{0}", film.Extra); // Prints: not-mapped
+```
+
+#### The snake-case naming convention
+
+> Mapping by name supports the **snake-case** naming convention.
+
+In this example, we have a query column `film_id` and a property on a class `FilmId`. This property is mapped because:
+
+- Mapping will lowercase all names to make the name-matching case ignorant.
+- Mapping will remove all underscore `_` characters to support the [snake-case naming convention](https://en.wikipedia.org/wiki/Snake_case).
+
+We can bypass this behavior by setting `KeepOriginalNames` to `true` in global options:
+
+```csharp
+// keep original names
+NormOptions.Configure(options =>
+{
+    options.KeepOriginalNames = true;
+});
+
+var film = connection
+    .Read<Film>("select * from film limit 1")
+    .Single();
+
+WriteLine("Film id: {0}", film.FilmId); // film id defaults to 0
+```
+
+So, in this case - `film_id` can no longer be matched by name. We would have to name our class property `film_id` or return `FilmId` from the query.
+
+By default, all name mappings support snake-case naming - unless set otherwise in global options.
+
+#### Public members only by default
+
+> Only fields and properties that are public (have public setters) are mapped by default.
+
+A property or field in a class or a record - must have a public setter (must have the ability to be set publicly) - to be mapped. Otherwise, it is ignored.
+
+```csharp
+public class NonPublicFilm
+{
+    public int FilmId { get; private set; } // not mapped and ignored
+    public string Title { get; protected set; } // not mapped and ignored
+    public int ReleaseYear { get; set; } // ignored
+    public decimal RentalRate { get; set; } // mapped
+}
+
+var film = connection
+    .Read<NonPublicFilm>("select * from film limit 1")
+    .Single();
+
+// film.FilmId has default value (not mapped)
+// film.Title has default value (not mapped)
+WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+    film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+```
+
+However, this behavior can be changed with the global option `MapPrivateSetters`. Set this option to `true` to map all fields and properties, even if they are public or protected.
+
+```csharp
+// map private and protected members too
+NormOptions.Configure(options =>
+{
+    options.MapPrivateSetters = true;
+});
+
+film = connection
+    .Read<NonPublicFilm>("select * from film limit 1")
+    .Single();
+
+// film.FilmId is mapped properly
+// film.Title is mapped properly
+WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+    film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+```
+
+### Existing Instances And Anonymous Types
+

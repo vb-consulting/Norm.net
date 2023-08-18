@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Diagnostics.Contracts;
 using Norm;
 using Npgsql;
 using static System.Console;
@@ -211,6 +212,86 @@ public static class Examples
                 film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
         }
     }
+
+    public static void PrintFirstExtraFilmFromClass(DbConnection connection)
+    {
+        var film = connection
+            .Read<ExtraFilm>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Extra: {2}", film.FilmId, film.Title, film.Extra);
+    }
+
+    public static void FilmFromClassSnakeCaseMappings(DbConnection connection)
+    {
+        // keep original names
+        NormOptions.Configure(options =>
+        {
+            options.KeepOriginalNames = true;
+        });
+        
+        var film = connection
+            .Read<Film>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film id: {0}", film.FilmId); // film id defaults to 0
+
+        // use snake case
+        NormOptions.Configure(options =>
+        {
+            options.KeepOriginalNames = false;
+        });
+
+        film = connection
+            .Read<Film>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film id: {0}", film.FilmId); // film id is mapped
+
+        // fall-back to default
+        NormOptions.Configure(options =>
+        {
+        });
+
+        film = connection
+            .Read<Film>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film id: {0}", film.FilmId); // film id is mapped
+    }
+
+    public static void PrintNonPublicFilmFromClass(DbConnection connection)
+    {
+        var film = connection
+            .Read<NonPublicFilm>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+            film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+
+        // map private and protected members too
+        NormOptions.Configure(options =>
+        {
+            options.MapPrivateSetters = true;
+        });
+
+        film = connection
+            .Read<NonPublicFilm>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+            film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+
+        // fall-back to default
+        NormOptions.Configure(options =>
+        {
+        });
+    }
+}
+
+public class ExtraFilm : Film
+{
+    public string Extra { get; set; } = "not-mapped";
 }
 
 public class Film
@@ -219,4 +300,12 @@ public class Film
     public string Title { get; set; }
     public int ReleaseYear { get; set; }
     public decimal RentalRate { get; set; }
+}
+
+public class NonPublicFilm
+{
+    public int FilmId { get; private set; } // not mapped
+    public string Title { get; protected set; } // not mapped
+    public int ReleaseYear { get; set; } // mapped
+    public decimal RentalRate { get; set; } // mapped
 }
