@@ -1,5 +1,7 @@
-﻿using Norm;
+﻿using System.Data.Common;
+using Norm;
 using Npgsql;
+using static System.Console;
 
 //
 // Sample database: https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
@@ -10,20 +12,22 @@ using var connection = new NpgsqlConnection("Server=localhost;Database=dvdrental
 // Iterate public static methods in Examples class
 foreach (var method in typeof(Examples).GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
 {
-    Console.WriteLine($"Running example: {method.Name}");
+    ForegroundColor = ConsoleColor.Cyan;
+    WriteLine($"{method.Name}");
+    ResetColor();
     method.Invoke(null, new object[] { connection });
-    Console.WriteLine();
+    WriteLine();
 }
 
-public class Examples
+public static class Examples
 {
-    public static void CountActors(NpgsqlConnection connection)
+    public static void CountActors(DbConnection connection)
     {
         var count = connection.Read<int>("select count(*) from actor").Single();
-        Console.WriteLine($"There are {count} actors in the database.");
+        WriteLine($"There are {count} actors in the database.");
     }
 
-    public static void DelayedExecution(NpgsqlConnection connection)
+    public static void DelayedExecution(DbConnection connection)
     {
         // create two iterators, no database calls yet
 
@@ -35,12 +39,12 @@ public class Examples
         // Execute by initiating iterations 
 
         // execute count in database and print single result from count(*)
-        Console.WriteLine($"There are {result1.Single()} actors in the database.");
+        WriteLine($"There are {result1.Single()} actors in the database.");
         // execute select in database, return all records and print iteration count
-        Console.WriteLine($"There are {result2.Count()} films in the database.");
+        WriteLine($"There are {result2.Count()} films in the database.");
     }
 
-    public static async Task DelayedExecutionAsync(NpgsqlConnection connection)
+    public static async Task DelayedExecutionAsync(DbConnection connection)
     {
         // create two iterators, no database calls yet
 
@@ -52,12 +56,12 @@ public class Examples
         // Execute by initiating iterations
 
         // execute count in database and print and await single async result from count(*)
-        Console.WriteLine($"There are {await result1.SingleAsync()} actors in the database.");
+        WriteLine($"There are {await result1.SingleAsync()} actors in the database.");
         // execute select in database, return all records and print and await iteration count async
-        Console.WriteLine($"There are {await result2.CountAsync()} films in the database.");
+        WriteLine($"There are {await result2.CountAsync()} films in the database.");
     }
 
-    public static void PrintTuples(NpgsqlConnection connection)
+    public static void PrintTuples(DbConnection connection)
     {
         // tuples mapping
         foreach (var tuple in connection.Read<string, string, int>("select title, description, release_year from film limit 3"))
@@ -66,28 +70,28 @@ public class Examples
         }
     }
 
-    public static void PrintDeconstructedTuples(NpgsqlConnection connection)
+    public static void PrintDeconstructedTuples(DbConnection connection)
     {
         // tuples deconstruction
         foreach (var (title, description, year) in 
             connection.Read<string, string, int>("select title, description, release_year from film limit 3"))
         {
-            Console.WriteLine("Title: {0}, Description: {1}, Year: {2}", title, description, year);
+            WriteLine("Title: {0}, Description: {1}, Year: {2}", title, description, year);
         }
     }
 
-    public static void PrintNamedTuples(NpgsqlConnection connection)
+    public static void PrintNamedTuples(DbConnection connection)
     {
         // named tuples
         foreach (var tuple in
             connection
                 .Read<(string title, string description, int year)>("select title, description, release_year from film limit 3"))
         {
-            Console.WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.title, tuple.description, tuple.year);
+            WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.title, tuple.description, tuple.year);
         }
     }
     
-    public static void ConfigureGlobalSettings(NpgsqlConnection connection)
+    public static void ConfigureGlobalSettings(DbConnection connection)
     {
         // set global command timeout to 60 seconds
         // this call should be execute once from a program startup
@@ -97,10 +101,10 @@ public class Examples
         });
 
         var count = connection.Read<int>("select count(*) from actor").Single();
-        Console.WriteLine($"There are {count} actors in the database. I executed this with command timeout of 60 seconds.");
+        WriteLine($"There are {count} actors in the database. I executed this with command timeout of 60 seconds.");
     }
 
-    public static void NonGeneric(NpgsqlConnection connection)
+    public static void NonGeneric(DbConnection connection)
     {
         // dictionary where key is film_id and value is file title
         var dict = connection
@@ -109,15 +113,15 @@ public class Examples
                 tuples => (int)tuples.First().value,
                 tuples => tuples.Last().value?.ToString());
 
-        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+        WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
     }
 
-    public static void NonGenericAny(NpgsqlConnection connection)
+    public static void NonGenericAny(DbConnection connection)
     {
-        Console.WriteLine($"Film id=111 {(connection.Read("select 1 from film where film_id=111").Any() ? "exists" : "not exists")}");
+        WriteLine($"Film id=111 {(connection.Read("select 1 from film where film_id=111").Any() ? "exists" : "not exists")}");
     }
 
-    public static void TuplesDictionary(NpgsqlConnection connection)
+    public static void TuplesDictionary(DbConnection connection)
     {
         // dictionary where key is film_id and value is file title
         var dict = connection
@@ -126,10 +130,10 @@ public class Examples
                 tuple => tuple.Item1,
                 tuple => tuple.Item2);
 
-        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+        WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
     }
 
-    public static void NamedTuplesDictionary(NpgsqlConnection connection)
+    public static void NamedTuplesDictionary(DbConnection connection)
     {
         // dictionary where key is film_id and value is file title
         var dict = connection
@@ -138,24 +142,81 @@ public class Examples
                 tuple => tuple.id,
                 tuple => tuple.name);
 
-        Console.WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+        WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
     }
 
-
-    public static void PrintMultipleNamedTuples(NpgsqlConnection connection)
+    public static void PrintMultipleNamedTuples(DbConnection connection)
     {
         // deconstruction of named tuples
-        foreach (var (actor, film) in
-            connection.Read<(int id, string name), (int id, string name)>(@"
-                select 
-                    actor_id, first_name || ' ' || last_name, film_id, title
-                from 
-                    actor
-                    join film_actor using (actor_id)
-                    join film using (film_id)
-                limit 3"))
+        foreach (var (actor, film) in connection.Read<
+            (int id, string name),
+            (int id, string name)>(@"
+            select 
+                actor_id, first_name || ' ' || last_name, 
+                film_id, title
+            from 
+                actor
+                join film_actor using (actor_id)
+                join film using (film_id)
+            limit 3"))
         {
-            Console.WriteLine("Actor: {0}-{1}, Film: {1}-{2}", actor.id, actor.name, film.id, film.name);
+            WriteLine("Actor: {0}-{1}, Film: {1}-{2}", actor.id, actor.name, film.id, film.name);
         }
     }
+
+    public static void PrintFirstFilmFromClass(DbConnection connection)
+    {
+        var film = connection
+            .Read<Film>(@"
+                select film_id, title, release_year, rental_rate 
+                from film
+                limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+            film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+    }
+
+    public static void PrintFirstFilmReverseOrderFromClass(DbConnection connection)
+    {
+        var film = connection
+            .Read<Film>(@"
+                select rental_rate, release_year, title, film_id
+                from film
+                limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+            film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+    }
+
+    public static void PrintFirstFilmMapAllFromClass(DbConnection connection)
+    {
+        var film = connection
+            .Read<Film>("select * from film limit 1")
+            .Single();
+
+        WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
+            film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+    }
+
+    public static void PrintFilmsFromMappedClass(DbConnection connection)
+    {
+        foreach (var film in connection.Read<Film>(@"
+            select film_id, title, release_year, rental_rate 
+            from film
+            limit 3"))
+        {
+            WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}", 
+                film.FilmId, film.Title, film.ReleaseYear, film.RentalRate);
+        }
+    }
+}
+
+public class Film
+{
+    public int FilmId { get; set; }
+    public string Title { get; set; }
+    public int ReleaseYear { get; set; }
+    public decimal RentalRate { get; set; }
 }
