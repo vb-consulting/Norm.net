@@ -9,33 +9,29 @@ prevTitle: Non-Generic Read Method
 
 ## Read Mappings
 
-Mapping to `.NET` types is achieved by using generic versions of the `Read` method. There are 12 versions of the generic versions, which means that you can map up to 12 types simultaneously. Those are:
+Mapping to `.NET` types is achieved by using generic versions of the `Read` method. 
+
+There are 12 versions of the generic versions, which means that you can map up to 12 types simultaneously. Those are:
 
 ```csharp
-IEnumerable<T> Read<T>(string command);
 IEnumerable<(T1, T2)> Read<T1, T2>(string command);
 IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(string command);
 IEnumerable<(T1, T2, T3, T4)> Read<T1, T2, T3, T4>(string command);
 IEnumerable<(T1, T2, T3, T4, T5)> Read<T1, T2, T3, T4, T5>(string command);
 IEnumerable<(T1, T2, T3, T4, T5, T6)> Read<T1, T2, T3, T4, T5, T6>(string command);
-//
-// ... up to 12 generic parameters max
-//
+IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Read<T1, T2, T3, T4, T5, T6, T7>(string command);
+IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Read<T1, T2, T3, T4, T5, T6, T7, T8>(string command);
+IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string command);
+IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string command);
+IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string command);
 IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string command);
 ```
-
-There are four different types of mapping, depending on the target types:
-
-1) Single-value types (`int`, `string`, `DateTime`, `Guid`, etc.)
-2) Named tuples (`(int id, string name)` for example)
-3) New instances of complex types (classes, records, etc.)
-4) Existing instances of complex types (classes, records, etc.) and anonymous types mapping
 
 ### Single-Value Types
 
 Single-value types are types returned by single-value from the database. 
 
-In `.NET` they are all [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types), such as:
+In `.NET`, they are all [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types), such as:
 
 - [Integral types (`int`, `short`, `long`, etc)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types)
 - [Floating-point numeric types (`float`, `double`, `decimal`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types)
@@ -44,7 +40,7 @@ In `.NET` they are all [value types](https://learn.microsoft.com/en-us/dotnet/cs
 
 Also, some of the basic reference types like `string`, `DateTime`, `Timespan`, `Guid`, etc.
 
-In short - anything implemented by the database provider.
+In short - **anything implemented by the database provider** as a column type mapping.
 
 Provide a single-value type as a generic parameter:
 
@@ -52,7 +48,22 @@ Provide a single-value type as a generic parameter:
 var count = connection
     .Read<int>("select count(*) from actor")
     .Single();
+
+// ...
+
+foreach (var title in connection.Read<string>("select title from film"))
+{
+    WriteLine("Title: {0}", title, description, year);
+}
 ```
+
+### Multiple-Value Types
+
+
+
+
+
+#### Mapping by position
 
 Multiple single-value types are mapped **by position only** and returned as a tuple:
 
@@ -65,6 +76,8 @@ foreach (var tuple in connection.Read<string, string, int>(@"
     WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.Item1, tuple.Item2, tuple.Item3);
 }
 ```
+
+#### Tuple deconstruction
 
 Tuples can be **[deconstructed](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/deconstruct)**. Example:
 
@@ -91,14 +104,6 @@ var dict = connection
 Since the result of the enumeration is an unnamed tuple, the first field of type `int` is named `Item1`, and the second field of type `string` is named `Item2`.
 
 Again, since the `Read` method returns the iterator - **multiple iterations are avoided.**
-
-> **Important:** 
-> **Single-value types are always mapped by THE POSITION.**
-
-That means in following expression `.Read<int, string>("select film_id, title from film")`:
-
--The  `film_id` is mapped to the `int` of `Item1` - because they are all at position 1.
-- The `title` is mapped to the `string` of `Item2` - because they are all at position 2.
 
 ### Named Tuples
 
@@ -208,9 +213,9 @@ foreach (var film in connection.Read<Film>(@"
 
 Important things to notice:
 
-#### Mapping is by name
+#### Mapping by name
 
-> All class or record instance mapping is by name.
+> All class or record instance mapping is by name. instance
 
 That means that position is not important, and we can reverse the order of columns in the query, and we will end up with the same result.
 
@@ -250,7 +255,7 @@ var film = connection
 WriteLine("{0}", film.Extra); // Prints: not-mapped
 ```
 
-#### The snake-case naming convention
+#### Snake-Case Naming Convention
 
 > Mapping by name supports the **snake-case** naming convention.
 
@@ -279,7 +284,7 @@ So, in this case - `film_id` can no longer be matched by name. We would have to 
 
 By default, all name mappings support snake-case naming - unless set otherwise in global options.
 
-#### Public members only by default
+#### Public Members Only Default
 
 > Only fields and properties that are public (have public setters) are mapped by default.
 

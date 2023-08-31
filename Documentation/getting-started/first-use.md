@@ -9,9 +9,9 @@ prevTitle: Installation
 
 # First Use
 
-## Add Using
+### Add Using
 
-Add `using Norm` directive to the `using` section of your source file or add `global using Norm` to use `Norm` in all of your source files:
+Add `using Norm` directive to the `using` section of your source file:
 
 
 ```csharp
@@ -21,7 +21,7 @@ using Norm;
 
 ```
 
-Or, for all source files in a project:
+Or, add `global using Norm` to use `Norm` in all of your source files (C# 10 or higher only):
 
 ```csharp
 global using Norm;
@@ -30,10 +30,9 @@ global using Norm;
 
 ```
 
-## Obtain Connection reference
+### Connection Reference
 
 Obtain a database connection reference, either by creating a new instance:
-
 
 ```csharp
 using Norm;
@@ -67,7 +66,9 @@ public int CountActors(MyDatabaseContext context)
 }
 ```
 
-## Execute First Commands
+> Note: Connection must be descendant of [`System.Data.Common.DbConnection`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection) type.
+
+### First Commands
 
 Execute count on table `actor` and return the result:
 
@@ -88,5 +89,4 @@ Or, perhaps, execute a command without returning a value:
 connection.Execute("delete from customer where active = 0");
 ```
 
-*Note: this documentation will use a sample database from a PostgreSQL public tutorial ([postgresqltutorial.com](https://www.postgresqltutorial.com/)). 
-You can find detailed instructions on installing this sample database on [this page](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/).*
+> *Note: this documentation will use a sample database from a PostgreSQL public tutorial ([postgresqltutorial.com](https://www.postgresqltutorial.com/)). You can find detailed instructions on installing this sample database on [this page](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/).*

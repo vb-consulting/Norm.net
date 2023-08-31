@@ -11,24 +11,24 @@ prevTitle: First Use
 
 ### Connection Extensions
 
-There are two main extensions to the `System.Data.Common.DbConnection` type:
+There are two main extensions to the `System.Data.Common.DbConnection` type (plus derivatives, `async` versions, etc):
 
-1) `Execute` - execute a command without returning any values.
-2) `Read` - execute and return an iterator over return values.
+1) **`Execute`** - execute a command **without returning any values**.
+2) **`Read`** - execute and return an **iterator over return values**.
 
 Both extensions will attempt to **open the underlying connection (if not already open)** - and initiate command execution.
 
-There are another two versions of these extensions for the `async` operations (`ExecuteAsync` and `ReadAsync`), plus another two versions for passing parameters with `FormattableString` (`ExecuteFormat` and `ReadFormat`) and their `async` versions (`ExecuteFormatAsync` and `ReadAFormatsync`).
-
 `Execute` extensions are generally simple since they don't return any values, while `Read` extensions implement many generic overload versions to support many different type mappings.
+
+[See more on the `Read` method.](/docs/fundamentals/read-method/)
 
 ### Fluid Syntax
 
-There are also many other extensions to the `System.Data.Common.DbConnection` type that **doesn't do anything with the database**.
+There are also many other extensions to the `System.Data.Common.DbConnection` type that **doesn't do anything with the database**. They will return **the new `Norm` instance** that implements the same methods as extensions on the `System.Data.Common.DbConnection` type (`Execute`, `Read`, etc).
 
-Instead, they will return **the new `Norm` instance** that implements the same methods as extensions on the `System.Data.Common.DbConnection` type (`Execute`, `Read`, etc).
+This is useful for setting a different behavior or settings for the `Execute` and `Read` commands and to have more readable **fluid syntax.** 
 
-This is useful for setting a different behavior or settings for the `Execute` and `Read` commands and to have more readable **fluid syntax.** For example:
+For example:
 
 ```csharp
 //
