@@ -1,5 +1,43 @@
 # Changelog
 
+## [5.3.8](https://github.com/vb-consulting/Norm.net/tree/5.3.8) (2023-09-07)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.7...5.3.8)
+
+Support for HSTORE PostgreSQL data type.
+
+HSTORE is a key/value data type that is returned as `Dictionary<string, string>` by the Npgsql reader.
+
+There was a [mapping issue with HSTORE data type](https://github.com/npgsql/efcore.pg/issues/212) - when mapping to class instances by name that was fixed in this release.
+
+This works properly now:
+
+```csharp
+public class HstoreTest
+{
+    public string I { get; set; }
+    public Dictionary<string, string> J { get; set; }
+}
+        
+[Fact]
+public void Hstore_Read_Class_Instance_Sync()
+{
+    using var connection = new NpgsqlConnection(fixture.ConnectionString);
+    connection.Execute("create extension if not exists hstore");
+    connection.ReloadTypes();
+
+    var result = connection
+        .Read<HstoreTest>(query)
+        .Single();
+
+    Assert.IsType<string>(result.I);
+    Assert.IsType<Dictionary<string, string>>(result.J);
+    Assert.Equal("123", result.J["foo"]);
+}
+```
+
+Also, this release includes some minor performance optimizations too (objects not passed by reference). There will be new performance tests soon.
+
 ## [5.3.7](https://github.com/vb-consulting/Norm.net/tree/5.3.7) (2023-07-17)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.6...5.3.7)

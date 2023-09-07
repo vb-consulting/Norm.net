@@ -8,7 +8,7 @@ namespace Norm.Mapper
 
     public static partial class NormExtensions
     {
-        private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum }
+        private enum StructType { None, TimeSpan, DateTimeOffset, Guid, Enum, HstoreDict }
 
         private static void MapInstance<T>(
             ReadOnlyMemory<(string name, object value)> tuple,
@@ -465,15 +465,15 @@ namespace Norm.Mapper
                 {
                     if (elementType == typeof(TimeSpan))
                     {
-                        return (CreateDelegateValue<T, TimeSpan[]>(property), code, isArray, StructType.TimeSpan);
+                        return (CreateDelegateValue<T, TimeSpan[]>(ref property), code, isArray, StructType.TimeSpan);
                     }
                     if (elementType == typeof(Guid))
                     {
-                        return (CreateDelegateValue<T, Guid[]>(property), code, isArray, StructType.Guid);
+                        return (CreateDelegateValue<T, Guid[]>(ref property), code, isArray, StructType.Guid);
                     }
                     if (elementType == typeof(DateTimeOffset))
                     {
-                        return (CreateDelegateValue<T, DateTimeOffset[]>(property), code, isArray, StructType.DateTimeOffset);
+                        return (CreateDelegateValue<T, DateTimeOffset[]>(ref property), code, isArray, StructType.DateTimeOffset);
                     }
                 }
             }
@@ -491,41 +491,62 @@ namespace Norm.Mapper
                 {
                     if (type == typeof(TimeSpan) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(TimeSpan)))
                     {
-                        return (CreateDelegateStruct<T, TimeSpan>(property, nullable), code, isArray, StructType.TimeSpan);
+                        return (CreateDelegateStruct<T, TimeSpan>(ref property, nullable), code, isArray, StructType.TimeSpan);
                     }
                     if (type == typeof(Guid) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(Guid)))
                     {
-                        return (CreateDelegateStruct<T, Guid>(property, nullable), code, isArray, StructType.Guid);
+                        return (CreateDelegateStruct<T, Guid>(ref property, nullable), code, isArray, StructType.Guid);
                     }
                     if (type == typeof(DateTimeOffset) || (type.GenericTypeArguments.Length > 0 && type.GenericTypeArguments[0] == typeof(DateTimeOffset)))
                     {
-                        return (CreateDelegateStruct<T, DateTimeOffset>(property, nullable), code, isArray, StructType.DateTimeOffset);
+                        return (CreateDelegateStruct<T, DateTimeOffset>(ref property, nullable), code, isArray, StructType.DateTimeOffset);
+                    }
+
+                    if (type == typeof(Dictionary<string, string>))
+                    {
+                        var setter = property.GetSetMethod(true);
+                        if (setter == null)
+                        {
+                            return (null, code, isArray, StructType.None);
+                        }
+                        if (NormOptions.Value.MapPrivateSetters)
+                        {
+                            return (Delegate.CreateDelegate(typeof(Action<T, Dictionary<string, string>>), setter), code, isArray, StructType.HstoreDict);
+                        }
+                        else if (setter.IsPublic)
+                        {
+                            return (Delegate.CreateDelegate(typeof(Action<T, Dictionary<string, string>>), setter), code, isArray, StructType.HstoreDict);
+                        }
+                        return (null, code, isArray, StructType.None);
                     }
                 }
             }
 
             return code switch
             {
-                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(property) : CreateDelegateStruct<T, int>(property, nullable), code, isArray, StructType.None),
-                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(property) : CreateDelegateStruct<T, DateTime>(property, nullable), code, isArray, StructType.None),
-                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(property) : CreateDelegateValue<T, string>(property), code, isArray, StructType.None),
-                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(property) : CreateDelegateStruct<T, bool>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(property) : CreateDelegateStruct<T, byte>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(property) : CreateDelegateStruct<T, char>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(property) : CreateDelegateStruct<T, decimal>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(property) : CreateDelegateStruct<T, double>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(property) : CreateDelegateStruct<T, short>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(property) : CreateDelegateStruct<T, long>(property, nullable), code, isArray, StructType.None),
-                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(property) : CreateDelegateStruct<T, sbyte>(property, nullable), code, isArray, StructType.None),
-                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(property) : CreateDelegateStruct<T, float>(property, nullable), code, isArray, StructType.None),
-                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(property) : CreateDelegateStruct<T, ushort>(property, nullable), code, isArray, StructType.None),
-                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(property) : CreateDelegateStruct<T, uint>(property, nullable), code, isArray, StructType.None),
-                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(property) : CreateDelegateStruct<T, ulong>(property, nullable), code, isArray, StructType.None),
-                _ => throw new NotImplementedException($"TypeCode {code} not implemented"),
+                TypeCode.Int32 => (isArray ? CreateDelegateValue<T, int[]>(ref property) : CreateDelegateStruct<T, int>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.DateTime => (isArray ? CreateDelegateValue<T, DateTime[]>(ref property) : CreateDelegateStruct<T, DateTime>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.String => (isArray ? CreateDelegateValue<T, string[]>(ref property) : CreateDelegateValue<T, string>(ref property), code, isArray, StructType.None),
+                TypeCode.Boolean => (isArray ? CreateDelegateValue<T, bool[]>(ref property) : CreateDelegateStruct<T, bool>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Byte => (isArray ? CreateDelegateValue<T, byte[]>(ref property) : CreateDelegateStruct<T, byte>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Char => (isArray ? CreateDelegateValue<T, char[]>(ref property) : CreateDelegateStruct<T, char>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Decimal => (isArray ? CreateDelegateValue<T, decimal[]>(ref property) : CreateDelegateStruct<T, decimal>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Double => (isArray ? CreateDelegateValue<T, double[]>(ref property) : CreateDelegateStruct<T, double>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Int16 => (isArray ? CreateDelegateValue<T, short[]>(ref property) : CreateDelegateStruct<T, short>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Int64 => (isArray ? CreateDelegateValue<T, long[]>(ref property) : CreateDelegateStruct<T, long>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.SByte => (isArray ? CreateDelegateValue<T, sbyte[]>(ref property) : CreateDelegateStruct<T, sbyte>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.Single => (isArray ? CreateDelegateValue<T, float[]>(ref property) : CreateDelegateStruct<T, float>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt16 => (isArray ? CreateDelegateValue<T, ushort[]>(ref property) : CreateDelegateStruct<T, ushort>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt32 => (isArray ? CreateDelegateValue<T, uint[]>(ref property) : CreateDelegateStruct<T, uint>(ref property, nullable), code, isArray, StructType.None),
+                TypeCode.UInt64 => (isArray ? CreateDelegateValue<T, ulong[]>(ref property) : CreateDelegateStruct<T, ulong>(ref property, nullable), code, isArray, StructType.None),
+
+                TypeCode.Object => (CreateDelegateValue<T, object>(ref property), code, isArray, StructType.None),
+                
+                _ => throw new NotImplementedException($"TypeCode {code} not implemented")
             };
         }
 
-        private static Delegate CreateDelegateValue<T, TProp>(PropertyInfo property)
+        private static Delegate CreateDelegateValue<T, TProp>(ref PropertyInfo property)
         {
             var setter = property.GetSetMethod(true);
             if (setter == null)
@@ -543,7 +564,7 @@ namespace Norm.Mapper
             return null;
         }
 
-        private static Delegate CreateDelegateStruct<T, TProp>(PropertyInfo property, bool nullable) where TProp : struct
+        private static Delegate CreateDelegateStruct<T, TProp>(ref PropertyInfo property, bool nullable) where TProp : struct
         {
             var setter = property.GetSetMethod(true);
             if (setter == null)
@@ -567,6 +588,10 @@ namespace Norm.Mapper
 
         private static void InvokeSet<T>(Delegate method, bool nullable, TypeCode code, T instance, object value, bool isArray, StructType structType)
         {
+            if (structType == StructType.HstoreDict)
+            {
+                InvokeSetValue<T, Dictionary<string, string>>(method, instance, value);
+            }
             if (structType == StructType.TimeSpan)
             {
                 if (isArray)
