@@ -8,7 +8,7 @@ Support for HSTORE PostgreSQL data type.
 
 HSTORE is a key/value data type that is returned as `Dictionary<string, string>` by the Npgsql reader.
 
-There was a [mapping issue with HSTORE data type](https://github.com/npgsql/efcore.pg/issues/212) - when mapping to class instances by name that was fixed in this release.
+There was a [mapping issue with HSTORE data type](https://github.com/vb-consulting/Norm.net/issues/20) - when mapping to class instances by name that was fixed in this release.
 
 This works properly now:
 
