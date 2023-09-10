@@ -37,18 +37,22 @@ Obtain a database connection reference, either by creating a new instance:
 ```csharp
 using Norm;
 
+// For PostgeSQL
 using var connection = new NpgsqlConnection("Server=localhost;Database=dvdrental;Port=5432;User Id=postgres;Password=postgres;");
 
-// ...
+// For SQL Server
+using var connection = new SqlConnection("Data Source=localhost;Initial Catalog=dvdrental;Integrated Security=True");
 
+// etc ...
 ```
 
 Or, pass it down as a method parameter:
 
 ```csharp
 using Norm;
+using System.Data.Common;
 
-public int CountActors(NpgsqlConnection connection)
+public int CountActors(DbConnection connection)
 {
     //...
 }
@@ -75,8 +79,9 @@ Execute count on table `actor` and return the result:
 ```csharp
 using Norm;
 using System.Linq;
+using System.Data.Common;
 
-public int CountActors(NpgsqlConnection connection)
+public int CountActors(DbConnection connection)
 {
     return connection.Read<int>("select count(*) from actor").Single();
 }

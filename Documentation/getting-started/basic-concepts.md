@@ -11,24 +11,31 @@ prevTitle: First Use
 
 ### Connection Extensions
 
-There are two main extensions to the `System.Data.Common.DbConnection` type (plus derivatives, `async` versions, etc):
+**Three main extensions methods (and their derivatives):**
 
 1) **`Execute`** - execute a command **without returning any values**.
-2) **`Read`** - execute and return an **iterator over return values**.
+2) **`Read`** - execute and return an **iterator over values**.
+3) **`Multiple`** - return disposable object for multiple `Read` operations.
 
-Both extensions will attempt to **open the underlying connection (if not already open)** - and initiate command execution.
+- Both extensions will attempt to **open the underlying connection** - and then initiate command execution.
 
-`Execute` extensions are generally simple since they don't return any values, while `Read` extensions implement many generic overload versions to support many different type mappings.
+- `Execute` extensions are generally simple since they don't return any values. Just execute a command without returning a value.
+
+- `Read` extensions implement many overload versions and support many different type mappings (tuples, named tuples, instances, dynaimc, anonymous, etc).
 
 [See more on the `Read` method.](/docs/fundamentals/read-method/)
 
 ### Fluid Syntax
 
-There are also many other extensions to the `System.Data.Common.DbConnection` type that **doesn't do anything with the database**. They will return **the new `Norm` instance** that implements the same methods as extensions on the `System.Data.Common.DbConnection` type (`Execute`, `Read`, etc).
+- In addition to these three main extensions - there are 14 additional helper extensions on the connection object.
 
-This is useful for setting a different behavior or settings for the `Execute` and `Read` commands and to have more readable **fluid syntax.** 
+- These extensions methods will return `Norm` instance object that has state set according to the extensions.
 
-For example:
+- `Norm` instance object implements the same instance methods as extension methods on the connection object.
+
+- This is useful to be able to have a **fluid syntax.** 
+
+- Foe example, execute a stored procedure with command timoout 60 seconds would look like this by using **fluid syntax**:
 
 ```csharp
 //
@@ -39,6 +46,27 @@ connection
     .WithTimeout(60)
     .Execute("delete_inactive_customers");
 ```
+
+- Note that `AsProcedure` and `WithTimeout` will return `Norm` instance with altered state and all of these three methods exist as instance method and as extension method on connection object.
+
+- A full list of helper extension methods:
+
+ - `As(System.Data.Common.CommandType type)` - sets the command type - text, table direct or stored procedure (see more at [System.Data.CommandType](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandtype))
+ - `AsProcedure()` - sets the command type to stored procedure.
+ - `AsText()` - sets command type to text.
+ - `Prepared()` - sets the command into a prepared mode.
+ - `WithCancellationToken(System.Threading.CancellationToken cancellationToken)` - sets the cancellation token for the execution.
+ - `WithCommandBehavior(System.Data.CommandBehavior behavior)` - sets the reader behavior like default, single result, schema only, key info, single row, sequential access or close connection (see more at [System.Data.CommandBehavior](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandbehavior)).
+ - `WithCommandCallback(Action<DbCommand> dbCommandCallback)` - adds a command callback to be executed before command execution which gives you a full access to the [DbCommand](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object.
+ - `WithComment(string comment)` - adds custom comment to SQL command.
+ - `WithCommentCallerInfo()` - adds comment to SQL command what contains a caller info data (source method name from where this command was executed with source code file path and line number if available).
+ - `WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false)` - configures comment to SQL command to include either custom comment, command attributes, caller info, timestamp or parameters.
+ - `WithCommentParameters()` - adds comment to SQL command what contains a parameters data.
+ - `WithParameters(params object[] parameters)` - add command parameters list.
+ - `WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)` - adds reader callback executed on each reader step. Gives you chance to return alternative values or types by returning a non-null value.
+ - `WithTimeout(int timeout)` - add command timeout.
+ - `WithTransaction(DbTransaction transaction)` - add transaction object to command.
+ - `WithUnknownResultType(params bool[])` - set the unknown type for all or some fields that will be returned as raw string (`Npgsql` only).
 
 ### Read Iterators
 
