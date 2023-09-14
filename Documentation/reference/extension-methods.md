@@ -7,7 +7,7 @@ prevUrl:
 prevTitle: 
 ---
 
-# Extensions Methods
+## Extensions Methods
 
 ### As
 
@@ -20,7 +20,6 @@ Norm As(System.Data.CommandType type);
 - This specifies how a command string is interpreted:
 
 ```csharp
-
 namespace System.Data
 {
     //
@@ -97,8 +96,9 @@ connection
     .Execute("select delete_inactive_customers()");
 ```
 
-- Since `Execute` also retruns the current instance AsText may be used in a chain of commands:
-
+- Since `Execute` also retruns the current instance `AsText` may be used in a chain of commands. 
+  
+- So, in the example, `AsText` makes sense:
 
 ```csharp
 //
@@ -118,37 +118,224 @@ Norm Prepared();
 
  - Sets the next command into a prepared (or compiled) mode. 
   
- - [DbCommand.Prepare Method Reference](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare)
+ - [`DbCommand.Prepare` Method Reference](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare)
 
 - Example:
 
 ```csharp
 //
-// Execute a function "delete_inactive_customers" as text
+// Execute prepared command
 //
 connection
     .Prepared() 
-    .Execute("update table set value = 1");
+    .Execute("update my_table set value = 1 where id = 1");
 ```
 
-Note: This is unnecessary on SQL Server. This feature was introducuded because of PostgreSQL. See this [article](https://www.npgsql.org/doc/prepare.html).
+- Note: to set all commands into a prepared (or compiled) mode - use `Configure` method in your program startup:
+
+```csharp
+//
+// Set global options in your startup 
+// to always execute in prepared mode (default is false).
+//
+NormOptions.Configure(options =>
+{
+    options.Prepared = true;
+});
+
+// later in your code ...
+
+//
+// Execute prepared command
+//
+connection
+    .Prepared() 
+    .Execute("update my_table set value = 1 where id = 1");
+```
+
+- Disclamer: command preparation may vary on different provider implementation and in some cases it may be set as connection string parameter. For example, [prepare with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
 
 ### WithCancellationToken
 
- - `WithCancellationToken(System.Threading.CancellationToken cancellationToken)` - sets the cancellation token for the execution.
+```csharp
+Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken)
+```
 
+- Sets the cancelation token for the next command that can propagates the notification that operations should be canceled.
+
+- Example:
+
+```csharp
+// create a new cancelation source
+var cancellationSource = new CancellationTokenSource();
+cancellationSource.CancelAfter(5000);
+
+//
+// Execute command and cancel after 500 millseconds as defined by the cancelation source
+//
+connection
+    .WithCancellationToken(cancellationSource.Token)
+    .Execute("update my_table set value = 1 where id = 1");
+```
 
 ### WithCommandBehavior
 
- - `WithCommandBehavior(System.Data.CommandBehavior behavior)` - sets the reader behavior like default, single result, schema only, key info, single row, sequential access or close connection (see more at [System.Data.CommandBehavior](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandbehavior)).
+```csharp
+Norm WithCommandBehavior(System.Data.CommandBehavior behavior)
+```
+
+- Sets the [command behavior](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandbehavior) on the next [reader execution](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executereader#system-data-sqlclient-sqlcommand-executereader(system-data-commandbehavior)) (by `Read` extension methods).
+
+- This provides a description of the results of the query and its effect on the database:
+
+```csharp
+namespace System.Data
+{
+    //
+    // Summary:
+    //     Provides a description of the results of the query and its effect on the database.
+    [Flags]
+    public enum CommandBehavior
+    {
+        //
+        // Summary:
+        //     The query may return multiple result sets. Execution of the query may affect
+        //     the database state. Default sets no System.Data.CommandBehavior flags, so calling
+        //     ExecuteReader(CommandBehavior.Default) is functionally equivalent to calling
+        //     ExecuteReader().
+        Default = 0,
+        //
+        // Summary:
+        //     The query returns a single result set.
+        SingleResult = 1,
+        //
+        // Summary:
+        //     The query returns column information only. When using System.Data.CommandBehavior.SchemaOnly,
+        //     the .NET Framework Data Provider for SQL Server precedes the statement being
+        //     executed with SET FMTONLY ON.
+        SchemaOnly = 2,
+        //
+        // Summary:
+        //     The query returns column and primary key information. The provider appends extra
+        //     columns to the result set for existing primary key and timestamp columns.
+        KeyInfo = 4,
+        //
+        // Summary:
+        //     The query is expected to return a single row of the first result set. Execution
+        //     of the query may affect the database state. Some .NET Framework data providers
+        //     may, but are not required to, use this information to optimize the performance
+        //     of the command. When you specify System.Data.CommandBehavior.SingleRow with the
+        //     System.Data.OleDb.OleDbCommand.ExecuteReader method of the System.Data.OleDb.OleDbCommand
+        //     object, the .NET Framework Data Provider for OLE DB performs binding using the
+        //     OLE DB IRow interface if it is available. Otherwise, it uses the IRowset interface.
+        //     If your SQL statement is expected to return only a single row, specifying System.Data.CommandBehavior.SingleRow
+        //     can also improve application performance. It is possible to specify SingleRow
+        //     when executing queries that are expected to return multiple result sets. In that
+        //     case, where both a multi-result set SQL query and single row are specified, the
+        //     result returned will contain only the first row of the first result set. The
+        //     other result sets of the query will not be returned.
+        SingleRow = 8,
+        //
+        // Summary:
+        //     Provides a way for the DataReader to handle rows that contain columns with large
+        //     binary values. Rather than loading the entire row, SequentialAccess enables the
+        //     DataReader to load data as a stream. You can then use the GetBytes or GetChars
+        //     method to specify a byte location to start the read operation, and a limited
+        //     buffer size for the data being returned.
+        SequentialAccess = 16,
+        //
+        // Summary:
+        //     When the command is executed, the associated Connection object is closed when
+        //     the associated DataReader object is closed.
+        CloseConnection = 32
+    }
+}
+```
+
+- Example:
+
+```csharp
+//
+// Read single row result from a single result set and close the connection when done
+//
+var result = connection
+    .WithCommandBehavior(CommandBehavior.CloseConnection | CommandBehavior.SingleResult | CommandBehavior.SingleRow)
+    .Read<int>("select count(*) from my_table");
+```
 
 ### WithCommandCallback
 
- - `WithCommandCallback(Action<DbCommand> dbCommandCallback)` - adds a command callback to be executed before command execution which gives you a full access to the [DbCommand](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object.
+```csharp
+Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCallback)
+```
+
+- Adds a **callback function** that will be executed when:
+  - After the [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object has been created and initialized.
+  - Before the command execution.
+
+- Possible usage of this callback is to gain access to the `DbCommand` instance before execution to be able to change its properties.
+
+- Common usage of this callback is usually to log command text.
+
+- Example:
+
+```csharp
+//
+// Read single row and log the command text
+//
+var result = connection
+    .WithCommandCallback(command => logger.LogInformation("SQL COMMAND: {0}", command.CommandText))
+    .Read<int>("select count(*) from my_table");
+```
+
+- This example will produce info log with following content: `SQL COMMAND: select count(*) from my_table`.
+
+- Note: this callback can be set for all commands - use `Configure` method in your program startup:
+
+```csharp
+//
+// Set global options in your startup 
+//
+NormOptions.Configure(options =>
+{
+    options.DbCommandCallback = command => logger.LogInformation("SQL COMMAND: {0}", command.CommandText)
+});
+
+// later in your code ...
+
+//
+// Read single row and log the command text
+//
+var result = connection.Read<int>("select count(*) from my_table");
+```
+
+- This will also produce info log with the same content: `SQL COMMAND: select count(*) from my_table`.
 
 ### WithComment
 
- - `WithComment(string comment)` - adds custom comment to SQL command.
+```csharp
+Norm WithComment(string comment)
+```
+
+ - Sets the custom comment header for the next command. The content of the `comment` string will be added to the top of the `CommandText` as SQL comment.
+
+- Example:
+
+```csharp
+var result = connection
+    .WithComment("This is my comment")
+    .WithCommandCallback(command => Console.WriteLine(command.CommandText))
+    .Read<int>("select count(*) from my_table");
+```
+
+- This will print out following console output:
+
+```
+/*
+This is my comment"
+*/
+select count(*) from my_table"
+```
 
 ### WithCommentCallerInfo
 
@@ -170,7 +357,7 @@ Note: This is unnecessary on SQL Server. This feature was introducuded because o
 
  - `WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)` - adds reader callback executed on each reader step. Gives you chance to return alternative values or types by returning a non-null value.
  
- ### WithReaderCallback
+ ### WithTimeout
 
  - `WithTimeout(int timeout)` - add command timeout.
 

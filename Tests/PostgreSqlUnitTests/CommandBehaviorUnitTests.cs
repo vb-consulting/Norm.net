@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Norm;
@@ -25,11 +26,12 @@ namespace PostgreSqlUnitTests
             connection.Read("select 1").ToArray();
             Assert.True(connection.State == System.Data.ConnectionState.Open);
 
-            connection
-                .WithCommandBehavior(System.Data.CommandBehavior.CloseConnection)
-                .Read("select 2")
-                .ToArray();
+            var result = connection
+                .WithCommandBehavior(CommandBehavior.CloseConnection | CommandBehavior.SingleResult | CommandBehavior.SingleRow)
+                .Read<int>("select 2")
+                .Single();
 
+            Assert.Equal(2, result);
             Assert.True(connection.State == System.Data.ConnectionState.Closed);
         }
     }
