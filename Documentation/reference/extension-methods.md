@@ -328,26 +328,83 @@ var result = connection
     .Read<int>("select count(*) from my_table");
 ```
 
-- This will print out following console output:
+- This will print out the following console output:
 
-```
+```markdown
 /*
-This is my comment"
+This is my comment
 */
-select count(*) from my_table"
+select count(*) from my_table
 ```
 
 ### WithCommentCallerInfo
 
- - `WithCommentCallerInfo()` - adds comment to SQL command what contains a caller info data (source method name from where this command was executed with source code file path and line number if available).
+```csharp
+Norm WithCommentCallerInfo()
+```
+
+ - Sets the automatic custom comment header to the next command that will include caller information. 
+ 
+ - Caller information is compiler genereated metadata that include:
+   - **Caller member name**: a method or property name of the caller to the method.
+   - **Caller file path**: a full path of the source file that contains the caller at the compile time.
+   - **Caller line number**: a line number in the source file at which the method is called at the compile time.
+
+- Example:
+
+```csharp
+var result = connection
+    .WithCommentCallerInfo()
+    .WithCommandCallback(command => Console.WriteLine(command.CommandText))
+    .Read<int>("select count(*) from my_table");
+```
+
+- If, this example is executed in method named `CallerInfoTest` that is located in a file `/home/MyProject/Examples.cs` at line 100 - this example will print out the following console output:
+
+```markdown
+/*
+at CallerInfoTest in /home/MyProject/Examples.cs#100
+*/
+select count(*) from my_table
+```
+
+- Note: this option can be set for every command - use `Configure` method in your program startup:
+
+```csharp
+//
+// Set global options in your startup 
+//
+NormOptions.Configure(options =>
+{
+    options.CommandCommentHeader.Enabled = true;
+    options.CommandCommentHeader.IncludeCallerInfo = false;
+});
+
+// later in your code ...
+
+//
+// Read the single row 
+//
+var result = connection
+    .Read<int>("select count(*) from my_table");
+```
+
+ ### WithCommentParameters
+
+ ```csharp
+Norm WithCommentParameters()
+```
+
+ - `WithCommentParameters()` - adds comment to SQL command what contains a parameters data.
 
 ### WithCommentHeader
 
+```csharp
+Norm WithCommentHeader()
+```
+
  - `WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false)` - configures comment to SQL command to include either custom comment, command attributes, caller info, timestamp or parameters.
  
- ### WithCommentParameters
-
- - `WithCommentParameters()` - adds comment to SQL command what contains a parameters data.
 
  ### WithParameters
 
