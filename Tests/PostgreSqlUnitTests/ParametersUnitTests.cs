@@ -188,6 +188,40 @@ namespace PostgreSqlUnitTests
             Assert.Equal("abc", result);
         }
 
+
+        class TestClass
+        {
+            public string S { get; set; }
+            public int I { get; set; }
+            public bool B { get; set; }
+            public DateTime D { get; set; }
+            public string Null { get; set; }
+        }
+
+        [Fact]
+        public void NamedParams_Instance_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(new TestClass
+                {
+                    D = new DateTime(1977, 5, 19),
+                    B = true,
+                    I = 999,
+                    S = "str",
+                    Null = (string)null
+                })
+                .Read<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
         [Fact]
         public void NamedParams_Test()
         {

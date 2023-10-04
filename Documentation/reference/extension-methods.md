@@ -96,7 +96,7 @@ connection
     .Execute("select delete_inactive_customers()");
 ```
 
-- Since `Execute` also retruns the current instance `AsText` may be used in a chain of commands. 
+- Since `Execute` also returns the current instance, `AsText` may be used in a chain of commands. 
   
 - So, in the example, `AsText` makes sense:
 
@@ -153,7 +153,7 @@ connection
     .Execute("update my_table set value = 1 where id = 1");
 ```
 
-- Disclamer: command preparation may vary on different provider implementation and in some cases it may be set as connection string parameter. For example, [prepare with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
+- Disclaimer: command preparation may vary on different provider implementations, and in some cases, it may be set as a connection string parameter. For example, see [prepare with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
 
 ### WithCancellationToken
 
@@ -161,7 +161,7 @@ connection
 Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken);
 ```
 
-- Sets the cancelation token for the next command that can propagates the notification that operations should be canceled.
+- Sets the cancelation token for the next command that can propagate the notification that operations should be canceled.
 
 - Example:
 
@@ -171,7 +171,7 @@ var cancellationSource = new CancellationTokenSource();
 cancellationSource.CancelAfter(5000);
 
 //
-// Execute command and cancel after 500 millseconds as defined by the cancelation source
+// Execute command and cancel after 500 milliseconds as defined by the cancelation source
 //
 connection
     .WithCancellationToken(cancellationSource.Token)
@@ -281,14 +281,14 @@ Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCa
 
 ```csharp
 //
-// Read single row and log the command text
+// Read a single row and log the command text
 //
 var result = connection
     .WithCommandCallback(command => logger.LogInformation("SQL COMMAND: {0}", command.CommandText))
     .Read<int>("select count(*) from my_table");
 ```
 
-- This example will produce info log with following content: `SQL COMMAND: select count(*) from my_table`.
+- This example will produce an info log with the following content: `SQL COMMAND: select count(*) from my_table`.
 
 - Note: this callback can be set for all commands - use `Configure` method in your program startup:
 
@@ -304,12 +304,12 @@ NormOptions.Configure(options =>
 // later in your code ...
 
 //
-// Read single row and log the command text
+// Read a single row and log the command text
 //
 var result = connection.Read<int>("select count(*) from my_table");
 ```
 
-- This will also produce info log with the same content: `SQL COMMAND: select count(*) from my_table`.
+- This will also produce an info log with the same content: `SQL COMMAND: select count(*) from my_table`.
 
 ### WithComment
 
@@ -317,7 +317,7 @@ var result = connection.Read<int>("select count(*) from my_table");
 Norm WithComment(string comment);
 ```
 
- - Sets the custom comment header for the next command. The content of the `comment` string will be added to the top of the `CommandText` as SQL comment.
+ - Sets the custom comment header for the next command. The content of the `comment` string will be added to the top of the `CommandText` as an SQL comment.
 
 - Example:
 
@@ -345,7 +345,7 @@ Norm WithCommentCallerInfo();
 
  - Sets the automatic custom comment header to the next command that will include caller information. 
  
- - Caller information is compiler genereated metadata that include:
+ - Caller information is compiler-generated metadata that includes:
    - **Caller member name**: a method or property name of the caller to the method.
    - **Caller file path**: a full path of the source file that contains the caller at the compile time.
    - **Caller line number**: a line number in the source file at which the method is called at the compile time.
@@ -359,7 +359,7 @@ var result = connection
     .Read<int>("select count(*) from my_table");
 ```
 
-- If, this example is executed in method named `CallerInfoTest` that is located in a file `/home/MyProject/Examples.cs` at line 100 - this example will print out the following console output:
+- If this example is executed in a method named `CallerInfoTest` that is located in a file `/home/MyProject/Examples.cs` at line 100 - this example will print out the following console output:
 
 ```markdown
 /*
@@ -389,7 +389,7 @@ var result = connection
     .Read<int>("select count(*) from my_table");
 ```
 
-- This will include exact caller info (caller member, file path and line number) in every command you create.
+- This will include exact caller info (caller member, file path, and line number) in every command you create.
 
  ### WithCommentParameters
 
@@ -397,7 +397,7 @@ var result = connection
 Norm WithCommentParameters();
 ```
 
- - Sets the option for the next command to include command parameters in command header comment.
+ - Sets the option for the next command to include command parameters in the command header comment.
 
 - Example:
 
@@ -432,10 +432,10 @@ Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = tr
 - Parameters:
   
   - `string comment = null` - sets the custom text comment header for the next command.
-  - `bool includeCommandAttributes = true` - includes command attributes, such as database provider, command type (text, procedure) and command timeout in comment header for the next command.
-  - `bool includeParameters = true` - includes parameter names and values in comment header for the next command.
-  - `bool includeCallerInfo = true` - includes caller info (member name, file path and line number) in comment header for the next command.
-  - `bool includeTimestamp = false` - includes current timestamp in comment header for the next command.
+  - `bool includeCommandAttributes = true` - includes command attributes, such as database provider, command type (text, procedure), and command timeout in the comment header for the next command.
+  - `bool includeParameters = true` - includes parameter names and values in the comment header for the next command.
+  - `bool includeCallerInfo = true` - includes caller info (member name, file path, and line number) in the comment header for the next command.
+  - `bool includeTimestamp = false` - includes a current timestamp in the comment header for the next command.
 
  ### WithParameters
 
@@ -445,18 +445,18 @@ Norm WithParameters(params object[] parameters);
 
  - Sets parameters for the next command. 
   
- - This method can recieve one or more parameters of the `object` type.
+ - This method can receive one or more parameters of the `object` type.
   
  - Parameter value can be either:
   
-   - Simple type (integers, strings, dates, etc).
+   - Simple type (integers, strings, dates, etc.).
    - Object instances.
-   - Two value tuple (value and database type).
-   - `DbParameter` instance.
+   - Two value tuples (value and database type).
+   - [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance.
 
 - Depending on the parameter type, parameters can be set in different ways.
 
-- Using simple values - we can set the positional paramaters.
+- Using simple values - we can set the positional parameters.
 
 - Example:
 
@@ -471,9 +471,9 @@ var (s, i, b, d, @null) = connection
   
 - Name of parameters in query `select @s, @i, @b, @d, @null` is not actually important. 
 
-- First value `"str"` is set to the first parameter `@s`, second value to second parameter `@i`, and so on. Names of these parameters can by anything.
+- First value `"str"` is set to the first parameter `@s`, the second value to the second parameter `@i` and so on. Names of these parameters can be anything.
 
-- Norm also supports PostgreSQL positional paramaters where each parameter in query is defined with `$` character and position index (`$1`, `$2`, `$2`, etc).
+- Norm also supports PostgreSQL positional parameters where each parameter in the query is defined with a `$` character and position index (`$1`, `$2`, `$2`, etc.).
 
 - Example:
 
@@ -494,9 +494,9 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- Sometimes we want to set a specific database type to a positional parameter. 
+- Sometimes, we want to set a specific database type to a positional parameter. 
 
-- In that cases, we can use a two values tuple, where first value is parameter value and second value is specific database type.
+- In those cases, we can use a two values tuple, where the first value is the parameter value and the second value is the specific database type.
 
 - Database type value of system enum [`System.Data.DbType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.dbtype). Example:
 
@@ -535,9 +535,9 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- Paramater value can also be an object instance. 
+- Parameter value can also be an object instance. 
 
-- In that case each public property or public field will be a named paramater with the same name and the same value. Example:
+- In that case, each public property or public field will be a named parameter with the same name and the same value. Example:
 
 ```csharp
 var (s, i, b, d, @null) = connection
@@ -549,12 +549,42 @@ var (s, i, b, d, @null) = connection
         s = "str",
         @null = (string)null
     })
-    .Read<string, int, bool, DateTime, string>(
-    "select @s, @i, @b, @d, @null")
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
     .Single();
 ```
 
+- This example uses an **anonymous object instance** to create a named parameters `d`, `b`, `i`, `s` and `˙null` with associated values.
 
+- In this example paramaters appears in different order, because they are mapped by name, not by position.
+
+- Note that `@null` starts with the `@` prefix because `null` is a C# keyword and the `@` prefix is ignored.
+
+- Besides anonymous objects, normal instances can also be used as well:
+
+```csharp
+class TestClass
+{
+    public string S { get; set; }
+    public int I { get; set; }
+    public bool B { get; set; }
+    public DateTime D { get; set; }
+    public string Null { get; set; }
+}
+
+var (s, i, b, d, @null) = connection
+    .WithParameters(new TestClass
+    {
+        D = new DateTime(1977, 5, 19),
+        B = true,
+        I = 999,
+        S = "str",
+        Null = (string)null
+    })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- Note that parameter names are not cases sensitive.
 
  ### WithReaderCallback
 
