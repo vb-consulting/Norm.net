@@ -158,7 +158,7 @@ connection
 ### WithCancellationToken
 
 ```csharp
-Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken)
+Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken);
 ```
 
 - Sets the cancelation token for the next command that can propagates the notification that operations should be canceled.
@@ -181,7 +181,7 @@ connection
 ### WithCommandBehavior
 
 ```csharp
-Norm WithCommandBehavior(System.Data.CommandBehavior behavior)
+Norm WithCommandBehavior(System.Data.CommandBehavior behavior);
 ```
 
 - Sets the [command behavior](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandbehavior) on the next [reader execution](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executereader#system-data-sqlclient-sqlcommand-executereader(system-data-commandbehavior)) (by `Read` extension methods).
@@ -266,7 +266,7 @@ var result = connection
 ### WithCommandCallback
 
 ```csharp
-Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCallback)
+Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCallback);
 ```
 
 - Adds a **callback function** that will be executed when:
@@ -314,7 +314,7 @@ var result = connection.Read<int>("select count(*) from my_table");
 ### WithComment
 
 ```csharp
-Norm WithComment(string comment)
+Norm WithComment(string comment);
 ```
 
  - Sets the custom comment header for the next command. The content of the `comment` string will be added to the top of the `CommandText` as SQL comment.
@@ -340,7 +340,7 @@ select count(*) from my_table
 ### WithCommentCallerInfo
 
 ```csharp
-Norm WithCommentCallerInfo()
+Norm WithCommentCallerInfo();
 ```
 
  - Sets the automatic custom comment header to the next command that will include caller information. 
@@ -389,26 +389,172 @@ var result = connection
     .Read<int>("select count(*) from my_table");
 ```
 
+- This will include exact caller info (caller member, file path and line number) in every command you create.
+
  ### WithCommentParameters
 
  ```csharp
-Norm WithCommentParameters()
+Norm WithCommentParameters();
 ```
 
- - `WithCommentParameters()` - adds comment to SQL command what contains a parameters data.
+ - Sets the option for the next command to include command parameters in command header comment.
+
+- Example:
+
+```csharp
+var result = connection
+    .WithCommentParameters()
+    .WithCommandCallback(command => Console.WriteLine(command.CommandText))
+    .WithParameters(1, "foo", false, new DateTime(2022, 5, 19))
+    .Execute("select @p1, @p2, @p3, @p4");
+```
+
+- This will print out the following console output:
+
+```markdown
+/*
+@p1 int = 2
+@p2 nvarchar = "bar"
+@p3 bit = false"
+@p4 datetime = "1977-05-19T00:00:00.0000000"
+*/
+select @p1, @p2, @p3, @p4
+```
 
 ### WithCommentHeader
 
+ - Sets the options for the next command to include command header comment with 
+
 ```csharp
-Norm WithCommentHeader()
+Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false);
 ```
 
- - `WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false)` - configures comment to SQL command to include either custom comment, command attributes, caller info, timestamp or parameters.
- 
+- Parameters:
+  
+  - `string comment = null` - sets the custom text comment header for the next command.
+  - `bool includeCommandAttributes = true` - includes command attributes, such as database provider, command type (text, procedure) and command timeout in comment header for the next command.
+  - `bool includeParameters = true` - includes parameter names and values in comment header for the next command.
+  - `bool includeCallerInfo = true` - includes caller info (member name, file path and line number) in comment header for the next command.
+  - `bool includeTimestamp = false` - includes current timestamp in comment header for the next command.
 
  ### WithParameters
 
- - `WithParameters(params object[] parameters)` - add command parameters list.
+ ```csharp
+Norm WithParameters(params object[] parameters);
+```
+
+ - Sets parameters for the next command. 
+  
+ - This method can recieve one or more parameters of the `object` type.
+  
+ - Parameter value can be either:
+  
+   - Simple type (integers, strings, dates, etc).
+   - Object instances.
+   - Two value tuple (value and database type).
+   - `DbParameter` instance.
+
+- Depending on the parameter type, parameters can be set in different ways.
+
+- Using simple values - we can set the positional paramaters.
+
+- Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- These parameters are set by position. 
+  
+- Name of parameters in query `select @s, @i, @b, @d, @null` is not actually important. 
+
+- First value `"str"` is set to the first parameter `@s`, second value to second parameter `@i`, and so on. Names of these parameters can by anything.
+
+- Norm also supports PostgreSQL positional paramaters where each parameter in query is defined with `$` character and position index (`$1`, `$2`, `$2`, etc).
+
+- Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+    .Single();
+
+```
+
+- Those two parameter styles can even be mixed in a query. Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
+    .Read<string, int, bool, DateTime, string>("select $s, @i, $3, $4, $5")
+    .Single();
+```
+
+- Sometimes we want to set a specific database type to a positional parameter. 
+
+- In that cases, we can use a two values tuple, where first value is parameter value and second value is specific database type.
+
+- Database type value of system enum [`System.Data.DbType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.dbtype). Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(
+        ("str", DbType.AnsiString),
+        (999, DbType.Int32),
+        (true, DbType.Boolean),
+        (new DateTime(1977, 5, 19), DbType.Date),
+        (null, DbType.AnsiString))
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- You can also mix simple values and tuple values with a specific database type. Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", 999, true, (new DateTime(1977, 5, 19), DbType.Date), (null, DbType.AnsiString))
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- You can also use provider-specific database type enums. Example for PostgreSQL types:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(
+        ("str", NpgsqlDbType.Text),
+        (999, NpgsqlDbType.Bigint),
+        (true, NpgsqlDbType.Boolean),
+        (new DateTime(1977, 5, 19), NpgsqlDbType.Date),
+        ((string)null, NpgsqlDbType.Text))
+    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
+    .Single();
+```
+
+- Paramater value can also be an object instance. 
+
+- In that case each public property or public field will be a named paramater with the same name and the same value. Example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(new
+    {
+        d = new DateTime(1977, 5, 19),
+        b = true,
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Read<string, int, bool, DateTime, string>(
+    "select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+
 
  ### WithReaderCallback
 
