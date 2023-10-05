@@ -423,7 +423,7 @@ select @p1, @p2, @p3, @p4
 
 ### WithCommentHeader
 
- - Sets the options for the next command to include command header comment with 
+ - Sets the options for the next command to include command header comment with options set in method parameters.
 
 ```csharp
 Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false);
@@ -584,11 +584,211 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- Note that parameter names are not cases sensitive.
+- Note that parameter names are NOT case sensitive. 
+
+- Also, you can set a specific database type, either generic `DbType` or provider-specific database type - by using tuples:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(new
+    {
+        d = (new DateTime(1977, 5, 19), DbType.Date), // set parameter type to generic DbType.Date
+        b = (true, NpgsqlDbType.Boolean), // set parameter type to PostgreSQL specific NpgsqlDbType.Boolean
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- Positional and instance-named parameters can be mixed. Also, you can have multiple instance parameters:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters("str", // "str" parameter is mapped by position in first place
+    new // first named instance
+    {
+        d = new DateTime(1977, 5, 19),
+        b = true,
+    },
+    new // second named instance
+    {
+        i = 999,
+        @null = (string)null
+    })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- For a greater parameter control, use a specific [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance can also be used.
+
+- SQL Server example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(
+        new SqlParameter("s", "str"),
+        new SqlParameter("i", 999),
+        new SqlParameter("b", SqlDbType.Bit) { Value = true },
+        new SqlParameter("d", new DateTime(1977, 5, 19)),
+        new SqlParameter("null", SqlDbType.NText) { Value = null })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- PostgreSql example:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(
+        new NpgsqlParameter("s", "str"),
+        new NpgsqlParameter("i", 999),
+        new NpgsqlParameter("b", NpgsqlDbType.Boolean) { Value = true },
+        new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
+        new NpgsqlParameter("null", NpgsqlDbType.Text) { Value = null })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- You can also set the `DbParameter` instance to an instance field or a property:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters(new
+    {
+        d = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
+        b = true,
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+    .Single();
+```
+
+- In that case, the name of the instance property is discarded, and the actual parameter name from the `DbParameter` instance is valid. That means that the first date property could be named differently, for example: `_ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),`.
+
+- Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
+
+```csharp
+var p = new NpgsqlParameter("test_param", "I am output value") { Direction = ParameterDirection.InputOutput };
+connection
+    .Execute(@"
+        create function test_inout_param_func_1(inout test_param text) returns text as
+        $$
+        begin
+            test_param := test_param || ' returned from function';
+        end
+        $$
+        language plpgsql")
+    .AsProcedure()
+    .WithParameters(p)
+    .Execute("test_inout_param_func_1");
+
+Assert.Equal("I am output value returned from function", p.Value);
+```
+
+- Note: you can combine any style of parameters (positional with simple values, value-type tuples, object instances, `DbParameter` instances) in any combination.
 
  ### WithReaderCallback
 
- - `WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback)` - adds reader callback executed on each reader step. Gives you chance to return alternative values or types by returning a non-null value.
+- Sets the custom database reader callback function that will be executed on each database reader iteration step for every field.
+
+ ```csharp
+ Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback);
+ ```
+
+- Custom callback function will be called with one tuple value parameter with three values:
+   - `string Name` - field name that is being read.
+   - `int Ordinal` - ordinal, zero-based position of the field that is being read.
+   - `DbDataReader Reader` - [`DbDataReader`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbdatareader) instance.
+
+The custom callback function should return an object value that will be used as a value in further object mapping.
+
+- If the custom callback function returns a `null` value - it will fall back to default behavior (reading and mapping that value).
+
+- Return [`DBNull.Value`](https://learn.microsoft.com/en-us/dotnet/api/system.dbnull) value to map to `null` value.
+
+- Examples:
+
+- Query returns two fields: `i` and `j`, with values 1, 2 and 3. The custom function that adds 1 to the column at the first position would look like this:
+
+```csharp
+var result = connection
+    .WithReaderCallback(r =>
+    {
+        if (r.Ordinal == 0)
+        {
+            return r.Reader.GetInt32(0) + 1;
+        }
+        return null; // default behavior
+    })
+    .Read<(int i, int j)>(@"
+        select * from (values 
+            (1, 1),
+            (2, 2),
+            (3, 3)
+        ) t(i, j)")
+    .ToArray();
+```
+
+- This can be simplified with expression function and switch expression, like this for example:
+
+```csharp
+var result = connection
+    .WithReaderCallback(r => r.Ordinal switch
+    {
+        0 => r.Reader.GetInt32(0) + 1,
+        _ => null // default behavior
+    })
+    .Read<(int i, int j)>(@"
+        select * from (values 
+            (1, 1),
+            (2, 2),
+            (3, 3)
+        ) t(i, j)")
+    .ToArray();
+```
+
+- If we wanted, for example, just to return `null` in the first column if the value is 1, otherwise keep the original value, we can do this:
+
+```csharp
+var result = connection
+    .WithReaderCallback(r => r.Ordinal switch
+    {
+        0 => r.Reader.GetInt32(0) == 1 ? DBNull.Value : null, // DBNull.Value to set the value to null; otherwise, fallback to default behavior
+        _ => null
+    })
+    .Read<(int i, int j)>(@"
+        select * from (values 
+            (1, 1),
+            (2, 2),
+            (3, 3)
+        ) t(i, j)")
+    .ToArray();
+```
+
+- This technique is used to handle complex types and to implement complex mappings, otherwise not supported by the library.
+
+- Note: to set all database reads to execute a specific callback reader that will return custom values - use the `Configure` method in your program startup.
+
+- For example, every field that is `json` database type can be converted to [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject) object with this configuration:
+
+```csharp
+// Reader callback can be in an expression method instead of a lambda function
+private object? ReaderCallback((string Name, int Ordinal, DbDataReader Reader) arg) => 
+    // switch over the column type
+    arg.Reader.GetDataTypeName(arg.Ordinal) switch
+{
+    // if the column type is json, then convert it to JsonObject
+    "json" => JsonNode.Parse(arg.Reader.GetString(arg.Ordinal))?.AsObject(),
+    _ => null // default value
+};
+
+// Set the option in your startup code...
+NormOptions.Configure(options => options.DbReaderCallback = ReaderCallback);
+ ```
  
  ### WithTimeout
 

@@ -223,6 +223,32 @@ namespace PostgreSqlUnitTests
         }
 
         [Fact]
+        public void NamedParams_Mixed_Instance_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters("str",
+                new
+                {
+                    d = new DateTime(1977, 5, 19),
+                    b = true,
+                },
+                new
+                {
+                    i = 999,
+                    @null = (string)null
+                })
+                .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
         public void NamedParams_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
@@ -230,6 +256,30 @@ namespace PostgreSqlUnitTests
                 .WithParameters(new
                 {
                     d = new DateTime(1977, 5, 19),
+                    b = true,
+                    i = 999,
+                    s = "str",
+                    @null = (string)null
+                })
+                .Read<string, int, bool, DateTime, string>(
+                "select @s, @i, @b, @d, @null")
+                .Single();
+
+            Assert.Equal("str", s);
+            Assert.Equal(999, i);
+            Assert.True(b);
+            Assert.Equal(new DateTime(1977, 5, 19), d);
+            Assert.Null(@null);
+        }
+
+        [Fact]
+        public void NamedParams_DbParameter_Value_Test()
+        {
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            var (s, i, b, d, @null) = connection
+                .WithParameters(new
+                {
+                    _ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
                     b = true,
                     i = 999,
                     s = "str",
