@@ -270,7 +270,9 @@ Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCa
 ```
 
 - Adds a **callback function** that will be executed when:
+  
   - After the [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object has been created and initialized.
+  
   - Before the command execution.
 
 - Possible usage of this callback is to gain access to the `DbCommand` instance before execution to be able to change its properties.
@@ -346,8 +348,11 @@ Norm WithCommentCallerInfo();
  - Sets the automatic custom comment header to the next command that will include caller information. 
  
  - Caller information is compiler-generated metadata that includes:
+  
    - **Caller member name**: a method or property name of the caller to the method.
+
    - **Caller file path**: a full path of the source file that contains the caller at the compile time.
+
    - **Caller line number**: a line number in the source file at which the method is called at the compile time.
 
 - Example:
@@ -377,7 +382,7 @@ select count(*) from my_table
 NormOptions.Configure(options =>
 {
     options.CommandCommentHeader.Enabled = true;
-    options.CommandCommentHeader.IncludeCallerInfo = false;
+    options.CommandCommentHeader.IncludeCallerInfo = true;
 });
 
 // later in your code ...
@@ -432,9 +437,13 @@ Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = tr
 - Parameters:
   
   - `string comment = null` - sets the custom text comment header for the next command.
+
   - `bool includeCommandAttributes = true` - includes command attributes, such as database provider, command type (text, procedure), and command timeout in the comment header for the next command.
+
   - `bool includeParameters = true` - includes parameter names and values in the comment header for the next command.
+
   - `bool includeCallerInfo = true` - includes caller info (member name, file path, and line number) in the comment header for the next command.
+
   - `bool includeTimestamp = false` - includes a current timestamp in the comment header for the next command.
 
  ### WithParameters
@@ -450,8 +459,11 @@ Norm WithParameters(params object[] parameters);
  - Parameter value can be either:
   
    - Simple type (integers, strings, dates, etc.).
+
    - Object instances.
+
    - Two value tuples (value and database type).
+
    - [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance.
 
 - Depending on the parameter type, parameters can be set in different ways.
@@ -700,8 +712,11 @@ Assert.Equal("I am output value returned from function", p.Value);
  ```
 
 - Custom callback function will be called with one tuple value parameter with three values:
+  
    - `string Name` - field name that is being read.
+
    - `int Ordinal` - ordinal, zero-based position of the field that is being read.
+
    - `DbDataReader Reader` - [`DbDataReader`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbdatareader) instance.
 
 The custom callback function should return an object value that will be used as a value in further object mapping.
@@ -792,13 +807,75 @@ NormOptions.Configure(options => options.DbReaderCallback = ReaderCallback);
  
  ### WithTimeout
 
- - `WithTimeout(int timeout)` - add command timeout.
+- Sets the wait time in seconds for the connection commands before terminating the attempt to execute a command and generating an error.
+
+```csharp
+Norm WithTimeout(int timeout);
+```
+
+- Example, execute stored procedure `update_data` with command timeout 60 seconds.
+
+```csharp
+connection
+    .AsProcedure()
+    .WithTimeout(60)
+    .Execute("update_data");
+```
 
 ### WithTransaction
 
- - `WithTransaction(DbTransaction transaction)` - add transaction object to command.
+- Sets the transaction object for the current database command.
+
+```csharp
+Norm WithTransaction(DbTransaction transaction);
+```
+
+Example:
+
+```csharp
+using var transaction = connection.BeginTransaction();
+
+connection
+    .WithTransaction(transaction)
+    .Execute("insert into transaction_test1 values (1),(2),(3);");
+
+var result1 = connection.Read("select * from transaction_test1").ToArray();
+Assert.Equal(3, result1.Length);
+
+transaction.Rollback();
+
+var result2 = connection.Read("select * from transaction_test1").ToArray();
+Assert.Empty(result2);
+```
 
 ### WithUnknownResultType
 
- - `WithUnknownResultType(params bool[])` - set the unknown type for all or some fields that will be returned as raw string (`Npgsql` only).
+> **PostgreSQL only feature**
 
+- Sets PostgreSQL results behavior by marking some or all results as unknown. Unknown result type is serialized as a raw string.
+
+```csharp
+Norm WithUnknownResultType(params bool[] list);
+```
+
+- To set all results as unknown, call `WithUnknownResultType` without parameters.
+
+- Example, PostgreSQL query that returns text, boolean, date, numeric, and JSON fields.
+
+```csharp
+var (@int, @bool, @date, @num, @json) = connection
+    .WithUnknownResultType()
+    .Read<string, string, string, string, string>("select 1::int, true::bool, '1977-05-19'::date, 3.14::numeric, '{\"x\": \"y\"}'::json")
+    .Single();
+```
+
+- To set some results as unknown, call `WithUnknownResultType` and set true value to field position which needs to be marked as unknown:
+
+```csharp
+var (@int, @bool, @date, @num, @json) = connection
+    .WithUnknownResultType(true, false, true, false, true)
+    .Read<string, bool, string, decimal, string>("select 1::int, true::bool, '1977-05-19'::date, 3.14::numeric, '{\"x\": \"y\"}'::json")
+    .Single();
+```
+
+- Marking results as unknown is useful for handling exotic PostgreSQL types and custom domains, which the underlying data access provider does not know how to handle yet.
