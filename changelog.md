@@ -1,5 +1,24 @@
 # Changelog
 
+## [5.3.9](https://github.com/vb-consulting/Norm.net/tree/5.3.9) (2023-10-07)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.8...5.3.9)
+
+Fix the issue with mapping protected properties.
+
+Setting the global option should also include mapping to protected properties:
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.MapPrivateSetters = true;
+});
+```
+
+By setting this global option, it was possible to map public properties with protected setter `public int ProtectedSetInt { get; protected set; }`, but not protected properties `protected int ProtectedInt { get; set; }`.
+
+This inconsistency is fixed with this release.
+
 ## [5.3.8](https://github.com/vb-consulting/Norm.net/tree/5.3.8) (2023-09-07)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.7...5.3.8)

@@ -5,7 +5,6 @@ namespace PostgreSqlSerialUnitTests;
 
 public partial class PostgreSqlSerialUnitTest
 {
-
     public class TestMapPrivateProps
     {
         public int PublicInt { get; set; }
@@ -15,6 +14,7 @@ public partial class PostgreSqlSerialUnitTest
         public int ProtectedSetInt { get; protected set; }
         public int MissingSetInt { get; }
     }
+
 
     [Fact]
     public void Configure_MapPrivate_Test()
@@ -32,25 +32,16 @@ public partial class PostgreSqlSerialUnitTest
 ";
         using var connection = new NpgsqlConnection(_DatabaseFixture.ConnectionString);
 
-        var result1 = connection.Read<TestMapPrivateProps>(statement).Single();
-
-        Assert.Equal(1, result1.PublicInt);
-        Assert.Equal(0, GetPrivateProp(result1, "PrivateInt"));
-        Assert.Equal(0, result1?.PrivateSetInt);
-        Assert.Equal(0, GetPrivateProp(result1, "ProtectedInt"));
-        Assert.Equal(0, result1?.ProtectedSetInt);
-        Assert.Equal(0, result1?.MissingSetInt);
-
         NormOptions.Configure(options => options.MapPrivateSetters = true);
 
-        var result2 = connection.Read<TestMapPrivateProps>(statement).Single();
+        var result = connection.Read<TestMapPrivateProps>(statement).Single();
 
-        Assert.Equal(1, result2.PublicInt);
-        Assert.Equal(0, GetPrivateProp(result2, "PrivateInt"));
-        Assert.Equal(3, result2?.PrivateSetInt);
-        Assert.Equal(0, GetPrivateProp(result2, "ProtectedInt"));
-        Assert.Equal(5, result2?.ProtectedSetInt);
-        Assert.Equal(0, result2?.MissingSetInt);
+        Assert.Equal(1, result.PublicInt);
+        Assert.Equal(2, GetPrivateProp(result, "PrivateInt"));
+        Assert.Equal(3, result?.PrivateSetInt);
+        Assert.Equal(4, GetPrivateProp(result, "ProtectedInt"));
+        Assert.Equal(5, result?.ProtectedSetInt);
+        Assert.Equal(0, result?.MissingSetInt);
 
         static int? GetPrivateProp(TestMapPrivateProps inst, string name)
         {

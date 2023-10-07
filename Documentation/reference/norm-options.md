@@ -226,7 +226,7 @@ NormOptions.Configure(options =>
 
 ### KeepOriginalNames
 
-- Mapping by name mechanism by default supports snake-case naming convention.
+- By default, mapping by name mechanism - supports the **snake-case naming** convention.
 
 - This is achieved by automatically removing certain characters from database field names like `_` and `@`.
 
@@ -234,7 +234,9 @@ NormOptions.Configure(options =>
 
 - However, if you wanted to map `my_column` to a C# name containing an underscore, like `My_Column`, that would not work.
 
-- Set `KeepOriginalNames` to true to keep the database names unchanged:
+- Set `KeepOriginalNames` to true to keep the database names unchanged (don't strip any characters). 
+  
+- Example:
 
 ```csharp
 NormOptions.Configure(options =>
@@ -247,7 +249,25 @@ NormOptions.Configure(options =>
 
 ### MapPrivateSetters
 
+- By default, mapping by name mechanism - will map only isntance members (fields or properties) that have public setters (can be only be set publicly).
 
+- Set `MapPrivateSetters` to true to be able to map instance members with non-public (private or protected) setters.
+
+- Example:
+
+```csharp
+public class TestMapPrivateProps
+{
+    public int PublicInt { get; set; }
+    private int PrivateInt { get; set; }
+    public int PrivateSetInt { get; private set; }
+    protected int ProtectedInt { get; set; }
+    public int ProtectedSetInt { get; protected set; }
+    public int MissingSetInt { get; }
+}
+```
+
+- Default is false (on members with public setter are mapped).
 
 ### NameParserCallback
 ### NpgsqlEnableSqlRewriting

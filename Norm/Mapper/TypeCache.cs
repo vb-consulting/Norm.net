@@ -23,7 +23,9 @@ namespace Norm.Mapper
                 {
                     return new Span<(Type type, string name, PropertyInfo info)>(_properties, 0, _properties.Length);
                 }
-                var props = typeof(T).GetProperties();
+                var props = NormOptions.Value.MapPrivateSetters ?
+                    typeof(T).GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy) :
+                    typeof(T).GetProperties();
                 _propertiesLen = props.Length;
                 var result = new (Type type, string name, PropertyInfo info)[_propertiesLen.Value];
                 short i = 0;
