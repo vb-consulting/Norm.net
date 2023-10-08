@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 namespace PostgreSqlSerialUnitTests;
 
 public partial class PostgreSqlSerialUnitTest

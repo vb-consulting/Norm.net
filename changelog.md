@@ -718,7 +718,7 @@ Notes:
 
 - This option only has an impact if it is set before any `Npgsql` command is executed. `NpgsqlCommand` caches internally this value.
 
-- Default value is `null` which doesn't change anything, uses `Npgsql` default which is true.
+- Default value is `null` which doesn't change anything, uses `Npgsql` default which is false.
 
 - Only available for `Npgsql` version 6 or higher.
 

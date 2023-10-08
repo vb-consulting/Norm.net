@@ -28,7 +28,7 @@ public static void Configure(Action<NormOptions> options)
 - This is a complex object containing multiple different commands:
 
 ```csharp
-public class CommandCommentHeader
+class CommandCommentHeader
 {
     public bool Enabled { get; set; } = false;
     public bool IncludeCommandAttributes { get; set; } = true;
@@ -130,7 +130,15 @@ NormOptions.Configure(options =>
 
 ### DbCommandCallback
 
-- Set the command callback function that will be executed before every command execution and pass the created `DbCommand`(https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as parameter.
+- Set the command callback function that will be executed before every command execution and pass the created `DbCommand`(https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as parameter:
+
+- This option has the following signature:
+
+```csharp
+public Action<DbCommand> DbCommandCallback { get; set; } = null;
+```
+
+- Default is null (no command callback is used by default).
 
 - This is typically used to enable command logging for the entire application. Example:
 
@@ -173,6 +181,14 @@ The custom callback function should return an object value that will be used as 
 - Return [`DBNull.Value`](https://learn.microsoft.com/en-us/dotnet/api/system.dbnull) value to map to `null` value.
 
 - This global function callback is used to implement a custom mapping mechanism.
+
+- This option has the following signature:
+
+```csharp
+public Func<(string Name, int Ordinal, DbDataReader Reader), object> DbReaderCallback { get; set; } = null;
+```
+
+- Default is null (no reader callback is used by default).
 
 A classic example is mapping from PostgreSQL JSON type to the [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject):
 
@@ -249,14 +265,20 @@ NormOptions.Configure(options =>
 
 ### MapPrivateSetters
 
-- By default, mapping by name mechanism - will map only isntance members (fields or properties) that have public setters (can be only be set publicly).
+- By default, mapping by name mechanism - will map only instance members (fields or properties) that have public setters (can be only be set publicly).
 
 - Set `MapPrivateSetters` to true to be able to map instance members with non-public (private or protected) setters.
 
 - Example:
 
 ```csharp
-public class TestMapPrivateProps
+NormOptions.Configure(options =>
+{
+    options.MapPrivateSetters = true;
+});
+```
+```csharp
+class TestMapPrivateProps
 {
     public int PublicInt { get; set; }
     private int PrivateInt { get; set; }
@@ -266,11 +288,192 @@ public class TestMapPrivateProps
     public int MissingSetInt { get; }
 }
 ```
+```csharp
+var result = connection
+    .Read<TestMapPrivateProps>(@"select 
+        1 as public_int, 
+        2 as private_int, 
+        3 as private_set_int,
+        4 as protected_int,
+        5 as protected_set_int,
+        6 as missing_set_int")
+    .Single();
+```
 
-- Default is false (on members with public setter are mapped).
+- This example will map value to `PublicInt`, `PrivateInt`, `PrivateSetInt`, `ProtectedInt`, and `ProtectedSetInt` properties. 
+  
+- Property `MissingSetInt` doesn't have any setter method, and it will not be mapped at all.
+
+- When `MapPrivateSetters` is false (default), only `PublicInt` would have been mapped.
+
+- Default is false (only members with public setters are mapped).
 
 ### NameParserCallback
+
+- Define a callback function that is called in a database field names parsing phase and can replace names with return values from this callback function.
+
+- This option has the following signature:
+
+```csharp
+public Func<(string Name, int Ordinal), string> NameParserCallback { get; set; } = null;
+```
+
+- Callback input parameters that contain an original field name and ordinal position, zero-based position in results, and expect a new name string as a result.
+
+- Default is null (no name parser callback is used by default).
+
+- Example:
+
+```csharp
+NormOptions.Configure(o =>
+{
+    //
+    // If name starts with "prefix_", remove the first seven characters from the name
+    //
+    o.NameParserCallback = arg =>
+        arg.Name.StartsWith("prefix_") ? arg.Name[7..] : arg.Name;
+});
+```
+```csharp
+class NameParserTest
+{
+    public string? Foo { get; set; }
+    public string? Bar { get; set; }
+    public string? FooBar { get; set; }
+}
+```
+```csharp
+var result = connection
+    .Read<NameParserTest>(@"
+        select 
+            'foo' as prefix_foo, 
+            'bar' as prefix_bar, 
+            'foobar' as foobar")
+    .Single();
+
+Assert.Equal("foo", result.Foo);
+Assert.Equal("bar", result.Bar);
+Assert.Equal("foobar", result.FooBar);
+```
+
 ### NpgsqlEnableSqlRewriting
+
+> **PostgreSQL only feature**
+
+- This feature requires `Npgsql` data access provider with version 6 or higher.
+
+- This option only has an impact if it is set before any `Npgsql` command is executed. 
+
+- `NpgsqlCommand` caches this value internally.
+
+- When set to true, it enforces PostgreSQL "raw" mode, and all SQL rewriting is disabled.
+
+- That means that:
+
+1) Named parameters are disabled, and positional parameters with $ syntax must always be used (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
+
+2) Multiple commands in one command string separated by a semicolon (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`).
+
+- Setting this option to true and disabling internal rewriting by the data-access provider, we gain performance benefits.
+
+- Example:
+
+```csharp
+NormOptions.Configure(options => options.NpgsqlEnableSqlRewriting = false);
+```
+
+- Default value is null, which doesn't change anything, uses `Npgsql` default which is false (rewriting not disabled).
+
 ### NullableInstances
+
+- When this option is true, the instance mapper will return null for all instances that have all properties set to null.
+
+- Example:
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.NullableInstances = true;
+});
+```
+```csharp
+class TestClass1
+{
+    public int? Foo1 { get; set; }
+    public string? Bar1 { get; set; }
+}
+```
+```csharp
+var instance = connection
+    .Read<TestClass1?>("select null as foo1, null as bar1")
+    .Single();
+
+Assert.Null(instance);
+```
+
+- This is particularly useful when mapping to multiple class instances from a query, for example:
+
+```csharp
+var (instance1, instance2, instance3) = connection
+    .Read<TestClass1?, TestClass2?, TestClass3?>(@"
+        select * 
+        from table1 
+        left outer join table2 using (table1_id)
+        left outer join table3 using (table2_id)
+        where table1_id = 1")
+    .Single();
+```
+
+- In this example, if match doesn't exists for `table2` and `table3`, `instance2` and `instance3`` will be null if `NullableInstances` is set to true.
+
+- Default is false (nullable instances are disabled).
+
 ### Prepared
+
+- Set to true to run all commands in prepared mode every time by calling [`Prepare()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare) method before execution.
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.Prepared = true;
+});
+```
+
+- Default is false (commands are not prepared automatically).
+
+- Note: this feature is useless for SQL Server because SQL Server does this automatically. PostgreSQL does not, but it can be enabled through connection string or calling prepare manually for each command. See [this article](https://www.npgsql.org/doc/prepare.html).
+
 ### RawInterpolationParameterEscape
+
+- Methods `Execute`, `ExecuteAsync`, `Read` and `ReadAsync` have versions (`ExecuteFormat`, `ExecuteFormatAsync`, `ReadFormat` and `ReadAFormatsync`) that can accept command parameter through interpolated strings.
+
+- For example:
+
+```csharp
+var user = connection
+    .ReadFormat<User>(@$"
+        select u.* 
+        from users u, logs l 
+        where u.usrid = {userId} and u.usrid = l.usrid and l.date = {date}")
+    .Single();
+```
+
+- In this example, variables `userId` and `date` are used as normal database command parameters because the `ReadFormat` version is used.
+
+- If we wanted, for example, to use `ReadFormat` and, in certain cases, skip command parameters and just use normal string interpolation, we could use a `raw` modifier. Example:
+
+```csharp
+var table = "logs";
+var user = connection
+    .ReadFormat<User>(@$"
+        select u.* 
+        from users u, {table:raw} l 
+        where u.usrid = {userId} and u.usrid = l.usrid and l.date = {date}")
+    .Single();
+```
+
+- In this example, the variable `table` is used in normal string interpolation (because we used the `raw` modifier), and variables `userId` and `date` are still used as database command parameters.
+
+- Value `RawInterpolationParameterEscape` determines the value of this modifier.
+
+The default is `raw`.

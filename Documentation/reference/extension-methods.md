@@ -292,6 +292,19 @@ var result = connection
 
 - This example will produce an info log with the following content: `SQL COMMAND: select count(*) from my_table`.
 
+- Common use of this callback is when we want to run some commands in a prepared mode:
+
+```csharp
+var user = connection
+    .WithCommandCallback(command => command.Prepare())
+    .WithParameters(userId, date)
+    .Read<User>(@"
+        select u.* 
+        from users u, logs l 
+        where u.usrid = $1 and u.usrid = l.usrid and l.date = $2")
+    .Single();
+```
+
 - Note: this callback can be set for all commands - use `Configure` method in your program startup:
 
 ```csharp

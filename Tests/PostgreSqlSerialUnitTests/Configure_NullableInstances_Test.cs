@@ -37,6 +37,12 @@ public partial class PostgreSqlSerialUnitTest
             options.NullableInstances = true;
         });
 
+        var i = connection
+            .Read<TestClass1?>("select null as foo1, null as bar1")
+            .Single();
+
+        Assert.Null(i);
+
         var (result1, result2) = connection
             .Read<TestClass1?, TestClass2?>("select 1 as foo1, 'bar' as bar1, null as foo2, null as bar2")
             .Single();
