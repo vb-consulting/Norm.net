@@ -370,9 +370,9 @@ Assert.Equal("foobar", result.FooBar);
 
 - That means that:
 
-1) Named parameters are disabled, and positional parameters with $ syntax must always be used (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
+    1) Named parameters are disabled, and positional parameters with $ syntax must always be used (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
 
-2) Multiple commands in one command string separated by a semicolon (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`).
+    2) Multiple commands in one command string separated by a semicolon are disabled (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`).
 
 - Setting this option to true and disabling internal rewriting by the data-access provider, we gain performance benefits.
 
@@ -476,4 +476,4 @@ var user = connection
 
 - Value `RawInterpolationParameterEscape` determines the value of this modifier.
 
-The default is `raw`.
+- The default is `raw`.
