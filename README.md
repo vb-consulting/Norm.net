@@ -3,6 +3,9 @@
 _High performance micro-ORM database mapper and modernized Dapper replacement for .NET Standard 2.1 and higher_
  
 ![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
+![License](https://img.shields.io/badge/license-MIT-green)
+![GitHub Stars](https://img.shields.io/github/stars/vb-consulting/pg_schema_tools?style=social)
+![GitHub Forks](https://img.shields.io/github/forks/vb-consulting/pg_schema_tools?style=social)
 
 [Website under construction](https://norm-dot-net.netlify.app/)
  
