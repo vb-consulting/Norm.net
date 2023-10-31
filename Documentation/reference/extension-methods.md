@@ -12,7 +12,10 @@ prevTitle:
 ### As
 
 ```csharp
-Norm As(System.Data.CommandType type);
+// Extension
+public static Norm As(this DbConnection connection, System.Data.CommandType type);
+// Norm Instance Method
+public Norm As(System.Data.CommandType type);
 ```
 
 - Sets the [`CommandType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandtype) for the next database command.
@@ -57,7 +60,10 @@ connection
 ### AsProcedure
  
 ```csharp
-Norm AsProcedure();
+// Extension
+public static Norm AsProcedure(this DbConnection connection);
+// Norm Instance Method
+public Norm AsProcedure();
 ```
 
  - Sets the [`CommandType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandtype) to `System.Data.CommandType.StoredProcedure`.
@@ -78,7 +84,10 @@ connection
 ### AsText
 
 ```csharp
-Norm AsText();
+// Extension
+public static Norm AsText(this DbConnection connection);
+// Norm Instance Method
+public Norm AsText();
 ```
 
  - Sets the [`CommandType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandtype) to `System.Data.CommandType.Text`.
@@ -113,7 +122,10 @@ connection
 ### Prepared
 
 ```csharp
-Norm Prepared();
+// Extension
+public static Norm Prepared(this DbConnection connection);
+// Norm Instance Method
+public Norm Prepared();
 ```
 
  - Sets the next command into a prepared (or compiled) mode. 
@@ -158,7 +170,10 @@ connection
 ### WithCancellationToken
 
 ```csharp
-Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken);
+// Extension
+public static Norm WithCancellationToken(this DbConnection connection, System.Threading.CancellationToken cancellationToken);
+// Norm Instance Method
+public Norm WithCancellationToken(System.Threading.CancellationToken cancellationToken);
 ```
 
 - Sets the cancelation token for the next command that can propagate the notification that operations should be canceled.
@@ -181,7 +196,10 @@ connection
 ### WithCommandBehavior
 
 ```csharp
-Norm WithCommandBehavior(System.Data.CommandBehavior behavior);
+// Extension
+public static Norm WithCommandBehavior(this DbConnection connection, System.Data.CommandBehavior behavior);
+// Norm Instance Method
+public Norm WithCommandBehavior(System.Data.CommandBehavior behavior);
 ```
 
 - Sets the [command behavior](https://learn.microsoft.com/en-us/dotnet/api/system.data.commandbehavior) on the next [reader execution](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executereader#system-data-sqlclient-sqlcommand-executereader(system-data-commandbehavior)) (by `Read` extension methods).
@@ -266,7 +284,10 @@ var result = connection
 ### WithCommandCallback
 
 ```csharp
-Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCallback);
+// Extension
+public static Norm WithCommandCallback(this DbConnection connection, System.Action<System.Data.Common.DbCommand> dbCommandCallback);
+// Norm Instance Method
+public Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCommandCallback);
 ```
 
 - Adds a **callback function** that will be executed when:
@@ -329,7 +350,10 @@ var result = connection.Read<int>("select count(*) from my_table");
 ### WithComment
 
 ```csharp
-Norm WithComment(string comment);
+// Extension
+public static Norm WithComment(this DbConnection connection, string comment);
+// Norm Instance Method
+public Norm WithComment(string comment);
 ```
 
  - Sets the custom comment header for the next command. The content of the `comment` string will be added to the top of the `CommandText` as an SQL comment.
@@ -355,7 +379,10 @@ select count(*) from my_table
 ### WithCommentCallerInfo
 
 ```csharp
-Norm WithCommentCallerInfo();
+// Extension
+public static Norm WithCommentCallerInfo(this DbConnection connection);
+// Norm Instance Method
+public Norm WithCommentCallerInfo();
 ```
 
  - Sets the automatic custom comment header to the next command that will include caller information. 
@@ -412,7 +439,10 @@ var result = connection
  ### WithCommentParameters
 
  ```csharp
-Norm WithCommentParameters();
+// Extension
+public static Norm WithCommentParameters(this DbConnection connection);
+// Norm Instance Method
+public Norm WithCommentParameters();
 ```
 
  - Sets the option for the next command to include command parameters in the command header comment.
@@ -444,7 +474,19 @@ select @p1, @p2, @p3, @p4
  - Sets the options for the next command to include command header comment with options set in method parameters.
 
 ```csharp
-Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = true, bool includeParameters = true, bool includeCallerInfo = true, bool includeTimestamp = false);
+// Extension
+public static Norm WithCommentHeader(this DbConnection connection, 
+    string comment = null, 
+    bool includeCommandAttributes = true, 
+    bool includeParameters = true, 
+    bool includeCallerInfo = true, 
+    bool includeTimestamp = false);
+// Norm Instance Method
+public Norm WithCommentHeader(string comment = null, 
+    bool includeCommandAttributes = true, 
+    bool includeParameters = true, 
+    bool includeCallerInfo = true, 
+    bool includeTimestamp = false);
 ```
 
 - Parameters:
@@ -462,12 +504,13 @@ Norm WithCommentHeader(string comment = null, bool includeCommandAttributes = tr
  ### WithParameters
 
  ```csharp
-Norm WithParameters(params object[] parameters);
+// Extension
+public static Norm WithParameters(this DbConnection connection, params object[] parameters);
+// Norm Instance Method
+public Norm WithParameters(params object[] parameters);
 ```
 
- - Sets parameters for the next command. 
-  
- - This method can receive one or more parameters of the `object` type.
+- This method can receive one or more arguments of the `object` type.
   
  - Parameter value can be either:
   
@@ -479,249 +522,19 @@ Norm WithParameters(params object[] parameters);
 
    - [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance.
 
-- Depending on the parameter type, parameters can be set in different ways.
+- Depending on the parameter type, parameters can be set in different ways: positional, named, or mixed.
 
-- Using simple values - we can set the positional parameters.
-
-- Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- These parameters are set by position. 
-  
-- Name of parameters in query `select @s, @i, @b, @d, @null` is not actually important. 
-
-- First value `"str"` is set to the first parameter `@s`, the second value to the second parameter `@i` and so on. Names of these parameters can be anything.
-
-- Norm also supports PostgreSQL positional parameters where each parameter in the query is defined with a `$` character and position index (`$1`, `$2`, `$2`, etc.).
-
-- Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
-    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
-    .Single();
-
-```
-
-- Those two parameter styles can even be mixed in a query. Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters("str", 999, true, new DateTime(1977, 5, 19), null)
-    .Read<string, int, bool, DateTime, string>("select $s, @i, $3, $4, $5")
-    .Single();
-```
-
-- Sometimes, we want to set a specific database type to a positional parameter. 
-
-- In those cases, we can use a two values tuple, where the first value is the parameter value and the second value is the specific database type.
-
-- Database type value of system enum [`System.Data.DbType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.dbtype). Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(
-        ("str", DbType.AnsiString),
-        (999, DbType.Int32),
-        (true, DbType.Boolean),
-        (new DateTime(1977, 5, 19), DbType.Date),
-        (null, DbType.AnsiString))
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- You can also mix simple values and tuple values with a specific database type. Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters("str", 999, true, (new DateTime(1977, 5, 19), DbType.Date), (null, DbType.AnsiString))
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- You can also use provider-specific database type enums. Example for PostgreSQL types:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(
-        ("str", NpgsqlDbType.Text),
-        (999, NpgsqlDbType.Bigint),
-        (true, NpgsqlDbType.Boolean),
-        (new DateTime(1977, 5, 19), NpgsqlDbType.Date),
-        ((string)null, NpgsqlDbType.Text))
-    .Read<string, int, bool, DateTime, string>("select $1, $2, $3, $4, $5")
-    .Single();
-```
-
-- Parameter value can also be an object instance. 
-
-- In that case, each public property or public field will be a named parameter with the same name and the same value. Example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(new
-    {
-        d = new DateTime(1977, 5, 19),
-        b = true,
-        i = 999,
-        s = "str",
-        @null = (string)null
-    })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- This example uses an **anonymous object instance** to create a named parameters `d`, `b`, `i`, `s` and `˙null` with associated values.
-
-- In this example paramaters appears in different order, because they are mapped by name, not by position.
-
-- Note that `@null` starts with the `@` prefix because `null` is a C# keyword and the `@` prefix is ignored.
-
-- Besides anonymous objects, normal instances can also be used as well:
-
-```csharp
-class TestClass
-{
-    public string S { get; set; }
-    public int I { get; set; }
-    public bool B { get; set; }
-    public DateTime D { get; set; }
-    public string Null { get; set; }
-}
-
-var (s, i, b, d, @null) = connection
-    .WithParameters(new TestClass
-    {
-        D = new DateTime(1977, 5, 19),
-        B = true,
-        I = 999,
-        S = "str",
-        Null = (string)null
-    })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- Note that parameter names are NOT case sensitive. 
-
-- Also, you can set a specific database type, either generic `DbType` or provider-specific database type - by using tuples:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(new
-    {
-        d = (new DateTime(1977, 5, 19), DbType.Date), // set parameter type to generic DbType.Date
-        b = (true, NpgsqlDbType.Boolean), // set parameter type to PostgreSQL specific NpgsqlDbType.Boolean
-        i = 999,
-        s = "str",
-        @null = (string)null
-    })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- Positional and instance-named parameters can be mixed. Also, you can have multiple instance parameters:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters("str", // "str" parameter is mapped by position in first place
-    new // first named instance
-    {
-        d = new DateTime(1977, 5, 19),
-        b = true,
-    },
-    new // second named instance
-    {
-        i = 999,
-        @null = (string)null
-    })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- For a greater parameter control, use a specific [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance can also be used.
-
-- SQL Server example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(
-        new SqlParameter("s", "str"),
-        new SqlParameter("i", 999),
-        new SqlParameter("b", SqlDbType.Bit) { Value = true },
-        new SqlParameter("d", new DateTime(1977, 5, 19)),
-        new SqlParameter("null", SqlDbType.NText) { Value = null })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- PostgreSql example:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(
-        new NpgsqlParameter("s", "str"),
-        new NpgsqlParameter("i", 999),
-        new NpgsqlParameter("b", NpgsqlDbType.Boolean) { Value = true },
-        new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
-        new NpgsqlParameter("null", NpgsqlDbType.Text) { Value = null })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- You can also set the `DbParameter` instance to an instance field or a property:
-
-```csharp
-var (s, i, b, d, @null) = connection
-    .WithParameters(new
-    {
-        d = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
-        b = true,
-        i = 999,
-        s = "str",
-        @null = (string)null
-    })
-    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
-    .Single();
-```
-
-- In that case, the name of the instance property is discarded, and the actual parameter name from the `DbParameter` instance is valid. That means that the first date property could be named differently, for example: `_ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),`.
-
-- Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
-
-```csharp
-var p = new NpgsqlParameter("test_param", "I am output value") { Direction = ParameterDirection.InputOutput };
-connection
-    .Execute(@"
-        create function test_inout_param_func_1(inout test_param text) returns text as
-        $$
-        begin
-            test_param := test_param || ' returned from function';
-        end
-        $$
-        language plpgsql")
-    .AsProcedure()
-    .WithParameters(p)
-    .Execute("test_inout_param_func_1");
-
-Assert.Equal("I am output value returned from function", p.Value);
-```
-
-- Note: you can combine any style of parameters (positional with simple values, value-type tuples, object instances, `DbParameter` instances) in any combination.
+> Note: For more information on working with parameters by using this extension method [see working with parameters section.](/docs/reference/parameters/#1-withparameters-extension-method)
 
  ### WithReaderCallback
 
 - Sets the custom database reader callback function that will be executed on each database reader iteration step for every field.
 
  ```csharp
- Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback);
+ // Extension
+public static Norm WithReaderCallback(this DbConnection connection, Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback);
+// Norm Instance Method
+public Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback);
  ```
 
 - Custom callback function will be called with one tuple value parameter with three values:
@@ -823,7 +636,10 @@ NormOptions.Configure(options => options.DbReaderCallback = ReaderCallback);
 - Sets the wait time in seconds for the connection commands before terminating the attempt to execute a command and generating an error.
 
 ```csharp
-Norm WithTimeout(int timeout);
+// Extension
+public static Norm WithTimeout(this DbConnection connection, int timeout);
+// Norm Instance Method
+public Norm WithTimeout(int timeout);
 ```
 
 - Example, execute stored procedure `update_data` with command timeout 60 seconds.
@@ -840,7 +656,10 @@ connection
 - Sets the transaction object for the current database command.
 
 ```csharp
-Norm WithTransaction(DbTransaction transaction);
+// Extension
+public static Norm WithTransaction(this DbConnection connection, DbTransaction transaction);
+// Norm Instance Method
+public Norm WithTransaction(DbTransaction transaction);
 ```
 
 Example:
@@ -868,7 +687,10 @@ Assert.Empty(result2);
 - Sets PostgreSQL results behavior by marking some or all results as unknown. Unknown result type is serialized as a raw string.
 
 ```csharp
-Norm WithUnknownResultType(params bool[] list);
+// Extension
+public static Norm WithUnknownResultType(this DbConnection connection, params bool[] list);
+// Norm Instance Method
+public Norm WithUnknownResultType(params bool[] list);
 ```
 
 - To set all results as unknown, call `WithUnknownResultType` without parameters.

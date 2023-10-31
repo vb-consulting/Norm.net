@@ -1,6 +1,6 @@
 ---
-title: Norm Options
-order: 1
+title: Options
+order: 2
 nextUrl: 
 nextTitle: 
 prevUrl: 
@@ -130,7 +130,7 @@ NormOptions.Configure(options =>
 
 ### DbCommandCallback
 
-- Set the command callback function that will be executed before every command execution and pass the created `DbCommand`(https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as parameter:
+- Set the command callback function that will be executed before every command execution and pass the created [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as parameter:
 
 - This option has the following signature:
 
