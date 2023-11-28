@@ -32,11 +32,11 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+                this.recordsAffected = await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
             }
             else
             {
-                await cmd.ExecuteNonQueryAsync();
+                this.recordsAffected = await cmd.ExecuteNonQueryAsync();
             }
             return this;
         }
@@ -65,11 +65,11 @@ namespace Norm
             using var cmd = await CreateCommandAsync(command);
             if (cancellationToken.HasValue)
             {
-                await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
+                this.recordsAffected = await cmd.ExecuteNonQueryAsync(cancellationToken.Value);
             }
             else
             {
-                await cmd.ExecuteNonQueryAsync();
+                this.recordsAffected = await cmd.ExecuteNonQueryAsync();
             }
             return this;
         }

@@ -20,8 +20,8 @@ namespace PostgreSqlUnitTests
         [Fact]
         public void WithTransaction_Rollback_Test()
         {
-            using var connection = new NpgsqlConnection(fixture.ConnectionString)
-                .Execute("create temp table transaction_test1 (i int);");
+            using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection.Execute("create temp table transaction_test1 (i int);");
 
             using var transaction = connection.BeginTransaction();
 
@@ -41,8 +41,8 @@ namespace PostgreSqlUnitTests
         [Fact]
         public async Task WithTransaction_Rollback_Test_Async()
         {
-            await using var connection = new NpgsqlConnection(fixture.ConnectionString)
-                .Execute("create temp table transaction_test2 (i int);");
+            await using var connection = new NpgsqlConnection(fixture.ConnectionString);
+            connection.Execute("create temp table transaction_test2 (i int);");
 
             await using var transaction = await connection.BeginTransactionAsync();
 

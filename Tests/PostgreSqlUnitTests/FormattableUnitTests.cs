@@ -79,14 +79,17 @@ namespace PostgreSqlUnitTests
         public void Execute_Format_Mixed_Params_Test()
         {
             using var connection = new NpgsqlConnection(fixture.ConnectionString);
-            var result = connection
+
+            connection
                 .Execute("begin")
                 .Execute("create table test (i int, t text, d date)")
-                .ExecuteFormat($"insert into test values ({1}, {new NpgsqlParameter("", "foo")}, {new DateTime(1977, 5, 19)})")
+                .ExecuteFormat($"insert into test values ({1}, {new NpgsqlParameter("", "foo")}, {new DateTime(1977, 5, 19)})");
+
+            var result = connection
                 .Read("select * from test")
                 .Single()
                 .ToDictionary(t => t.name, t => t.value);
-
+            
             Assert.Equal(1, result["i"]);
             Assert.Equal("foo", result["t"]);
             Assert.Equal(new DateTime(1977, 5, 19), result["d"]);

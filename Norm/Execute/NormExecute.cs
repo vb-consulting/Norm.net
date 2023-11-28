@@ -28,7 +28,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            cmd.ExecuteNonQuery();
+            this.recordsAffected = cmd.ExecuteNonQuery();
             return this;
         }
 
@@ -54,7 +54,7 @@ namespace Norm
             this.sourceFilePath = sourceFilePath;
             this.sourceLineNumber = sourceLineNumber;
             using var cmd = CreateCommand(command);
-            cmd.ExecuteNonQuery();
+            this.recordsAffected = cmd.ExecuteNonQuery();
             return this;
         }
     }

@@ -1,5 +1,70 @@
 # Changelog
 
+## [5.4.0](https://github.com/vb-consulting/Norm.net/tree/5.3.9) (2023-11-27)
+
+[Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.9...5.4.0)
+
+### New feature: GetRecordsAffected method
+
+Signature: 
+
+- Extension: `public static int? GetRecordsAffected(this DbConnection connection)`
+- Instance: `public int? GetRecordsAffected()`
+
+Returns a number of records affected by the last query.
+
+This is the value that [`ExecuteNonQuery()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executenonquery) method returns if one of the `Execute` versions is executed.
+
+Example:
+
+```csharp
+var rowsAffected = connection
+    .Execute("insert into rows_affected_test values ('foo')")
+    .GetRecordsAffected();
+```
+
+If one of the `Read` methods is executed, this method will contain a value of [`RecordsAffected` reader property](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.recordsaffected)
+
+However, `Read` methods will always return a value of the read operation (enumerator), so access to the instance is hidden.
+
+That is why the `Norm` extension method is also introduced.
+
+### New feature: Norm extension method
+
+Signature: 
+
+- Extension: `public static Norm Norm(this DbConnection connection)`
+
+Creates and returns a new `Norm` instance from the connection.
+
+Example:
+
+```csharp
+var instance = connection.Norm();
+instance.Read("select * from rows_affected_test").ToList();
+rowsAffected = instance.GetRecordsAffected();
+```
+
+### Breaking changes:
+
+- Extensions `Execute` and `ExecuteFormat` were returning the connection instance in previous versions.
+- This is changed to return the current `Norm` instance instead.
+
+This may break certain codebases. 
+
+For example, before this version, it was possible to chain `Execute` method with connection creation like this:
+
+```csharp
+using var connection = new NpgsqlConnection(connectionString).Execute("create temp table test (i int);");
+```
+
+Now, this code won't work because `Execute` method returns `Norm` instance. Instead, it should look like this:
+
+```csharp
+using var connection = new NpgsqlConnection(connectionString);
+connection.Execute("create temp table test (i int);");
+```
+
 ## [5.3.9](https://github.com/vb-consulting/Norm.net/tree/5.3.9) (2023-10-07)
 
 [Full Changelog](https://github.com/vb-consulting/Norm.net/compare/5.3.8...5.3.9)

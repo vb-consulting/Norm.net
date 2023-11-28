@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
 
 namespace Norm
 {
-
     public static partial class NormExtensions
     {
         private static T Instance<T>(this DbConnection connection) where T : Norm
@@ -217,6 +217,26 @@ namespace Norm
         public static Norm WithUnknownResultType(this DbConnection connection, params bool[] list)
         {
             return connection.Instance<Norm>().WithUnknownResultType(list);
+        }
+
+        ///<summary>
+        ///Returns number of rows affected for this instance (rows changed, inserted, or deleted by execution of the SQL statement). 
+        ///This is a number returned by the command ExecuteNonQuery() call for the last executed command.
+        ///Or, value of RecordsAffected reader property of the last read command.
+        ///</summary>
+        public static int? GetRecordsAffected(this DbConnection connection)
+        {
+            return connection.Instance<Norm>().GetRecordsAffected();
+        }
+
+        /// <summary>
+        /// Creates a new Norm Instance
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <returns></returns>
+        public static Norm Norm(this DbConnection connection)
+        {
+            return connection.Instance<Norm>();
         }
     }
 }

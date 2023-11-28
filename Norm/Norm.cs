@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Norm
 {
-    public partial class Norm
+    public partial class Norm : IDisposable, IAsyncDisposable
     {
         protected string commandText;
         protected string commentHeader;
@@ -36,8 +38,9 @@ namespace Norm
         protected string memberName = null;
         protected string sourceFilePath = null;
         protected int sourceLineNumber = 0;
+        protected int? recordsAffected = null;
         private string[] names = null;
-
+        
         public DatabaseType DbType => dbType;
 
         public Norm(DbConnection connection)
@@ -60,10 +63,52 @@ namespace Norm
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore().ConfigureAwait(false);
+
+            Dispose(disposing: false);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+            GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Connection?.Dispose();
+                Connection = null;
+                transaction?.Dispose();
+                transaction = null;
+            }
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            if (Connection != null)
+            {
+                await Connection.DisposeAsync().ConfigureAwait(false);
+                Connection = null;
+            }
+
+            if (transaction != null)
+            {
+                await transaction.DisposeAsync().ConfigureAwait(false);
+                transaction = null;
+            }
+        }
+
         ///<summary>
         ///returns DbConnection for this instance
         ///</summary>
-        public DbConnection Connection { get; }
+        public DbConnection Connection { get; private set; }
 
         ///<summary>
         ///returns CancellationToken for this instance or null if CancellationToken is not set
@@ -74,6 +119,16 @@ namespace Norm
         ///returns ReaderCallback for this instance or null of ReaderCallback is not set
         ///</summary>
         public Func<(string Name, int Ordinal, DbDataReader Reader), object> ReaderCallback { get => readerCallback; }
+
+        ///<summary>
+        ///Returns number of rows affected for this instance (rows changed, inserted, or deleted by execution of the SQL statement). 
+        ///This is a number returned by the command ExecuteNonQuery() call for the last executed command.
+        ///Or, value of RecordsAffected reader property of the last read command.
+        ///</summary>
+        public int? GetRecordsAffected()
+        {
+            return this.recordsAffected;
+        }
 
         ///<summary>
         /// Set command type for the connection commands and return Norm instance.
@@ -422,7 +477,9 @@ namespace Norm
         /// <returns>DbDataReader</returns>
         public DbDataReader ExecuteReader(DbCommand cmd)
         {
-            return cmd.ExecuteReader(this.behavior);
+            var reader = cmd.ExecuteReader(this.behavior);
+            this.recordsAffected = reader.RecordsAffected;
+            return reader;
         }
 
         /// <summary>
@@ -432,11 +489,17 @@ namespace Norm
         /// <returns>DbDataReader</returns>
         public async ValueTask<DbDataReader> ExecuteReaderAsync(DbCommand cmd)
         {
+            DbDataReader reader;
             if (this.cancellationToken.HasValue)
             {
-                return await cmd.ExecuteReaderAsync(this.behavior, this.cancellationToken.Value);
+                reader = await cmd.ExecuteReaderAsync(this.behavior, this.cancellationToken.Value);
+            } 
+            else
+            {
+                reader = await cmd.ExecuteReaderAsync(this.behavior);
             }
-            return await cmd.ExecuteReaderAsync(this.behavior);
+            this.recordsAffected = reader.RecordsAffected;
+            return reader;
         }
     }
 }
