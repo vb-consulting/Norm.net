@@ -33,6 +33,6 @@ public class RowsAffectedUnitTests
         inst.Read("select * from rows_affected_test").ToList();
         rowsAffected = inst.GetRecordsAffected();
 
-        Assert.Equal(1, rowsAffected);
+        Assert.Equal(-1, rowsAffected);
     }
 }
