@@ -57,10 +57,10 @@ from generate_series(1, {records}) as i
         public void Setup()
         {
             query = GetQuery(Records);
-            connection = new NpgsqlConnection(Connection.ConnectionString);
+            connection = new NpgsqlConnection(Connection.String);
             dbcontext = new DbContext(
                 new DbContextOptionsBuilder()
-                .UseNpgsql(Connection.ConnectionString)
+                .UseNpgsql(Connection.String)
                 .Options);
         }
 
