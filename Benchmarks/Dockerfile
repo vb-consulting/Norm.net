@@ -35,11 +35,11 @@ RUN mkdir /results/
 
 ENTRYPOINT Benchmarks && \ 
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round1.md && \ 
-Benchmarks && \
+./Benchmarks && \
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round2.md && \
-Benchmarks && \
+./Benchmarks && \
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round3.md && \
-Benchmarks && \
+./Benchmarks && \
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round4.md && \
-Benchmarks && \
+./Benchmarks && \
 cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round5.md
