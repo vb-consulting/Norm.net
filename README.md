@@ -7,7 +7,7 @@ _High performance micro-ORM database mapper and modernized Dapper replacement fo
 ![GitHub Stars](https://img.shields.io/github/stars/vb-consulting/Norm.net?style=social)
 ![GitHub Forks](https://img.shields.io/github/forks/vb-consulting/Norm.net?style=social)
 
-[Website under construction](https://norm-dot-net.netlify.app/)
+[Website under construction](https://vb-consulting.github.io/norm.net/)
  
 ## Features at a Glance
  

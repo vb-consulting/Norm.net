@@ -1,10 +1,10 @@
 ---
 title: Options
 order: 2
-nextUrl: 
-nextTitle: 
-prevUrl: 
-prevTitle: 
+nextUrl: /docs/reference/parameters/
+nextTitle: Working With Parameters
+prevUrl: /docs/reference/methods/
+prevTitle: Extensions Methods
 ---
 
 ## Norm Options

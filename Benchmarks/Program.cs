@@ -2,6 +2,8 @@
 using Benchmarks6;
 
 Console.WriteLine("Norm version: {0}", typeof(Norm.Norm).Assembly.GetName().Version);
+Console.WriteLine("Dapper version: {0}", typeof(Dapper.SqlMapper).Assembly.GetName().Version);
+Console.WriteLine("EntityFrameworkCore version: {0}", typeof(Microsoft.EntityFrameworkCore.DbContext).Assembly.GetName().Version);
 
 if (args.Contains("-c"))
 {
@@ -15,18 +17,7 @@ if (args.Contains("-c"))
 
 Console.WriteLine("Using {0}", Connection.ConnectionString);
 
-if (args.Contains("e") || 
-    args.Contains("-e") || 
-    args.Contains("--e") || 
-    args.Contains("enum") || 
-    args.Contains("--enum"))
-{
-    BenchmarkRunner.Run<EnumBenchmarks>();
-}
-else
-{
-    BenchmarkRunner.Run<Benchmarks>();
-}
+BenchmarkRunner.Run<Benchmarks>();
 
 public static class Connection
 {

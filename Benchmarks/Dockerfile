@@ -1,7 +1,7 @@
 # docker build -t norm_benchmarks .
 # docker run --rm -it --name norm_benchmarks norm_benchmarks:latest
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS sdk
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS sdk
 RUN git clone https://github.com/vb-consulting/Norm.net.git
 
 WORKDIR "/Norm.net/Benchmarks"

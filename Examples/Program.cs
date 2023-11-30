@@ -1,8 +1,10 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.Contracts;
 using Norm;
 using Npgsql;
 using static System.Console;
+
+using TitleDescriptionYear = (string title, string description, int year);
+using IdName = (int id, string name);
 
 //
 // Sample database: https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
@@ -20,6 +22,27 @@ foreach (var method in typeof(Examples).GetMethods(System.Reflection.BindingFlag
     WriteLine();
 }
 
+public class ExtraFilm : Film
+{
+    public string Extra { get; set; } = "not-mapped";
+}
+
+public class Film
+{
+    public int FilmId { get; set; }
+    public string Title { get; set; }
+    public int ReleaseYear { get; set; }
+    public decimal RentalRate { get; set; }
+}
+
+public class NonPublicFilm
+{
+    public int FilmId { get; private set; } // not mapped
+    public string Title { get; protected set; } // not mapped
+    public int ReleaseYear { get; set; } // mapped
+    public decimal RentalRate { get; set; } // mapped
+}
+
 public static class Examples
 {
     public static void CountActors(DbConnection connection)
@@ -27,24 +50,7 @@ public static class Examples
         var count = connection.Read<int>("select count(*) from actor").Single();
         WriteLine($"There are {count} actors in the database.");
     }
-
-    public static void DelayedExecution(DbConnection connection)
-    {
-        // create two iterators, no database calls yet
-
-        // iterator over int type
-        var result1 = connection.Read<int>("select count(*) from actor");
-        // iterator name-value array
-        var result2 = connection.Read("select title from film");
-
-        // Execute by initiating iterations 
-
-        // execute count in database and print single result from count(*)
-        WriteLine($"There are {result1.Single()} actors in the database.");
-        // execute select in database, return all records and print iteration count
-        WriteLine($"There are {result2.Count()} films in the database.");
-    }
-
+    
     public static async Task DelayedExecutionAsync(DbConnection connection)
     {
         // create two iterators, no database calls yet
@@ -61,7 +67,7 @@ public static class Examples
         // execute select in database, return all records and print and await iteration count async
         WriteLine($"There are {await result2.CountAsync()} films in the database.");
     }
-
+    
     public static void PrintTuples(DbConnection connection)
     {
         // tuples mapping
@@ -91,7 +97,23 @@ public static class Examples
             WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.title, tuple.description, tuple.year);
         }
     }
-    
+
+    public static void TitleDescriptionYearTupleAlias(DbConnection connection)
+    {
+        foreach (var tuple in connection.Read<TitleDescriptionYear>("select title, description, release_year from film limit 3"))
+        {
+            WriteLine("Title: {0}, Description: {1}, Year: {2}", tuple.title, tuple.description, tuple.year);
+        }
+    }
+
+    public static void IdNameTupleAlias(DbConnection connection)
+    {
+        foreach (var tuple in connection.Read<IdName>("select film_id, title from film limit 3"))
+        {
+            WriteLine("Film Id: {0}, Name: {1}", tuple.id, tuple.name);
+        }
+    }
+
     public static void ConfigureGlobalSettings(DbConnection connection)
     {
         // set global command timeout to 60 seconds
@@ -287,25 +309,21 @@ public static class Examples
         {
         });
     }
-}
 
-public class ExtraFilm : Film
-{
-    public string Extra { get; set; } = "not-mapped";
-}
+    public static void DelayedExecution(DbConnection connection)
+    {
+        // create two iterators, no database calls yet
 
-public class Film
-{
-    public int FilmId { get; set; }
-    public string Title { get; set; }
-    public int ReleaseYear { get; set; }
-    public decimal RentalRate { get; set; }
-}
+        // iterator over int type
+        var result1 = connection.Read<int>("select count(*) from actor");
+        // iterator name-value array
+        var result2 = connection.Read("select title from film");
 
-public class NonPublicFilm
-{
-    public int FilmId { get; private set; } // not mapped
-    public string Title { get; protected set; } // not mapped
-    public int ReleaseYear { get; set; } // mapped
-    public decimal RentalRate { get; set; } // mapped
+        // Execute by initiating iterations 
+
+        // execute count in database and print single result from count(*)
+        WriteLine($"There are {result1.Single()} actors in the database.");
+        // execute select in database, return all records and print iteration count
+        WriteLine($"There are {result2.Count()} films in the database.");
+    }
 }

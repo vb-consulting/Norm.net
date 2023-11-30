@@ -1,7 +1,7 @@
 ---
 title: Basic Concepts
 order: 4
-nextUrl: /docs/fundamentals/read-method/
+nextUrl: /docs/reference/read-method/
 nextTitle: Read Method
 prevUrl: /docs/getting-started/first-use/
 prevTitle: First Use
