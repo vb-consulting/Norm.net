@@ -1,9 +1,9 @@
 ---
 title: Basic Concepts
 order: 4
-nextUrl: /docs/reference/read-method/
+nextUrl: /norm.net/docs/reference/read-method/
 nextTitle: Read Method
-prevUrl: /docs/getting-started/first-use/
+prevUrl: /norm.net/docs/getting-started/first-use/
 prevTitle: First Use
 ---
 

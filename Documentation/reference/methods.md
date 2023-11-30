@@ -1,17 +1,20 @@
 ---
 title: Extensions Methods
 order: 1
-nextUrl: /docs/reference/options/
+nextUrl: /norm.net/docs/reference/options/
 nextTitle: Options
-prevUrl: /docs/getting-started/basic-concepts/
+prevUrl: /norm.net/docs/getting-started/basic-concepts/
 prevTitle: Basic Concepts
 ---
 
 ## Extensions Methods
 
-- To implement fluid syntax, Norm extensions are implemented in two versions
+- To implement fluid syntax, Norm extensions are implemented in two versions:
 
-1) As `DbConnection` object extensions. These extension methods are returning a
+1) As `DbConnection` object extension methods. 
+2) As instance methods.
+
+Both, extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they are returning `Norm` instance whenever they can to ensure fluid syntax.
 
 ### As
 

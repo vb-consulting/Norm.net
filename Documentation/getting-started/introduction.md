@@ -1,7 +1,7 @@
 ---
 title: Introduction
 order: 1
-nextUrl: /docs/getting-started/installation/
+nextUrl: /norm.net/docs/getting-started/installation/
 nextTitle: Installation
 ---
 

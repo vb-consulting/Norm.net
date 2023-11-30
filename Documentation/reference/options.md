@@ -1,9 +1,9 @@
 ---
 title: Options
 order: 2
-nextUrl: /docs/reference/parameters/
+nextUrl: /norm.net/docs/reference/parameters/
 nextTitle: Working With Parameters
-prevUrl: /docs/reference/methods/
+prevUrl: /norm.net/docs/reference/methods/
 prevTitle: Extensions Methods
 ---
 

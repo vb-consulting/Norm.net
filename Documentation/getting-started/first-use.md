@@ -1,9 +1,9 @@
 ---
 title: First Use
 order: 3
-nextUrl: /docs/getting-started/basic-concepts/
+nextUrl: /norm.net/docs/getting-started/basic-concepts/
 nextTitle: Basic Concepts
-prevUrl: /docs/getting-started/installation/
+prevUrl: /norm.net/docs/getting-started/installation/
 prevTitle: Installation
 ---
 

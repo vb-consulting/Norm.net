@@ -1,9 +1,9 @@
 ---
 title: Installation
 order: 2
-nextUrl: /docs/getting-started/first-use/
+nextUrl: /norm.net/docs/getting-started/first-use/
 nextTitle: First Use
-prevUrl: /docs/getting-started/introduction/
+prevUrl: /norm.net/docs/getting-started/introduction/
 prevTitle: Introduction
 ---
 
