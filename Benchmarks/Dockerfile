@@ -34,12 +34,12 @@ WORKDIR "/Norm.net/Benchmarks/bin/Release/net8.0/"
 RUN mkdir /results/
 
 ENTRYPOINT Benchmarks && \ 
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round1.md && \ 
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/NormBenchmarks.Benchmarks-report-github.md /results/round1.md && \ 
 ./Benchmarks && \
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round2.md && \
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/NormBenchmarks.Benchmarks-report-github.md /results/round2.md && \
 ./Benchmarks && \
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round3.md && \
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/NormBenchmarks.Benchmarks-report-github.md /results/round3.md && \
 ./Benchmarks && \
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round4.md && \
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/NormBenchmarks.Benchmarks-report-github.md /results/round4.md && \
 ./Benchmarks && \
-cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/Benchmarks6.Benchmarks-report-github.md /results/round5.md
+cp /Norm.net/Benchmarks/BenchmarkDotNet.Artifacts/results/NormBenchmarks.Benchmarks-report-github.md /results/round5.md

@@ -49,8 +49,8 @@ from generate_series(1, {records}) as i
     private NpgsqlConnection connection = default!;
     private DbContext dbcontext = default!;
 
-    //[Params(10, 1_000, 10_000, 100_000)]
-    [Params(1_000, 10_000, 100_000)]
+    [Params(10, 1_000, 10_000, 100_000)]
+    //[Params(1_000, 10_000, 100_000)]
     public int Records { get; set; }
 
     [GlobalSetup]

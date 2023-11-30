@@ -50,24 +50,7 @@ public static class Examples
         var count = connection.Read<int>("select count(*) from actor").Single();
         WriteLine($"There are {count} actors in the database.");
     }
-    
-    public static async Task DelayedExecutionAsync(DbConnection connection)
-    {
-        // create two iterators, no database calls yet
 
-        // async iterator over int type
-        var result1 = connection.ReadAsync<int>("select count(*) from actor");
-        // async iterator name-value array
-        var result2 = connection.ReadAsync("select title from film");
-
-        // Execute by initiating iterations
-
-        // execute count in database and print and await single async result from count(*)
-        WriteLine($"There are {await result1.SingleAsync()} actors in the database.");
-        // execute select in database, return all records and print and await iteration count async
-        WriteLine($"There are {await result2.CountAsync()} films in the database.");
-    }
-    
     public static void PrintTuples(DbConnection connection)
     {
         // tuples mapping
@@ -309,7 +292,7 @@ public static class Examples
         {
         });
     }
-
+    
     public static void DelayedExecution(DbConnection connection)
     {
         // create two iterators, no database calls yet
@@ -325,5 +308,22 @@ public static class Examples
         WriteLine($"There are {result1.Single()} actors in the database.");
         // execute select in database, return all records and print iteration count
         WriteLine($"There are {result2.Count()} films in the database.");
+    }
+    
+    public static async Task DelayedExecutionAsync(DbConnection connection)
+    {
+        // create two iterators, no database calls yet
+
+        // async iterator over int type
+        var result1 = connection.ReadAsync<int>("select count(*) from actor");
+        // async iterator name-value array
+        var result2 = connection.ReadAsync("select title from film");
+
+        // Execute by initiating iterations
+
+        // execute count in database and print and await single async result from count(*)
+        WriteLine($"There are {await result1.SingleAsync()} actors in the database.");
+        // execute select in database, return all records and print and await iteration count async
+        WriteLine($"There are {await result2.CountAsync()} films in the database.");
     }
 }
