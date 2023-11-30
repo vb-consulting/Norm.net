@@ -14,10 +14,12 @@ RUN git clone https://github.com/vb-consulting/Norm.net.git
 # Update this connections string as you see fit
 # 
 RUN echo '\
+namespace NormBenchmarks;\n\
+\n\
 public class Connection\n\
 {\n\
     public static string String = "Server=localhost;Database=postgres;Port=5432;User Id=postgres;Password=postgres;";\n\
-}\n\
+}'\
 > /Norm.net/Benchmarks/Connection.cs
 
 WORKDIR "/Norm.net/Benchmarks"

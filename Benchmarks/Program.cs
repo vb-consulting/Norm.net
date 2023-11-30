@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
-using Benchmarks6;
+using NormBenchmarks;
 
 Console.WriteLine("Norm version: {0}", typeof(Norm.Norm).Assembly.GetName().Version);
 Console.WriteLine("Dapper version: {0}", typeof(Dapper.SqlMapper).Assembly.GetName().Version);
