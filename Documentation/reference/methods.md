@@ -14,7 +14,7 @@ prevTitle: Basic Concepts
 1) As `DbConnection` object extension methods. 
 2) As instance methods.
 
-Both, extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they are returning `Norm` instance whenever they can to ensure fluid syntax.
+Both extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they return the `Norm` instance whenever they can to ensure fluid syntax.
 
 ### As
 
