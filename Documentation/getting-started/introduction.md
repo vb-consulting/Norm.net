@@ -7,9 +7,11 @@ nextTitle: Installation
 
 # Introduction
 
-`Norm` is a Micro-ORM library for efficient data access in the `.NET` ecosystem. 
+** `Norm` is the Micro-ORM library for efficient data access in the `.NET` ecosystem. **
 
-It supports .NET Standard 2.1 or higher and .NET Core 3.0 and higher (.NET Core 3, .NET 5, 6, 7, 8, etc). See the full [compatibility table](/#compatibility).
+It supports .NET Standard 2.1 or higher and .NET Core 3.0 and higher (.NET Core 3, .NET 5, 6, 7, 8, etc). 
+
+See the full [compatibility table](/#compatibility).
 
 Micro-ORM libraries implement one-way mapping - from your database commands and queries - to  `.NET` types and structures.
 
