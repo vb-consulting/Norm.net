@@ -9,4 +9,3 @@ Console.WriteLine("EntityFrameworkCore version: {0}", typeof(Microsoft.EntityFra
 Console.WriteLine("Using {0}", Connection.String);
 
 BenchmarkRunner.Run<Benchmarks>();
-
