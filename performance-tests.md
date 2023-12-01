@@ -5,6 +5,8 @@ Dapper version: 2.0.0.0
 EntityFrameworkCore version: 8.0.0.0
 .NET SDK 8.0.100
 
+See [Benchmark project here](https://github.com/vb-consulting/Norm.net/tree/master/Benchmarks)
+
 ## 1. Standard set of tests, serialization to class instances and tuples with various fields types
 
 ### Test Query and Test Class
