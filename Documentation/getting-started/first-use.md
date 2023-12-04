@@ -30,6 +30,8 @@ global using Norm;
 
 ```
 
+---
+
 ### Connection Reference
 
 Obtain a database connection reference, either by creating a new instance:
@@ -71,6 +73,8 @@ public int CountActors(MyDatabaseContext context)
 ```
 
 > Note: Connection must be descendant of [`System.Data.Common.DbConnection`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection) type.
+
+---
 
 ### First Commands
 

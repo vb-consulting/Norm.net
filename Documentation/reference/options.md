@@ -4,7 +4,7 @@ order: 2
 nextUrl: /norm.net/docs/reference/parameters/
 nextTitle: Working With Parameters
 prevUrl: /norm.net/docs/reference/methods/
-prevTitle: Extensions Methods
+prevTitle: Methods
 ---
 
 ## Norm Options

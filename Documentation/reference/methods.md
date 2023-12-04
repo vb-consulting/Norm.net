@@ -1,5 +1,5 @@
 ---
-title: Extensions Methods
+title: Methods
 order: 1
 nextUrl: /norm.net/docs/reference/options/
 nextTitle: Options
@@ -14,7 +14,9 @@ prevTitle: Basic Concepts
 1) As `DbConnection` object extension methods. 
 2) As instance methods.
 
-Both extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they return the `Norm` instance whenever they can to ensure fluid syntax.
+- Both extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they return the `Norm` instance whenever they can to ensure fluid syntax.
+
+---
 
 ### As
 
@@ -64,6 +66,8 @@ connection
     .Execute("delete_inactive_customers");
 ```
 
+---
+
 ### AsProcedure
  
 ```csharp
@@ -87,6 +91,8 @@ connection
 ```
 
 - This is exactly the same as the previous example (`As(System.Data.CommandType.StoredProcedure)`).
+
+---
 
 ### AsText
 
@@ -126,6 +132,103 @@ connection
     .Execute("select delete_inactive_customers2()");
 ```
 
+### Execute
+
+```csharp
+// Extension
+public static Norm Execute(this DbConnection connection, 
+    string command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0);
+
+// Norm Instance Method
+public Norm Execute(string command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0)
+```
+
+- Executes the SQL command.
+
+- Extension returns the new `Norm` instance and instance method existing `Norm` instance.
+
+- Can have additional parameters where parameters are supplied as an anonymous object instance.
+
+- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
+
+---
+
+### ExecuteAsync
+
+```csharp
+// Extension
+public static ValueTask<Norm> ExecuteAsync(this DbConnection connection, 
+    string command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0);
+// Norm Instance Method
+public ValueTask<Norm> ExecuteAsync(string command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0)
+```
+
+- Execute SQL command.
+
+---
+
+### GetRecordsAffected
+
+```csharp
+// Extension
+public static int? GetRecordsAffected(this DbConnection connection);
+// Norm Instance Method
+public int? GetRecordsAffected();
+```
+
+- Returns the integer value returned from:
+  - The last [`ExecuteNonQuery()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlcommand.executenonquery) execution, initiated by `Execute` call (or `ExecuteNonQueryAsync()` initiated by `ExecuteAsync`).
+  - The last value of the [`RecordsAffected`](https://learn.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqldatareader.recordsaffected) reader object property, that is initiated by `Read` or `ReadAsync` calls.
+
+- The Result value is `NULL` if neither `Execute`, `ExecuteAsync`, `Read` or `ReadAsync` is called for the current call chain.
+
+- Example:
+
+```csharp
+var rowsAffected = connection
+    .Execute("insert into rows_affected_test values ('foo')")
+    .GetRecordsAffected();
+```
+
+---
+
+### Norm
+
+```csharp
+// Extension
+public static Norm Norm(this DbConnection connection);
+```
+
+- Returns the new Norm instance.
+
+- There is no instance method.
+
+- Usage example:
+
+```csharp
+var instance = connection.Norm();
+instance.Read("select * from rows_affected_test").ToList();
+rowsAffected = instance.GetRecordsAffected();
+```
+
+---
+
 ### Prepared
 
 ```csharp
@@ -150,7 +253,7 @@ connection
     .Execute("update my_table set value = 1 where id = 1");
 ```
 
-- Note: to set all commands into a prepared (or compiled) mode - use `Configure` method in your program startup:
+- Note: to set all commands into a prepared (or compiled) mode - use the `Configure` method in your program startup:
 
 ```csharp
 //
@@ -172,7 +275,17 @@ connection
     .Execute("update my_table set value = 1 where id = 1");
 ```
 
-- Disclaimer: command preparation may vary on different provider implementations, and in some cases, it may be set as a connection string parameter. For example, see [prepare with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
+- Disclaimer: command preparation may vary on different provider implementations, and in some cases, it may be set as a connection string parameter. For example, see the [prepare statements with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
+
+---
+
+### Read
+
+---
+
+### ReadAsync
+
+---
 
 ### WithCancellationToken
 
@@ -199,6 +312,8 @@ connection
     .WithCancellationToken(cancellationSource.Token)
     .Execute("update my_table set value = 1 where id = 1");
 ```
+
+---
 
 ### WithCommandBehavior
 
@@ -288,6 +403,8 @@ var result = connection
     .Read<int>("select count(*) from my_table");
 ```
 
+---
+
 ### WithCommandCallback
 
 ```csharp
@@ -298,12 +415,10 @@ public Norm WithCommandCallback(System.Action<System.Data.Common.DbCommand> dbCo
 ```
 
 - Adds a **callback function** that will be executed when:
-  
   - After the [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object has been created and initialized.
-  
   - Before the command execution.
 
-- Possible usage of this callback is to gain access to the `DbCommand` instance before execution to be able to change its properties.
+- The possible usage of this callback is to gain access to the `DbCommand` instance before execution to be able to change its properties.
 
 - Common usage of this callback is usually to log command text.
 
@@ -320,7 +435,7 @@ var result = connection
 
 - This example will produce an info log with the following content: `SQL COMMAND: select count(*) from my_table`.
 
-- Common use of this callback is when we want to run some commands in a prepared mode:
+- The common use of this callback is when we want to run some commands in a prepared mode:
 
 ```csharp
 var user = connection
@@ -333,7 +448,7 @@ var user = connection
     .Single();
 ```
 
-- Note: this callback can be set for all commands - use `Configure` method in your program startup:
+- Note: this callback can be set for all commands - use the `Configure` method in your program startup:
 
 ```csharp
 //
@@ -353,6 +468,8 @@ var result = connection.Read<int>("select count(*) from my_table");
 ```
 
 - This will also produce an info log with the same content: `SQL COMMAND: select count(*) from my_table`.
+
+---
 
 ### WithComment
 
@@ -382,6 +499,8 @@ This is my comment
 */
 select count(*) from my_table
 ```
+
+---
 
 ### WithCommentCallerInfo
 
@@ -420,7 +539,7 @@ at CallerInfoTest in /home/MyProject/Examples.cs#100
 select count(*) from my_table
 ```
 
-- Note: this option can be set for every command - use `Configure` method in your program startup:
+- Note: this option can be set for every command - use the `Configure` method in your program startup:
 
 ```csharp
 //
@@ -443,9 +562,11 @@ var result = connection
 
 - This will include exact caller info (caller member, file path, and line number) in every command you create.
 
- ### WithCommentParameters
+---
 
- ```csharp
+### WithCommentParameters
+
+```csharp
 // Extension
 public static Norm WithCommentParameters(this DbConnection connection);
 // Norm Instance Method
@@ -476,6 +597,8 @@ var result = connection
 select @p1, @p2, @p3, @p4
 ```
 
+---
+
 ### WithCommentHeader
 
  - Sets the options for the next command to include command header comment with options set in method parameters.
@@ -497,18 +620,15 @@ public Norm WithCommentHeader(string comment = null,
 ```
 
 - Parameters:
-  
   - `string comment = null` - sets the custom text comment header for the next command.
-
   - `bool includeCommandAttributes = true` - includes command attributes, such as database provider, command type (text, procedure), and command timeout in the comment header for the next command.
-
   - `bool includeParameters = true` - includes parameter names and values in the comment header for the next command.
-
   - `bool includeCallerInfo = true` - includes caller info (member name, file path, and line number) in the comment header for the next command.
-
   - `bool includeTimestamp = false` - includes a current timestamp in the comment header for the next command.
 
- ### WithParameters
+---
+
+### WithParameters
 
  ```csharp
 // Extension
@@ -518,24 +638,22 @@ public Norm WithParameters(params object[] parameters);
 ```
 
 - This method can receive one or more arguments of the `object` type.
-  
- - Parameter value can be either:
-  
+
+- The parameter value can be either:
    - Simple type (integers, strings, dates, etc.).
-
    - Object instances.
-
    - Two value tuples (value and database type).
-
    - [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance.
 
 - Depending on the parameter type, parameters can be set in different ways: positional, named, or mixed.
 
 > Note: For more information on working with parameters by using this extension method [see working with parameters section.](/docs/reference/parameters/#1-withparameters-extension-method)
 
- ### WithReaderCallback
+---
 
-- Sets the custom database reader callback function that will be executed on each database reader iteration step for every field.
+### WithReaderCallback
+
+- Sets the custom database reader callback function that will be executed on each database reader iteration step for every field:
 
  ```csharp
  // Extension
@@ -544,12 +662,9 @@ public static Norm WithReaderCallback(this DbConnection connection, Func<(string
 public Norm WithReaderCallback(Func<(string Name, int Ordinal, DbDataReader Reader), object> readerCallback);
  ```
 
-- Custom callback function will be called with one tuple value parameter with three values:
-  
+- The custom callback function will be called with one tuple value parameter with three values:
    - `string Name` - field name that is being read.
-
    - `int Ordinal` - ordinal, zero-based position of the field that is being read.
-
    - `DbDataReader Reader` - [`DbDataReader`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbdatareader) instance.
 
 The custom callback function should return an object value that will be used as a value in further object mapping.
@@ -560,7 +675,7 @@ The custom callback function should return an object value that will be used as 
 
 - Examples:
 
-- Query returns two fields: `i` and `j`, with values 1, 2 and 3. The custom function that adds 1 to the column at the first position would look like this:
+- The query returns two fields: `i` and `j`, with values 1, 2 and 3. The custom function that adds 1 to the column at the first position would look like this:
 
 ```csharp
 var result = connection
@@ -621,7 +736,7 @@ var result = connection
 
 - Note: to set all database reads to execute a specific callback reader that will return custom values - use the `Configure` method in your program startup.
 
-- For example, every field that is `json` database type can be converted to [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject) object with this configuration:
+- For example, every field that is the `JSON` database type can be converted to the [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject) object with this configuration:
 
 ```csharp
 // Reader callback can be in an expression method instead of a lambda function
@@ -637,10 +752,12 @@ private object? ReaderCallback((string Name, int Ordinal, DbDataReader Reader) a
 // Set the option in your startup code...
 NormOptions.Configure(options => options.DbReaderCallback = ReaderCallback);
  ```
- 
- ### WithTimeout
 
-- Sets the wait time in seconds for the connection commands before terminating the attempt to execute a command and generating an error.
+---
+
+### WithTimeout
+
+- Sets the wait time in seconds for the connection commands before terminating the attempt to execute a command and generating an error:
 
 ```csharp
 // Extension
@@ -649,7 +766,7 @@ public static Norm WithTimeout(this DbConnection connection, int timeout);
 public Norm WithTimeout(int timeout);
 ```
 
-- Example, execute stored procedure `update_data` with command timeout 60 seconds.
+- For example, execute stored procedure `update_data` with the command timeout 60 seconds.
 
 ```csharp
 connection
@@ -658,9 +775,11 @@ connection
     .Execute("update_data");
 ```
 
+---
+
 ### WithTransaction
 
-- Sets the transaction object for the current database command.
+- Sets the transaction object for the current database command:
 
 ```csharp
 // Extension
@@ -687,11 +806,13 @@ var result2 = connection.Read("select * from transaction_test1").ToArray();
 Assert.Empty(result2);
 ```
 
+---
+
 ### WithUnknownResultType
 
 > **PostgreSQL only feature**
 
-- Sets PostgreSQL results behavior by marking some or all results as unknown. Unknown result type is serialized as a raw string.
+- Sets PostgreSQL results behavior by marking some or all results as unknown. The unknown result type is serialized as a raw string:
 
 ```csharp
 // Extension
@@ -702,7 +823,7 @@ public Norm WithUnknownResultType(params bool[] list);
 
 - To set all results as unknown, call `WithUnknownResultType` without parameters.
 
-- Example, PostgreSQL query that returns text, boolean, date, numeric, and JSON fields.
+- For example, PostgreSQL query that returns text, boolean, date, numeric, and JSON fields.
 
 ```csharp
 var (@int, @bool, @date, @num, @json) = connection
@@ -711,7 +832,7 @@ var (@int, @bool, @date, @num, @json) = connection
     .Single();
 ```
 
-- To set some results as unknown, call `WithUnknownResultType` and set true value to field position which needs to be marked as unknown:
+- To set some results as unknown, call `WithUnknownResultType` and set the true value to the field position that needs to be marked as unknown:
 
 ```csharp
 var (@int, @bool, @date, @num, @json) = connection

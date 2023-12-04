@@ -17,6 +17,8 @@ Run this command from the command line to install the latest version:
 dotnet add package Norm.net --version {version}
 ```
 
+---
+
 ### Visual Studio Package Manager Console (PowerShell)
 
 Run this command from the Visual Studio Package Manager Console (PowerShell) to install the latest version:
@@ -25,6 +27,8 @@ Run this command from the Visual Studio Package Manager Console (PowerShell) to 
 NuGet\Install-Package Norm.net -Version {version}
 ```
 
+---
+
 ### Package Reference
 
 Add this line to your `csproj`` project file inside `<ItemGroup>` section to install the latest version:
@@ -32,6 +36,8 @@ Add this line to your `csproj`` project file inside `<ItemGroup>` section to ins
 ```xml
 <PackageReference Include="Norm.net" Version="{version}" />
 ```
+
+---
 
 ### Script & Interactive
 
