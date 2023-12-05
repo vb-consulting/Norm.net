@@ -144,7 +144,8 @@ public static Norm Execute(this DbConnection connection,
     [CallerLineNumber] int sourceLineNumber = 0);
 
 // Norm Instance Method
-public Norm Execute(string command,
+public Norm Execute(
+    string command,
     object parameters = null,
     [CallerMemberName] string memberName = "",
     [CallerFilePath] string sourceFilePath = "",
@@ -159,27 +160,127 @@ public Norm Execute(string command,
 
 - The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
 
+- Example:
+
+```csharp
+connection
+    .Execute("insert into test values (@p1, @p2)", new {p1 = "first", p2 = "second"});
+```
+
 ---
 
 ### ExecuteAsync
 
 ```csharp
 // Extension
-public static ValueTask<Norm> ExecuteAsync(this DbConnection connection, 
+public static async ValueTask<Norm> ExecuteAsync(this DbConnection connection, 
     string command,
     object parameters = null,
     [CallerMemberName] string memberName = "",
     [CallerFilePath] string sourceFilePath = "",
     [CallerLineNumber] int sourceLineNumber = 0);
+
 // Norm Instance Method
-public ValueTask<Norm> ExecuteAsync(string command,
+public async ValueTask<Norm> ExecuteAsync(
+    string command,
     object parameters = null,
     [CallerMemberName] string memberName = "",
     [CallerFilePath] string sourceFilePath = "",
     [CallerLineNumber] int sourceLineNumber = 0)
 ```
 
-- Execute SQL command.
+- Execute the SQL command and return a value task representing the asynchronous operation.
+
+- Value task returns the new `Norm` instance and instance method existing `Norm` instance.
+
+- Can have additional parameters where parameters are supplied as an anonymous object instance.
+
+- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
+
+- Example:
+
+```csharp
+await connection
+    .ExecuteAsync("insert into test values (@p1, @p2)", new {p1 = "first", p2 = "second"});
+```
+
+---
+
+### ExecuteFormat
+
+```csharp
+// Extension
+public static Norm ExecuteFormat(this DbConnection connection, 
+    FormattableString command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0);
+
+// Norm Instance Method
+public Norm ExecuteFormat(
+    FormattableString command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0)
+```
+
+- Executes the SQL command in an interpolated (formattable) string and parses a formattable string for database parameters.
+
+- Extension returns the new `Norm` instance and instance method existing `Norm` instance.
+
+- Can have additional parameters where parameters are supplied as an anonymous object instance.
+
+- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
+
+- Example:
+
+```csharp
+var p1 = "first"; 
+var p2 = "second";
+connection
+    .ExecuteFormat($"insert into test values ({p1}, {p2})");
+```
+
+---
+
+### ExecuteFormatAsync
+
+```csharp
+// Extension
+public static async ValueTask<Norm> ExecuteFormatAsync(this DbConnection connection, 
+    FormattableString command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0);
+
+// Norm Instance Method
+public async ValueTask<Norm> ExecuteFormatAsync(
+    FormattableString command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0)
+```
+
+- Executes the SQL command in an interpolated (formattable) string and parses a formattable string for database parameters and returns a value task representing the asynchronous operation.
+
+- Value task returns the new `Norm` instance and instance method existing `Norm` instance.
+
+- Can have additional parameters where parameters are supplied as an anonymous object instance.
+
+- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
+
+- Example:
+
+```csharp
+var p1 = "first"; 
+var p2 = "second";
+await connection
+    .ExecuteFormatAsync($"insert into test values ({p1}, {p2})");
+```
 
 ---
 
@@ -207,6 +308,11 @@ var rowsAffected = connection
 ```
 
 ---
+
+### Multiple
+### MultipleAsync
+### MultipleFormat
+### MultipleFormatAsync
 
 ### Norm
 
@@ -275,15 +381,31 @@ connection
     .Execute("update my_table set value = 1 where id = 1");
 ```
 
-- Disclaimer: command preparation may vary on different provider implementations, and in some cases, it may be set as a connection string parameter. For example, see the [prepare statements with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
+- Disclaimer: command preparation may vary on different provider implementations, and in some cases, it may be set as a connection string parameter. For example, see the [prepared statements with PostgreSQL](https://www.npgsql.org/doc/prepare.html).
 
 ---
 
 ### Read
 
----
-
 ### ReadAsync
+
+### ReadFormat
+
+### ReadFormatAsync
+
+- There are four connection extensions and four instance methods:
+  - `Read` 
+  - `ReadAsync` 
+  - `ReadFormat` 
+  - `ReadFormatAsync` 
+
+
+- Each of these methods and extensions has one non-generic version and 12 generic versions.
+
+- They all implement a complex mapping system that enables you to map to anything from simple types to tuples and object instances.
+
+
+> Note: For more information on mapping system [see read mappings section.](/norm.net/docs/reference/mapping/)
 
 ---
 
@@ -647,7 +769,7 @@ public Norm WithParameters(params object[] parameters);
 
 - Depending on the parameter type, parameters can be set in different ways: positional, named, or mixed.
 
-> Note: For more information on working with parameters by using this extension method [see working with parameters section.](/docs/reference/parameters/#1-withparameters-extension-method)
+> Note: For more information on working with parameters [see working with parameters section.](/norm.net/docs/reference/parameters/)
 
 ---
 

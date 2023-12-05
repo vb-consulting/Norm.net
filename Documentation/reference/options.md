@@ -2,7 +2,7 @@
 title: Options
 order: 2
 nextUrl: /norm.net/docs/reference/parameters/
-nextTitle: Working With Parameters
+nextTitle: Parameters
 prevUrl: /norm.net/docs/reference/methods/
 prevTitle: Methods
 ---
@@ -67,7 +67,7 @@ NormOptions.Configure(options =>
 
   - Command timeout in seconds.
 
-- Default is true (included).
+- The Default is true (included).
 
 #### CommandCommentHeader.IncludeCallerInfo
 

@@ -1,10 +1,10 @@
 ---
-title: Working With Parameters
+title: Parameters
 order: 3
 nextUrl: 
 nextTitle: 
-prevUrl: 
-prevTitle: 
+prevUrl: /norm.net/docs/reference/options/
+prevTitle: Options
 ---
 
 ## Working With Parameters
@@ -278,7 +278,7 @@ var (s, i, b, d, @null) = connection
 
 - In that case, the name of the instance property is discarded, and the actual parameter name from the `DbParameter` instance is valid. That means that the first date property could be named differently, for example: `_ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),`.
 
-#### DbParameter Instances as Outoput Parameters
+#### DbParameter Instances as Output Parameters
 
 - Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
 
