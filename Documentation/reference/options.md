@@ -17,13 +17,17 @@ prevTitle: Methods
 public static void Configure(Action<NormOptions> options)
 ```
 
-- Parameter is a callback action to the options object where we can set different options that affect the later behavior.
+- The parameter is a callback action to the **options object** where we can set different options that affect the later behavior.
 
-- Call to `NormOptions.Configure` is not thread-safe; it is intended to be called only once on a program startup.
+- Call to `NormOptions.Configure` is **not thread-safe** - it is intended to be called only once on a program startup.
+
+- The list of available options is listed below.
+
+---
 
 ### CommandCommentHeader
 
-- Sets the command comment header options that will be applied for all commands.
+- Sets the **command comment header** options that will be applied for all commands.
 
 - This is a complex object containing multiple different commands:
 
@@ -49,11 +53,15 @@ NormOptions.Configure(options =>
 });
 ```
 
+---
+
 #### CommandCommentHeader.Enabled
 
 - Enables or disables (default) command comment headers.
 
-- Default is false (disabled).
+- The default is false (disabled).
+
+---
 
 #### CommandCommentHeader.IncludeCommandAttributes
 
@@ -69,6 +77,8 @@ NormOptions.Configure(options =>
 
 - The Default is true (included).
 
+---
+
 #### CommandCommentHeader.IncludeCallerInfo
 
 - Include caller info to command comment headers.
@@ -81,13 +91,17 @@ NormOptions.Configure(options =>
 
   - **Caller line number**: a line number in the source file at which the method is called at the compile time.
 
-- Default is true (included).
+- The Default is true (included).
+
+---
 
 #### CommandCommentHeader.IncludeParameters
 
 - Include parameter names and values to command comment headers.
 
-- Default is true (included).
+- The default is true (included).
+
+---
 
 #### CommandCommentHeader.ParametersFormat
 
@@ -95,25 +109,31 @@ NormOptions.Configure(options =>
 
 - Default is `{0} {1} = {2}\n`, where:
   
-  - Format placeholder `{0}` is parameter name.
+  - Format placeholder `{0}` is the parameter name.
   
-  - Format placeholder `{1}` is parameter type.
+  - Format placeholder `{1}` is the parameter type.
 
-  - Format placeholder `{2}` is parameter value.
+  - Format placeholder `{2}` is the parameter value.
+
+---
 
 #### CommandCommentHeader.IncludeTimestamp
 
 - Include the current timestamp to command comment headers.
 
-- Default is false (not included).
+- The default is false (not included).
+
+---
 
 #### CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes
 
 - Skip comment headers when the command type is stored procedure for certain database types.
 
-- Default values are `DatabaseType.Sql | DatabaseType.MySql`, which means that comment headers will not be created for SQL Server and MySQL database types when command types are stored procedures.
+- The default values are `DatabaseType.Sql | DatabaseType.MySql`, which means that comment headers will not be created for SQL Server and MySQL database types when command types are stored procedures.
 
-- Unlike PostgreSQL, SQL Server and MySQL will yield an error if we try to add a comment header to stored procedures.
+- Unlike PostgreSQL for example, SQL Server and MySQL will yield an error if we try to add a comment header to stored procedures, so this behavior needs to be restricted to the database type.
+
+---
 
 ### CommandTimeout
 
@@ -128,9 +148,11 @@ NormOptions.Configure(options =>
 });
 ```
 
+---
+
 ### DbCommandCallback
 
-- Set the command callback function that will be executed before every command execution and pass the created [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as parameter:
+- Set the **command callback function** that will be executed before every command execution and pass the created [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as a parameter.
 
 - This option has the following signature:
 
@@ -138,7 +160,7 @@ NormOptions.Configure(options =>
 public Action<DbCommand> DbCommandCallback { get; set; } = null;
 ```
 
-- Default is null (no command callback is used by default).
+- The default is null (no command callback is used by default).
 
 - This is typically used to enable command logging for the entire application. Example:
 
@@ -150,7 +172,7 @@ NormOptions.Configure(options =>
 });
 ```
 
-- This callback could also be used to manipulate already constructed and initialized `DbCommand`(https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object on a global level. 
+- This callback could also be used to manipulate the already constructed and initialized `DbCommand`(https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object on a global level. 
   
 - For example, another way to set command time out for 60 seconds for all commands:
 
@@ -162,11 +184,13 @@ NormOptions.Configure(options =>
 });
 ```
 
+--
+
 ### DbReaderCallback
 
-- Sets the custom database reader callback function that will be executed on each database reader iteration step for every field - on every database reader operation executed by Norm.
+- Sets the **custom database reader callback function** that will be executed on each database reader iteration step for every field - on every database reader operation executed by Norm.
 
-- Custom callback function will be called with one tuple value parameter with three values:
+- The custom callback function will be called with one tuple value parameter with three values:
   
    - `string Name` - field name that is being read.
 
@@ -188,9 +212,9 @@ The custom callback function should return an object value that will be used as 
 public Func<(string Name, int Ordinal, DbDataReader Reader), object> DbReaderCallback { get; set; } = null;
 ```
 
-- Default is null (no reader callback is used by default).
+- The default is null (no reader callback is used by default).
 
-A classic example is mapping from PostgreSQL JSON type to the [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject):
+- A classic example is mapping from PostgreSQL JSON type to the [`JsonObject`](https://learn.microsoft.com/en-us/dotnet/api/system.json.jsonobject):
 
 ```csharp
 NormOptions.Configure(options =>
@@ -240,9 +264,11 @@ NormOptions.Configure(options =>
 });
 ```
 
+---
+
 ### KeepOriginalNames
 
-- By default, mapping by name mechanism - supports the **snake-case naming** convention.
+- By default, the mapping by name mechanism implemented in this library supports the **snake-case naming** convention.
 
 - This is achieved by automatically removing certain characters from database field names like `_` and `@`.
 
@@ -263,9 +289,11 @@ NormOptions.Configure(options =>
 
 - Default is false (`_` and `@` are stripped always).
 
+---
+
 ### MapPrivateSetters
 
-- By default, mapping by name mechanism - will map only instance members (fields or properties) that have public setters (can be only be set publicly).
+- By default, the mapping by name mechanism implemented in this library will map only instance members (fields or properties) that have **public setters** (can only be set publicly).
 
 - Set `MapPrivateSetters` to true to be able to map instance members with non-public (private or protected) setters.
 
@@ -306,11 +334,13 @@ var result = connection
 
 - When `MapPrivateSetters` is false (default), only `PublicInt` would have been mapped.
 
-- Default is false (only members with public setters are mapped).
+- The default is false (only members with public setters are mapped).
+
+---
 
 ### NameParserCallback
 
-- Define a callback function that is called in a database field names parsing phase and can replace names with return values from this callback function.
+- Define a **callback function** that is called in a **database field names parsing phase** and can **replace names** with return values from this callback function.
 
 - This option has the following signature:
 
@@ -320,7 +350,7 @@ public Func<(string Name, int Ordinal), string> NameParserCallback { get; set; }
 
 - Callback input parameters that contain an original field name and ordinal position, zero-based position in results, and expect a new name string as a result.
 
-- Default is null (no name parser callback is used by default).
+- The default is null (no name parser callback is used by default).
 
 - Example:
 
@@ -356,11 +386,13 @@ Assert.Equal("bar", result.Bar);
 Assert.Equal("foobar", result.FooBar);
 ```
 
+---
+
 ### NpgsqlEnableSqlRewriting
 
 > **PostgreSQL only feature**
 
-- This feature requires `Npgsql` data access provider with version 6 or higher.
+- This feature requires the `Npgsql` data access provider with version 6 or higher.
 
 - This option only has an impact if it is set before any `Npgsql` command is executed. 
 
@@ -370,7 +402,7 @@ Assert.Equal("foobar", result.FooBar);
 
 - That means that:
 
-    1) Named parameters are disabled, and positional parameters with $ syntax must always be used (throws `System.NotSupportedException : Mixing named and positional parameters isn't supported`).
+    1) Named parameters are disabled, and positional parameters with $ syntax must always be used (throws `System.NotSupportedException: Mixing named and positional parameters isn't supported`).
 
     2) Multiple commands in one command string separated by a semicolon are disabled (throws `Npgsql.PostgresException : 42601: cannot insert multiple commands into a prepared statement`).
 
@@ -382,11 +414,13 @@ Assert.Equal("foobar", result.FooBar);
 NormOptions.Configure(options => options.NpgsqlEnableSqlRewriting = false);
 ```
 
-- Default value is null, which doesn't change anything, uses `Npgsql` default which is false (rewriting not disabled).
+- The default value is null, which doesn't change anything, uses `Npgsql` default which is false (rewriting not disabled).
+
+---
 
 ### NullableInstances
 
-- When this option is true, the instance mapper will return null for all instances that have all properties set to null.
+- When this option is true, the instance mapper will **return null** for all instances that have **all properties set to null.**
 
 - Example:
 
@@ -424,13 +458,15 @@ var (instance1, instance2, instance3) = connection
     .Single();
 ```
 
-- In this example, if match doesn't exists for `table2` and `table3`, `instance2` and `instance3`` will be null if `NullableInstances` is set to true.
+- In this example, if the match doesn't exist for `table2` and `table3`, `instance2` and `instance3` will be null if `NullableInstances` is set to true.
 
-- Default is false (nullable instances are disabled).
+- The default is false (nullable instances are disabled).
+
+---
 
 ### Prepared
 
-- Set to true to run all commands in prepared mode every time by calling [`Prepare()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare) method before execution.
+- Set to true to run all commands in **prepared mode every time** - by calling the [`Prepare()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare) method before every execution.
 
 ```csharp
 NormOptions.Configure(options =>
@@ -439,13 +475,15 @@ NormOptions.Configure(options =>
 });
 ```
 
-- Default is false (commands are not prepared automatically).
+- The default is false (commands are not prepared automatically).
 
 - Note: this feature is useless for SQL Server because SQL Server does this automatically. PostgreSQL does not, but it can be enabled through connection string or calling prepare manually for each command. See [this article](https://www.npgsql.org/doc/prepare.html).
 
+---
+
 ### RawInterpolationParameterEscape
 
-- Methods `Execute`, `ExecuteAsync`, `Read` and `ReadAsync` have versions (`ExecuteFormat`, `ExecuteFormatAsync`, `ReadFormat` and `ReadAFormatsync`) that can accept command parameter through interpolated strings.
+- Methods `ExecuteFormat`, `ExecuteFormatAsync`, `ReadFormat` and `ReadAFormatsync` can accept database command parameters as **interpolated strings.**
 
 - For example:
 
@@ -458,9 +496,9 @@ var user = connection
     .Single();
 ```
 
-- In this example, variables `userId` and `date` are used as normal database command parameters because the `ReadFormat` version is used.
+- In this example, variables `userId` and `date` are used as normal **database command parameters**.
 
-- If we wanted, for example, to use `ReadFormat` and, in certain cases, skip command parameters and just use normal string interpolation, we could use a `raw` modifier. Example:
+- If we want, to use `ReadFormat` and, in certain cases, skip command parameters and just use normal string interpolation, we could use a `raw` modifier. Example:
 
 ```csharp
 var table = "logs";

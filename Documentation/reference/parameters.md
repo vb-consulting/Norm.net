@@ -1,21 +1,23 @@
 ---
 title: Parameters
 order: 3
-nextUrl: 
-nextTitle: 
+nextUrl: /norm.net/docs/reference/read/
+nextTitle: Read MAppings
 prevUrl: /norm.net/docs/reference/options/
 prevTitle: Options
 ---
 
 ## Working With Parameters
 
-- There are three different weays to to set command parameters with Norm:
+- There are three main ways to set command parameters with Norm:
 
     1) [By using the `WithParameters` extension method.](#1-withparameters-extension-method)
    
-    2) [By supplying an additional parameter to `Execute`, `ExecuteAsync`, `Read`, and `ReadAsync`](#2-additional-parameter-in-execute-and-read)
+    2) [By supplying an additional command parameter](#2-additional-command-parameter)
 
-    3) [By using string interpolation with `ExecuteFormat`, `ExecuteFormatAsync`, `ReadFormat`, and `ReadFormatAsync`](#3-string-interpolation-in-execute-and-read)
+    3) [By using string interpolation](#3-string-interpolation)
+
+---
 
 ### 1) WithParameters Extension Method
 
@@ -30,7 +32,7 @@ public Norm WithParameters(params object[] parameters);
 
 - This method can receive one or more arguments of the `object` type.
   
- - Parameter value can be either:
+ - The Parameter value can be either:
   
    - Simple type (integers, strings, dates, etc.).
 
@@ -41,6 +43,8 @@ public Norm WithParameters(params object[] parameters);
    - [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance.
 
 - Depending on the parameter type, parameters can be set in different ways: positional, named, or mixed.
+
+---
 
 #### Simple Values as Positional Parameters
 
@@ -55,11 +59,13 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- These parameters are set by position. 
+- These parameters are set **by position. **
   
-- Name of parameters in query `select @s, @i, @b, @d, @null` is not actually important at all. 
+- The name of parameters in the query `select @s, @i, @b, @d, @null` is not, actually, important at all. 
 
-- First value `"str"` is set to the first parameter `@s`, the second value to the second parameter `@i` and so on. Names of these parameters can be anything.
+- The first value `"str"` is set to the first parameter `@s`, the second value to the second parameter `@i` and so on. Names of these parameters can be anything.
+
+---
 
 #### PostgreSQL Positional Parameters
 
@@ -74,6 +80,8 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
+---
+
 #### Mixed PostgreSQL Positional Parameters and Simple Values
 
 - Those two parameter styles can even be mixed in a query. Example:
@@ -85,11 +93,13 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
+---
+
 #### Database Types with Positional Parameters
 
 - Sometimes, we want to set a specific database type to a positional parameter. 
 
-- In those cases, we can use a two values tuple, where the first value is the parameter value and the second value is the specific database type.
+- In those cases, we can use the two values tuple, where the first value is the parameter value and the second value is the specific database type.
 
 - Database type value of system enum [`System.Data.DbType`](https://learn.microsoft.com/en-us/dotnet/api/system.data.dbtype). Example:
 
@@ -104,6 +114,7 @@ var (s, i, b, d, @null) = connection
     .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
     .Single();
 ```
+---
 
 #### Mixing Simple Values With Database Types
 
@@ -115,6 +126,8 @@ var (s, i, b, d, @null) = connection
     .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
     .Single();
 ```
+
+---
 
 #### Provider-specific Database Types
 
@@ -132,9 +145,11 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
+---
+
 #### Using Anonymous Object Instances
 
-- Parameter value can also be an object instance. 
+- The parameter value can also be an object instance. 
 
 - In that case, each public property or public field will be a named parameter with the same name and the same value. Example:
 
@@ -152,11 +167,13 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- This example uses an **anonymous object instance** to create a named parameters `d`, `b`, `i`, `s` and `˙null` with associated values.
+- This example uses an **anonymous object instance** to create the named parameters `d`, `b`, `i`, `s` and `˙null` with associated values.
 
-- In this example paramaters appears in different order, because they are mapped by name, not by position.
+- In this example, parameters appear in different order, because they are mapped by name, not by position.
 
 - Note that `@null` starts with the `@` prefix because `null` is a C# keyword and the `@` prefix is ignored.
+
+---
 
 #### Using Object Instances
 
@@ -185,7 +202,9 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
-- Note that parameter names are NOT case sensitive. 
+- Note that parameter names are NOT case-sensitive. 
+
+---
 
 #### Specifying Database Type in Object Instance
 
@@ -204,6 +223,8 @@ var (s, i, b, d, @null) = connection
     .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
     .Single();
 ```
+
+---
 
 #### Mixing Positional Simple Values and Multiple Object Instances
 
@@ -225,10 +246,11 @@ var (s, i, b, d, @null) = connection
     .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null")
     .Single();
 ```
+---
 
 #### Using DbParameter Instances
 
-- For a greater parameter control, use a specific [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance can also be used.
+- For greater parameter control, a specific [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance can also be used.
 
 - SQL Server example:
 
@@ -258,6 +280,8 @@ var (s, i, b, d, @null) = connection
     .Single();
 ```
 
+---
+
 #### Using DbParameter Instances as Object Properties
 
 - You can also set the `DbParameter` instance to an instance field or a property:
@@ -277,6 +301,8 @@ var (s, i, b, d, @null) = connection
 ```
 
 - In that case, the name of the instance property is discarded, and the actual parameter name from the `DbParameter` instance is valid. That means that the first date property could be named differently, for example: `_ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),`.
+
+---
 
 #### DbParameter Instances as Output Parameters
 
@@ -302,8 +328,195 @@ Assert.Equal("I am output value returned from function", p.Value);
 
 - Note: you can combine any style of parameters (positional with simple values, value-type tuples, object instances, `DbParameter` instances) in any combination.
 
-### 2) Additional Parameter in Execute And Read
+---
 
+### 2) Additional Command Parameter
 
+- The parameter value as the object instance can also be set as an additional parameter in methods that will execute a database command:
+  - `Execute`
+  - `ExecuteAsync`
+  - `Read`
+  - `ReadAsync`
+  - `Multiple`
+  - `MultipleAsync`
 
-### 3) String Interpolation in Execute And Read
+- Examples are below.
+
+#### Using Anonymous Object Instances
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null", new
+    {
+        d = new DateTime(1977, 5, 19),
+        b = true,
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Single();
+```
+
+- This example uses an **anonymous object instance** to create the named parameters `d`, `b`, `i`, `s` and `˙null` with associated values.
+
+- In this example, parameters appear in different order, because they are mapped by name, not by position.
+
+- Note that `@null` starts with the `@` prefix because `null` is a C# keyword and the `@` prefix is ignored.
+
+---
+
+#### Using Object Instances
+
+```csharp
+class TestClass
+{
+    public string S { get; set; }
+    public int I { get; set; }
+    public bool B { get; set; }
+    public DateTime D { get; set; }
+    public string Null { get; set; }
+}
+
+var (s, i, b, d, @null) = connection
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null", new TestClass
+    {
+        D = new DateTime(1977, 5, 19),
+        B = true,
+        I = 999,
+        S = "str",
+        Null = (string)null
+    })
+    .Single();
+```
+
+- Note that parameter names are NOT case-sensitive. 
+
+---
+
+#### Specifying Database Type in Object Instance
+
+- Also, you can set a specific database type, either generic `DbType` or provider-specific database type - by using tuples:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .WithParameters()
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null", new
+    {
+        d = (new DateTime(1977, 5, 19), DbType.Date), // set parameter type to generic DbType.Date
+        b = (true, NpgsqlDbType.Boolean), // set parameter type to PostgreSQL specific NpgsqlDbType.Boolean
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Single();
+```
+
+---
+
+#### Using DbParameter Instances as Object Properties
+
+- You can also set the `DbParameter` instance to an instance field or a property:
+
+```csharp
+var (s, i, b, d, @null) = connection
+    .Read<string, int, bool, DateTime, string>("select @s, @i, @b, @d, @null", new
+    {
+        d = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),
+        b = true,
+        i = 999,
+        s = "str",
+        @null = (string)null
+    })
+    .Single();
+```
+
+- In that case, the name of the instance property is discarded, and the actual parameter name from the `DbParameter` instance is valid. That means that the first date property could be named differently, for example: `_ = new NpgsqlParameter("d", new DateTime(1977, 5, 19)),`.
+
+---
+
+#### DbParameter Instances as Output Parameters
+
+- Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
+
+```csharp
+var p = new NpgsqlParameter("test_param", "I am output value") { Direction = ParameterDirection.InputOutput };
+connection
+    .Execute(@"
+        create function test_inout_param_func_1(inout test_param text) returns text as
+        $$
+        begin
+            test_param := test_param || ' returned from function';
+        end
+        $$
+        language plpgsql")
+    .AsProcedure()
+    .Execute("test_inout_param_func_1", p);
+
+Assert.Equal("I am output value returned from function", p.Value);
+```
+
+- Note: you can combine any style of parameters (positional with simple values, value-type tuples, object instances, `DbParameter` instances) in any combination.
+
+#### Using Single Value Parameter
+
+- Instead of supplying the instance, if the command has only one parameter, that also can be used:
+
+```csharp
+var (id, name) = connection
+    .Read<int, string>("select film_id, title from where film_id = @id", 999)
+    .Single();
+```
+```csharp
+var exists = connection.Read("select 1 from film where film_id = @id", 999).Any();
+```
+
+- In these examples, the single parameter named `@id` is irrelevant, it can be any valid name.
+
+---
+
+### 3) String Interpolation
+
+- Besides those two approaches, command parameters can supplied through the **string interpolation** mechanism by using special `Format` versions the command methods:
+  
+  - `ExecuteFormat`
+  - `ExecuteFormatAsync`
+  - `ReadFormat`
+  - `ReadFormatAsync`
+  - `MultipleFormat`
+  - `MultipleFormatAsync`
+
+- Example:
+
+```csharp
+var user = connection
+    .ReadFormat<User>(@$"
+        select u.* 
+        from users u, logs l 
+        where u.usrid = {userId} and u.usrid = l.usrid and l.date = {date}")
+    .Single();
+```
+
+- In this example, variables `userId` and `date` are used as normal **database command parameters**.
+
+- There is also an option that allows for escaping format parameters and using normal string interpolation for certain parameters in the format string:
+
+```csharp
+var table = "logs";
+var user = connection
+    .ReadFormat<User>(@$"
+        select u.* 
+        from users u, {table:raw} l 
+        where u.usrid = {userId} and u.usrid = l.usrid and l.date = {date}")
+    .Single();
+```
+
+- In this example, the variable `table` is used in normal string interpolation (because we used the `raw` modifier), and variables `userId` and `date` are still used as database command parameters.
+
+- The value of the `raw` modifier can be set in the [options](/norm.net/docs/reference/options/#rawinterpolationparameterescape).
+
+```csharp
+NormOptions.Configure(options =>
+{
+    options.RawInterpolationParameterEscape = "raw";
+});
+```

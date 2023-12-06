@@ -123,5 +123,5 @@ This is open-source software developed and maintained freely without any compens
  
 ## Licence
  
-Copyright (c) Vedran Bilopavlović - VB Consulting and VB Software 2020
+Copyright (c) Vedran Bilopavlović - VB Consulting and VB Software
 This source code is licensed under the [MIT license](https://github.com/vbilopav/NoOrm.Net/blob/master/LICENSE).

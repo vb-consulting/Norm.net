@@ -135,24 +135,11 @@ connection
 ### Execute
 
 ```csharp
-// Extension
-public static Norm Execute(this DbConnection connection, 
-    string command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0);
-
-// Norm Instance Method
-public Norm Execute(
-    string command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0)
+public static Norm Execute(this DbConnection connection, string command, object parameters = null);
+public Norm Execute(string command, object parameters = null);
 ```
 
-- Executes the SQL command.
+- Executes the SQL command without returning a value from the database.
 
 - Extension returns the new `Norm` instance and instance method existing `Norm` instance.
 
@@ -172,30 +159,15 @@ connection
 ### ExecuteAsync
 
 ```csharp
-// Extension
-public static async ValueTask<Norm> ExecuteAsync(this DbConnection connection, 
-    string command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0);
-
-// Norm Instance Method
-public async ValueTask<Norm> ExecuteAsync(
-    string command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0)
+public static async ValueTask<Norm> ExecuteAsync(this DbConnection connection, string command, object parameters = null);
+public async ValueTask<Norm> ExecuteAsync(string command, object parameters = null);
 ```
 
-- Execute the SQL command and return a value task representing the asynchronous operation.
+- Execute the SQL command without returning a value from the database and return a value task representing the asynchronous operation.
 
 - Value task returns the new `Norm` instance and instance method existing `Norm` instance.
 
 - Can have additional parameters where parameters are supplied as an anonymous object instance.
-
-- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
 
 - Example:
 
@@ -209,30 +181,15 @@ await connection
 ### ExecuteFormat
 
 ```csharp
-// Extension
-public static Norm ExecuteFormat(this DbConnection connection, 
-    FormattableString command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0);
-
-// Norm Instance Method
-public Norm ExecuteFormat(
-    FormattableString command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0)
+public static Norm ExecuteFormat(this DbConnection connection, FormattableString command, object parameters = null);
+public Norm ExecuteFormat(FormattableString command, object parameters = null);
 ```
 
-- Executes the SQL command in an interpolated (formattable) string and parses a formattable string for database parameters.
+- Executes the SQL command without returning a value from the database in an interpolated (formattable) string and parses a formattable string for database parameters.
 
 - Extension returns the new `Norm` instance and instance method existing `Norm` instance.
 
 - Can have additional parameters where parameters are supplied as an anonymous object instance.
-
-- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
 
 - Example:
 
@@ -248,30 +205,15 @@ connection
 ### ExecuteFormatAsync
 
 ```csharp
-// Extension
-public static async ValueTask<Norm> ExecuteFormatAsync(this DbConnection connection, 
-    FormattableString command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0);
-
-// Norm Instance Method
-public async ValueTask<Norm> ExecuteFormatAsync(
-    FormattableString command,
-    object parameters = null,
-    [CallerMemberName] string memberName = "",
-    [CallerFilePath] string sourceFilePath = "",
-    [CallerLineNumber] int sourceLineNumber = 0)
+public static async ValueTask<Norm> ExecuteFormatAsync(this DbConnection connection, FormattableString command, object parameters = null);
+public async ValueTask<Norm> ExecuteFormatAsync(FormattableString command, object parameters = null);
 ```
 
-- Executes the SQL command in an interpolated (formattable) string and parses a formattable string for database parameters and returns a value task representing the asynchronous operation.
+- Executes the SQL command without returning a value from the database in an interpolated (formattable) string and parses a formattable string for database parameters and returns a value task representing the asynchronous operation.
 
 - Value task returns the new `Norm` instance and instance method existing `Norm` instance.
 
 - Can have additional parameters where parameters are supplied as an anonymous object instance.
-
-- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) should not be supplied, they are intended to be used in diagnostics and logging and are supplied automatically by the compiler. 
 
 - Example:
 
@@ -313,6 +255,21 @@ var rowsAffected = connection
 ### MultipleAsync
 ### MultipleFormat
 ### MultipleFormatAsync
+
+- There are four connection extensions and four instance methods:
+  - `Multiple` 
+  - `MultipleAsync` 
+  - `MultipleFormat` 
+  - `MultipleFormatAsync` 
+
+
+- Each of these methods and extensions has one non-generic version and 13 generic versions.
+
+- They all create a disposable object that can be used to execute or read multiple commands in a batch.
+
+> Note: For more information on mapping system [see multiple mappings section.](/norm.net/docs/reference/multiple/)
+
+---
 
 ### Norm
 
@@ -400,12 +357,11 @@ connection
   - `ReadFormatAsync` 
 
 
-- Each of these methods and extensions has one non-generic version and 12 generic versions.
+- Each of these methods and extensions has one non-generic version and 13 generic versions.
 
 - They all implement a complex mapping system that enables you to map to anything from simple types to tuples and object instances.
 
-
-> Note: For more information on mapping system [see read mappings section.](/norm.net/docs/reference/mapping/)
+> Note: For more information on mapping system [see read mappings section.](/norm.net/docs/reference/read/)
 
 ---
 

@@ -43,6 +43,57 @@ connection
 
 ---
 
+### Database Commands
+
+- There are three groups of methods used to execute database commands
+
+1) Execution
+
+- Executes the SQL command without returning a value.
+
+- These are:
+  - `Execute`
+  - `ExecuteFormat`
+  - `ExecuteAsync`
+  - `ExecuteFormatAsync`
+
+- [See more about the "execute" methods](/norm.net/docs/reference/methods/#execute).
+
+1) Read Mappings
+
+- These are:
+  - `Read`
+  - `ReadFormat`
+  - `ReadAsync`
+  - `ReadFormatAsync`
+
+- [See more about the "read" methods](/norm.net/docs/reference/read/).
+
+1) Multiple Mappings
+
+- These are:
+  - `Multiple`
+  - `MultipleFormat`
+  - `MultipleAsync`
+  - `MultipleFormatAsync`
+
+- [See more about the "multiple" methods](/norm.net/docs/reference/multiple/).
+
+- Note: All of these extensions and methods have the same three parameters:
+
+```csharp
+public static Norm ExecuteAsync(this DbConnection connection, 
+    string command,
+    object parameters = null,
+    [CallerMemberName] string memberName = "",
+    [CallerFilePath] string sourceFilePath = "",
+    [CallerLineNumber] int sourceLineNumber = 0);
+```
+
+- The last three parameters with the `Caller` attribute (`memberName`, `sourceFilePath` and `sourceLineNumber`) - should not be supplied by the user - **they are intended to be used in diagnostics and logging and are supplied automatically by the compiler.**
+
+---
+
 ### Read Iterators
 
 - The `Read` extension method and all the overload versions of that method - will always return **the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)** of the [`Enumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) interface type.
