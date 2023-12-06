@@ -11,11 +11,11 @@ prevTitle: Options
 
 - There are three main ways to set command parameters with Norm:
 
-    1) [By using the `WithParameters` extension method.](#1-withparameters-extension-method)
+    1) > [By using the `WithParameters` extension method.](#1-withparameters-extension-method)
    
-    2) [By supplying an additional command parameter](#2-additional-command-parameter)
+    2) > [By supplying an additional command parameter](#2-additional-command-parameter)
 
-    3) [By using string interpolation](#3-string-interpolation)
+    3) > [By using string interpolation](#3-string-interpolation)
 
 ---
 

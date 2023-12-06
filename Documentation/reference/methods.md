@@ -11,8 +11,9 @@ prevTitle: Basic Concepts
 
 - To implement fluid syntax, Norm extensions are implemented in two versions:
 
-1) As `DbConnection` object extension methods. 
-2) As instance methods.
+1) > As `DbConnection` object extension methods. 
+   
+2) > As instance methods.
 
 - Both extension methods and instance methods have the same basic signature (except for `this DbConnection connection` parameter in extension methods), and they return the `Norm` instance whenever they can to ensure fluid syntax.
 

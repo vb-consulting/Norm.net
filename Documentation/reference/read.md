@@ -14,11 +14,16 @@ prevTitle: Parameters
 - There are four groups: `Read`, `ReadAsync`, `ReadFormat` and `ReadFormatAsync`.
 
 - Each of these methods has:
-  1) **Connections extension** and the **instance method** version. These are identical in functionality and exist only to implement fluid syntax.
-  2) [A non-generic version](#non-generic-version) that yields a **name and value tuple** array for each row. 
-  3) [Single generic type version](#single-generic-type-version) that yields **the same type as supplied** by the generic parameter for each row.
-  4) [Multiple generic types](#multiple-generic-types) that yields tuples **based on generic parameters** for each row.
-  5) [Instance blueprint version](#instance-blueprint-version) that yields new instances **based on the blueprint instance** for each row.
+  
+  1) > **Connections extension** and the **instance method** version. These are identical in functionality and exist only to implement fluid syntax.
+   
+  2) > [A non-generic version](#non-generic-version) that yields a **name and value tuple** array for each row. 
+
+  3) > [Single generic type version](#single-generic-type-version) that yields **the same type as supplied** by the generic parameter for each row.
+   
+  4) > [Multiple generic types](#multiple-generic-types) that yields tuples **based on generic parameters** for each row.
+
+  5) > [Instance blueprint version](#instance-blueprint-version) that yields new instances **based on the blueprint instance** for each row.
 
 ---
 
@@ -38,8 +43,8 @@ public IEnumerable<(string name, object value)[]> Read(
 - Non generic version yields a name and value tuple array for each row: `(string name, object value)[]`.
 
 - The tuple array represents a row returned from the database where:
-  - `string name` is the column name.
-  - `object value` is the column value.
+  - `string name` is the column name
+  - `object value` is the column value
 
 - This is a very basic mapping approach. 
 
@@ -48,10 +53,10 @@ public IEnumerable<(string name, object value)[]> Read(
 ```csharp
 // dictionary where key is film_id and value is file title
 var dict = connection
-    .Read<int, string>("select film_id, title from film limit 3")
+    .Read("select film_id, title from film limit 3")
     .ToDictionary(
-        tuple => tuple.Item1,
-        tuple => tuple.Item2);
+        tuples => (int)tuples.First().value,
+        tuples => tuples.Last().value?.ToString());
 ```
 
 - The more common example of usage is checking if the query returns any records.
@@ -61,7 +66,9 @@ var dict = connection
 - Example:
 
 ```csharp
-var exists = connection.Read("select 1 from film where film_id = @id", 999).Any();
+var exists = connection
+    .Read("select 1 from film where film_id = @id", 999)
+    .Any();
 ```
 
 ---
