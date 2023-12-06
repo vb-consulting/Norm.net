@@ -144,6 +144,18 @@ public static class Examples
         WriteLine("Film id {0} exists: {1} ", 999, connection.Read("select 1 from film where film_id = @id", 999).Any());
     }
 
+    public static void UnamedNamedTuplesDictionary(DbConnection connection)
+    {
+        // dictionary where key is film_id and value is file title
+        var dict = connection
+            .Read<(int, string)>("select film_id, title from film limit 3")
+            .ToDictionary(
+                tuple => tuple.Item1,
+                tuple => tuple.Item2);
+
+        WriteLine("Dictionary first key-value {0}-{1} ", dict.Keys.First(), dict.Values.First());
+    }
+
     public static void NamedTuplesDictionary(DbConnection connection)
     {
         // dictionary where key is film_id and value is file title

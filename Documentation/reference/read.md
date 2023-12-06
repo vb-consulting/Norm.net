@@ -79,6 +79,75 @@ public IEnumerable<T> Read<T>(
     object parameters = null);
 ```
 
+- Generic type can be either:
+
+#### 1) Simple types
+
+- Simple types such as `int`, `long`, `short`, `double`, `single`, `string`, `boolean`, `DateTime`, `TimeSpan`, `DateTimeOffset`, `Guid`, etc.
+
+Example:
+
+```csharp
+var count = connection.Read<int>("select count(*) from actor").Single();
+```
+
+#### 2) Tuple types
+
+- Tuple types can be named or unnamed.
+
+- Unnamed tuple example:
+
+```csharp
+// dictionary where key is film_id and value is file title
+var dict = connection
+    .Read<(int, string)>("select film_id, title from film limit 3")
+    .ToDictionary(
+        tuple => tuple.Item1,
+        tuple => tuple.Item2);
+```
+
+- Named tuple example:
+
+```csharp
+// dictionary where key is film_id and value is file title
+var dict = connection
+    .Read<(int id, string name)>("select film_id, title from film limit 3")
+    .ToDictionary(
+        tuple => tuple.id,
+        tuple => tuple.name);
+```
+
+- > Note: all tuples are **mapped by position only**.
+
+#### 3) Complex Instance types
+
+-  `class`, `record`, or any other complex instance type that supports properties.
+
+- Example: 
+
+```csharp
+public class Film
+{
+    public int FilmId { get; set; }
+    public string Title { get; set; }
+    public int ReleaseYear { get; set; }
+    public decimal RentalRate { get; set; }
+}
+
+var film = connection
+    .Read<Film>(@"
+        select film_id, title, release_year, rental_rate 
+        from film
+        limit 1")
+    .Single();
+```
+
+- All existing fields are **mapped by name.**
+
+- By default, the name mapper will ignore cases and will ignore these two characters: `@`, `_`. This enables **snake-case case insensitive mapping** by default. To override this behavior, use the [`KeepOriginalNames`](/norm.net/docs/reference/options/#keeporiginalnames) or the [`NameParserCallback`](/norm.net/docs/reference/options/#nameparsercallback) option.
+
+- By default, only public properties are mapped. To change this behavior set the [`MapPrivateSetters` option](/norm.net/docs/reference/options/#mapprivatesetters) to true. 
+
 ---
 
 ### Multiple generic types
