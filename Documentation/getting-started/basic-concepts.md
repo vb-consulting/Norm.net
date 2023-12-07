@@ -259,7 +259,7 @@ foreach (var (actor, film) in connection.Read<(int id, string name), (int id, st
         join film using (film_id)
     limit 3"))
 {
-    WriteLine("Actor: {0}-{1}, Film: {1}-{2}", actor.id, actor.name, film.id, film.name);
+    WriteLine("Actor: {0}-{1}, Film: {2}-{3}", actor.id, actor.name, film.id, film.name);
 }
 ```
 
