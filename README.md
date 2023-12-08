@@ -40,7 +40,7 @@ Norm.net is innovative and high-performance Database Access for .NET
  
 This is open-source software developed and maintained freely without any compensation whatsoever.
  
-## Licence
+## License
  
 Copyright (c) Vedran Bilopavlović - VB Consulting and VB Software
 This source code is licensed under the [MIT license](https://github.com/vbilopav/NoOrm.Net/blob/master/LICENSE).
