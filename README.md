@@ -1,6 +1,6 @@
 # **`Norm Micro-ORM`**
  
-_Norm.net is an innovative and high-performance Database Access for  .NET Standard 2.1 and higher_
+_Norm.net is an innovative and high-performance Database Access for .NET Standard 2.1 and higher_
  
 ![build-test-publish](https://github.com/vb-consulting/Norm.net/workflows/build-test-publish/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-green)
