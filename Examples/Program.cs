@@ -507,6 +507,35 @@ public static class Examples
             string.Join(", ", instance.IntEnumArray));
     }
 
+
+    public static void ReadMultipleBatch(DbConnection connection)
+    {
+        using var multiple = connection.Multiple(@"
+            select actor_id, first_name || ' ' || last_name as name from actor limit 3;
+            select film_id, title from film limit 3;
+        ");
+
+        bool next;
+
+        var actors = multiple.Read<ActorDto>();
+        foreach (var actor in actors)
+        {
+            WriteLine("Actor: {0}-{1}", actor.ActorId, actor.Name);
+        }
+
+        next = multiple.Next();
+        WriteLine("Next: {0}", next);
+
+        var films = multiple.Read<FilmDto>();
+        foreach (var film in films)
+        {
+            WriteLine("Film: {0}-{1}", film.FilmId, film.Title);
+        }
+
+        next = multiple.Next();
+        WriteLine("Next: {0}", next);
+    }
+
     public static void PrintNonPublicFilmFromClass(DbConnection connection)
     {
         var film = connection

@@ -34,8 +34,17 @@ prevTitle: Parameters
 public static IEnumerable<(string name, object value)[]> Read(this DbConnection connection, 
     string command, 
     object parameters = null);
+// Async Extension
+public static async IAsyncEnumerable<(string name, object value)[]> ReadAsync(this DbConnection connection, 
+    string command, 
+    object parameters = null);
+
 // Method
 public IEnumerable<(string name, object value)[]> Read(
+    string command, 
+    object parameters = null);
+// Async Method
+public IAsyncEnumerable<(string name, object value)[]> ReadAsync(
     string command, 
     object parameters = null);
 ```
@@ -80,8 +89,17 @@ var exists = connection
 public static IEnumerable<T> Read<T>(this DbConnection connection, 
     string command, 
     object parameters = null);
+// Async Extension
+public static IAsyncEnumerable<T> ReadAsync<T>(this DbConnection connection, 
+    string command, 
+    object parameters = null);
+
 // Method
 public IEnumerable<T> Read<T>(
+    string command, 
+    object parameters = null);
+// Async Method
+public IAsyncEnumerable<T> ReadAsync<T>(
     string command, 
     object parameters = null);
 ```
@@ -173,6 +191,17 @@ public static IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(this DbConnection conne
 public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, 
     string command, 
     object parameters = null);
+// Async Extensions
+public static IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(this DbConnection connection, 
+    string command, 
+    object parameters = null);
+public static IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(this DbConnection connection, 
+    string command, 
+    object parameters = null);
+// up to 12 generic parameters ...
+public static IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this DbConnection connection, 
+    string command, 
+    object parameters = null);
 
 // Methods
 public IEnumerable<(T1, T2)> Read<T1, T2>(
@@ -183,6 +212,17 @@ public IEnumerable<(T1, T2, T3)> Read<T1, T2, T3>(
     object parameters = null);
 // up to 12 generic parameters ...
 public IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Read<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+    string command, 
+    object parameters = null);
+// Async Methods
+public IAsyncEnumerable<(T1, T2)> ReadAsync<T1, T2>(
+    string command, 
+    object parameters = null);
+public IAsyncEnumerable<(T1, T2, T3)> ReadAsync<T1, T2, T3>(
+    string command, 
+    object parameters = null);
+// up to 12 generic parameters ...
+public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> ReadAsync<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
     string command, 
     object parameters = null);
 ```
@@ -307,8 +347,19 @@ public static IEnumerable<T> Read<T>(this DbConnection connection,
     T bluePrintInstance,
     string command, 
     object parameters = null);
+// Async Extension
+public static IEnumerable<T> Read<T>(this DbConnection connection, 
+    T bluePrintInstance,
+    string command, 
+    object parameters = null);
+
 // Method
-public IEnumerable<T> Read<T>(
+public IAsyncEnumerable<T> ReadAsync<T>(
+    T bluePrintInstance,
+    string command, 
+    object parameters = null);
+// Async Method
+public IAsyncEnumerable<T> ReadAsync<T>(
     T bluePrintInstance,
     string command, 
     object parameters = null);
