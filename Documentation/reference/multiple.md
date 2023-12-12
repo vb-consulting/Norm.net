@@ -7,7 +7,7 @@ prevUrl: /norm.net/docs/reference/read/
 prevTitle: Read Mappings
 ---
 
-## Multiple Commands
+# Multiple Commands
 
 - There's built-in support for working with multiple mappings in a single batch.
 
@@ -29,7 +29,7 @@ public async ValueTask<NormMultipleBatch> MultipleAsync(string command, object p
 public async ValueTask<NormMultipleBatch> MultipleFormatAsync(FormattableString command, object parameters = null);
 ```
 
-### NormMultipleBatch
+## NormMultipleBatch
 
 - `NormMultipleBatch` is a disposable instance used for reading multiple batch commands.
 
@@ -37,7 +37,7 @@ public async ValueTask<NormMultipleBatch> MultipleFormatAsync(FormattableString 
 
 - Methods:
 
-#### Next and NextAsync
+### Next and NextAsync
 
 ```csharp
 // Sync
@@ -50,7 +50,7 @@ public async ValueTask<bool> NextAsync();
 
 - Returns true if there are more result sets; otherwise, false.
 
-#### Read and ReadAsync
+### Read and ReadAsync
 
 ```csharp
 // Sync
@@ -71,7 +71,7 @@ public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Rea
 
 - For more information on read mappings, see the [read mappings section](/norm.net/docs/reference/read/).
 
-### Examples
+## Examples
 
 ```csharp
 public class FilmDto

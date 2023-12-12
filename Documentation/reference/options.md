@@ -7,7 +7,7 @@ prevUrl: /norm.net/docs/reference/methods/
 prevTitle: Methods
 ---
 
-## Norm Options
+# Norm Options
 
 - Norm options are set at the program startup by calling `NormOptions.Configure` static method.
 
@@ -25,7 +25,7 @@ public static void Configure(Action<NormOptions> options)
 
 ---
 
-### CommandCommentHeader
+## CommandCommentHeader
 
 - Sets the **command comment header** options that will be applied for all commands.
 
@@ -55,7 +55,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.Enabled
+### CommandCommentHeader.Enabled
 
 - Enables or disables (default) command comment headers.
 
@@ -63,7 +63,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.IncludeCommandAttributes
+### CommandCommentHeader.IncludeCommandAttributes
 
 - Include command attribute descriptions to command comment headers.
 
@@ -79,7 +79,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.IncludeCallerInfo
+### CommandCommentHeader.IncludeCallerInfo
 
 - Include caller info to command comment headers.
 
@@ -95,7 +95,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.IncludeParameters
+### CommandCommentHeader.IncludeParameters
 
 - Include parameter names and values to command comment headers.
 
@@ -103,7 +103,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.ParametersFormat
+### CommandCommentHeader.ParametersFormat
 
 - A format string that will be used to format parameters comment in the comment header when `CommandCommentHeader.IncludeParameters` is set to true.
 
@@ -117,7 +117,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.IncludeTimestamp
+### CommandCommentHeader.IncludeTimestamp
 
 - Include the current timestamp to command comment headers.
 
@@ -125,7 +125,7 @@ NormOptions.Configure(options =>
 
 ---
 
-#### CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes
+### CommandCommentHeader.OmitStoredProcCommandCommentHeaderForDbTypes
 
 - Skip comment headers when the command type is stored procedure for certain database types.
 
@@ -135,7 +135,7 @@ NormOptions.Configure(options =>
 
 ---
 
-### CommandTimeout
+## CommandTimeout
 
 - Set the command timeout in seconds for all commands created by the Norm.
 
@@ -150,7 +150,7 @@ NormOptions.Configure(options =>
 
 ---
 
-### DbCommandCallback
+## DbCommandCallback
 
 - Set the **command callback function** that will be executed before every command execution and pass the created [`DbCommand`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand) object as a parameter.
 
@@ -186,7 +186,7 @@ NormOptions.Configure(options =>
 
 --
 
-### DbReaderCallback
+## DbReaderCallback
 
 - Sets the **custom database reader callback function** that will be executed on each database reader iteration step for every field - on every database reader operation executed by Norm.
 
@@ -266,7 +266,7 @@ NormOptions.Configure(options =>
 
 ---
 
-### KeepOriginalNames
+## KeepOriginalNames
 
 - By default, the mapping by name mechanism implemented in this library supports the **snake-case naming** convention.
 
@@ -291,7 +291,7 @@ NormOptions.Configure(options =>
 
 ---
 
-### MapPrivateSetters
+## MapPrivateSetters
 
 - By default, the mapping by name mechanism implemented in this library will map only instance members (fields or properties) that have **public setters** (can only be set publicly).
 
@@ -338,7 +338,7 @@ var result = connection
 
 ---
 
-### NameParserCallback
+## NameParserCallback
 
 - Define a **callback function** that is called in a **database field names parsing phase** and can **replace names** with return values from this callback function.
 
@@ -388,7 +388,7 @@ Assert.Equal("foobar", result.FooBar);
 
 ---
 
-### NpgsqlEnableSqlRewriting
+## NpgsqlEnableSqlRewriting
 
 > **PostgreSQL only feature**
 
@@ -418,7 +418,7 @@ NormOptions.Configure(options => options.NpgsqlEnableSqlRewriting = false);
 
 ---
 
-### NullableInstances
+## NullableInstances
 
 - When this option is true, the instance mapper will **return null** for all instances that have **all properties set to null.**
 
@@ -464,7 +464,7 @@ var (instance1, instance2, instance3) = connection
 
 ---
 
-### Prepared
+## Prepared
 
 - Set to true to run all commands in **prepared mode every time** - by calling the [`Prepare()`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbcommand.prepare) method before every execution.
 
@@ -481,7 +481,7 @@ NormOptions.Configure(options =>
 
 ---
 
-### RawInterpolationParameterEscape
+## RawInterpolationParameterEscape
 
 - Methods `ExecuteFormat`, `ExecuteFormatAsync`, `ReadFormat` and `ReadAFormatsync` can accept database command parameters as **interpolated strings.**
 

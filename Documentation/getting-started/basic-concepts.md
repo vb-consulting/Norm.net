@@ -7,9 +7,9 @@ prevUrl: /norm.net/docs/getting-started/first-use/
 prevTitle: First Use
 ---
 
-## Basic Concepts
+# Basic Concepts
 
-### Extensions And Fluid Syntax
+## Extensions And Fluid Syntax
 
 - `Norm` is implemented as a **set of extensions** over the [`System.Data.Common.DbConnection`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbconnection) object.
 
@@ -43,7 +43,7 @@ connection
 
 ---
 
-### Database Commands
+## Database Commands
 
 - There are three groups of methods used to execute database commands
 
@@ -94,7 +94,7 @@ public static Norm ExecuteAsync(this DbConnection connection,
 
 ---
 
-### Read Iterators
+## Read Iterators
 
 - The `Read` extension method and all the overload versions of that method - will always return **the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)** of the [`Enumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) interface type.
 
@@ -177,7 +177,7 @@ IEnumerable<TResult> Read()
 
 ---
 
-### Async Read Iterators
+## Async Read Iterators
 
 - The asynchronous version `ReadAsync` extension method and all the overload versions of that method - will always return **the [iterator](https://learn.microsoft.com/en-us/dotnet/csharp/iterators)** of the [`IAsyncEnumerable<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1) interface type.
 
@@ -208,7 +208,7 @@ var list = await result2.ToListAsync();
 
 ---
 
-### Working With Tuples
+## Working With Tuples
 
 - Both `Read` and  `ReadAsync` methods implement a complex mapping system - but they both return a single generic value (`IEnumerable<T>` and `IAsyncEnumerable<T>`, respectively).
 
@@ -285,7 +285,7 @@ foreach (var (actor, film) in connection.Read<Actor, Film>(@"
 
 ---
 
-### Global Settings
+## Global Settings
 
 - It is possible to modify `Norm`'s default behavior for the entire application by setting the global settings. For example:
 

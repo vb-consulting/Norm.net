@@ -7,7 +7,7 @@ prevUrl: /norm.net/docs/reference/options/
 prevTitle: Options
 ---
 
-## Working With Parameters
+# Working With Parameters
 
 - There are three main ways to set command parameters with Norm:
 
@@ -19,7 +19,7 @@ prevTitle: Options
 
 ---
 
-### 1) WithParameters Extension Method
+## 1) WithParameters Extension Method
 
 - `WithParameters` extension sets parameters for the next command and it has the following signature:
 
@@ -46,7 +46,7 @@ public Norm WithParameters(params object[] parameters);
 
 ---
 
-#### Simple Values as Positional Parameters
+### Simple Values as Positional Parameters
 
 - Using **simple values** - we can set the positional parameters.
 
@@ -67,7 +67,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### PostgreSQL Positional Parameters
+### PostgreSQL Positional Parameters
 
 - Norm also supports PostgreSQL positional parameters where each parameter in the query is defined with a `$` character and position index (`$1`, `$2`, `$2`, etc.).
 
@@ -82,7 +82,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Mixed PostgreSQL Positional Parameters and Simple Values
+### Mixed PostgreSQL Positional Parameters and Simple Values
 
 - Those two parameter styles can even be mixed in a query. Example:
 
@@ -95,7 +95,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Database Types with Positional Parameters
+### Database Types with Positional Parameters
 
 - Sometimes, we want to set a specific database type to a positional parameter. 
 
@@ -116,7 +116,7 @@ var (s, i, b, d, @null) = connection
 ```
 ---
 
-#### Mixing Simple Values With Database Types
+### Mixing Simple Values With Database Types
 
 - You can also mix simple values and tuple values with a specific database type. Example:
 
@@ -129,7 +129,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Provider-specific Database Types
+### Provider-specific Database Types
 
 - You can also use provider-specific database type enums. Example for PostgreSQL types:
 
@@ -147,7 +147,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Using Anonymous Object Instances
+### Using Anonymous Object Instances
 
 - The parameter value can also be an object instance. 
 
@@ -175,7 +175,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Using Object Instances
+### Using Object Instances
 
 - Besides anonymous objects, normal instances can also be used as well:
 
@@ -206,7 +206,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Specifying Database Type in Object Instance
+### Specifying Database Type in Object Instance
 
 - Also, you can set a specific database type, either generic `DbType` or provider-specific database type - by using tuples:
 
@@ -226,7 +226,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Mixing Positional Simple Values and Multiple Object Instances
+### Mixing Positional Simple Values and Multiple Object Instances
 
 - Positional and instance-named parameters can be mixed. Also, you can have multiple instance parameters:
 
@@ -248,7 +248,7 @@ var (s, i, b, d, @null) = connection
 ```
 ---
 
-#### Using DbParameter Instances
+### Using DbParameter Instances
 
 - For greater parameter control, a specific [`DbParameter`](https://learn.microsoft.com/en-us/dotnet/api/system.data.common.dbparameter) instance can also be used.
 
@@ -282,7 +282,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Using DbParameter Instances as Object Properties
+### Using DbParameter Instances as Object Properties
 
 - You can also set the `DbParameter` instance to an instance field or a property:
 
@@ -304,7 +304,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### DbParameter Instances as Output Parameters
+### DbParameter Instances as Output Parameters
 
 - Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
 
@@ -330,7 +330,7 @@ Assert.Equal("I am output value returned from function", p.Value);
 
 ---
 
-### 2) Additional Command Parameter
+## 2) Additional Command Parameter
 
 - The parameter value as the object instance can also be set as an additional parameter in methods that will execute a database command:
   - `Execute`
@@ -342,7 +342,7 @@ Assert.Equal("I am output value returned from function", p.Value);
 
 - Examples are below.
 
-#### Using Anonymous Object Instances
+### Using Anonymous Object Instances
 
 ```csharp
 var (s, i, b, d, @null) = connection
@@ -365,7 +365,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Using Object Instances
+### Using Object Instances
 
 ```csharp
 class TestClass
@@ -393,7 +393,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Specifying Database Type in Object Instance
+### Specifying Database Type in Object Instance
 
 - Also, you can set a specific database type, either generic `DbType` or provider-specific database type - by using tuples:
 
@@ -413,7 +413,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### Using DbParameter Instances as Object Properties
+### Using DbParameter Instances as Object Properties
 
 - You can also set the `DbParameter` instance to an instance field or a property:
 
@@ -434,7 +434,7 @@ var (s, i, b, d, @null) = connection
 
 ---
 
-#### DbParameter Instances as Output Parameters
+### DbParameter Instances as Output Parameters
 
 - Using `DbParameter` instances is helpful to have and use output parameters. PostgreSQL example:
 
@@ -457,7 +457,7 @@ Assert.Equal("I am output value returned from function", p.Value);
 
 - Note: you can combine any style of parameters (positional with simple values, value-type tuples, object instances, `DbParameter` instances) in any combination.
 
-#### Using Single Value Parameter
+### Using Single Value Parameter
 
 - Instead of supplying the instance, if the command has only one parameter, that also can be used:
 
@@ -474,7 +474,7 @@ var exists = connection.Read("select 1 from film where film_id = @id", 999).Any(
 
 ---
 
-### 3) String Interpolation
+## 3) String Interpolation
 
 - Besides those two approaches, command parameters can supplied through the **string interpolation** mechanism by using special `Format` versions the command methods:
   

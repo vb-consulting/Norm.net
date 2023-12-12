@@ -9,7 +9,7 @@ prevTitle: Installation
 
 # First Use
 
-### Add Using
+## Add Using
 
 Add `using Norm` directive to the `using` section of your source file:
 
@@ -32,7 +32,7 @@ global using Norm;
 
 ---
 
-### Connection Reference
+## Connection Reference
 
 Obtain a database connection reference, either by creating a new instance:
 
@@ -76,7 +76,7 @@ public int CountActors(MyDatabaseContext context)
 
 ---
 
-### First Commands
+## First Commands
 
 Execute count on table `actor` and return the result:
 

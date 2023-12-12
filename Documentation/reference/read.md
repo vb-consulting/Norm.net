@@ -7,7 +7,7 @@ prevUrl: /norm.net/docs/reference/parameters/
 prevTitle: Parameters
 ---
 
-## Read Mappings
+# Read Mappings
 
 - Read methods implement a complex mapping system that enables you to map to anything from simple types to tuples and object instances.
 
@@ -27,7 +27,7 @@ prevTitle: Parameters
 
 ---
 
-### Non-generic Version
+## Non-generic Version
 
 ```csharp
 // Extension
@@ -82,7 +82,7 @@ var exists = connection
 
 ---
 
-### Single Generic Type Version
+## Single Generic Type Version
 
 ```csharp
 // Extension
@@ -106,7 +106,7 @@ public IAsyncEnumerable<T> ReadAsync<T>(
 
 - Generic type can be either:
 
-#### 1) Simple types
+### 1) Simple types
 
 - Simple types such as `int`, `long`, `short`, `double`, `single`, `string`, `boolean`, `DateTime`, `TimeSpan`, `DateTimeOffset`, `Guid`, etc.
 
@@ -118,7 +118,7 @@ var count = connection
     .Single();
 ```
 
-#### 2) Tuple types
+### 2) Tuple types
 
 - Tuple types can be named or unnamed.
 
@@ -146,7 +146,7 @@ var dict = connection
 
 - > Note: all tuples are **mapped by position only**.
 
-#### 3) Complex Instance types
+### 3) Complex Instance types
 
 -  `class`, `record`, or any other complex instance type that supports properties.
 
@@ -177,7 +177,7 @@ var film = connection
 
 ---
 
-### Multiple Generic Types
+## Multiple Generic Types
 
 ```csharp
 // Extensions
@@ -233,7 +233,7 @@ public IAsyncEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)> Rea
 
 - Examples:
 
-#### 1) Simple types
+### 1) Simple types
 
 ```csharp
 // tuples mapping
@@ -262,7 +262,7 @@ var dict = connection
 
 - In these examples, simple values are mapped **by position** into value tuples.
 
-#### 2) Tuple types
+### 2) Tuple types
 
 ```csharp
 // deconstruction of named tuples
@@ -286,7 +286,7 @@ foreach (var (actor, film) in connection.Read<
 
 - In these examples, named tuples are mapped **by position** into value tuples. Names are irrelevant.
 
-#### 3) Complex Instance types
+### 3) Complex Instance types
 
 ```csharp
 public class FilmDto
@@ -326,7 +326,7 @@ foreach (var (actor, film) in connection.Read<ActorDto, FilmDto>(@"
 
 - For multiple instance mappings by name, if properties with the same name exist - the first instance is server first.
 
-#### Mixing Different Mapping Types
+### Mixing Different Mapping Types
 
 - Mixing different mapping types is not allowed and will raise the `System.InvalidCastException` exception.
 
@@ -339,7 +339,7 @@ foreach (var (actor, film) in connection.Read<ActorDto, FilmDto>(@"
 
 ---
 
-### Instance Blueprint Version
+## Instance Blueprint Version
 
 ```csharp
 // Extension
@@ -379,7 +379,7 @@ public IAsyncEnumerable<T> ReadAsync<T>(
 
 - Examples:
 
-#### Anonymous Type Instances Mapping
+### Anonymous Type Instances Mapping
 
 ```csharp
 var film = connection
@@ -425,7 +425,7 @@ new
 }
 ```
 
-#### Existing Class Instances Mapping
+### Existing Class Instances Mapping
 
 - This approach can be used with normal class instances as well:
 
@@ -453,7 +453,7 @@ WriteLine("Film: {0}-{1} Year: {2}, Rate: {3}",
 
 ---
 
-### Arrays And Enums
+## Arrays And Enums
 
 - Mapping to special types like arrays and enums (and the combination of two) - is possible as well, with some limitations.
 
@@ -531,7 +531,7 @@ var instance = connection
 
 ---
 
-### DbReader Callback
+## DbReader Callback
 
 - To be able to map efficiently any type in any combination, there is a special extension method called [`WithReaderCallback`](/norm.net/docs/reference/methods/#withreadercallback) that allows that.
 

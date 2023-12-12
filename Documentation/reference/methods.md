@@ -7,7 +7,7 @@ prevUrl: /norm.net/docs/getting-started/basic-concepts/
 prevTitle: Basic Concepts
 ---
 
-## Extensions Methods
+# Extensions Methods
 
 - To implement fluid syntax, Norm extensions are implemented in two versions:
 
@@ -19,7 +19,7 @@ prevTitle: Basic Concepts
 
 ---
 
-### As
+## As
 
 ```csharp
 // Extension
@@ -69,7 +69,7 @@ connection
 
 ---
 
-### AsProcedure
+## AsProcedure
  
 ```csharp
 // Extension
@@ -95,7 +95,7 @@ connection
 
 ---
 
-### AsText
+## AsText
 
 ```csharp
 // Extension
@@ -133,7 +133,7 @@ connection
     .Execute("select delete_inactive_customers2()");
 ```
 
-### Execute
+## Execute
 
 ```csharp
 public static Norm Execute(this DbConnection connection, string command, object parameters = null);
@@ -157,7 +157,7 @@ connection
 
 ---
 
-### ExecuteAsync
+## ExecuteAsync
 
 ```csharp
 public static async ValueTask<Norm> ExecuteAsync(this DbConnection connection, string command, object parameters = null);
@@ -179,7 +179,7 @@ await connection
 
 ---
 
-### ExecuteFormat
+## ExecuteFormat
 
 ```csharp
 public static Norm ExecuteFormat(this DbConnection connection, FormattableString command, object parameters = null);
@@ -203,7 +203,7 @@ connection
 
 ---
 
-### ExecuteFormatAsync
+## ExecuteFormatAsync
 
 ```csharp
 public static async ValueTask<Norm> ExecuteFormatAsync(this DbConnection connection, FormattableString command, object parameters = null);
@@ -227,7 +227,7 @@ await connection
 
 ---
 
-### GetRecordsAffected
+## GetRecordsAffected
 
 ```csharp
 // Extension
@@ -252,10 +252,10 @@ var rowsAffected = connection
 
 ---
 
-### Multiple
-### MultipleAsync
-### MultipleFormat
-### MultipleFormatAsync
+## Multiple
+## MultipleAsync
+## MultipleFormat
+## MultipleFormatAsync
 
 - There are four connection extensions and four instance methods:
   - `Multiple` 
@@ -272,7 +272,7 @@ var rowsAffected = connection
 
 ---
 
-### Norm
+## Norm
 
 ```csharp
 // Extension
@@ -293,7 +293,7 @@ rowsAffected = instance.GetRecordsAffected();
 
 ---
 
-### Prepared
+## Prepared
 
 ```csharp
 // Extension
@@ -343,13 +343,13 @@ connection
 
 ---
 
-### Read
+## Read
 
-### ReadAsync
+## ReadAsync
 
-### ReadFormat
+## ReadFormat
 
-### ReadFormatAsync
+## ReadFormatAsync
 
 - There are four connection extensions and four instance methods:
   - `Read` 
@@ -366,7 +366,7 @@ connection
 
 ---
 
-### WithCancellationToken
+## WithCancellationToken
 
 ```csharp
 // Extension
@@ -394,7 +394,7 @@ connection
 
 ---
 
-### WithCommandBehavior
+## WithCommandBehavior
 
 ```csharp
 // Extension
@@ -484,7 +484,7 @@ var result = connection
 
 ---
 
-### WithCommandCallback
+## WithCommandCallback
 
 ```csharp
 // Extension
@@ -550,7 +550,7 @@ var result = connection.Read<int>("select count(*) from my_table");
 
 ---
 
-### WithComment
+## WithComment
 
 ```csharp
 // Extension
@@ -581,7 +581,7 @@ select count(*) from my_table
 
 ---
 
-### WithCommentCallerInfo
+## WithCommentCallerInfo
 
 ```csharp
 // Extension
@@ -643,7 +643,7 @@ var result = connection
 
 ---
 
-### WithCommentParameters
+## WithCommentParameters
 
 ```csharp
 // Extension
@@ -678,7 +678,7 @@ select @p1, @p2, @p3, @p4
 
 ---
 
-### WithCommentHeader
+## WithCommentHeader
 
  - Sets the options for the next command to include command header comment with options set in method parameters.
 
@@ -707,7 +707,7 @@ public Norm WithCommentHeader(string comment = null,
 
 ---
 
-### WithParameters
+## WithParameters
 
  ```csharp
 // Extension
@@ -730,7 +730,7 @@ public Norm WithParameters(params object[] parameters);
 
 ---
 
-### WithReaderCallback
+## WithReaderCallback
 
 - Sets the custom database reader callback function that will be executed on each database reader iteration step for every field:
 
@@ -834,7 +834,7 @@ NormOptions.Configure(options => options.DbReaderCallback = ReaderCallback);
 
 ---
 
-### WithTimeout
+## WithTimeout
 
 - Sets the wait time in seconds for the connection commands before terminating the attempt to execute a command and generating an error:
 
@@ -856,7 +856,7 @@ connection
 
 ---
 
-### WithTransaction
+## WithTransaction
 
 - Sets the transaction object for the current database command:
 
@@ -887,7 +887,7 @@ Assert.Empty(result2);
 
 ---
 
-### WithUnknownResultType
+## WithUnknownResultType
 
 > **PostgreSQL only feature**
 
